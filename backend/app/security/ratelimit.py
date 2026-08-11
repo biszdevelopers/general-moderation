@@ -8,7 +8,8 @@ the C Redis client (hiredis) for multi-worker enforcement.
 from __future__ import annotations
 
 import os
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from fastapi import Request
 from slowapi import Limiter
@@ -40,7 +41,9 @@ class RateLimiter:
         """
         return self._limiter
 
-    def limit(self, requests: int | None = None, period_seconds: int | None = None) -> Callable[[Any], Any]:
+    def limit(
+        self, requests: int | None = None, period_seconds: int | None = None
+    ) -> Callable[[Any], Any]:
         """Return a decorator applying a rate limit to an endpoint.
 
         :param requests: overrides the default request count
