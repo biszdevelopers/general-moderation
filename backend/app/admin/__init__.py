@@ -25,10 +25,6 @@ def create_admin_router(
     """
     router: APIRouter = APIRouter()
     router.include_router(create_wordlist_router(word_bank, auth_dependency))
-    router.include_router(
-        create_wordbank_router(engine, word_bank, log_file_path, auth_dependency)
-    )
-    router.include_router(
-        create_logs_router(str(Path(log_file_path).parent), auth_dependency)
-    )
+    router.include_router(create_wordbank_router(engine, word_bank, log_file_path, auth_dependency))
+    router.include_router(create_logs_router(str(Path(log_file_path).parent), auth_dependency))
     return router
