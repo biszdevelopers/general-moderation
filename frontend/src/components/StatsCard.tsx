@@ -10,11 +10,7 @@ export interface StatsCardProps {
 export function StatsCard(props: StatsCardProps): ReactElement {
     return (
         <Card className="stats-card" variant="borderless">
-            <Statistic
-                title={props.title}
-                value={props.value}
-                suffix={props.suffix}
-            />
+            <Statistic title={props.title} value={props.value} suffix={props.suffix} />
         </Card>
     );
 }
