@@ -2,7 +2,7 @@
 
 ## Coverage
 
-Hindi is covered by `badwords-py` and `glin-profanity` Hindi dictionaries.
+Hindi is covered by `glin-profanity` and `profanite` Hindi dictionaries.
 
 ## Specifics
 
