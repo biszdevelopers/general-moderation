@@ -39,6 +39,7 @@ and activate only when a working index provides them.
 | glin-profanity | 25+ | Context-aware | Active |
 | gangajal | All | WebAssembly | Active |
 | PyProfane | Universal | Soundex-based | Active |
+| sensitive-stop-words | Chinese | Submodule word lists (Aho-Corasick) | Active |
 | safetext | 13 | Phrase detection | Guard-wired |
 | sensitive-word-filter-cn | Chinese | Pinyin, symbols | Guard-wired |
 | profanity-filter2 | Universal | Levenshtein automaton | Guard-wired |
@@ -59,8 +60,14 @@ From the repository root:
 ```bash
 npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
-npm run start        # runs backend (uvicorn :8080) + frontend (vite :5173)
+git submodule update --init  # fetch the sensitive-stop-words word lists
+npm run start:dev    # dev: backend (uvicorn :8080) + frontend (vite :5173)
+npm run start:prod   # prod: build frontend, serve everything on APP_PORT
 ```
+
+Production runs on a **single port**: FastAPI serves the built frontend and
+the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
+`backend/.env`). `npm run start` is an alias for `start:dev`.
 
 Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
 `npm run install:backend`.
