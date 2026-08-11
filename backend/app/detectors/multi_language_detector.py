@@ -6,11 +6,24 @@ optional: a missing module, a disabled toggle, or a package whose API is not
 usable simply skips that package, so the service stays operational regardless
 of which dictionaries are installed.
 
-Only packages that actually work on the supported platforms are wired here.
-Packages such as ``badwords-py``, ``safetext``, ``profanity-filter2``,
-``sensitive-word-filter``, ``sensitive-word-filter-cn``, ``valx``, and
-``scheckbl`` are either absent from PyPI or carry broken dependencies or
-broken Python 3.14 runtimes, so they are not registered.
+Five packages are wired with their real-world APIs:
+
+- ``profanite`` (Rust) via ``contains_profanity``
+- ``glin_profanity`` (C) via ``Filter.is_profane``
+- ``badwords`` (Rust) via ``ProfanityFilter.init()`` + ``filter_text``
+- ``gangajal`` (WebAssembly) via ``validate`` (returns censored text)
+- ``PyProfane`` (C) via ``isProfane``
+
+The remaining packages are intentionally not registered:
+
+- ``sensitive-word-filter-cn`` and ``sensitive-word-filter``: no PyPI package
+- ``safetext`` and ``profanity-filter2``: hard dependencies that do not exist
+  on PyPI, so they cannot be installed
+- ``scheckbl``: exposes only async functions, incompatible with the sync
+  pipeline
+- ``valx``: its AI model is not functional on the supported runtimes and its
+  documented ``get_hate_score`` API does not exist
+- ``datasketch``: already wired as the standalone ``MinHashDetector`` (Layer 7)
 """
 
 from __future__ import annotations
@@ -18,6 +31,7 @@ from __future__ import annotations
 import importlib
 import inspect
 import logging
+from collections.abc import Callable
 from typing import Any
 
 from app.detectors.interface import DetectorInterface
@@ -51,9 +65,31 @@ _PROFANITY_METHODS: tuple[str, ...] = (
 _PACKAGES: tuple[tuple[str, str, str], ...] = (
     ("profanite", "any", "truthy"),
     ("glin_profanity", "multi", "truthy"),
+    ("badwords", "multi", "truthy"),
     ("gangajal", "any", "censored"),
     ("PyProfane", "any", "truthy"),
 )
+
+
+def _prepare_badwords(module: Any) -> Any:
+    """Return a ready-to-use badwords check callable.
+
+    badwords bundles its dictionaries under non-standard language codes, so it
+    is initialized without arguments to load every bundled language.
+
+    :param module: the imported badwords module
+    :return: a bound ``filter_text`` callable, or None on failure
+    """
+    instance: Any = module.ProfanityFilter()
+    instance.init()
+    return instance.filter_text
+
+
+# Per-package preparation functions for packages whose check callable requires
+# explicit initialization before use.
+_PREPARE_FUNCTIONS: dict[str, Callable[[Any], Any]] = {
+    "badwords": _prepare_badwords,
+}
 
 
 class _PackageAdapter:
@@ -62,14 +98,21 @@ class _PackageAdapter:
     :param package_name: importable module name
     :param language: ISO code reported on a match
     :param mode: match strategy, "truthy" or "censored"
+    :param prepare: optional factory that returns the check callable
     """
 
-    def __init__(self, package_name: str, language: str, mode: str) -> None:
+    def __init__(
+        self,
+        package_name: str,
+        language: str,
+        mode: str,
+        prepare: Callable[[Any], Any] | None = None,
+    ) -> None:
         self.package_name: str = package_name
         self.language: str = language
         self._mode: str = mode
         self._module: Any | None = self._import()
-        self._callable: Any | None = self._resolve_callable()
+        self._callable: Any | None = self._resolve_callable(prepare)
 
     def _import(self) -> Any | None:
         """Import the module.
@@ -81,16 +124,33 @@ class _PackageAdapter:
         except ImportError:
             return None
 
-    def _resolve_callable(self) -> Any | None:
+    def _resolve_callable(self, prepare: Callable[[Any], Any] | None) -> Any | None:
         """Find a callable on the module or on an instantiated checker class.
 
+        When a ``prepare`` factory is supplied it wins, because some packages
+        require explicit initialization before their check method works.
         Async functions are skipped because the detection pipeline is
         synchronous.
 
+        :param prepare: optional callable returning the check callable
         :return: a bound callable accepting one text argument, or None
         """
         if self._module is None:
             return None
+        if prepare is not None:
+            try:
+                prepared: Any = prepare(self._module)
+            except Exception:
+                return None
+            return prepared if callable(prepared) else None
+        return self._resolve_generic_callable()
+
+    def _resolve_generic_callable(self) -> Any | None:
+        """Find a check callable on the module or an instantiated class.
+
+        :return: a bound callable accepting one text argument, or None
+        """
+        assert self._module is not None
         for method in _PROFANITY_METHODS:
             candidate: Any = getattr(self._module, method, None)
             if callable(candidate) and not inspect.iscoroutinefunction(candidate):
@@ -149,7 +209,7 @@ class _PackageAdapter:
 
 
 class MultiLanguageDetector(DetectorInterface):
-    """Runs the verified multi-language packages in priority order.
+    """Runs the wired multi-language packages in priority order.
 
     :param settings: application settings holding the package toggles
     :param logger: optional logger for skipped packages
@@ -166,6 +226,7 @@ class MultiLanguageDetector(DetectorInterface):
         :return: the list of enabled package adapters
         """
         toggles: dict[str, bool] = {
+            "badwords": self._settings.enable_badwords_py,
             "profanite": self._settings.enable_profanite,
             "glin_profanity": self._settings.enable_glin_profanity,
             "gangajal": self._settings.enable_gangajal,
@@ -175,7 +236,8 @@ class MultiLanguageDetector(DetectorInterface):
         for package_name, language, mode in _PACKAGES:
             if not toggles.get(package_name, True):
                 continue
-            adapter: _PackageAdapter = _PackageAdapter(package_name, language, mode)
+            prepare: Callable[[Any], Any] | None = _PREPARE_FUNCTIONS.get(package_name)
+            adapter: _PackageAdapter = _PackageAdapter(package_name, language, mode, prepare)
             if not adapter.available and self._logger is not None:
                 self._logger.log(
                     logging.WARNING,
