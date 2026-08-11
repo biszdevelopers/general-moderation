@@ -3,7 +3,7 @@
 ## Coverage
 
 Korean is covered by the universal packages with Korean dictionaries
-(`badwords-py`, `glin-profanity`, `profanite`, `safetext`).
+(`glin-profanity`, `profanite`, `gangajal`, `PyProfane`).
 
 ## Specifics
 
