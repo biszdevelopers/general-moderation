@@ -4,6 +4,7 @@
 
 - Python 3.11 or newer
 - Node.js 20.19+ (Vite 8 requirement) and npm 10+
+- [uv](https://astral.sh/uv/) (the Python package manager used by the backend)
 - A Linux server or Docker for production deployments
 
 ## Repository Layout
@@ -19,11 +20,12 @@ moderation-monorepo/
 
 ## Backend Setup
 
+Dependencies are managed with `uv`; `uv sync` creates the virtual environment
+and installs every locked dependency.
+
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
 cp .env.example .env
 ```
 
@@ -33,7 +35,7 @@ with placeholder secrets, so this step is mandatory.
 ### Development Server
 
 ```bash
-python run.py
+uv run python run.py
 ```
 
 The service now listens on `http://127.0.0.1:8080`. Try the health endpoint:
