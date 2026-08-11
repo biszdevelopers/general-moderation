@@ -2,11 +2,14 @@
 
 ## Coverage
 
-Simplified Chinese is handled by the dedicated packages:
+Simplified Chinese is handled by the verified packages:
 
-- `sensitive-word-filter-cn` — C DFA matcher for vulgar content.
-- `sensitive-word-filter` — C matcher for politically sensitive content.
-- `glin-profanity`, `safetext` — additional vulgar coverage.
+- `glin-profanity` — C matcher with Chinese dictionary.
+- `profanite` — Rust matcher with universal coverage.
+- `PyProfane` — C matcher with a compact profanity dictionary.
+
+The dedicated `sensitive-word-filter-cn` and `sensitive-word-filter`
+packages were removed because they do not exist on PyPI.
 
 ## Specifics
 
