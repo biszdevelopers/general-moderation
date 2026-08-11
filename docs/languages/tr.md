@@ -2,7 +2,7 @@
 
 ## Coverage
 
-Turkish is covered by `badwords-py`, `glin-profanity`, and `profanite`
+Turkish is covered by `glin-profanity` and `profanite`
 Turkish dictionaries.
 
 ## Specifics
