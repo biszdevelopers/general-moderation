@@ -1,22 +1,14 @@
 {
-  "name": "general-moderation-docs",
-  "private": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "devDependencies": {
-    "vitepress": "^1.6.4"
-  },
-  "overrides": {
-    "vite": "^7.3.6"
-  }
+    "name": "moderation-docs",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "docs:dev": "vitepress dev",
+        "docs:build": "vitepress build",
+        "docs:preview": "vitepress preview"
+    },
+    "devDependencies": {
+        "vitepress": "1.6.4"
+    }
 }
