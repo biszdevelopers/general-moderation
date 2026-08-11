@@ -44,7 +44,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-ai = ["llama-cpp-python==0.3.23"]
+ai = ["llama-cpp-python==0.3.34"]
 
 [dependency-groups]
 dev = ["ruff==0.16.2"]
