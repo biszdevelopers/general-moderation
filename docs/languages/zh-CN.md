@@ -24,7 +24,7 @@ variants.
 - Homophone substitutions (谐音).
 - Character insertion between syllables.
 
-These are partially mitigated by the fuzzy BK-tree and MinHash layers.
+These are partially mitigated by the fuzzy BK-tree layer.
 
 ## Example
 
