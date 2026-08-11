@@ -21,13 +21,30 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8080
 
-    workers: int = 7
+    workers: int = 3
 
-    model_path: str = "/var/lib/moderation/models/mistral-7b-instruct.Q4_K_M.gguf"
-    model_context_size: int = 4096
-    model_threads: int = 4
+    model_path: str = "auto"
+    model_primary_repo: str = "bartowski/Qwen_Qwen3.5-9B-GGUF"
+    model_fallback_repo: str = "lmstudio-community/Qwen3.5-9B-GGUF"
+    model_filename: str = "Qwen_Qwen3.5-9B-Q4_K_M.gguf"
+    model_dir: str = "./models"
+    model_context_size: int = 16384
+    model_threads: str = "auto"
     model_batch_size: int = 512
     model_max_tokens: int = 10
+    model_cache_type_k: str = "q8_0"
+    model_cache_type_v: str = "q8_0"
+    model_flash_attn: bool = True
+    model_mlock: bool = True
+    model_idle_timeout_seconds: int = 300
+
+    hf_endpoint: str = "https://huggingface.co"
+    hf_mirror: str = "https://hf-mirror.com"
+    modelscope_endpoint: str = "https://www.modelscope.cn"
+
+    cache_max_size: int = 500
+    cache_ttl_seconds: int = 60
+    detector_thread_pool_size: int = 4
 
     bloom_filter_capacity: int = 1_000_000
     bloom_filter_error_rate: float = 0.001
@@ -99,9 +116,13 @@ class Settings(BaseSettings):
                 )
 
     def ensure_directories(self) -> None:
-        """Create the data and log directories if they do not exist."""
+        """Create the data, log, and model directories if they do not exist."""
         for raw_path in (self.custom_words_path, self.log_file_path):
             path: Path = Path(raw_path).parent
             if raw_path.startswith("."):
                 path = Path(os.getcwd()) / path
             path.mkdir(parents=True, exist_ok=True)
+        model_dir: Path = Path(self.model_dir)
+        if self.model_dir.startswith("."):
+            model_dir = Path(os.getcwd()) / model_dir
+        model_dir.mkdir(parents=True, exist_ok=True)
