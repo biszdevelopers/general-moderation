@@ -47,6 +47,10 @@
     max-width: 360px;
 }
 
+.wordbank-toolbar__category {
+    min-width: 160px;
+}
+
 .settings-card {
     margin-bottom: 24px;
 }
