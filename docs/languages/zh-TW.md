@@ -3,8 +3,8 @@
 ## Coverage
 
 Traditional Chinese is matched by the same packages as Simplified Chinese,
-with `sensitive-word-filter-cn` and `sensitive-word-filter` providing the
-core dictionaries.
+with `glin-profanity`, `profanite`, and `PyProfane` providing the core
+dictionaries.
 
 ## Normalization
 
