@@ -6,7 +6,8 @@ optional: a missing module, a disabled toggle, or a package whose API is not
 usable simply skips that package, so the service stays operational regardless
 of which dictionaries are installed.
 
-Five packages are wired with their real-world APIs:
+Eight packages are guard-wired with their real-world APIs. Five activate on a
+standard PyPI install:
 
 - ``profanite`` (Rust) via ``contains_profanity``
 - ``glin_profanity`` (C) via ``Filter.is_profane``
@@ -14,17 +15,21 @@ Five packages are wired with their real-world APIs:
 - ``gangajal`` (WebAssembly) via ``validate`` (returns censored text)
 - ``PyProfane`` (C) via ``isProfane``
 
+Three more are wired behind import guards and stay dormant because no
+installable release exists on public PyPI; they activate only when a working
+index or mirror provides them (see ``requirements-extra.txt``):
+
+- ``safetext`` via ``SafeText(language).check_profanity``
+- ``sensitive_word_filter_cn`` via ``SensitiveWordFilter.contains``
+- ``profanity_filter`` (profanity-filter2) via ``ProfanityFilter.is_profane``
+
 The remaining packages are intentionally not registered:
 
-- ``sensitive-word-filter-cn`` and ``sensitive-word-filter``: no PyPI package
-- ``safetext`` and ``profanity-filter2``: hard dependencies that do not exist
-  on PyPI, so they cannot be installed
-- ``scheckbl``: exposes only async functions, incompatible with the sync
-  pipeline
-- ``valx``: its AI model is not functional on the supported runtimes and its
-  documented ``get_hate_score`` API does not exist
-- ``datasketch``: removed; MinHash semantic similarity is not a direct
-  profanity detector and would need a pre-built toxic signature database
+- ``scheckbl``: exposes only async functions and has no ``has_bad_word`` API
+- ``valx``: has no ``get_hate_score`` API and its model is non-functional on
+  the supported runtimes
+- ``datasketch``: MinHash semantic similarity is not a direct profanity
+  detector and would need a pre-built toxic signature database
 """
 
 from __future__ import annotations
@@ -67,6 +72,9 @@ _PACKAGES: tuple[tuple[str, str, str], ...] = (
     ("profanite", "any", "truthy"),
     ("glin_profanity", "multi", "truthy"),
     ("badwords", "multi", "truthy"),
+    ("safetext", "multi", "truthy"),
+    ("sensitive_word_filter_cn", "zh-CN", "truthy"),
+    ("profanity_filter", "any", "truthy"),
     ("gangajal", "any", "censored"),
     ("PyProfane", "any", "truthy"),
 )
@@ -86,10 +94,29 @@ def _prepare_badwords(module: Any) -> Any:
     return instance.filter_text
 
 
+def _prepare_safetext(module: Any) -> Any:
+    """Return a ready-to-use safetext check callable.
+
+    safetext requires a language at construction time; try each supported
+    language and use the first one that constructs.
+
+    :param module: the imported safetext module
+    :return: a bound ``check_profanity`` callable, or None on failure
+    """
+    for language in ("en", "es", "zh", "tr", "ja", "ru", "fr", "de", "it", "pt", "nl", "ko", "ar"):
+        try:
+            instance: Any = module.SafeText(language=language)
+            return instance.check_profanity
+        except Exception:
+            continue
+    return None
+
+
 # Per-package preparation functions for packages whose check callable requires
 # explicit initialization before use.
 _PREPARE_FUNCTIONS: dict[str, Callable[[Any], Any]] = {
     "badwords": _prepare_badwords,
+    "safetext": _prepare_safetext,
 }
 
 
@@ -230,6 +257,9 @@ class MultiLanguageDetector(DetectorInterface):
             "badwords": self._settings.enable_badwords_py,
             "profanite": self._settings.enable_profanite,
             "glin_profanity": self._settings.enable_glin_profanity,
+            "safetext": self._settings.enable_safetext,
+            "sensitive_word_filter_cn": self._settings.enable_sensitive_word_filter_cn,
+            "profanity_filter": self._settings.enable_profanity_filter,
             "gangajal": self._settings.enable_gangajal,
             "PyProfane": self._settings.enable_pyprofane,
         }
