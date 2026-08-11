@@ -100,9 +100,11 @@ switch (command) {
         break;
     case "backend-prod":
         // Gunicorn requires fcntl and is Unix-only; on Windows the single
-        // Uvicorn worker from run.py reads the same .env configuration.
+        // Uvicorn worker from run.py reads the same .env configuration. The
+        // venv interpreter is used directly so uv never re-syncs the
+        // manually-installed llama-cpp-python wheel.
         if (isWindows) {
-            runInBackend(["python", "run.py"]);
+            run(venvPython(), ["run.py"], backendDir());
         } else {
             runInBackend(["gunicorn", "-c", "gunicorn.conf.py", "app.main:app"]);
         }
