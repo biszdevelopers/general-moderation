@@ -48,16 +48,18 @@ curl http://127.0.0.1:18427/health
 
 ### Production Server
 
-From the repository root, build the frontend and start the single-port
+From the repository root, build the frontend once, then start the single-port
 service (the backend serves both the API and the React app):
 
 ```bash
-npm run start:prod
+npm run build        # build the frontend once
+npm run start:prod   # start the single-port service
 ```
 
 `start:prod` uses Gunicorn on Linux and a single uvicorn worker on Windows
-(Gunicorn is Unix-only). See [Deployment](/guide/deployment) for systemd, FRP,
-and Docker recipes.
+(Gunicorn is Unix-only). Start scripts never rebuild the frontend, so re-run
+`npm run build` after changing the UI. See [Deployment](/guide/deployment) for
+systemd, FRP, and Docker recipes.
 
 ### Level 2 (llama.cpp)
 
