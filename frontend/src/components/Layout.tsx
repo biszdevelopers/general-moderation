@@ -6,7 +6,7 @@ import {
     LogoutOutlined,
     SettingOutlined,
 } from "@ant-design/icons";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 
