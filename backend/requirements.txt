@@ -1,50 +1,57 @@
 # ============================================================
 # CORE FRAMEWORKS
 # ============================================================
-fastapi==0.141.1
-uvicorn==0.52.1
-gunicorn==26.0.0
-pydantic-settings==2.15.0
-python-dotenv==1.2.2
-orjson==3.11.9          # Rust JSON
+fastapi==0.141.1          # Verified: exists
+uvicorn==0.52.1           # Verified: exists
+gunicorn==26.0.0          # Verified: exists
+pydantic-settings==2.15.0 # Verified: exists
+python-dotenv==1.2.2      # Verified: exists
+orjson==3.11.9            # Verified: exists
 
 # ============================================================
-# LEVEL 1 - C/C++/RUST DETECTORS
+# LEVEL 1 - C/C++/RUST DETECTORS (REAL VERSIONS)
 # ============================================================
-pyahocorasick==2.3.1    # C
-python-Levenshtein==0.27.3  # C
-pybloom-live==4.0.0     # C
-mmh3==5.2.1             # C
-regex==2026.7.19        # C
-pybktree==1.1           # C
-metaphone==0.6          # C
-datasketch==2.0.0       # C (NumPy)
+pyahocorasick==2.3.1      # Verified: exists
+python-Levenshtein==0.27.3 # Verified: exists
+pybloom-live==4.0.0       # Verified: exists
+mmh3==5.2.1               # Verified: exists
+regex==2026.7.19          # Verified: exists
+pybktree==1.1             # Verified: exists
+metaphone==0.6            # Verified: exists
+datasketch==1.10.0        # Verified: exists (2.0.0 also exists)
 
 # ============================================================
-# MULTI-LANGUAGE DETECTORS (C/C++/Rust/WASM)
+# MULTI-LANGUAGE DETECTORS (REAL VERSIONS)
 # ============================================================
-badwords-py==2.3.1      # Rust
-profanite==0.1.10       # Rust
-glin-profanity==3.4.0   # C
-safetext==0.3.3         # C
-sensitive-word-filter-cn==0.1.6  # C
-profanity-filter2==1.4.3  # C
-gangajal==0.1.0         # WASM
-scheckbl==1.1.0         # C
-valx==0.2.6             # C + AI
-sensitive-word-filter==1.0.2  # C
-pyprofane==1.0.7        # C
+badwords-py==2.1.0        # Verified: 2.2.0/2.3.1 have no installable artifact for cp314
+profanite==0.1.9          # Verified: 0.1.10 does not exist; latest is 0.1.9
+glin-profanity==3.4.0     # Verified: exists
+gangajal==0.1.0           # Verified: exists
+scheckbl==1.1.0           # Verified: exists
+valx==0.2.6               # Verified: exists
+pyprofane==1.0.7          # Verified: exists
+aiohttp==3.12.0           # Runtime dep of scheckbl, not declared by it
+# REMOVED: safetext (hard-dep lingua-language-detector==2.1.1 does not exist)
+# REMOVED: profanity-filter2 (hard-dep ordered-set-stubs does not exist)
+# REMOVED: sensitive-word-filter (no active PyPI package)
+# REMOVED: sensitive-word-filter-cn (no active PyPI package)
 
 # ============================================================
-# LEVEL 2 - AI INFERENCE (C++)
+# LEVEL 2 - AI INFERENCE (optional, see requirements-ai.txt)
 # ============================================================
-llama-cpp-python==0.3.23
+# llama-cpp-python==0.3.23 - moved to requirements-ai.txt because it has no
+# cp314/Windows wheel; install it separately where a wheel or toolchain exists.
 
 # ============================================================
-# SECURITY (C/C++/Rust)
+# SECURITY & UTILITIES (REAL VERSIONS)
 # ============================================================
-cryptography==44.0.1    # C (OpenSSL)
-slowapi==0.2.0          # C + Redis
-python-json-logger==3.2.0  # C
-atomicwrites==1.4.1     # C
-python-multipart==0.0.20  # C
+cryptography==44.0.1      # Verified: exists
+slowapi==0.1.10           # Verified: exists
+python-json-logger==4.1.0 # Verified: exists
+atomicwrites==1.4.1       # Verified: exists
+python-multipart==0.0.31  # Verified: exists
+
+# ============================================================
+# DEVELOPMENT TOOLING
+# ============================================================
+ruff==0.16.2              # Linter and formatter for root orchestration
