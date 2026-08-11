@@ -46,6 +46,9 @@ class RollingHashDetector(DetectorInterface):
         """Return the language scope."""
         return "any"
 
+    def reload(self) -> None:
+        """No-op: the spam cache is independent of the word bank."""
+
     def _hash(self, text: str) -> int:
         """Compute the 64-bit MurmurHash3 of the normalized text.
 
