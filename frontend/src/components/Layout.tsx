@@ -20,10 +20,10 @@ export function Layout(): ReactElement {
     const selectedKey: string = location.pathname.startsWith("/word-bank")
         ? "/word-bank"
         : location.pathname.startsWith("/audit-log")
-            ? "/audit-log"
-            : location.pathname.startsWith("/settings")
-                ? "/settings"
-                : "/dashboard";
+          ? "/audit-log"
+          : location.pathname.startsWith("/settings")
+            ? "/settings"
+            : "/dashboard";
 
     const onMenuClick = (key: string): void => {
         navigate(key);
