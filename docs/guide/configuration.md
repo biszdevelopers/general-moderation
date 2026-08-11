@@ -8,6 +8,23 @@ The complete, annotated template lives in `backend/.env.example`.
 - Python 3.11+ is required (many packages have dropped Python 3.9 support)
 - Recommended: Python 3.13
 
+## Package Management (uv)
+
+Dependencies are managed with [uv](https://astral.sh/uv/). The backend uses
+`pyproject.toml` with a committed `uv.lock` for reproducible installs:
+
+```bash
+cd backend
+uv sync
+```
+
+The optional Level 2 engine (`llama-cpp-python==0.3.23`) is an optional extra
+because it has no Windows/cp314 wheel; install it with:
+
+```bash
+uv sync --extra ai
+```
+
 ## Package Versions
 
 All versions are verified and available on PyPI as of August 2026:
@@ -19,10 +36,7 @@ All versions are verified and available on PyPI as of August 2026:
 - profanite: 0.1.9 (0.1.10 does not exist)
 - slowapi: 0.1.10 (not 0.2.0)
 - python-json-logger: 4.1.0 (not 3.2.0)
-- python-multipart: 0.0.31 (not 0.0.20)
-
-The optional Level 2 engine lives in `requirements-ai.txt`
-(`llama-cpp-python==0.3.23`) because it has no Windows/cp314 wheel.
+- python-multipart: 0.0.27
 
 ## Server
 
@@ -68,14 +82,20 @@ Each registered package can be disabled independently:
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
 
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
-activate on a standard PyPI install. `safetext`, `sensitive-word-filter-cn`,
-and `profanity-filter2` are guard-wired but not installable from public PyPI
-(broken or missing dependencies); they activate only when a working index
-provides them, see `backend/requirements-extra.txt`.
+activate on a standard install. `safetext`, `sensitive-word-filter-cn`,
+and `profanity-filter2` are guard-wired but no reachable index (pypi.org,
+Tsinghua, Aliyun) provides an installable release; they activate only when a
+working index provides them:
+
+```bash
+uv add safetext==0.3.3
+uv add sensitive-word-filter-cn==0.1.6
+uv add profanity-filter2==1.4.3
+```
 
 `scheckbl` and `valx` are not registered (their documented APIs do not exist
-in the installed versions). `datasketch` is not wired; MinHash semantic
-similarity is not a direct profanity detector.
+in the installed versions). `datasketch` is installed as a dependency but not
+wired; MinHash semantic similarity is not a direct profanity detector.
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
