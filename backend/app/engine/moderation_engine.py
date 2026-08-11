@@ -84,53 +84,24 @@ class ModerationEngine:
         :return: the moderation response
         """
         start_ns: int = time.perf_counter_ns()
-        chain: list[str] = []
-        reasons: list[str] = []
-        matched_words: list[str] = []
-        matched_language: str | None = None
-        confidence: float | None = None
-        verdict: Verdict = Verdict.PASS
+        chain, reasons, matched_words, matched_language, confidence, verdict = self._run_level_one(
+            request.text
+        )
         level_used: int = 1
-
-        for detector in self._detectors:
-            if not detector.is_available():
-                continue
-            chain.append(detector.name)
-            detector_start: int = time.perf_counter_ns()
-            result: DetectionResult = detector.detect(request.text)
-            self._detector_seconds[detector.name] = (
-                self._detector_seconds.get(detector.name, 0.0)
-                + (time.perf_counter_ns() - detector_start) / 1_000_000_000.0
-            )
-            if not result.matched:
-                continue
-            reasons.append(result.reason or detector.name)
-            matched_words.extend(result.matched_words)
-            if result.matched_language and matched_language is None:
-                matched_language = result.matched_language
-            result_confidence: float | None = result.confidence_score
-            if result_confidence is not None:
-                confidence = result_confidence if confidence is None else max(confidence, result_confidence)
-            if detector.blocking:
-                verdict = Verdict.BLOCK
-                break
-
-        if verdict is Verdict.PASS and reasons:
-            verdict = Verdict.REVIEW
-
         if verdict is Verdict.REVIEW and self._llama.is_available():
-            level_used = 2
-            chain.append(self._llama.name)
-            self._metrics["ai_requests_total"] += 1.0
-            llm_result: DetectionResult = self._llama.detect(request.text)
-            if llm_result.matched:
-                verdict = Verdict.BLOCK
-                reasons.append(llm_result.reason or self._llama.name)
-                confidence = llm_result.confidence_score
-                matched_words = list(dict.fromkeys(matched_words))
+            (
+                verdict,
+                level_used,
+                chain,
+                reasons,
+                matched_words,
+                confidence,
+            ) = self._resolve_level_two(request.text, chain, reasons, matched_words, confidence)
 
         if verdict is Verdict.BLOCK:
             self._rolling_hash.record_hit(request.text)
+
+        matched_words = list(dict.fromkeys(matched_words))
 
         self._metrics["requests_total"] += 1.0
         self._metrics[f"requests_{verdict.value.lower()}_total"] = (
@@ -163,6 +134,82 @@ class ModerationEngine:
             detector_chain=chain,
         )
 
+    def _run_level_one(
+        self, text: str
+    ) -> tuple[list[str], list[str], list[str], str | None, float | None, Verdict]:
+        """Run the ordered Level 1 detectors over the text.
+
+        :param text: normalized input text
+        :return: chain, reasons, matched words, language, confidence, verdict
+        """
+        chain: list[str] = []
+        reasons: list[str] = []
+        matched_words: list[str] = []
+        matched_language: str | None = None
+        confidence: float | None = None
+        verdict: Verdict = Verdict.PASS
+
+        for detector in self._detectors:
+            if not detector.is_available():
+                continue
+            chain.append(detector.name)
+            detector_start: int = time.perf_counter_ns()
+            result: DetectionResult = detector.detect(text)
+            self._detector_seconds[detector.name] = (
+                self._detector_seconds.get(detector.name, 0.0)
+                + (time.perf_counter_ns() - detector_start) / 1_000_000_000.0
+            )
+            if not result.matched:
+                continue
+            reasons.append(result.reason or detector.name)
+            matched_words.extend(result.matched_words)
+            if result.matched_language and matched_language is None:
+                matched_language = result.matched_language
+            result_confidence: float | None = result.confidence_score
+            if result_confidence is not None:
+                confidence = (
+                    result_confidence if confidence is None else max(confidence, result_confidence)
+                )
+            if detector.blocking:
+                verdict = Verdict.BLOCK
+                break
+
+        if verdict is Verdict.PASS and reasons:
+            verdict = Verdict.REVIEW
+        return chain, reasons, matched_words, matched_language, confidence, verdict
+
+    def _resolve_level_two(
+        self,
+        text: str,
+        chain: list[str],
+        reasons: list[str],
+        matched_words: list[str],
+        confidence: float | None,
+    ) -> tuple[Verdict, int, list[str], list[str], list[str], float | None]:
+        """Let the llama.cpp engine settle a REVIEW verdict.
+
+        :param text: normalized input text
+        :param chain: detector names that ran
+        :param reasons: accumulated reasons
+        :param matched_words: accumulated matched words
+        :param confidence: accumulated confidence
+        :return: verdict, level, chain, reasons, matched words, confidence
+        """
+        chain.append(self._llama.name)
+        self._metrics["ai_requests_total"] += 1.0
+        llm_result: DetectionResult = self._llama.detect(text)
+        if not llm_result.matched:
+            return Verdict.REVIEW, 2, chain, reasons, matched_words, confidence
+        reasons.append(llm_result.reason or self._llama.name)
+        return (
+            Verdict.BLOCK,
+            2,
+            chain,
+            reasons,
+            list(dict.fromkeys(matched_words)),
+            llm_result.confidence_score,
+        )
+
     def moderate_batch(self, batch: BatchModerationRequest) -> BatchModerationResponse:
         """Moderate a batch of messages.
 
@@ -171,15 +218,11 @@ class ModerationEngine:
         """
         start_ns: int = time.perf_counter_ns()
         results: list[ModerationResponse] = [
-            self.moderate(
-                ModerationRequest(id=item.id, user_id=item.user_id, text=item.text)
-            )
+            self.moderate(ModerationRequest(id=item.id, user_id=item.user_id, text=item.text))
             for item in batch.items
         ]
         total_latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
-        return BatchModerationResponse(
-            results=results, total_latency_ms=total_latency_ms
-        )
+        return BatchModerationResponse(results=results, total_latency_ms=total_latency_ms)
 
     def shutdown(self) -> None:
         """Release models, storage, and logger resources."""
