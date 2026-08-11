@@ -45,6 +45,12 @@ class ModerationEngine:
         )
         self._llama: LlamaCppDetector = LlamaCppDetector(settings, logger)
         self._detectors: list[DetectorInterface] = self._build_detectors()
+        self._metrics: dict[str, float] = {
+            "requests_total": 0.0,
+            "ai_requests_total": 0.0,
+            "rate_limit_hits_total": 0.0,
+        }
+        self._detector_seconds: dict[str, float] = {}
 
     def _build_detectors(self) -> list[DetectorInterface]:
         """Instantiate every detector in priority order.
@@ -90,7 +96,12 @@ class ModerationEngine:
             if not detector.is_available():
                 continue
             chain.append(detector.name)
+            detector_start: int = time.perf_counter_ns()
             result: DetectionResult = detector.detect(request.text)
+            self._detector_seconds[detector.name] = (
+                self._detector_seconds.get(detector.name, 0.0)
+                + (time.perf_counter_ns() - detector_start) / 1_000_000_000.0
+            )
             if not result.matched:
                 continue
             reasons.append(result.reason or detector.name)
@@ -110,6 +121,7 @@ class ModerationEngine:
         if verdict is Verdict.REVIEW and self._llama.is_available():
             level_used = 2
             chain.append(self._llama.name)
+            self._metrics["ai_requests_total"] += 1.0
             llm_result: DetectionResult = self._llama.detect(request.text)
             if llm_result.matched:
                 verdict = Verdict.BLOCK
@@ -119,6 +131,11 @@ class ModerationEngine:
 
         if verdict is Verdict.BLOCK:
             self._rolling_hash.record_hit(request.text)
+
+        self._metrics["requests_total"] += 1.0
+        self._metrics[f"requests_{verdict.value.lower()}_total"] = (
+            self._metrics.get(f"requests_{verdict.value.lower()}_total", 0.0) + 1.0
+        )
 
         latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
 
@@ -208,6 +225,20 @@ class ModerationEngine:
             latency_ms=latency_ms,
             detector_chain=chain,
         )
+
+    def record_rate_limit_hit(self) -> None:
+        """Increment the rate limit violation counter."""
+        self._metrics["rate_limit_hits_total"] += 1.0
+
+    def metrics(self) -> dict[str, float]:
+        """Return a snapshot of the runtime counters.
+
+        :return: counter values keyed by metric name
+        """
+        combined: dict[str, float] = dict(self._metrics)
+        for detector_name, seconds in self._detector_seconds.items():
+            combined[f"detector_{detector_name}_seconds_total"] = seconds
+        return combined
 
     def log(self, message: str, **fields: Any) -> None:
         """Emit a structured log record through the shared logger.
