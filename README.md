@@ -1,38 +1,69 @@
 # General Moderation
 
-A production-grade, multi-language content moderation microservice. A thin
-Python (FastAPI) wrapper over C/C++/Rust libraries detects vulgar and
-politically sensitive content in 20+ languages with sub-millisecond latency
-on Level 1, backed by an optional llama.cpp (C++) inference engine on Level 2.
+A production-grade, multi-tenant content moderation service that pre-filters
+content before human review. A three-stage pipeline combines fast-path rule
+detection, semantic similarity, and user behavior profiling with a conditional
+locally hosted LLM:
+
+- **Stage 1** exits clearly safe content through a safe word fast path.
+- **Stage 2** runs parallel rule detectors (Aho-Corasick, BK-tree, Metaphone,
+  and multi-language packages), semantic similarity (SentenceTransformers +
+  Faiss per category), and a 91-day user profiling window to compute a 0-100
+  suspicion score.
+- **Stage 3** invokes a local Qwen3.5-9B (GGUF, llama.cpp) model only when the
+  per-app trigger policy fires, keeping the LLM on under 5% of traffic.
+
+## Performance Targets
+
+| Target | Value |
+| :--- | :--- |
+| Content handled without the LLM | 95%+, under 200 ms latency |
+| LLM invocation | under 5% of traffic |
+| Rule-based checks | sub-millisecond |
+| Semantic query | under 50 ms |
 
 ## Monorepo Layout
 
-| Directory      | Contents                                              |
-| :------------- | :---------------------------------------------------- |
-| `backend/`     | Python FastAPI moderation service (thin wrapper)      |
-| `frontend/`    | React + TypeScript + Ant Design admin UI              |
-| `docs/`        | VitePress documentation                               |
-| `deployment/`  | systemd, FRP, logrotate, Docker, nginx configs        |
-| `scripts/`     | Build, test, deploy, and format scripts               |
+| Directory | Contents |
+| :--- | :--- |
+| `backend/` | Python FastAPI moderation service |
+| `frontend/` | React + TypeScript + Ant Design admin console |
+| `docs/` | VitePress documentation |
+| `deployment/` | systemd, FRP, logrotate, Docker, nginx configs |
+| `scripts/` | Build, test, deploy, format, and secret scripts |
 
 ## Highlights
 
-- 7-layer detection pipeline, every layer backed by C/C++/Rust/WASM.
-- 5 active multi-language detectors covering 26+ languages (plus 3 more
-  guard-wired for environments that can provide them).
-- Base dictionaries come from pip packages; the `sensitive-stop-words`
-  submodule adds Chinese political, pornographic, gun, advertising, and URL
-  lists.
+- 3-stage pipeline with an editable safe word fast path.
+- 11 detector components across 26+ languages, every one backed by
+  C/C++/Rust/WASM libraries.
+- Semantic similarity with per-category Faiss indexes (political, violence,
+  sexual, hate, pii, ads, other).
+- User profiling with a 91-day rolling window and archived, linked cycle
+  summaries (`next_cycle_id`) so long-term history never grows unbounded.
+- Active learning: administrator feedback tunes weights and thresholds daily.
+- Full runtime configurability through the admin UI — no restarts required.
+- One-click full data export (databases, CSVs, logs, redacted config, semantic
+  indexes).
 - Custom words stored in SQLite (C implementation).
-- All security-critical operations delegated to compiled libraries
-  (OpenSSL, libsodium, Rust regex, Redis hiredis).
-- Well-structured Python: ABCs, frozen dataclasses, private fields, full typing.
-- TypeScript/React admin UI with strict UI/logic separation.
+- All security-critical operations delegated to compiled libraries.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Apps[External apps] --> API[FastAPI single port 18427]
+    API --> S1[Stage 1: safe word fast path]
+    S1 --> S2[Stage 2: detectors + semantic + profiling]
+    S2 --> S3[Stage 3: local LLM]
+    S2 --> SCORE[Suspicion score]
+    API --> ADM[Admin console + settings + export]
+```
+
+See `docs/architecture/` for full diagrams and `docs/` for the complete guide,
+API reference, and algorithm documentation.
 
 ## Detector Coverage
-
-Five detectors are active on a standard install; three more are guard-wired
-and activate only when a working index provides them.
 
 | Detector | Languages | Key feature | Status |
 | :--- | :--- | :--- | :--- |
@@ -46,14 +77,13 @@ and activate only when a working index provides them.
 | sensitive-word-filter-cn | Chinese | Pinyin, symbols | Guard-wired |
 | profanity-filter2 | Universal | Levenshtein automaton | Guard-wired |
 
-`scheckbl` and `valx` are not wired (their documented APIs do not exist in
-the installed versions); `datasketch` is a potential future semantic layer
-that needs a pre-built toxic-signature database.
+`scheckbl` and `valx` are not wired (their documented APIs do not exist in the
+installed versions).
 
 ## Quick Start
 
-Dependencies are managed with **uv** (the modern, Rust-based Python
-toolchain). Install it from <https://astral.sh/uv/>.
+Dependencies are managed with **uv** (the modern, Rust-based Python toolchain).
+Install it from <https://astral.sh/uv/>.
 
 ### One-command orchestration (recommended)
 
@@ -63,16 +93,17 @@ From the repository root:
 npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
 git submodule update --init  # fetch the sensitive-stop-words word lists
+npm run generate:secrets     # generate secure *_KEY/_SECRET values in backend/.env
 npm run start:dev    # dev: backend (uvicorn :8080) + frontend (vite :5173)
 npm run start:prod   # prod: build frontend, serve everything on APP_PORT
 ```
 
 Production runs on a **single port**: FastAPI serves the built frontend and
 the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
-`backend/.env`). `npm run start` is an alias for `start:dev`.
+`backend/.env`). `npm run start` builds the frontend and starts production.
 
 Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
-`npm run install:backend`.
+`npm run docs:dev`, `npm run docs:build`, `npm run install:backend`.
 
 ### Manual backend
 
@@ -82,10 +113,25 @@ uv sync              # create .venv and install all locked dependencies
 uv run python run.py
 ```
 
-Security secrets are auto-generated on first startup and written to the
-gitignored `.env`; regenerate them with `npm run generate:secrets`.
+### Optional semantic layer
 
-See `docs/` for the full guide, API reference, and deployment instructions.
+The semantic similarity stage needs heavy optional dependencies (torch,
+SentenceTransformers, Faiss). Install them with:
+
+```bash
+cd backend && uv sync --extra ai --extra semantic
+```
+
+Without them the stage reports itself unavailable and the pipeline skips it.
+
+## Secret Generation
+
+`npm run generate:secrets` scans `backend/.env` for every variable ending in
+`_KEY` or `_SECRET` that is empty or set to `CHANGE_ME` and replaces it with a
+cryptographically secure random value (48 characters, mixed case, digits, and
+symbols). It is idempotent, never overwrites real values without confirmation,
+and prints only masked values. Values can also be auto-generated on first
+startup by the service itself.
 
 ## Model Auto-Download
 
@@ -94,8 +140,7 @@ Qwen3.5-9B-Q4_K_M.gguf model (~5.78 GB) into `backend/models/`. The download
 runs in the background so the service starts immediately; the model is loaded
 once it is available.
 
-**For users in China:** the system probes connectivity and falls back in
-order:
+**For users in China:** the system probes connectivity and falls back in order:
 
 1. `https://huggingface.co` (primary)
 2. `https://hf-mirror.com` (primary mirror)
@@ -114,21 +159,40 @@ to free memory.
 2. Place it at `backend/models/Qwen_Qwen3.5-9B-Q4_K_M.gguf`
 3. Or set `MODEL_PATH=/path/to/model.gguf` in `.env`
 
+## Administration
+
+- **Dashboard**: live statistics, counters, and profiling data.
+- **Word Bank**: add, edit, remove, import, and export custom words.
+- **Settings**: edit every runtime parameter (weights, thresholds, toggles,
+  LLM, logging, performance) without a restart; values persist in
+  `settings.db` and apply immediately.
+- **Export**: download a ZIP of all databases, CSV dumps, logs, a redacted
+  configuration snapshot, and semantic indexes (rate-limited).
+- **Feedback**: submit corrections; the daily auto-tuning batch adjusts weights
+  and the trigger threshold.
+
 ## Performance Optimizations
 
 | Optimization | Implementation | Benefit |
 | :--- | :--- | :--- |
+| Stage 1 fast path | Safe word list (C regex) | <1 ms exits for clean traffic |
 | KV Cache Quantization | Q8_0 (`type_k`/`type_v`) | ~50% KV memory reduction |
 | Flash Attention | Enabled | Reduced memory bandwidth |
 | Memory Locking (mlock) | Enabled | Prevents OS swapping |
 | Idle Unloading | 300s timeout | Frees model memory when idle |
-| Result Cache | LRU + TTL (mmh3 key) | <50ms for repeated requests |
+| Result Cache | LRU + TTL (mmh3 key) | <50 ms for repeated requests |
 | Parallel Detectors | ThreadPoolExecutor | Faster multi-package runs |
 | CPU Offload | `run_in_threadpool` | Non-blocking async API |
 | Worker Reduction | 3 gunicorn workers | Lower per-worker model memory |
-| Garbage Collection | Tuned thresholds | Fewer GC pauses |
-| Adaptive Short-Circuit | Hit-rate ordering | Faster common cases |
-| Download Retry | Exponential backoff | Robust network recovery |
+| Conditional LLM | Suspicion scoring + trigger policy | LLM on <5% of traffic |
+| Archive Summaries | 91-day cycle compaction | Bounded live storage |
+
+## Documentation
+
+The full guide is in the VitePress site under `docs/`, covering installation,
+configuration, the 3-stage pipeline, archive strategy, algorithm
+formulations, the API reference, and deployment. Run `npm run docs:dev` to
+preview it locally.
 
 ## License
 
