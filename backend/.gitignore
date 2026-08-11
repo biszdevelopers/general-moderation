@@ -36,6 +36,7 @@ htmlcov/
 # Application data
 /data/
 /models/
+*.gguf
 /logs/
 
 # Local databases
