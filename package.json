@@ -3,9 +3,9 @@
     "private": true,
     "version": "1.0.0",
     "scripts": {
-        "start": "npm run build && npm run start:prod",
+        "start": "npm run start:prod",
         "start:dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-        "start:prod": "npm run build && npm run backend:prod",
+        "start:prod": "npm run backend:prod",
         "backend": "node scripts/dev.mjs backend",
         "backend:dev": "node scripts/dev.mjs backend",
         "backend:prod": "node scripts/dev.mjs backend-prod",
