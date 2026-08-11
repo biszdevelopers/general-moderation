@@ -1,14 +1,22 @@
 """Multi-language detector (Layer 6).
 
-Initializes every installed C/C++/Rust/WebAssembly profanity package in the
+Initializes the installed C/C++/Rust/WebAssembly profanity packages in the
 specified priority order and runs each one over the text. Every package is
-optional: a missing module or a disabled toggle simply skips that package, so
-the service remains operational no matter which dictionaries are installed.
+optional: a missing module, a disabled toggle, or a package whose API is not
+usable simply skips that package, so the service stays operational regardless
+of which dictionaries are installed.
+
+Only packages that actually work on the supported platforms are wired here.
+Packages such as ``badwords-py``, ``safetext``, ``profanity-filter2``,
+``sensitive-word-filter``, ``sensitive-word-filter-cn``, ``valx``, and
+``scheckbl`` are either absent from PyPI or carry broken dependencies or
+broken Python 3.14 runtimes, so they are not registered.
 """
 
 from __future__ import annotations
 
 import importlib
+import inspect
 import logging
 from typing import Any
 
@@ -25,6 +33,8 @@ _PROFANITY_METHODS: tuple[str, ...] = (
     "contains_bad_words",
     "has_profanity",
     "check_profanity",
+    "isProfane",
+    "validate",
     "detect",
     "score",
     "is_clean",
@@ -33,19 +43,16 @@ _PROFANITY_METHODS: tuple[str, ...] = (
     "test",
 )
 
-# (module name, language scope, alternate module name)
-_PACKAGES: tuple[tuple[str, str, str | None], ...] = (
-    ("badwords_py", "multi", None),
-    ("profanite", "any", None),
-    ("glin_profanity", "multi", None),
-    ("safetext", "multi", None),
-    ("sensitive_word_filter_cn", "zh-CN", None),
-    ("profanity_filter2", "any", "profanity_filter"),
-    ("gangajal", "any", None),
-    ("scheckbl", "any", None),
-    ("valx", "any", None),
-    ("sensitive_word_filter", "zh-CN", None),
-    ("pyprofane", "any", None),
+# (module name, language scope, match mode)
+# Match modes:
+# - "truthy": a truthy callable result is a positive.
+# - "censored": the callable returns censored text; a result that differs
+#   from the input is a positive (e.g. gangajal).
+_PACKAGES: tuple[tuple[str, str, str], ...] = (
+    ("profanite", "any", "truthy"),
+    ("glin_profanity", "multi", "truthy"),
+    ("gangajal", "any", "censored"),
+    ("PyProfane", "any", "truthy"),
 )
 
 
@@ -54,32 +61,31 @@ class _PackageAdapter:
 
     :param package_name: importable module name
     :param language: ISO code reported on a match
-    :param alternate_name: fallback module name, if any
+    :param mode: match strategy, "truthy" or "censored"
     """
 
-    def __init__(self, package_name: str, language: str, alternate_name: str | None) -> None:
+    def __init__(self, package_name: str, language: str, mode: str) -> None:
         self.package_name: str = package_name
         self.language: str = language
-        self._module: Any | None = self._import(alternate_name)
+        self._mode: str = mode
+        self._module: Any | None = self._import()
         self._callable: Any | None = self._resolve_callable()
 
-    def _import(self, alternate_name: str | None) -> Any | None:
-        """Import the module, trying the alternate name on failure.
+    def _import(self) -> Any | None:
+        """Import the module.
 
-        :param alternate_name: fallback module name
         :return: the module object, or None when not installed
         """
-        for name in (self.package_name, alternate_name):
-            if not name:
-                continue
-            try:
-                return importlib.import_module(name)
-            except ImportError:
-                continue
-        return None
+        try:
+            return importlib.import_module(self.package_name)
+        except ImportError:
+            return None
 
     def _resolve_callable(self) -> Any | None:
         """Find a callable on the module or on an instantiated checker class.
+
+        Async functions are skipped because the detection pipeline is
+        synchronous.
 
         :return: a bound callable accepting one text argument, or None
         """
@@ -87,7 +93,7 @@ class _PackageAdapter:
             return None
         for method in _PROFANITY_METHODS:
             candidate: Any = getattr(self._module, method, None)
-            if callable(candidate):
+            if callable(candidate) and not inspect.iscoroutinefunction(candidate):
                 return candidate
         for attribute_name in dir(self._module):
             candidate = getattr(self._module, attribute_name, None)
@@ -99,7 +105,7 @@ class _PackageAdapter:
                 continue
             for method in _PROFANITY_METHODS:
                 bound: Any = getattr(instance, method, None)
-                if callable(bound):
+                if callable(bound) and not inspect.iscoroutinefunction(bound):
                     return bound
         return None
 
@@ -120,7 +126,8 @@ class _PackageAdapter:
             result: Any = self._callable(text)
         except Exception:
             return DetectionResult(matched=False)
-        if result:
+        positive: bool = self._is_positive(text, result)
+        if positive:
             return DetectionResult(
                 matched=True,
                 matched_language=self.language,
@@ -129,9 +136,20 @@ class _PackageAdapter:
             )
         return DetectionResult(matched=False)
 
+    def _is_positive(self, text: str, result: Any) -> bool:
+        """Evaluate the callable result against the match mode.
+
+        :param text: the input that was passed to the callable
+        :param result: the callable output
+        :return: True when the result indicates a match
+        """
+        if self._mode == "censored":
+            return isinstance(result, str) and result != text
+        return bool(result)
+
 
 class MultiLanguageDetector(DetectorInterface):
-    """Runs all 11 multi-language packages in priority order.
+    """Runs the verified multi-language packages in priority order.
 
     :param settings: application settings holding the package toggles
     :param logger: optional logger for skipped packages
@@ -148,23 +166,16 @@ class MultiLanguageDetector(DetectorInterface):
         :return: the list of enabled package adapters
         """
         toggles: dict[str, bool] = {
-            "badwords_py": self._settings.enable_badwords_py,
             "profanite": self._settings.enable_profanite,
             "glin_profanity": self._settings.enable_glin_profanity,
-            "safetext": self._settings.enable_safetext,
-            "sensitive_word_filter_cn": self._settings.enable_sensitive_word_filter_cn,
-            "profanity_filter2": self._settings.enable_profanity_filter,
             "gangajal": self._settings.enable_gangajal,
-            "scheckbl": self._settings.enable_scheckbl,
-            "valx": self._settings.enable_valx,
-            "sensitive_word_filter": self._settings.enable_sensitive_word_filter,
-            "pyprofane": self._settings.enable_pyprofane,
+            "PyProfane": self._settings.enable_pyprofane,
         }
         adapters: list[_PackageAdapter] = []
-        for package_name, language, alternate_name in _PACKAGES:
+        for package_name, language, mode in _PACKAGES:
             if not toggles.get(package_name, True):
                 continue
-            adapter: _PackageAdapter = _PackageAdapter(package_name, language, alternate_name)
+            adapter: _PackageAdapter = _PackageAdapter(package_name, language, mode)
             if not adapter.available and self._logger is not None:
                 self._logger.log(
                     logging.WARNING,
