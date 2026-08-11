@@ -57,9 +57,7 @@ def create_logs_router(log_dir: str, auth_dependency: Any) -> APIRouter:
             )
         path: Path = (Path(log_dir) / filename).resolve()
         if not path.is_file() or path.parent != Path(log_dir).resolve():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Log file not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Log file not found")
         lines: list[str] = path.read_text(encoding="utf-8").splitlines()
         return {
             "name": filename,
