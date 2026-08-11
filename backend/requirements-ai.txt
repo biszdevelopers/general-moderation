@@ -1,0 +1,14 @@
+# ============================================================
+# LEVEL 2 - AI INFERENCE (OPTIONAL)
+# ============================================================
+# llama.cpp provides the Level 2 final-verdict engine. It is kept separate
+# from requirements.txt because it has no cp314/Windows wheel and must be
+# compiled from source on such platforms. On Linux with Python 3.11/3.12
+# prebuilt wheels are published and this installs cleanly.
+#
+# The service runs fully without it: Level 2 is skipped and borderline
+# (REVIEW) verdicts are returned as-is.
+#
+#   pip install -r requirements-ai.txt
+# ============================================================
+llama-cpp-python==0.3.23  # Verified: exists (requires wheel or C++ toolchain)
