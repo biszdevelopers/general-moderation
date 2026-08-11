@@ -28,6 +28,20 @@ on Level 1, backed by an optional llama.cpp (C++) inference engine on Level 2.
 
 ## Quick Start
 
+### One-command orchestration (recommended)
+
+From the repository root:
+
+```bash
+npm install          # installs concurrently (root tooling)
+npm run install:all  # installs Python deps (backend/.venv) + npm deps
+npm run start        # runs backend (uvicorn :8080) + frontend (vite :5173)
+```
+
+Other root scripts: `npm run lint`, `npm run format`, `npm run build`.
+
+### Manual backend
+
 ```bash
 cd backend
 python -m venv .venv
