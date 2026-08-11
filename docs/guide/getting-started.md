@@ -39,11 +39,11 @@ gitignored `.env`; regenerate them at any time with
 uv run python run.py
 ```
 
-The service now listens on `http://127.0.0.1:8080`. Try the health endpoint:
+The service now listens on `http://127.0.0.1:18427` (configured by
+`APP_HOST`/`APP_PORT` in `.env`). Try the health endpoint:
 
 ```bash
-curl http://127.0.0.1:8080/admin/health \
-    -H "X-API-Key: your-admin-key"
+curl http://127.0.0.1:18427/health
 ```
 
 ### Production Server
@@ -52,7 +52,26 @@ curl http://127.0.0.1:8080/admin/health \
 gunicorn -c gunicorn.conf.py app.main:app
 ```
 
+In production the service also serves the built React app from
+`frontend/dist` on the same port:
+
+```bash
+cd ..            # repository root
+npm run build
+cd backend
+gunicorn -c gunicorn.conf.py app.main:app
+```
+
 See [Deployment](/guide/deployment) for systemd, FRP, and Docker recipes.
+
+## Sensitive Stop Words Submodule
+
+Initialize the Chinese word-list submodule so the `sensitive-stop-words`
+detector activates:
+
+```bash
+git submodule update --init
+```
 
 ## Frontend Setup
 
@@ -62,14 +81,14 @@ npm install
 npm run dev
 ```
 
-The admin UI runs on `http://127.0.0.1:5173` and proxies `/admin` requests to
-the backend. Open the **Settings** page, enter your admin API key, and start
-managing the word bank.
+The admin UI runs on `http://127.0.0.1:5173` and proxies `/admin`,
+`/moderate`, `/health`, and `/metrics` to the backend. Open the **Settings**
+page, enter your admin API key, and start managing the word bank.
 
 ## First Moderation
 
 ```bash
-curl -X POST http://127.0.0.1:8080/moderate \
+curl -X POST http://127.0.0.1:18427/moderate \
     -H "Content-Type: application/json" \
     -d '{"id":"1","user_id":"u1","text":"hello world"}'
 ```
