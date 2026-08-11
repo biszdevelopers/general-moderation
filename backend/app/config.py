@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     enable_badwords_py: bool = True
     enable_profanite: bool = True
     enable_glin_profanity: bool = True
+    enable_safetext: bool = True
+    enable_sensitive_word_filter_cn: bool = True
+    enable_profanity_filter: bool = True
     enable_gangajal: bool = True
     enable_pyprofane: bool = True
 
