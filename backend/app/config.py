@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     minhash_num_perm: int = 128
     minhash_jaccard_threshold: float = 0.85
 
+    enable_badwords_py: bool = True
     enable_profanite: bool = True
     enable_glin_profanity: bool = True
     enable_gangajal: bool = True
