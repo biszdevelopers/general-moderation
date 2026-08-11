@@ -23,6 +23,6 @@ The BK-tree and metaphone layers complement the exact matchers for these.
 ## Example
 
 ```bash
-curl -X POST http://127.0.0.1:8080/moderate \
+curl -X POST http://127.0.0.1:18427/moderate \
     -d '{"text":"안녕하세요 세계"}'
 ```
