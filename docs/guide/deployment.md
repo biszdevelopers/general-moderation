@@ -10,6 +10,57 @@ application calls the moderation API over `127.0.0.1`.
 User → Next.js (VPS) → FRP Tunnel (mTLS) → Python FastAPI (Private Server)
 ```
 
+## Single-Port Production
+
+In production the FastAPI service serves both the API and the built React
+frontend on one port (`APP_HOST:APP_PORT`, default `0.0.0.0:18427`):
+
+```
+┌─────────────────────────────────────────────┐
+│         SINGLE PORT (e.g. 18427)             │
+│  ┌───────────────────────────────────────┐  │
+│  │      Uvicorn + Gunicorn (C-uvloop)    │  │
+│  │  /admin/*   → Admin Routes            │  │
+│  │  /moderate  → Moderation API          │  │
+│  │  /health    → Health Check            │  │
+│  │  /metrics   → Prometheus              │  │
+│  │  /*         → Static Files (React SPA)│  │
+│  └───────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘
+```
+
+Deploy from the repository root:
+
+```bash
+npm install
+npm run install:all
+git submodule update --init          # fetch sensitive-stop-words word lists
+npm run start:prod                   # build frontend, then gunicorn on APP_PORT
+```
+
+Verify:
+
+```bash
+curl http://127.0.0.1:18427/health    # {"status":"healthy"}
+curl http://127.0.0.1:18427/          # the React admin app
+curl http://127.0.0.1:18427/admin/health -H "X-API-Key: $KEY"
+```
+
+`npm run start` (alias for `start:dev`) keeps the two-port development
+setup: Vite on `5173` proxying API calls to uvicorn on `8080`.
+
+### Sensitive Stop Words Submodule
+
+The `backend/data/sensitive-stop-words` submodule provides Chinese political,
+pornographic, gun/explosive, advertising, and URL word lists loaded by the
+`sensitive-stop-words` detector. Fetch it after cloning:
+
+```bash
+git submodule update --init
+```
+
+The lists are cached at startup and rebuilt on `/admin/reload`.
+
 ## Node.js Requirements
 
 - Node.js 20.19+ is required (Vite 8 requires Node.js 20.19+)
