@@ -64,6 +64,8 @@ Referrer-Policy: no-referrer
 
 ## Secure Defaults
 
-- Placeholder secrets (`CHANGE_ME_...`) are rejected at startup.
+- Placeholder secrets (`CHANGE_ME_...`) are replaced with strong random values
+  on first startup and persisted to the gitignored `.env`. Regenerate them at
+  any time with `npm run generate:secrets`.
 - `ADMIN_API_KEY` comparison uses constant time.
 - Health and metrics endpoints are admin-only and require a valid key.
