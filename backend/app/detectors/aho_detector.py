@@ -48,6 +48,9 @@ class AhoCorasickDetector(DetectorInterface):
         """Whether an automaton exists in the current snapshot."""
         return self._word_bank.snapshot.automaton is not None
 
+    def reload(self) -> None:
+        """No-op: the automaton is read live from the snapshot."""
+
     def detect(self, text: str) -> DetectionResult:
         """Scan the text with the Aho-Corasick automaton.
 
