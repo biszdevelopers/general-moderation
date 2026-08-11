@@ -13,13 +13,14 @@ registered in the detector.
 | :--- | :--- | :--- |
 | `profanite` | Rust | Universal |
 | `glin-profanity` | C | 25+ languages |
+| `badwords` | Rust | 26+ languages |
 | `gangajal` | WebAssembly | All languages |
 | `PyProfane` | C | Universal |
 
-Removed from the pipeline because they do not exist on PyPI, carry broken
-dependencies, or are not functional on Python 3.14: `badwords-py`,
-`safetext`, `profanity-filter2`, `sensitive-word-filter-cn`,
-`sensitive-word-filter`, `scheckbl`, and `valx`.
+Not registered because they do not exist on PyPI, carry broken dependencies,
+or are not functional on the supported runtimes: `sensitive-word-filter-cn`,
+`sensitive-word-filter`, `safetext`, `profanity-filter2`, `scheckbl`, and
+`valx`. `datasketch` runs as its own detector layer (MinHash), not here.
 
 ## Per-Language Pages
 
