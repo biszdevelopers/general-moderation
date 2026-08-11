@@ -9,10 +9,9 @@ Two backends are supported:
 
 from __future__ import annotations
 
-import json
 import sqlite3
 from abc import ABC, abstractmethod
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -86,7 +85,8 @@ class SqliteWordStorage(WordStorageInterface):
         :param db_path: filesystem path to the SQLite file
         """
         Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-        self._connection: sqlite3.Connection = sqlite3.connect(db_path)
+        # Thread-pooled workers reuse one connection; WAL serializes writes.
+        self._connection: sqlite3.Connection = sqlite3.connect(db_path, check_same_thread=False)
         self._connection.execute("PRAGMA journal_mode=WAL")
         self._connection.executescript(SqliteWordStorage._SCHEMA)
         self._connection.commit()
@@ -94,7 +94,7 @@ class SqliteWordStorage(WordStorageInterface):
     @staticmethod
     def _now() -> str:
         """Return the current UTC time as an ISO 8601 string."""
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     def add(self, word: str, language: str, category: str, severity: int) -> CustomWord:
         """Insert a word using parameterized SQL.
@@ -169,8 +169,7 @@ class SqliteWordStorage(WordStorageInterface):
     def list_all(self) -> list[CustomWord]:
         """Return every stored word, ordered by id ascending."""
         rows = self._connection.execute(
-            "SELECT id, word, language, category, severity, created_at "
-            "FROM words ORDER BY id ASC"
+            "SELECT id, word, language, category, severity, created_at FROM words ORDER BY id ASC"
         ).fetchall()
         return [CustomWord(*row) for row in rows]
 
@@ -181,8 +180,7 @@ class SqliteWordStorage(WordStorageInterface):
         :return: the word or None when absent
         """
         row = self._connection.execute(
-            "SELECT id, word, language, category, severity, created_at "
-            "FROM words WHERE id = ?",
+            "SELECT id, word, language, category, severity, created_at FROM words WHERE id = ?",
             (word_id,),
         ).fetchone()
         return CustomWord(*row) if row else None
@@ -238,7 +236,7 @@ class JsonWordStorage(WordStorageInterface):
     @staticmethod
     def _now() -> str:
         """Return the current UTC time as an ISO 8601 string."""
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     def add(self, word: str, language: str, category: str, severity: int) -> CustomWord:
         """Append a new record.
