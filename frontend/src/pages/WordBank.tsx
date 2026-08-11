@@ -44,6 +44,7 @@ export function WordBank(): ReactElement {
     const [languages, setLanguages] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>("");
+    const [categoryFilter, setCategoryFilter] = useState<string>("all");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [importOpen, setImportOpen] = useState<boolean>(false);
     const [editing, setEditing] = useState<WordEntry | null>(null);
@@ -174,6 +175,11 @@ export function WordBank(): ReactElement {
         }
     };
 
+    const filteredWords: WordEntry[] =
+        categoryFilter === "all"
+            ? words
+            : words.filter((word: WordEntry): boolean => word.category === categoryFilter);
+
     const columns: TableProps<WordEntry>["columns"] = [
         { title: "Word", dataIndex: "word", key: "word" },
         { title: "Language", dataIndex: "language", key: "language" },
@@ -225,6 +231,18 @@ export function WordBank(): ReactElement {
                     className="wordbank-toolbar__search"
                 />
                 <Space>
+                    <Select
+                        value={categoryFilter}
+                        onChange={setCategoryFilter}
+                        className="wordbank-toolbar__category"
+                        options={[
+                            { value: "all", label: "All Categories" },
+                            ...categories.map((category: string) => ({
+                                value: category,
+                                label: category,
+                            })),
+                        ]}
+                    />
                     <Button icon={<DownloadOutlined />} onClick={() => void onExport()}>
                         Export
                     </Button>
@@ -239,8 +257,9 @@ export function WordBank(): ReactElement {
             <Table<WordEntry>
                 rowKey="id"
                 columns={columns}
-                dataSource={words}
+                dataSource={filteredWords}
                 pagination={{ pageSize: 20 }}
+                locale={{ emptyText: "No words match your filters" }}
             />
             <Modal
                 title={editing !== null ? "Edit Word" : "Add Word"}
