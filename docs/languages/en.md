@@ -12,7 +12,6 @@ plus the C-backed Aho-Corasick exact matcher.
 - **BK-tree (C)**: edit distance 2 catches typos and leetspeak (`@sshole`,
   `fck`).
 - **Double Metaphone**: phonetically equivalent obfuscations (`phuq` → `fuck`).
-- **MinHash**: paraphrased near-duplicates of known phrases.
 - **Rolling hash**: repeated messages are caught from the spam cache.
 
 ## Obfuscation Handling
