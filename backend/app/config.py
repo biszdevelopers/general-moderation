@@ -37,16 +37,9 @@ class Settings(BaseSettings):
     minhash_num_perm: int = 128
     minhash_jaccard_threshold: float = 0.85
 
-    enable_badwords_py: bool = True
     enable_profanite: bool = True
     enable_glin_profanity: bool = True
-    enable_safetext: bool = True
-    enable_sensitive_word_filter_cn: bool = True
-    enable_profanity_filter: bool = True
     enable_gangajal: bool = True
-    enable_scheckbl: bool = True
-    enable_valx: bool = True
-    enable_sensitive_word_filter: bool = True
     enable_pyprofane: bool = True
 
     admin_api_key: str = "CHANGE_ME_SUPER_SECRET_KEY"
