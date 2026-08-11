@@ -10,7 +10,7 @@ export class AuditService {
     private async request<T>(path: string, init?: RequestInit): Promise<T> {
         const response: Response = await fetch(`${this.apiBaseUrl}${path}`, {
             ...init,
-            headers: { ...this.authService.headers(), ...(init?.headers ?? {}) },
+            headers: { ...this.authService.headers(), ...init?.headers },
         });
         if (!response.ok) {
             const body: unknown = await response.json().catch(() => null);
