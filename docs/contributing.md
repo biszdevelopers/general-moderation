@@ -46,10 +46,10 @@ history reviewable and bisectable.
 
 ### Python
 
-- Java-flavored Python: classes, ABCs, dataclasses, private fields, full
+- Well-structured Python: classes, ABCs, dataclasses, private fields, full
   type annotations.
 - No top-level functions; everything lives in a class.
-- Javadoc-style docstrings with `:param`, `:return`, `:raises`.
+- Detailed docstrings with `:param`, `:return`, `:raises`.
 - Format with `ruff` (4-space indent) and lint with `ruff`.
 - American English everywhere.
 
