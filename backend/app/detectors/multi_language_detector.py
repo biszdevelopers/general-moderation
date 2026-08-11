@@ -43,6 +43,7 @@ from typing import Any
 
 from app.detectors.interface import DetectorInterface
 from app.models.verdict import DetectionResult
+from app.utils.sensitive_word_loader import SensitiveWordLoader
 from app.utils.unicode_utils import UnicodeUtils
 
 # Candidate method names tried on each package, in order.
@@ -237,6 +238,65 @@ class _PackageAdapter:
         return bool(result)
 
 
+class _SensitiveStopWordsAdapter:
+    """Matches the external sensitive-stop-words submodule lists.
+
+    Words are loaded through the cached loader and compiled into an
+    Aho-Corasick automaton on first use.
+
+    :param loader: cached loader for the submodule word lists
+    """
+
+    def __init__(self, loader: SensitiveWordLoader) -> None:
+        self.package_name: str = "sensitive-stop-words"
+        self._loader: SensitiveWordLoader = loader
+        self._automaton: Any | None = None
+
+    @property
+    def available(self) -> bool:
+        """Whether the submodule exposes at least one loaded category."""
+        return self._loader.available() and bool(self._loader.loaded_categories())
+
+    def _ensure_automaton(self) -> None:
+        """Build the Aho-Corasick automaton from the loaded words once."""
+        if self._automaton is not None:
+            return
+        try:
+            import ahocorasick
+        except ImportError:
+            return
+        words: tuple[str, ...] = self._loader.all_words()
+        if not words:
+            return
+        automaton: Any = ahocorasick.Automaton()
+        for word in words:
+            automaton.add_word(word, word)
+        automaton.make_automaton()
+        self._automaton = automaton
+
+    def detect(self, text: str) -> DetectionResult:
+        """Scan the text for submodule words.
+
+        :param text: normalized input text
+        :return: a positive result when a submodule word occurs
+        """
+        self._ensure_automaton()
+        if self._automaton is None:
+            return DetectionResult(matched=False)
+        matched: list[str] = []
+        for _, stored_word in self._automaton.iter(text):
+            matched.append(str(stored_word))
+        if not matched:
+            return DetectionResult(matched=False)
+        return DetectionResult(
+            matched=True,
+            matched_words=tuple(dict.fromkeys(matched)),
+            matched_language="zh-CN",
+            reason="Sensitive stop word matched from submodule lists",
+            confidence_score=0.85,
+        )
+
+
 class MultiLanguageDetector(DetectorInterface):
     """Runs the wired multi-language packages in priority order.
 
@@ -280,6 +340,17 @@ class MultiLanguageDetector(DetectorInterface):
                     package=package_name,
                 )
             adapters.append(adapter)
+        if self._settings.enable_sensitive_stop_words:
+            sensitive: _SensitiveStopWordsAdapter = _SensitiveStopWordsAdapter(
+                SensitiveWordLoader(self._settings.sensitive_stop_words_dir)
+            )
+            if not sensitive.available and self._logger is not None:
+                self._logger.log(
+                    logging.WARNING,
+                    "multi_language:sensitive_stop_words_unavailable",
+                    package="sensitive-stop-words",
+                )
+            adapters.append(sensitive)
         return adapters
 
     @property
