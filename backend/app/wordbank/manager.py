@@ -205,7 +205,7 @@ class WordBankManager:
             return None
         automaton: Automaton = Automaton()
         for word in words:
-            automaton.add_word(word, len(word))
+            automaton.add_word(word, word)
         automaton.make_automaton()
         return automaton
 
