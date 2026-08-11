@@ -1,0 +1,19 @@
+[Unit]
+Description=Moderation Service
+After=network.target
+
+[Service]
+Type=simple
+User=moderation
+Group=moderation
+WorkingDirectory=/opt/moderation-monorepo/backend
+ExecStart=/opt/moderation-monorepo/venv/bin/gunicorn -c gunicorn.conf.py app.main:app
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+MemoryMax=20G
+CPUQuota=700%
+
+[Install]
+WantedBy=multi-user.target
