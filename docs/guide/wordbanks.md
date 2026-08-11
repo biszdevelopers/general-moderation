@@ -31,15 +31,15 @@ The REST API is documented in [Admin API](/api/admin). Quick examples:
 
 ```bash
 # Add a word
-curl -X POST http://127.0.0.1:8080/admin/wordbank/words \
+curl -X POST http://127.0.0.1:18427/admin/wordbank/words \
     -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
     -d '{"word":"badword","language":"en","category":"profanity","severity":5}'
 
 # List words
-curl http://127.0.0.1:8080/admin/wordbank/words -H "X-API-Key: $KEY"
+curl http://127.0.0.1:18427/admin/wordbank/words -H "X-API-Key: $KEY"
 
 # Bulk import
-curl -X POST http://127.0.0.1:8080/admin/wordbank/import \
+curl -X POST http://127.0.0.1:18427/admin/wordbank/import \
     -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
     -d '{"items":[{"word":"w1","language":"de"},{"word":"w2","language":"fr"}]}'
 ```
@@ -49,7 +49,7 @@ curl -X POST http://127.0.0.1:8080/admin/wordbank/import \
 After editing the word bank, reload the compiled structures atomically:
 
 ```bash
-curl -X POST http://127.0.0.1:8080/admin/reload -H "X-API-Key: $KEY"
+curl -X POST http://127.0.0.1:18427/admin/reload -H "X-API-Key: $KEY"
 ```
 
 New detectors read the current snapshot on every request, so the swap is
