@@ -6,8 +6,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "==> Backend: ruff check"
 cd "${ROOT_DIR}/backend"
-python -m ruff check app run.py gunicorn.conf.py
-python -m ruff format --check app run.py gunicorn.conf.py
+uv run ruff check app run.py gunicorn.conf.py
+uv run ruff format --check app run.py gunicorn.conf.py
 
 echo "==> Frontend: oxlint and typecheck"
 cd "${ROOT_DIR}/frontend"
