@@ -1,0 +1,71 @@
+/* Reusable component styles. */
+
+.stats-card {
+    background: #ffffff;
+}
+
+.stats-card__title {
+    color: #8c8c8c;
+    font-size: 14px;
+}
+
+.stats-card__value {
+    color: #001529;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.dashboard-grid {
+    margin-bottom: 24px;
+}
+
+.dashboard-card {
+    background: #ffffff;
+}
+
+.detector-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.detector-item {
+    padding: 8px 12px;
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+}
+
+.wordbank-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.wordbank-toolbar__search {
+    max-width: 360px;
+}
+
+.settings-card {
+    margin-bottom: 24px;
+}
+
+.log-files__preview {
+    margin-top: 16px;
+}
+
+.log-files__content {
+    max-height: 480px;
+    overflow: auto;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 320px;
+}
