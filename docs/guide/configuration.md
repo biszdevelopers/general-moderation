@@ -18,12 +18,26 @@ cd backend
 uv sync
 ```
 
-The optional Level 2 engine (`llama-cpp-python==0.3.23`) is an optional extra
-because it has no Windows/cp314 wheel; install it with:
+The optional Level 2 engine (`llama-cpp-python==0.3.34`) is an optional extra.
+Version 0.3.34 is required because earlier releases bundle a llama.cpp that
+cannot parse the Qwen3.5 hybrid architecture tensors. On Linux:
 
 ```bash
 uv sync --extra ai
 ```
+
+On Windows there is no cp314 sdist wheel on PyPI (a source build needs a full
+C toolchain). Install the official prebuilt CPU wheel instead:
+
+```bash
+.venv\Scripts\python.exe -m pip install \
+    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu \
+    llama-cpp-python==0.3.34
+```
+
+The `py3-none-win_amd64` wheel also works for Python 3.14. If the GitHub
+release host is unreachable, download the wheel through a mirror and install
+it from the local file.
 
 ## Package Versions
 
@@ -32,6 +46,7 @@ All versions are verified and available on PyPI as of August 2026:
 - fastapi: 0.141.1
 - uvicorn: 0.52.1
 - gunicorn: 26.0.0
+- llama-cpp-python: 0.3.34 (Level 2, requires the `ai` extra)
 - python-Levenshtein: 0.27.4
 - cryptography: 50.0.0
 - badwords-py: 2.1.0 (2.2.0/2.3.1 have no installable artifact for cp314)
