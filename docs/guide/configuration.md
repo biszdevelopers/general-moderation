@@ -15,7 +15,6 @@ All versions are verified and available on PyPI as of August 2026:
 - fastapi: 0.141.1
 - uvicorn: 0.52.1
 - gunicorn: 26.0.0
-- datasketch: 1.10.0 (not 2.0.0)
 - badwords-py: 2.1.0 (2.2.0/2.3.1 have no installable artifact for cp314)
 - profanite: 0.1.9 (0.1.10 does not exist)
 - slowapi: 0.1.10 (not 0.2.0)
@@ -52,8 +51,6 @@ The optional Level 2 engine lives in `requirements-ai.txt`
 | `SPAM_CACHE_SIZE` | `10000` | LRU spam cache entries. |
 | `SPAM_CACHE_TTL_SECONDS` | `60` | Spam hash lifetime. |
 | `FUZZY_MAX_DISTANCE` | `2` | BK-tree edit distance bound. |
-| `MINHASH_NUM_PERM` | `128` | MinHash permutations. |
-| `MINHASH_JACCARD_THRESHOLD` | `0.85` | Near-duplicate similarity bound. |
 
 ## Multi-Language Toggles
 
@@ -70,8 +67,8 @@ Each verified package can be disabled independently:
 The following packages are not registered: `sensitive-word-filter` and
 `sensitive-word-filter-cn` (no PyPI package), `safetext` and
 `profanity-filter2` (broken dependencies), `scheckbl` (async-only API), and
-`valx` (non-functional model). `datasketch` runs as its own detector layer
-(MinHash).
+`valx` (non-functional model). `datasketch` was removed; MinHash semantic
+similarity is not a direct profanity detector.
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
