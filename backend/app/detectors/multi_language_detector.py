@@ -57,9 +57,7 @@ class _PackageAdapter:
     :param alternate_name: fallback module name, if any
     """
 
-    def __init__(
-        self, package_name: str, language: str, alternate_name: str | None
-    ) -> None:
+    def __init__(self, package_name: str, language: str, alternate_name: str | None) -> None:
         self.package_name: str = package_name
         self.language: str = language
         self._module: Any | None = self._import(alternate_name)
@@ -200,14 +198,15 @@ class MultiLanguageDetector(DetectorInterface):
         """Whether at least one package is usable."""
         return any(adapter.available for adapter in self._adapters)
 
+    def reload(self) -> None:
+        """No-op: package adapters are fixed for the process lifetime."""
+
     def available_packages(self) -> list[str]:
         """List the names of the usable packages.
 
         :return: names of installed and callable packages
         """
-        return [
-            adapter.package_name for adapter in self._adapters if adapter.available
-        ]
+        return [adapter.package_name for adapter in self._adapters if adapter.available]
 
     def detect(self, text: str) -> DetectionResult:
         """Run every enabled package over the text.
