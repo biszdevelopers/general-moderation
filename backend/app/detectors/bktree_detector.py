@@ -81,7 +81,7 @@ class BkTreeDetector(DetectorInterface):
             return DetectionResult(matched=False)
         matched: set[str] = set()
         for token in UnicodeUtils.tokenize(text):
-            for distance, word in self._tree.find(token, self._max_distance):
+            for _dist, word in self._tree.find(token, self._max_distance):
                 if word != token:
                     matched.add(str(word))
         if not matched:
