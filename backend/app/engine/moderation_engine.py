@@ -18,7 +18,6 @@ from app.detectors.bktree_detector import BkTreeDetector
 from app.detectors.bloom_detector import BloomFilterDetector
 from app.detectors.interface import DetectorInterface
 from app.detectors.metaphone_detector import MetaphoneDetector
-from app.detectors.minhash_detector import MinHashDetector
 from app.detectors.multi_language_detector import MultiLanguageDetector
 from app.detectors.rolling_hash_detector import RollingHashDetector
 from app.models.request import BatchModerationRequest, ModerationRequest
@@ -64,11 +63,6 @@ class ModerationEngine:
             BkTreeDetector(self._word_bank, self._settings.fuzzy_max_distance),
             MetaphoneDetector(self._word_bank),
             MultiLanguageDetector(self._settings, self._logger),
-            MinHashDetector(
-                self._word_bank,
-                num_perm=self._settings.minhash_num_perm,
-                threshold=self._settings.minhash_jaccard_threshold,
-            ),
         ]
 
     def refresh_detectors(self) -> None:
