@@ -20,7 +20,16 @@ function npmCommand() {
 }
 
 function run(command, args, cwd) {
-    const result = spawnSync(command, args, { cwd, stdio: "inherit" });
+    // On Windows, .cmd shims such as npm.cmd cannot be spawned directly and
+    // require a shell. Build a quoted command string to avoid the shell-args
+    // deprecation warning.
+    const result = isWindows && command.endsWith(".cmd")
+        ? spawnSync(`${command} ${args.map((arg) => `"${arg}"`).join(" ")}`, {
+              cwd,
+              stdio: "inherit",
+              shell: true,
+          })
+        : spawnSync(command, args, { cwd, stdio: "inherit" });
     if (result.status !== 0) {
         process.exit(result.status ?? 1);
     }
