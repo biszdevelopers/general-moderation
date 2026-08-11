@@ -34,6 +34,10 @@ dependencies = [
     "python-json-logger==4.1.0",
     "atomicwrites==1.4.1",
     "python-multipart==0.0.32",
+    # Model auto-download and mirror fallback
+    "requests==2.32.3",
+    "huggingface-hub==1.27.0",
+    "modelscope==1.39.1",
     # Semantic similarity layer (not wired into detection; requires a
     # pre-built toxic-signature database)
     "datasketch==2.0.0",
