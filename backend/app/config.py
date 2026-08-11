@@ -6,10 +6,14 @@ Security-critical values are validated before the service starts.
 
 from __future__ import annotations
 
+import logging
 import os
+import secrets
+import shutil
 from pathlib import Path
 from typing import Annotated
 
+from atomicwrites import atomic_write
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
@@ -100,21 +104,75 @@ class Settings(BaseSettings):
         return value
 
     def validate_security(self) -> None:
-        """Refuse to start with default or empty security secrets.
+        """Bootstrap security secrets on first run.
 
-        :raises RuntimeError: when a secret still carries its placeholder value.
+        Placeholder or empty secrets are replaced with cryptographically
+        strong values persisted to ``.env``.
         """
-        placeholders: dict[str, str] = {
-            "admin_api_key": self.admin_api_key,
-            "secret_key": self.secret_key,
-            "encryption_key": self.encryption_key,
-        }
-        for field_name, value in placeholders.items():
-            if not value or value.startswith("CHANGE_ME"):
-                raise RuntimeError(
-                    f"Refusing to start: {field_name} must be set in the environment. "
-                    f"Copy .env.example to .env and assign a real secret."
-                )
+        self.ensure_secrets()
+
+    def ensure_secrets(self, force: bool = False) -> dict[str, str]:
+        """Generate and persist security secrets.
+
+        Without ``force`` only missing or placeholder secrets are replaced,
+        preserving any real values already set.
+
+        :param force: regenerate every secret, even already-set ones
+        :return: mapping of generated field names to their new values
+        """
+        fields: tuple[str, ...] = ("admin_api_key", "secret_key", "encryption_key")
+        current: dict[str, str] = {name: getattr(self, name) for name in fields}
+        targets: dict[str, str]
+        if force:
+            targets = current
+        else:
+            targets = {
+                name: value
+                for name, value in current.items()
+                if not value or value.startswith("CHANGE_ME")
+            }
+        if not targets:
+            return {}
+        generated: dict[str, str] = {}
+        for name in targets:
+            if name == "encryption_key":
+                generated[name] = secrets.token_hex(32)
+            else:
+                generated[name] = secrets.token_urlsafe(32)
+        self._persist_env(generated)
+        for name, value in generated.items():
+            setattr(self, name, value)
+        logging.warning(f"Generated {len(generated)} security secret(s) and wrote them to .env")
+        return generated
+
+    def _persist_env(self, generated: dict[str, str]) -> None:
+        """Write generated secrets into the ``.env`` file.
+
+        Creates ``.env`` from the example template when it does not exist,
+        then updates or appends the three secret variables.
+
+        :param generated: field name to value mapping for the new secrets
+        """
+        env_path: Path = Path(".env")
+        if not env_path.exists():
+            example: Path = Path(".env.example")
+            if example.exists():
+                shutil.copy(example, env_path)
+            else:
+                env_path.touch()
+        lines: list[str] = env_path.read_text(encoding="utf-8").splitlines()
+        updated: set[str] = set()
+        for index, line in enumerate(lines):
+            for name, value in generated.items():
+                key: str = name.upper()
+                if line.startswith(f"{key}="):
+                    lines[index] = f"{key}={value}"
+                    updated.add(name)
+        for name, value in generated.items():
+            if name not in updated:
+                lines.append(f"{name.upper()}={value}")
+        with atomic_write(str(env_path), encoding="utf-8", overwrite=True) as handle:
+            handle.write("\n".join(lines) + "\n")
 
     def ensure_directories(self) -> None:
         """Create the data, log, and model directories if they do not exist."""
