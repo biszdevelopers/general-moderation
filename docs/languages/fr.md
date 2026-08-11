@@ -2,8 +2,8 @@
 
 ## Coverage
 
-French is covered by `badwords-py`, `glin-profanity`, `profanite`, and
-`safetext` French dictionaries.
+French is covered by `glin-profanity`, `profanite`, and `PyProfane` French
+dictionaries.
 
 ## Specifics
 
