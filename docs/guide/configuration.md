@@ -141,9 +141,9 @@ service stays fully operational.
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `ADMIN_API_KEY` | `CHANGE_ME_...` | Static key for `/admin/*`. Service refuses to start unchanged. |
-| `SECRET_KEY` | `CHANGE_ME_...` | Session secret. |
-| `ENCRYPTION_KEY` | `CHANGE_ME_...` | 32-byte hex key for encryption at rest. |
+| `ADMIN_API_KEY` | auto-generated | Static key for `/admin/*`. Generated on first run. |
+| `SECRET_KEY` | auto-generated | Session secret. Generated on first run. |
+| `ENCRYPTION_KEY` | auto-generated | 32-byte hex key for encryption at rest. Generated on first run. |
 | `RATE_LIMIT_REQUESTS` | `100` | Allowed requests per period. |
 | `RATE_LIMIT_PERIOD` | `60` | Rate limit window in seconds. |
 | `ALLOWED_ORIGINS` | empty | Comma-separated CORS origins. No wildcard is permitted. |
