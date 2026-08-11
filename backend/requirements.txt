@@ -18,7 +18,6 @@ mmh3==5.2.1               # Verified: exists
 regex==2026.7.19          # Verified: exists
 pybktree==1.1             # Verified: exists
 metaphone==0.6            # Verified: exists
-datasketch==1.10.0        # Verified: exists (2.0.0 also exists)
 
 # ============================================================
 # MULTI-LANGUAGE DETECTORS (REAL VERSIONS)
