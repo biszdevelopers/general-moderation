@@ -2,8 +2,9 @@
 
 ## Coverage
 
-Japanese is covered by the universal packages (`badwords-py`, `glin-profanity`,
-`profanite`, `safetext`) which include Japanese profanity dictionaries.
+Japanese is covered by the universal packages (`glin-profanity`,
+`profanite`, `gangajal`, `PyProfane`) which include Japanese profanity
+dictionaries.
 
 ## Specifics
 
