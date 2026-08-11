@@ -15,11 +15,13 @@ class ModerationRequest(BaseModel):
     """A single message to moderate.
 
     :param id: caller-supplied identifier echoed back in the response
-    :param user_id: identifier of the author, used for auditing
+    :param app_name: name of the calling application, used for isolation
+    :param user_id: identifier of the author, used for profiling and auditing
     :param text: the message body to moderate
     """
 
     id: str | None = None
+    app_name: str | None = None
     user_id: str | None = None
     text: Annotated[str, Field(min_length=1, max_length=8192)]
 
@@ -28,11 +30,13 @@ class BatchItem(BaseModel):
     """One entry in a batch moderation request.
 
     :param id: caller-supplied identifier echoed back in the response
-    :param user_id: identifier of the author, used for auditing
+    :param app_name: name of the calling application, used for isolation
+    :param user_id: identifier of the author, used for profiling and auditing
     :param text: the message body to moderate
     """
 
     id: str | None = None
+    app_name: str | None = None
     user_id: str | None = None
     text: Annotated[str, Field(min_length=1, max_length=8192)]
 
