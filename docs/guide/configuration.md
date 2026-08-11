@@ -44,8 +44,9 @@ All versions are verified and available on PyPI as of August 2026:
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `HOST` | `127.0.0.1` | Bind address. Never expose to the public network. |
-| `PORT` | `8080` | HTTP port for the ASGI server. |
+| `APP_HOST` | `0.0.0.0` | Bind address for the single-port deployment. |
+| `APP_PORT` | `18427` | Single port serving both the API and the built frontend. |
+| `FRONTEND_DIST_PATH` | `../frontend/dist` | Directory of the built React SPA. |
 | `WORKERS` | `3` | Gunicorn worker count. Leave empty to auto-detect cores. |
 
 ## Level 2 AI (llama.cpp, auto-download)
@@ -117,9 +118,13 @@ Each registered package can be disabled independently:
 | `ENABLE_PROFANITY_FILTER` | `profanity-filter2` (guard-wired) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
+| `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` (submodule word lists) |
 
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
-activate on a standard install. `safetext`, `sensitive-word-filter-cn`,
+activate on a standard install. `sensitive-stop-words` activates when the
+`backend/data/sensitive-stop-words` submodule is initialized
+(`git submodule update --init`); its directory is configurable with
+`SENSITIVE_STOP_WORDS_DIR`. `safetext`, `sensitive-word-filter-cn`,
 and `profanity-filter2` are guard-wired but no reachable index (pypi.org,
 Tsinghua, Aliyun) provides an installable release; they activate only when a
 working index provides them:
