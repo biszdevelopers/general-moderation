@@ -94,13 +94,15 @@ npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
 git submodule update --init  # fetch the sensitive-stop-words word lists
 npm run generate:secrets     # generate secure *_KEY/_SECRET values in backend/.env
+npm run build        # build the frontend once (required before start:prod)
 npm run start:dev    # dev: backend (uvicorn :8080) + frontend (vite :5173)
-npm run start:prod   # prod: build frontend, serve everything on APP_PORT
+npm run start:prod   # prod: serve everything on APP_PORT (frontend must be built)
 ```
 
 Production runs on a **single port**: FastAPI serves the built frontend and
 the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
-`backend/.env`). `npm run start` builds the frontend and starts production.
+`backend/.env`). Start scripts never build the frontend; run `npm run build`
+(or `npm run build:prod`) once before `npm run start:prod`.
 
 Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
 `npm run docs:dev`, `npm run docs:build`, `npm run install:backend`.
