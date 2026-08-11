@@ -3,6 +3,7 @@ import {
     BellOutlined,
     DashboardOutlined,
     DatabaseOutlined,
+    ExportOutlined,
     FileSearchOutlined,
     LogoutOutlined,
     SettingOutlined,
@@ -24,9 +25,11 @@ export function Layout(): ReactElement {
         ? "/word-bank"
         : location.pathname.startsWith("/audit-log")
           ? "/audit-log"
-          : location.pathname.startsWith("/settings")
-            ? "/settings"
-            : "/dashboard";
+          : location.pathname.startsWith("/export")
+            ? "/export"
+            : location.pathname.startsWith("/settings")
+              ? "/settings"
+              : "/dashboard";
 
     return (
         <AntdLayout className="app-layout">
@@ -37,7 +40,7 @@ export function Layout(): ReactElement {
                 onCollapse={setCollapsed}
                 width={220}
             >
-                <div className="app-sider__brand">{collapsed ? "MA" : "Moderation Admin"}</div>
+                <div className="app-sider__brand">{collapsed ? "GM" : "General Moderation"}</div>
                 <Menu
                     theme="dark"
                     mode="inline"
@@ -47,6 +50,7 @@ export function Layout(): ReactElement {
                         { key: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
                         { key: "/word-bank", icon: <DatabaseOutlined />, label: "Word Bank" },
                         { key: "/audit-log", icon: <FileSearchOutlined />, label: "Audit Log" },
+                        { key: "/export", icon: <ExportOutlined />, label: "Export" },
                         { key: "/settings", icon: <SettingOutlined />, label: "Settings" },
                     ]}
                 />
@@ -54,7 +58,7 @@ export function Layout(): ReactElement {
             <AntdLayout>
                 <Header className="app-header">
                     <Typography.Text strong className="app-header__title">
-                        Multi-Language Moderation Console
+                        General Moderation Console
                     </Typography.Text>
                     <div className="app-header__actions">
                         <Badge dot offset={[-6, 6]}>
