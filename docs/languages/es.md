@@ -2,8 +2,8 @@
 
 ## Coverage
 
-Spanish is covered by `badwords-py`, `glin-profanity`, `profanite`, and
-`safetext` Spanish dictionaries, spanning Latin American and peninsular
+Spanish is covered by `glin-profanity`, `profanite`, and `PyProfane`
+Spanish dictionaries, spanning Latin American and peninsular
 variants.
 
 ## Specifics
