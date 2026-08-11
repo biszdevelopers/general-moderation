@@ -20,7 +20,9 @@ on Level 1, backed by an optional llama.cpp (C++) inference engine on Level 2.
 - 7-layer detection pipeline, every layer backed by C/C++/Rust/WASM.
 - 5 active multi-language detectors covering 26+ languages (plus 3 more
   guard-wired for environments that can provide them).
-- Zero local word-bank text files; base dictionaries come from pip packages.
+- Base dictionaries come from pip packages; the `sensitive-stop-words`
+  submodule adds Chinese political, pornographic, gun, advertising, and URL
+  lists.
 - Custom words stored in SQLite (C implementation).
 - All security-critical operations delegated to compiled libraries
   (OpenSSL, libsodium, Rust regex, Redis hiredis).
