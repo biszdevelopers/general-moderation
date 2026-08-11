@@ -2,7 +2,7 @@
 
 ## Coverage
 
-Portuguese is covered by `badwords-py`, `glin-profanity`, and `profanite`
+Portuguese is covered by `glin-profanity` and `profanite`
 Portuguese dictionaries, including both European and Brazilian variants.
 
 ## Specifics
