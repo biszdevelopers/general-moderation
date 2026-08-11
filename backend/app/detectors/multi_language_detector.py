@@ -16,8 +16,8 @@ standard PyPI install:
 - ``PyProfane`` (C) via ``isProfane``
 
 Three more are wired behind import guards and stay dormant because no
-installable release exists on public PyPI; they activate only when a working
-index or mirror provides them (see ``requirements-extra.txt``):
+installable release exists on the reachable indexes; they activate only when
+a working index or mirror provides them (add via ``uv add``):
 
 - ``safetext`` via ``SafeText(language).check_profanity``
 - ``sensitive_word_filter_cn`` via ``SensitiveWordFilter.contains``
