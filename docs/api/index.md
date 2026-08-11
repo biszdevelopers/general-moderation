@@ -6,7 +6,7 @@ JSON. Responses are serialized with Rust `orjson`.
 
 ## Base URL
 
-- Backend: `http://127.0.0.1:8080`
+- Backend: `http://127.0.0.1:18427`
 - Public VPS: `http://127.0.0.1:9000`
 
 ## Authentication
