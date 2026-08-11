@@ -3,6 +3,28 @@
 All configuration happens through environment variables loaded from `backend/.env`.
 The complete, annotated template lives in `backend/.env.example`.
 
+## Python Version Requirements
+
+- Python 3.11+ is required (many packages have dropped Python 3.9 support)
+- Recommended: Python 3.13
+
+## Package Versions
+
+All versions are verified and available on PyPI as of August 2026:
+
+- fastapi: 0.141.1
+- uvicorn: 0.52.1
+- gunicorn: 26.0.0
+- datasketch: 1.10.0 (not 2.0.0)
+- badwords-py: 2.1.0 (2.2.0/2.3.1 have no installable artifact for cp314)
+- profanite: 0.1.9 (0.1.10 does not exist)
+- slowapi: 0.1.10 (not 0.2.0)
+- python-json-logger: 4.1.0 (not 3.2.0)
+- python-multipart: 0.0.31 (not 0.0.20)
+
+The optional Level 2 engine lives in `requirements-ai.txt`
+(`llama-cpp-python==0.3.23`) because it has no Windows/cp314 wheel.
+
 ## Server
 
 | Variable | Default | Description |
@@ -35,21 +57,19 @@ The complete, annotated template lives in `backend/.env.example`.
 
 ## Multi-Language Toggles
 
-Each of the 11 packages can be disabled independently:
+Each verified package can be disabled independently:
 
 | Variable | Package |
 | :--- | :--- |
-| `ENABLE_BADWORDS_PY` | `badwords-py` (Rust) |
 | `ENABLE_PROFANITE` | `profanite` (Rust) |
 | `ENABLE_GLIN_PROFANITY` | `glin-profanity` (C) |
-| `ENABLE_SAFETEXT` | `safetext` (C) |
-| `ENABLE_SENSITIVE_WORD_FILTER_CN` | `sensitive-word-filter-cn` (C) |
-| `ENABLE_PROFANITY_FILTER` | `profanity-filter2` (C) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
-| `ENABLE_SCHECKBL` | `scheckbl` (C) |
-| `ENABLE_VALX` | `valx` (C + AI) |
-| `ENABLE_SENSITIVE_WORD_FILTER` | `sensitive-word-filter` (C) |
-| `ENABLE_PYPROFANE` | `pyprofane` (C) |
+| `ENABLE_PYPROFANE` | `PyProfane` (C) |
+
+The following packages were removed because they do not exist on PyPI or are
+not installable: `sensitive-word-filter`, `sensitive-word-filter-cn`,
+`safetext` (broken dependency), `profanity-filter2` (broken dependency),
+`badwords-py`, `scheckbl`, and `valx`.
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
