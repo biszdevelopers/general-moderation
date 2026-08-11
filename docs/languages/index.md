@@ -1,24 +1,25 @@
 # Language Coverage
 
 The service detects vulgar and politically sensitive content across 20+
-languages. Coverage comes from the union of eleven C/C++/Rust/WebAssembly
-packages plus custom words.
+languages. Coverage comes from the union of the verified C/C++/Rust/
+WebAssembly packages plus custom words.
 
 ## Package Matrix
 
+Only packages that install cleanly and run on the supported platforms are
+registered in the detector.
+
 | Package | Core tech | Scope |
 | :--- | :--- | :--- |
-| `badwords-py` | Rust | 26+ languages |
 | `profanite` | Rust | Universal |
 | `glin-profanity` | C | 25+ languages |
-| `safetext` | C | 13 languages |
-| `sensitive-word-filter-cn` | C (DFA) | Chinese |
-| `profanity-filter2` | C | Universal |
 | `gangajal` | WebAssembly | All languages |
-| `scheckbl` | C | Universal |
-| `valx` | C + AI | Universal |
-| `sensitive-word-filter` | C | Chinese (political) |
-| `pyprofane` | C | Universal |
+| `PyProfane` | C | Universal |
+
+Removed from the pipeline because they do not exist on PyPI, carry broken
+dependencies, or are not functional on Python 3.14: `badwords-py`,
+`safetext`, `profanity-filter2`, `sensitive-word-filter-cn`,
+`sensitive-word-filter`, `scheckbl`, and `valx`.
 
 ## Per-Language Pages
 
