@@ -9,10 +9,11 @@ locking, auto thread detection, idle unloading, and lazy loading so the
 service starts even while the model is still downloading.
 
 User input is strictly sanitized before reaching the model to prevent prompt
-injection: chat control tokens are stripped with C regex, XML metacharacters
-are escaped, and the text is wrapped in ``<user_text>`` tags inside a ChatML
-prompt. The engine runs at ``temperature=0.0`` and must reply with a single
-classification token.
+injection: chat control tokens are stripped with C regex and XML metacharacters
+are escaped. The prompt is rendered through the model's own Jinja2 chat
+template with ``enable_thinking=False`` so the Qwen reasoning model replies
+with a single classification token instead of a long ``<think>`` block. The
+engine runs at ``temperature=0.0`` and must reply with a BLOCK or ALLOW token.
 """
 
 from __future__ import annotations
@@ -37,7 +38,7 @@ try:
 except ImportError:  # pragma: no cover - huggingface_hub is a declared dependency
     hf_hub_download = None
 
-from app.ai.prompt import build_classification_prompt
+from app.ai.prompt import SYSTEM_PROMPT, build_classification_prompt
 from app.detectors.interface import DetectorInterface
 from app.models.verdict import DetectionResult
 
@@ -64,6 +65,7 @@ class LlamaCppDetector(DetectorInterface):
         self._settings: Any = settings
         self._logger: Any = logger
         self._model: Any | None = None
+        self._chat_template: Any | None = None
         self._last_used: float = 0.0
         self._loading: bool = False
         self._load_lock: threading.Lock = threading.Lock()
@@ -99,6 +101,19 @@ class LlamaCppDetector(DetectorInterface):
             self._loading = False
             self._load_lock.release()
 
+    def _kv_cache_type(self, raw: str) -> int:
+        """Map a KV cache type string (e.g. ``q8_0``) to the llama.cpp enum.
+
+        :param raw: the configured cache type name
+        :return: the matching ``GGML_TYPE_*`` integer, defaulting to Q8_0
+        """
+        from llama_cpp import llama_cpp as _llama_cpp
+
+        value: int | None = getattr(_llama_cpp, f"GGML_TYPE_{raw.strip().upper()}", None)
+        if value is None:
+            return _llama_cpp.GGML_TYPE_Q8_0
+        return int(value)
+
     def _load_model(self) -> None:
         """Download if needed and load the GGUF model with all flags.
 
@@ -132,14 +147,15 @@ class LlamaCppDetector(DetectorInterface):
                     n_threads=threads,
                     n_batch=self._settings.model_batch_size,
                     n_gpu_layers=0,
-                    type_k=self._settings.model_cache_type_k,
-                    type_v=self._settings.model_cache_type_v,
+                    type_k=self._kv_cache_type(self._settings.model_cache_type_k),
+                    type_v=self._kv_cache_type(self._settings.model_cache_type_v),
                     flash_attn=self._settings.model_flash_attn,
                     mlock=self._settings.model_mlock,
                     logits_all=False,
                     embedding=False,
                 )
                 self._last_used = time.time()
+                self._chat_template = self._compile_chat_template()
                 self._log_info("Model loaded", load_seconds=round(time.time() - start, 2))
                 self._warm_up()
             except Exception as exc:  # pragma: no cover - varies by platform
@@ -147,6 +163,21 @@ class LlamaCppDetector(DetectorInterface):
                 self._record_failure("model_load_failed", str(exc))
         finally:
             self._loading = False
+
+    def _compile_chat_template(self) -> Any | None:
+        """Compile the model's Jinja2 chat template, if it exposes one.
+
+        :return: a compiled template, or None when unavailable
+        """
+        assert self._model is not None
+        raw: str = str(self._model.metadata.get("tokenizer.chat_template", ""))
+        if not raw:
+            return None
+        try:
+            from jinja2 import Template
+        except ImportError:  # pragma: no cover - jinja2 is a llama-cpp-python dep
+            return None
+        return Template(raw)
 
     def _warm_up(self) -> None:
         """Run a tiny generation to force model initialization."""
@@ -373,12 +404,26 @@ class LlamaCppDetector(DetectorInterface):
         return xml.sax.saxutils.escape(cleaned, {'"': "&quot;"})
 
     def _build_prompt(self, text: str) -> str:
-        """Compose a ChatML classification prompt.
+        """Compose the classification prompt from the model chat template.
+
+        Thinking is disabled through the template (``enable_thinking=False``)
+        so the model replies with a verdict token instead of a long reasoning
+        block. Falls back to a hand-built ChatML prompt when the model has no
+        usable template.
 
         :param text: raw user text
         :return: the full prompt with the sanitized payload
         """
         payload: str = LlamaCppDetector.sanitize(text)
+        if self._chat_template is not None:
+            return self._chat_template.render(
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": payload},
+                ],
+                add_generation_prompt=True,
+                enable_thinking=False,
+            )
         return build_classification_prompt(payload)
 
     def _check_idle_unload(self) -> None:
@@ -414,7 +459,9 @@ class LlamaCppDetector(DetectorInterface):
             reply: str = output["choices"][0]["text"].strip().upper()
         except Exception:
             return DetectionResult(matched=False)
-        blocked: bool = reply.startswith("BLOCK") or "BLOCK" in reply
+        if "</think>" in reply:
+            reply = reply.split("</think>")[-1].strip().upper()
+        blocked: bool = "BLOCK" in reply
         return DetectionResult(
             matched=blocked,
             reason="LLM classified the text as BLOCK" if blocked else None,
