@@ -98,6 +98,9 @@ switch (command) {
             "8080",
         ]);
         break;
+    case "backend-prod":
+        runInBackend(["gunicorn", "-c", "gunicorn.conf.py", "app.main:app"]);
+        break;
     case "download":
         runInBackend(["python", "-m", "app.ai.download"]);
         break;
