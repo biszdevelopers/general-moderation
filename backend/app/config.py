@@ -8,9 +8,10 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Annotated
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -68,7 +69,7 @@ class Settings(BaseSettings):
     rate_limit_requests: int = 100
     rate_limit_period: int = 60
 
-    allowed_origins: list[str] = Field(default_factory=lambda: [])
+    allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: [])
 
     log_file_path: str = "./logs/moderation.log"
     log_level: str = "INFO"
