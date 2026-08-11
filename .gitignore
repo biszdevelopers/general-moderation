@@ -216,3 +216,29 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ============================================================
+# Monorepo specific
+# ============================================================
+
+# Python backend
+backend/.venv/
+backend/data/
+backend/models/
+backend/logs/
+backend/.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# VitePress
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+
+# Runtime artifacts
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
