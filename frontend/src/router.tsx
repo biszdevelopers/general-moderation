@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { AuditLog } from "./pages/AuditLog";
 import { Dashboard } from "./pages/Dashboard";
