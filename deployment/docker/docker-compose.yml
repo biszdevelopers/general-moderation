@@ -7,7 +7,7 @@ services:
             dockerfile: deployment/docker/Dockerfile.backend
         container_name: moderation-backend
         ports:
-            - "8080:8080"
+            - "18427:18427"
         volumes:
             - ../../backend/models:/app/models
             - ../../backend/logs:/app/logs
@@ -31,7 +31,7 @@ services:
             context: ../../
             dockerfile: deployment/docker/Dockerfile.frontend
             args:
-                VITE_API_BASE_URL: http://backend:8080
+                VITE_API_BASE_URL: http://backend:18427
         container_name: moderation-frontend
         ports:
             - "5173:80"
