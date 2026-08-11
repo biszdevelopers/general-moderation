@@ -20,7 +20,8 @@ registered in the detector.
 Not registered because they do not exist on PyPI, carry broken dependencies,
 or are not functional on the supported runtimes: `sensitive-word-filter-cn`,
 `sensitive-word-filter`, `safetext`, `profanity-filter2`, `scheckbl`, and
-`valx`. `datasketch` runs as its own detector layer (MinHash), not here.
+`valx`. `datasketch` was removed; MinHash semantic similarity is not a
+direct profanity detector.
 
 ## Per-Language Pages
 
