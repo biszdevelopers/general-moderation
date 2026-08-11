@@ -891,7 +891,7 @@ wheels = [
 
 [[package]]
 name = "llama-cpp-python"
-version = "0.3.23"
+version = "0.3.34"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "diskcache" },
@@ -900,7 +900,7 @@ dependencies = [
     { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/fb/3932d67b89eb7d8f451719b40b67034e031e04b8b598a7f65d13e255ebfb/llama_cpp_python-0.3.23.tar.gz", hash = "sha256:85493cd887b543588941e8704640fef6a54c057443292e527559c30728375ffd", size = 68300621, upload-time = "2026-05-11T10:12:21.665Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c1/2f/46487e949da42b31847853793ddbfd44c7414e94d4364c9a41f91f30af27/llama_cpp_python-0.3.34.tar.gz", hash = "sha256:d849d286d808284f1d3ec1bd6875572430d29d1f9574a010232caa4e9cef0e35", size = 71617302, upload-time = "2026-07-20T00:00:00.000Z" }
 
 [[package]]
 name = "markupsafe"
@@ -1172,7 +1172,7 @@ requires-dist = [
     { name = "glin-profanity", specifier = "==3.4.0" },
     { name = "gunicorn", specifier = "==26.0.0" },
     { name = "huggingface-hub", specifier = "==1.27.0" },
-    { name = "llama-cpp-python", marker = "extra == 'ai'", specifier = "==0.3.23" },
+    { name = "llama-cpp-python", marker = "extra == 'ai'", specifier = "==0.3.34" },
     { name = "metaphone", specifier = "==0.6" },
     { name = "mmh3", specifier = "==5.2.1" },
     { name = "modelscope", specifier = "==1.39.1" },
