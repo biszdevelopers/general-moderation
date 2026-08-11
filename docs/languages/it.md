@@ -2,8 +2,8 @@
 
 ## Coverage
 
-Italian is covered by `badwords-py`, `glin-profanity`, `profanite`, and
-`safetext` Italian dictionaries.
+Italian is covered by `glin-profanity`, `profanite`, and `PyProfane`
+Italian dictionaries.
 
 ## Specifics
 
