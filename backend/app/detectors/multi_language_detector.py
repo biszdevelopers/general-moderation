@@ -23,7 +23,8 @@ The remaining packages are intentionally not registered:
   pipeline
 - ``valx``: its AI model is not functional on the supported runtimes and its
   documented ``get_hate_score`` API does not exist
-- ``datasketch``: already wired as the standalone ``MinHashDetector`` (Layer 7)
+- ``datasketch``: removed; MinHash semantic similarity is not a direct
+  profanity detector and would need a pre-built toxic signature database
 """
 
 from __future__ import annotations
