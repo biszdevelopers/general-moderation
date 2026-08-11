@@ -34,8 +34,6 @@ class Settings(BaseSettings):
     spam_cache_size: int = 10_000
     spam_cache_ttl_seconds: int = 60
     fuzzy_max_distance: int = 2
-    minhash_num_perm: int = 128
-    minhash_jaccard_threshold: float = 0.85
 
     enable_badwords_py: bool = True
     enable_profanite: bool = True
