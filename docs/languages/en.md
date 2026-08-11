@@ -3,8 +3,8 @@
 ## Coverage
 
 English profanity, hate speech, and abuse are covered by the verified
-packages (`profanite`, `glin-profanity`, `gangajal`, `PyProfane`) plus the
-C-backed Aho-Corasick exact matcher.
+packages (`badwords`, `profanite`, `glin-profanity`, `gangajal`, `PyProfane`)
+plus the C-backed Aho-Corasick exact matcher.
 
 ## Detection Layers
 
