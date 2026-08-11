@@ -70,9 +70,11 @@ Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
 ```bash
 cd backend
 uv sync              # create .venv and install all locked dependencies
-cp .env.example .env
 uv run python run.py
 ```
+
+Security secrets are auto-generated on first startup and written to the
+gitignored `.env`; regenerate them with `npm run generate:secrets`.
 
 See `docs/` for the full guide, API reference, and deployment instructions.
 
