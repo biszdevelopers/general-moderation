@@ -21,6 +21,6 @@ Romanized forms are partially caught by the phonetic layer.
 ## Example
 
 ```bash
-curl -X POST http://127.0.0.1:8080/moderate \
+curl -X POST http://127.0.0.1:18427/moderate \
     -d '{"text":"नमस्ते दुनिया"}'
 ```
