@@ -9,19 +9,25 @@ WebAssembly packages plus custom words.
 Only packages that install cleanly and run on the supported platforms are
 registered in the detector.
 
-| Package | Core tech | Scope |
-| :--- | :--- | :--- |
-| `profanite` | Rust | Universal |
-| `glin-profanity` | C | 25+ languages |
-| `badwords` | Rust | 26+ languages |
-| `gangajal` | WebAssembly | All languages |
-| `PyProfane` | C | Universal |
+| Package | Core tech | Scope | Status |
+| :--- | :--- | :--- | :--- |
+| `profanite` | Rust | Universal | Active |
+| `glin-profanity` | C | 25+ languages | Active |
+| `badwords` | Rust | 26+ languages | Active |
+| `gangajal` | WebAssembly | All languages | Active |
+| `PyProfane` | C | Universal | Active |
+| `safetext` | Python | 13 languages | Guard-wired |
+| `sensitive-word-filter-cn` | Python | Chinese | Guard-wired |
+| `profanity-filter2` | Python | Universal | Guard-wired |
 
-Not registered because they do not exist on PyPI, carry broken dependencies,
-or are not functional on the supported runtimes: `sensitive-word-filter-cn`,
-`sensitive-word-filter`, `safetext`, `profanity-filter2`, `scheckbl`, and
-`valx`. `datasketch` was removed; MinHash semantic similarity is not a
-direct profanity detector.
+**Active** packages run on a standard PyPI install. **Guard-wired** packages
+are import-guarded but not installable from public PyPI (broken or missing
+dependencies); they activate only when a working index provides them, see
+`backend/requirements-extra.txt`.
+
+Not registered: `scheckbl` and `valx` (their documented APIs do not exist in
+the installed versions) and `datasketch` (MinHash semantic similarity is not
+a direct profanity detector and needs a pre-built toxic-signature database).
 
 ## Per-Language Pages
 
