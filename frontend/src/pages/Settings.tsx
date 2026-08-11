@@ -1,14 +1,4 @@
-import {
-    App as AntdApp,
-    Button,
-    Card,
-    Descriptions,
-    Input,
-    Modal,
-    Space,
-    Tag,
-    Typography,
-} from "antd";
+import { App as AntdApp, Button, Card, Descriptions, Input, Space, Tag, Typography } from "antd";
 import { LockOutlined, PoweroffOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { ReactElement } from "react";
@@ -107,9 +97,7 @@ export function Settings(): ReactElement {
                             Save Key
                         </Button>
                         <Button onClick={onClearKey}>Clear Key</Button>
-                        {authenticated && (
-                            <Tag color="green">Authenticated</Tag>
-                        )}
+                        {authenticated && <Tag color="green">Authenticated</Tag>}
                     </Space>
                 </Space>
             </Card>
@@ -157,11 +145,7 @@ export function Settings(): ReactElement {
                     <Button icon={<ReloadOutlined />} onClick={() => void onReload()}>
                         Reload Word Bank
                     </Button>
-                    <Button
-                        danger
-                        icon={<PoweroffOutlined />}
-                        onClick={onShutdown}
-                    >
+                    <Button danger icon={<PoweroffOutlined />} onClick={onShutdown}>
                         Graceful Shutdown
                     </Button>
                 </Space>
