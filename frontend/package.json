@@ -1,31 +1,31 @@
 {
-    "name": "moderation-web-ui",
-    "private": true,
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "preview": "vite preview",
-        "lint": "oxlint .",
-        "format": "oxfmt . --write",
-        "format:check": "oxfmt . --check"
-    },
-    "dependencies": {
-        "react": "19.2.8",
-        "react-dom": "19.2.8",
-        "react-router-dom": "7.18.1",
-        "antd": "6.5.4",
-        "@ant-design/icons": "6.3.2"
-    },
-    "devDependencies": {
-        "@types/react": "19.2.18",
-        "@types/react-dom": "19.2.4",
-        "@types/react-router-dom": "5.3.3",
-        "@vitejs/plugin-react": "6.0.3",
-        "typescript": "6.0.3",
-        "vite": "8.1.0",
-        "oxfmt": "latest",
-        "oxlint": "latest"
-    }
+  "name": "moderation-web-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint .",
+        "format": "oxfmt --config .oxfmt.json . --write",
+        "format:check": "oxfmt --config .oxfmt.json . --check"
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.3.2",
+    "antd": "6.5.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router-dom": "7.18.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@types/react-router-dom": "5.3.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "oxfmt": "latest",
+    "oxlint": "latest",
+    "typescript": "6.0.3",
+    "vite": "8.1.0"
+  }
 }
