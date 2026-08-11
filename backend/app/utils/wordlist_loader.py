@@ -13,27 +13,20 @@ import importlib
 from collections.abc import Iterable
 from typing import Any
 
-# Candidate (module, attribute-path) pairs for each multi-language package.
+# Candidate (module, attribute-path) pairs for each installed package.
 _PACKAGE_ATTRIBUTES: list[tuple[str, tuple[str, ...]]] = [
-    ("badwords_py", ("lists", "words")),
-    ("badwords_py", ("WORDS",)),
-    ("badwords_py", ("all_words",)),
+    ("badwords", ("words",)),
+    ("badwords", ("WORDS",)),
+    ("badwords", ("all_words",)),
     ("profanite", ("words",)),
     ("profanite", ("PROFANITY_WORDS",)),
     ("glin_profanity", ("words",)),
     ("glin_profanity", ("profanities",)),
-    ("safetext", ("words",)),
-    ("safetext", ("profanity",)),
-    ("sensitive_word_filter_cn", ("WORDS",)),
-    ("sensitive_word_filter_cn", ("words",)),
-    ("profanity_filter", ("wordlist",)),
-    ("profanity_filter2", ("wordlist",)),
     ("gangajal", ("words",)),
     ("scheckbl", ("WORDS",)),
     ("valx", ("words",)),
-    ("sensitive_word_filter", ("WORDS",)),
-    ("pyprofane", ("wordlist",)),
-    ("pyprofane", ("all_profanities",)),
+    ("PyProfane", ("words",)),
+    ("PyProfane", ("all_profanities",)),
 ]
 
 
