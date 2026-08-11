@@ -15,6 +15,38 @@ User → Next.js (VPS) → FRP Tunnel (mTLS) → Python FastAPI (Private Server)
 - Node.js 20.19+ is required (Vite 8 requires Node.js 20.19+)
 - npm 10.0+ is required
 
+## Model Requirements
+
+- **Disk space**: at least 6 GB free for the Q4_K_M GGUF model (~5.78 GB)
+  plus the tokenized context cache.
+- **Network**: outbound HTTPS access to `huggingface.co` (or a mirror) for
+  the first-run auto-download.
+- **Memory**: with `MODEL_MLOCK=true` and Q8_0 KV cache, plan for roughly
+  6-8 GB RSS per worker when the model is loaded.
+
+### China Mirror Configuration
+
+The model downloader probes endpoints in order and uses the first reachable
+one:
+
+1. `https://huggingface.co`
+2. `https://hf-mirror.com`
+3. `https://www.modelscope.cn`
+
+Override the defaults in `.env` with `HF_ENDPOINT`, `HF_MIRROR`, and
+`MODELSCOPE_ENDPOINT`. If no endpoint is reachable, the service logs manual
+download instructions and continues with Level 2 disabled.
+
+### Manual Model Placement
+
+To avoid the auto-download entirely:
+
+1. Download the GGUF from
+   <https://huggingface.co/bartowski/Qwen_Qwen3.5-9B-GGUF> (or the
+   hf-mirror.com equivalent).
+2. Place it at `backend/models/Qwen_Qwen3.5-9B-Q4_K_M.gguf`.
+3. The service detects the file on startup and loads it directly.
+
 ## systemd
 
 Install `deployment/systemd/moderation.service` as
