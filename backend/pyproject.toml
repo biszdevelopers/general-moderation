@@ -1,3 +1,59 @@
+[project]
+name = "moderation-backend"
+version = "1.0.0"
+description = "Multi-language content moderation microservice backend"
+requires-python = ">=3.11"
+dependencies = [
+    # Core frameworks
+    "fastapi==0.141.1",
+    "uvicorn==0.52.1",
+    "gunicorn==26.0.0",
+    "pydantic-settings==2.15.0",
+    "python-dotenv==1.2.2",
+    "orjson==3.11.9",
+    # Level 1 - C/C++/Rust detectors
+    "pyahocorasick==2.3.1",
+    "python-Levenshtein==0.27.3",
+    "pybloom-live==4.0.0",
+    "mmh3==5.2.1",
+    "regex==2026.7.19",
+    "pybktree==1.1",
+    "metaphone==0.6",
+    # Multi-language detectors (installable from public indexes)
+    "badwords-py==2.1.0",
+    "profanite==0.1.9",
+    "glin-profanity==3.4.0",
+    "gangajal==0.1.0",
+    "scheckbl==1.1.0",
+    "valx==0.2.6",
+    "pyprofane==1.0.7",
+    "aiohttp==3.12.0",
+    # Security & utilities
+    "cryptography==44.0.1",
+    "slowapi==0.1.10",
+    "python-json-logger==4.1.0",
+    "atomicwrites==1.4.1",
+    "python-multipart==0.0.27",
+    # Semantic similarity layer (not wired into detection; requires a
+    # pre-built toxic-signature database)
+    "datasketch==2.0.0",
+]
+
+[project.optional-dependencies]
+ai = ["llama-cpp-python==0.3.23"]
+
+[dependency-groups]
+dev = ["ruff==0.16.2"]
+
+# Not included because no reachable index (pypi.org, Tsinghua, Aliyun)
+# provides an installable release:
+#   sensitive-word-filter-cn==0.1.6, profanite==0.1.10, badwords-py==2.3.1,
+#   safetext==0.3.3, profanity-filter2==1.4.3
+# The MultiLanguageDetector guard-wires these; they activate if a working
+# index provides them. Verify with: uv add <package>==<version>
+
+[tool.uv]
+
 [tool.ruff]
 line-length = 100
 indent-width = 4
