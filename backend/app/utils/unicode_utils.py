@@ -9,6 +9,13 @@ from __future__ import annotations
 import re
 import unicodedata
 
+try:
+    import regex as _compiled_regex
+except ImportError:  # pragma: no cover - regex is the C-backed primary
+    _compiled_regex = None
+
+_TOKEN_PATTERN = re.compile(r"\w+", re.UNICODE)
+
 
 class UnicodeUtils:
     """Static helpers for normalizing and cleaning input text."""
@@ -45,3 +52,17 @@ class UnicodeUtils:
         :return: cleaned text ready for the detection pipeline
         """
         return UnicodeUtils.collapse_whitespace(UnicodeUtils.normalize(text))
+
+    @staticmethod
+    def tokenize(text: str) -> list[str]:
+        """Split text into lowercased word tokens.
+
+        Uses the C-backed ``regex`` module when available, falling back to the
+        standard library ``re`` module.
+
+        :param text: input text
+        :return: lowercased tokens in document order
+        """
+        if _compiled_regex is not None:
+            return _compiled_regex.findall(r"\w+", UnicodeUtils.prepare(text), _compiled_regex.UNICODE)
+        return _TOKEN_PATTERN.findall(UnicodeUtils.prepare(text))
