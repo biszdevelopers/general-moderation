@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import gc
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import FileResponse, ORJSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from starlette.concurrency import run_in_threadpool
@@ -59,6 +61,8 @@ RATE_LIMITER: RateLimiter = RateLimiter(
 
 ADMIN_AUTH = Depends(RequireAdminApiKey(SETTINGS.admin_api_key))
 
+_frontend_dist: Path = Path(SETTINGS.frontend_dist_path)
+
 # Tune the garbage collector for a request-heavy workload: fewer, larger
 # collections reduce GC pauses on hot paths.
 gc.set_threshold(700, 10, 5)
@@ -84,8 +88,8 @@ app: FastAPI = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=SETTINGS.allowed_origins,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Content-Type", "X-API-Key"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "X-API-Key", "Authorization"],
     allow_credentials=False,
     max_age=600,
 )
@@ -110,12 +114,67 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> ORJSON
 
 
 @app.get("/")
-def root() -> dict[str, str]:
-    """Return a lightweight liveness response.
+def root() -> Response:
+    """Serve the built frontend, falling back to a JSON liveness response.
 
-    :return: service name and status
+    :return: the React index.html when built, otherwise service status
     """
-    return {"service": "multi-language-moderation", "status": "ok"}
+    index_file: Path = _frontend_dist / "index.html"
+    if _frontend_dist.is_dir() and index_file.is_file():
+        return FileResponse(index_file)
+    return ORJSONResponse({"service": "multi-language-moderation", "status": "ok"})
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    """Return a lightweight health response.
+
+    :return: service status
+    """
+    return {"status": "healthy"}
+
+
+@app.get("/metrics", include_in_schema=False)
+def metrics_public() -> Response:
+    """Return the Prometheus metrics payload.
+
+    :return: the metrics exposition as text
+    """
+    from fastapi.responses import PlainTextResponse
+
+    lines: list[str] = []
+    for name, value in ENGINE.metrics().items():
+        lines.append(f"# TYPE {name} counter")
+        lines.append(f"{name} {value}")
+    return PlainTextResponse("\n".join(lines) + "\n", media_type="text/plain; version=0.0.4")
+
+
+@app.options("/{full_path:path}")
+async def options_fallback(full_path: str) -> Response:
+    """Answer non-preflight OPTIONS requests with a 200.
+
+    :param full_path: the requested path
+    :return: an empty 200 response
+    """
+    return Response(status_code=status.HTTP_200_OK)
+
+
+if _frontend_dist.is_dir():
+    app.mount("/assets", StaticFiles(directory=_frontend_dist / "assets"), name="assets")
+
+    @app.get("/{full_path:path}")
+    def spa_fallback(full_path: str) -> Response:
+        """Serve the SPA entry for client-side routes.
+
+        :param full_path: the requested path
+        :return: index.html, or 404 for unknown API paths
+        """
+        if full_path.startswith(("admin", "moderate", "health", "metrics")):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        index_file: Path = _frontend_dist / "index.html"
+        if index_file.is_file():
+            return FileResponse(index_file)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @app.post("/moderate", response_model=ModerationResponse)
