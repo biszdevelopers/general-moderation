@@ -13,7 +13,6 @@ spaces. The pipeline relies on:
 
 - The Aho-Corasick automaton for exact phrase matches.
 - The BK-tree for edit-distance variants.
-- MinHash for near-duplicate short phrases.
 
 ## Common Attacks
 
