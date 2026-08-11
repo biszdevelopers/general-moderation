@@ -32,11 +32,13 @@ All versions are verified and available on PyPI as of August 2026:
 - fastapi: 0.141.1
 - uvicorn: 0.52.1
 - gunicorn: 26.0.0
+- python-Levenshtein: 0.27.4
+- cryptography: 50.0.0
 - badwords-py: 2.1.0 (2.2.0/2.3.1 have no installable artifact for cp314)
 - profanite: 0.1.9 (0.1.10 does not exist)
 - slowapi: 0.1.10 (not 0.2.0)
 - python-json-logger: 4.1.0 (not 3.2.0)
-- python-multipart: 0.0.27
+- python-multipart: 0.0.32
 
 ## Server
 
