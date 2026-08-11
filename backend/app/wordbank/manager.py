@@ -52,9 +52,7 @@ class WordBankManager:
         self._bloom_capacity: int = bloom_capacity
         self._bloom_error_rate: float = bloom_error_rate
         self._logger: Any = logger
-        self._snapshot: WordBankSnapshot = WordBankSnapshot(
-            words=(), automaton=None, bloom=None
-        )
+        self._snapshot: WordBankSnapshot = WordBankSnapshot(words=(), automaton=None, bloom=None)
         self.reload()
 
     def add_word(
@@ -191,19 +189,32 @@ class WordBankManager:
         """Release storage resources."""
         self._storage.close()
 
+    @staticmethod
+    def _automaton_module() -> Any | None:
+        """Resolve the Aho-Corasick module regardless of its import name.
+
+        :return: the Automaton class, or None when unavailable
+        """
+        for module_name in ("ahocorasick", "pyahocorasick"):
+            try:
+                module: Any = __import__(module_name)
+                return module.Automaton
+            except (ImportError, AttributeError):
+                continue
+        return None
+
     def _build_automaton(self, words: tuple[str, ...]) -> Any | None:
         """Compile the words into an Aho-Corasick automaton.
 
         :param words: the words to index
         :return: a pyahocorasick Automaton, or None when unavailable
         """
-        try:
-            from pyahocorasick import Automaton
-        except ImportError:
+        automaton_class: Any | None = WordBankManager._automaton_module()
+        if automaton_class is None:
             return None
         if not words:
             return None
-        automaton: Automaton = Automaton()
+        automaton: Any = automaton_class()
         for word in words:
             automaton.add_word(word, word)
         automaton.make_automaton()
