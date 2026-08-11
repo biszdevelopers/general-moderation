@@ -23,7 +23,7 @@ plus the C-backed Aho-Corasick exact matcher.
 ## Example
 
 ```bash
-curl -X POST http://127.0.0.1:8080/moderate \
+curl -X POST http://127.0.0.1:18427/moderate \
     -d '{"text":"you are a phuq1ng idiot"}'
 ```
 
