@@ -77,9 +77,9 @@ The service runs **five active detectors** on a standard PyPI install:
 5. **PyProfane** – C, Soundex-based (`isProfane`)
 
 Three more packages are guard-wired (`safetext`, `sensitive-word-filter-cn`,
-`profanity-filter2`) but are not installable from public PyPI because of
-broken or missing dependencies. They activate automatically if a working
-index provides them; install them from `backend/requirements-extra.txt`.
+`profanity-filter2`) but no reachable index provides an installable release.
+They activate automatically if a working index provides them
+(e.g. `cd backend && uv add safetext==0.3.3`).
 
 `scheckbl` and `valx` are not wired (their documented APIs do not exist in
 the installed versions). `datasketch` is a potential future semantic layer
