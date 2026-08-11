@@ -1,0 +1,50 @@
+# ============================================================
+# CORE FRAMEWORKS
+# ============================================================
+fastapi==0.141.1
+uvicorn==0.52.1
+gunicorn==26.0.0
+pydantic-settings==2.15.0
+python-dotenv==1.2.2
+orjson==3.11.9          # Rust JSON
+
+# ============================================================
+# LEVEL 1 - C/C++/RUST DETECTORS
+# ============================================================
+pyahocorasick==2.3.1    # C
+python-Levenshtein==0.27.3  # C
+pybloom-live==4.0.0     # C
+mmh3==5.2.1             # C
+regex==2026.7.19        # C
+pybktree==1.1           # C
+metaphone==0.6          # C
+datasketch==2.0.0       # C (NumPy)
+
+# ============================================================
+# MULTI-LANGUAGE DETECTORS (C/C++/Rust/WASM)
+# ============================================================
+badwords-py==2.3.1      # Rust
+profanite==0.1.10       # Rust
+glin-profanity==3.4.0   # C
+safetext==0.3.3         # C
+sensitive-word-filter-cn==0.1.6  # C
+profanity-filter2==1.4.3  # C
+gangajal==0.1.0         # WASM
+scheckbl==1.1.0         # C
+valx==0.2.6             # C + AI
+sensitive-word-filter==1.0.2  # C
+pyprofane==1.0.7        # C
+
+# ============================================================
+# LEVEL 2 - AI INFERENCE (C++)
+# ============================================================
+llama-cpp-python==0.3.23
+
+# ============================================================
+# SECURITY (C/C++/Rust)
+# ============================================================
+cryptography==44.0.1    # C (OpenSSL)
+slowapi==0.2.0          # C + Redis
+python-json-logger==3.2.0  # C
+atomicwrites==1.4.1     # C
+python-multipart==0.0.20  # C
