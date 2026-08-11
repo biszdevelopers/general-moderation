@@ -20,10 +20,10 @@ registered in the detector.
 | `sensitive-word-filter-cn` | Python | Chinese | Guard-wired |
 | `profanity-filter2` | Python | Universal | Guard-wired |
 
-**Active** packages run on a standard PyPI install. **Guard-wired** packages
-are import-guarded but not installable from public PyPI (broken or missing
-dependencies); they activate only when a working index provides them, see
-`backend/requirements-extra.txt`.
+**Active** packages run on a standard install. **Guard-wired** packages are
+import-guarded but no reachable index (pypi.org, Tsinghua, Aliyun) provides an
+installable release; they activate only when a working index provides them
+(e.g. `uv add safetext==0.3.3`).
 
 Not registered: `scheckbl` and `valx` (their documented APIs do not exist in
 the installed versions) and `datasketch` (MinHash semantic similarity is not
