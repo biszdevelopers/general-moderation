@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+    backend:
+        build:
+            context: ../../
+            dockerfile: deployment/docker/Dockerfile.backend
+        container_name: moderation-backend
+        ports:
+            - "8080:8080"
+        volumes:
+            - ../../backend/models:/app/models
+            - ../../backend/logs:/app/logs
+            - ../../backend/data:/app/data
+        env_file:
+            - ../../backend/.env
+        restart: always
+        security_opt:
+            - no-new-privileges:true
+        cap_drop:
+            - ALL
+        cap_add:
+            - SETGID
+            - SETUID
+        mem_limit: 20g
+        mem_reservation: 10g
+        cpus: 7.0
+
+    frontend:
+        build:
+            context: ../../
+            dockerfile: deployment/docker/Dockerfile.frontend
+            args:
+                VITE_API_BASE_URL: http://backend:8080
+        container_name: moderation-frontend
+        ports:
+            - "5173:80"
+        env_file:
+            - ../../frontend/.env
+        restart: always
+        security_opt:
+            - no-new-privileges:true
+        cap_drop:
+            - ALL
+        cap_add:
+            - SETGID
+            - SETUID
