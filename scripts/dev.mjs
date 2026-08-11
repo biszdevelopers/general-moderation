@@ -98,6 +98,12 @@ switch (command) {
             "8080",
         ]);
         break;
+    case "download":
+        runInBackend(["python", "-m", "app.ai.download"]);
+        break;
+    case "gen-secrets":
+        runInBackend(["python", "-m", "app.secret_gen", ...process.argv.slice(3)]);
+        break;
     case "install":
         run(npmCommand(), ["install"], root);
         syncBackend();
