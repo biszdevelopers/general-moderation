@@ -2,8 +2,8 @@
 
 ## Coverage
 
-Russian is covered by `badwords-py`, `glin-profanity`, `profanite`, and
-`safetext`, all of which ship Russian profanity dictionaries.
+Russian is covered by `glin-profanity`, `profanite`, and `PyProfane`,
+all of which ship Russian profanity dictionaries.
 
 ## Specifics
 
