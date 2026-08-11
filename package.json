@@ -1,0 +1,22 @@
+{
+    "name": "moderation-monorepo",
+    "private": true,
+    "version": "1.0.0",
+    "scripts": {
+        "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+        "backend": "node scripts/dev.mjs backend",
+        "frontend": "cd frontend && npm run dev",
+        "install:all": "node scripts/dev.mjs install",
+        "build": "cd frontend && npm run build",
+        "format": "node scripts/dev.mjs format",
+        "lint": "node scripts/dev.mjs lint",
+        "test": "echo \"No tests configured yet\""
+    },
+    "devDependencies": {
+        "concurrently": "9.1.0"
+    },
+    "engines": {
+        "node": ">=20.19.0",
+        "npm": ">=10.0.0"
+    }
+}
