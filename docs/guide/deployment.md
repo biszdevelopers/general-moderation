@@ -126,8 +126,9 @@ restarts on failure, and caps memory at 20 GiB with a 700% CPU quota.
 ## FRP Client
 
 Configure `deployment/frp/frpc.ini` with your VPS address and token, then
-start the FRP client on the private server. Port `8080` is published as
-`9000` on the public VPS. Use mTLS between the FRP server and client.
+start the FRP client on the private server. Port `APP_PORT` (`18427`) is
+published as `9000` on the public VPS. Use mTLS between the FRP server and
+client.
 
 ## Log Rotation
 
@@ -150,8 +151,9 @@ docker compose up -d --build
 The compose file:
 
 - Runs the backend with dropped capabilities, `no-new-privileges`, a 20 GiB
-  memory cap, and 7 CPUs.
-- Runs the frontend (built and served by nginx) on port `5173`.
+  memory cap, and 7 CPUs on port `18427`.
+- Runs the frontend (built and served by nginx, proxying the API prefixes)
+  on port `5173`.
 - Mounts `backend/models`, `backend/logs`, and `backend/data` as volumes.
 
 ## Nginx (Frontend + API)
