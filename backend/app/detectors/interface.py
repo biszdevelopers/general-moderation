@@ -54,5 +54,6 @@ class DetectorInterface(ABC):
         """
         return True
 
+    @abstractmethod
     def reload(self) -> None:
         """Rebuild any cached structures after the word bank changes."""
