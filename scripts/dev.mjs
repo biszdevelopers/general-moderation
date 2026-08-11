@@ -78,7 +78,10 @@ function syncBackend() {
         run(uv, ["sync"], backendDir());
         return;
     }
-    run(venvPython(), ["-m", "pip", "install", "-r", "requirements.txt"], backendDir());
+    console.error(
+        "uv is required for backend installs. Install it from https://astral.sh/uv/",
+    );
+    process.exit(1);
 }
 
 const command = process.argv[2];
