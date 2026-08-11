@@ -25,8 +25,8 @@ def main() -> None:
     server: Server = Server(
         Config(
             "app.main:app",
-            host=settings.host,
-            port=settings.port,
+            host=settings.app_host,
+            port=settings.app_port,
             workers=1,
             loop="uvloop",
             log_level=os.getenv("LOG_LEVEL", "info").lower(),
