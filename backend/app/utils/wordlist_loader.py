@@ -13,18 +13,15 @@ import importlib
 from collections.abc import Iterable
 from typing import Any
 
-# Candidate (module, attribute-path) pairs for each installed package.
+# Candidate (module, attribute-path) pairs for each wired package.
+# Only the packages registered in the detector are probed; the heavy
+# scikit-learn dependency of valx is deliberately excluded from reloads.
 _PACKAGE_ATTRIBUTES: list[tuple[str, tuple[str, ...]]] = [
-    ("badwords", ("words",)),
-    ("badwords", ("WORDS",)),
-    ("badwords", ("all_words",)),
     ("profanite", ("words",)),
     ("profanite", ("PROFANITY_WORDS",)),
     ("glin_profanity", ("words",)),
     ("glin_profanity", ("profanities",)),
     ("gangajal", ("words",)),
-    ("scheckbl", ("WORDS",)),
-    ("valx", ("words",)),
     ("PyProfane", ("words",)),
     ("PyProfane", ("all_profanities",)),
 ]
