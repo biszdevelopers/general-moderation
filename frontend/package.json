@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "lint": "oxlint . --ext ts,tsx",
+        "lint": "oxlint .",
         "format": "oxfmt . --write",
         "format:check": "oxfmt . --check"
     },
