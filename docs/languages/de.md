@@ -2,8 +2,8 @@
 
 ## Coverage
 
-German is covered by `badwords-py`, `glin-profanity`, `profanite`, and
-`safetext` German dictionaries.
+German is covered by `glin-profanity`, `profanite`, and `PyProfane` German
+dictionaries.
 
 ## Specifics
 
