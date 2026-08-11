@@ -23,8 +23,9 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    host: str = "127.0.0.1"
-    port: int = 8080
+    app_host: str = "0.0.0.0"
+    app_port: int = 18427
+    frontend_dist_path: str = "../frontend/dist"
 
     workers: int = 3
 
@@ -65,6 +66,8 @@ class Settings(BaseSettings):
     enable_profanity_filter: bool = True
     enable_gangajal: bool = True
     enable_pyprofane: bool = True
+    enable_sensitive_stop_words: bool = True
+    sensitive_stop_words_dir: str = "./data/sensitive-stop-words"
 
     admin_api_key: str = "CHANGE_ME_SUPER_SECRET_KEY"
     secret_key: str = "CHANGE_ME_SECRET_KEY_FOR_SESSION"
