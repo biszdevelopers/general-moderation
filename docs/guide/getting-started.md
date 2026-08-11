@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Python 3.11 or newer
-- Node.js 20 or newer (for the admin UI)
+- Node.js 20.19+ (Vite 8 requirement) and npm 10+
 - A Linux server or Docker for production deployments
 
 ## Repository Layout
