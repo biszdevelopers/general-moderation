@@ -73,7 +73,6 @@ app: FastAPI = FastAPI(
     title="Multi-Language Moderation Service",
     version="1.0.0",
     lifespan=lifespan,
-    default_response_class=ORJSONResponse,
 )
 
 app.add_middleware(
