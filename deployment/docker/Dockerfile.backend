@@ -4,13 +4,17 @@ WORKDIR /app
 
 RUN useradd --create-home --uid 1000 moderation
 
-COPY backend/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+COPY backend/pyproject.toml backend/uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
 
 COPY backend/ ./
 
 RUN mkdir -p /app/data /app/logs /app/models && \
     chown -R moderation:moderation /app
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 USER moderation
 
