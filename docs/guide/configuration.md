@@ -54,20 +54,27 @@ The optional Level 2 engine lives in `requirements-ai.txt`
 
 ## Multi-Language Toggles
 
-Each verified package can be disabled independently:
+Each registered package can be disabled independently:
 
 | Variable | Package |
 | :--- | :--- |
 | `ENABLE_BADWORDS_PY` | `badwords` (Rust) |
 | `ENABLE_PROFANITE` | `profanite` (Rust) |
 | `ENABLE_GLIN_PROFANITY` | `glin-profanity` (C) |
+| `ENABLE_SAFETEXT` | `safetext` (guard-wired) |
+| `ENABLE_SENSITIVE_WORD_FILTER_CN` | `sensitive-word-filter-cn` (guard-wired) |
+| `ENABLE_PROFANITY_FILTER` | `profanity-filter2` (guard-wired) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
 
-The following packages are not registered: `sensitive-word-filter` and
-`sensitive-word-filter-cn` (no PyPI package), `safetext` and
-`profanity-filter2` (broken dependencies), `scheckbl` (async-only API), and
-`valx` (non-functional model). `datasketch` was removed; MinHash semantic
+`badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
+activate on a standard PyPI install. `safetext`, `sensitive-word-filter-cn`,
+and `profanity-filter2` are guard-wired but not installable from public PyPI
+(broken or missing dependencies); they activate only when a working index
+provides them, see `backend/requirements-extra.txt`.
+
+`scheckbl` and `valx` are not registered (their documented APIs do not exist
+in the installed versions). `datasketch` is not wired; MinHash semantic
 similarity is not a direct profanity detector.
 
 A package that is not installed or that is disabled is skipped at runtime; the
