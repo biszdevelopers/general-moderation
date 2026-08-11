@@ -34,6 +34,12 @@
     color: #001529;
 }
 
+.app-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .app-header__logout {
     color: #001529;
 }
@@ -41,4 +47,9 @@
 .app-content {
     padding: 0;
     overflow: auto;
+}
+
+.app-footer {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.45);
 }
