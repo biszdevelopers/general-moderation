@@ -14,8 +14,7 @@ export interface AppContextType {
     logout: () => void;
 }
 
-const apiBaseUrl: string =
-    (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
+const apiBaseUrl: string = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
 
 const AppContext = createContext<AppContextType | null>(null);
 
