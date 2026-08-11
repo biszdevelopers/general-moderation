@@ -12,6 +12,8 @@ import logging
 import time
 from typing import Any
 
+import mmh3
+
 from app.ai.llama_detector import LlamaCppDetector
 from app.detectors.aho_detector import AhoCorasickDetector
 from app.detectors.bktree_detector import BkTreeDetector
@@ -50,6 +52,10 @@ class ModerationEngine:
             "rate_limit_hits_total": 0.0,
         }
         self._detector_seconds: dict[str, float] = {}
+        self._cache: dict[int, ModerationResponse] = {}
+        self._cache_timestamps: dict[int, float] = {}
+        self._cache_max_size: int = settings.cache_max_size
+        self._cache_ttl: int = settings.cache_ttl_seconds
 
     def _build_detectors(self) -> list[DetectorInterface]:
         """Instantiate every detector in priority order.
@@ -67,9 +73,57 @@ class ModerationEngine:
 
     def refresh_detectors(self) -> None:
         """Rebuild detector caches after the word bank is reloaded."""
+        self.clear_cache()
         for detector in self._detectors:
             if detector.is_available():
                 detector.reload()
+
+    def warm_up_model(self) -> None:
+        """Start the background model download-and-load."""
+        self._llama.start_preload()
+
+    def clear_cache(self) -> None:
+        """Drop every cached moderation result."""
+        self._cache.clear()
+        self._cache_timestamps.clear()
+
+    def _get_cache_key(self, text: str) -> int:
+        """Compute the cache key for a message.
+
+        :param text: message text
+        :return: a 64-bit MurmurHash3 key
+        """
+        return mmh3.hash64(text)[0]
+
+    def _get_cached(self, key: int) -> ModerationResponse | None:
+        """Return a fresh cached response for the key, or None.
+
+        Expired entries are evicted on access.
+
+        :param key: message hash
+        :return: the cached response or None
+        """
+        cached: ModerationResponse | None = self._cache.get(key)
+        if cached is None:
+            return None
+        if time.monotonic() - self._cache_timestamps[key] > self._cache_ttl:
+            del self._cache[key]
+            del self._cache_timestamps[key]
+            return None
+        return cached
+
+    def _set_cache(self, key: int, response: ModerationResponse) -> None:
+        """Store a response, evicting the oldest entry when full.
+
+        :param key: message hash
+        :param response: the moderation response to cache
+        """
+        if len(self._cache) >= self._cache_max_size:
+            oldest_key: int = min(self._cache_timestamps, key=self._cache_timestamps.get)
+            del self._cache[oldest_key]
+            del self._cache_timestamps[oldest_key]
+        self._cache[key] = response
+        self._cache_timestamps[key] = time.monotonic()
 
     def moderate(self, request: ModerationRequest) -> ModerationResponse:
         """Moderate a single message.
@@ -78,6 +132,26 @@ class ModerationEngine:
         :return: the moderation response
         """
         start_ns: int = time.perf_counter_ns()
+        cache_key: int = self._get_cache_key(request.text)
+        cached: ModerationResponse | None = self._get_cached(cache_key)
+        if cached is not None:
+            self._metrics["requests_total"] += 1.0
+            self._metrics[f"requests_{cached.verdict.value.lower()}_total"] = (
+                self._metrics.get(f"requests_{cached.verdict.value.lower()}_total", 0.0) + 1.0
+            )
+            latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
+            return ModerationResponse(
+                id=request.id,
+                verdict=cached.verdict,
+                level_used=cached.level_used,
+                reasons=cached.reasons,
+                matched_words=cached.matched_words,
+                matched_language=cached.matched_language,
+                confidence_score=cached.confidence_score,
+                latency_ms=latency_ms,
+                detector_chain=cached.detector_chain,
+            )
+
         chain, reasons, matched_words, matched_language, confidence, verdict = self._run_level_one(
             request.text
         )
@@ -116,7 +190,7 @@ class ModerationEngine:
             chain=chain,
         )
 
-        return ModerationResponse(
+        response: ModerationResponse = ModerationResponse(
             id=request.id,
             verdict=verdict,
             level_used=level_used,
@@ -127,6 +201,8 @@ class ModerationEngine:
             latency_ms=latency_ms,
             detector_chain=chain,
         )
+        self._set_cache(cache_key, response)
+        return response
 
     def _run_level_one(
         self, text: str
