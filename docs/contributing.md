@@ -87,4 +87,4 @@ specific dictionary contents; use the custom word bank API to seed fixtures.
 ## License
 
 By contributing you agree that your contributions are licensed under the
-[MIT License](../LICENSE).
+MIT License.
