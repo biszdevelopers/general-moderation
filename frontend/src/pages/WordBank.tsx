@@ -9,6 +9,7 @@ import {
     Select,
     Space,
     Table,
+    Tag,
     Typography,
 } from "antd";
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from "@ant-design/icons";
@@ -154,17 +155,15 @@ export function WordBank(): ReactElement {
             if (!Array.isArray(parsed)) {
                 throw new Error("Payload must be a JSON array");
             }
-            const items: WordPayload[] = parsed.map(
-                (item: unknown): WordPayload => {
-                    const entry: WordPayload = item as WordPayload;
-                    return {
-                        word: String(entry.word),
-                        language: String(entry.language ?? "any"),
-                        category: String(entry.category ?? "other"),
-                        severity: Number(entry.severity ?? 1),
-                    };
-                },
-            );
+            const items: WordPayload[] = parsed.map((item: unknown): WordPayload => {
+                const entry: WordPayload = item as WordPayload;
+                return {
+                    word: String(entry.word),
+                    language: String(entry.language ?? "any"),
+                    category: String(entry.category ?? "other"),
+                    severity: Number(entry.severity ?? 1),
+                };
+            });
             const result: { imported: number } = await wordBankService.importWords(items);
             message.success(`Imported ${result.imported} words`);
             setImportOpen(false);
@@ -196,10 +195,7 @@ export function WordBank(): ReactElement {
                     <Button size="small" onClick={() => openEditModal(record)}>
                         Edit
                     </Button>
-                    <Popconfirm
-                        title="Remove this word?"
-                        onConfirm={() => onRemove(record)}
-                    >
+                    <Popconfirm title="Remove this word?" onConfirm={() => onRemove(record)}>
                         <Button size="small" danger>
                             Remove
                         </Button>
@@ -232,17 +228,10 @@ export function WordBank(): ReactElement {
                     <Button icon={<DownloadOutlined />} onClick={() => void onExport()}>
                         Export
                     </Button>
-                    <Button
-                        icon={<UploadOutlined />}
-                        onClick={() => setImportOpen(true)}
-                    >
+                    <Button icon={<UploadOutlined />} onClick={() => setImportOpen(true)}>
                         Import
                     </Button>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={openAddModal}
-                    >
+                    <Button type="primary" icon={<PlusOutlined />} onClick={openAddModal}>
                         Add Word
                     </Button>
                 </Space>
