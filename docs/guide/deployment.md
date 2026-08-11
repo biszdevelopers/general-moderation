@@ -49,6 +49,14 @@ curl http://127.0.0.1:18427/admin/health -H "X-API-Key: $KEY"
 `npm run start` (alias for `start:dev`) keeps the two-port development
 setup: Vite on `5173` proxying API calls to uvicorn on `8080`.
 
+### Platform Notes
+
+`start:prod` runs **Gunicorn on Linux** (`-c gunicorn.conf.py`, 3 preloaded
+workers on `APP_HOST:APP_PORT`) and **a single uvicorn worker through
+`run.py` on Windows**, because Gunicorn and its `fcntl` dependency are
+Unix-only. Both read the same `backend/.env`, so `APP_HOST`, `APP_PORT`, and
+`WORKERS` behave identically; on Windows the worker count is always one.
+
 ### Sensitive Stop Words Submodule
 
 The `backend/data/sensitive-stop-words` submodule provides Chinese political,
@@ -74,6 +82,9 @@ The lists are cached at startup and rebuilt on `/admin/reload`.
   the first-run auto-download.
 - **Memory**: with `MODEL_MLOCK=true` and Q8_0 KV cache, plan for roughly
   6-8 GB RSS per worker when the model is loaded.
+- **llama-cpp-python 0.3.34**: required to parse the Qwen3.5 architecture.
+  See [Configuration](/guide/configuration) for the `ai` extra and the
+  Windows prebuilt-wheel install.
 
 ### China Mirror Configuration
 
