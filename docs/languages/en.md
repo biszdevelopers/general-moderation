@@ -2,9 +2,8 @@
 
 ## Coverage
 
-English profanity, hate speech, and abuse are covered by every universal
-package (`badwords-py`, `profanite`, `glin-profanity`, `safetext`,
-`profanity-filter2`, `gangajal`, `scheckbl`, `valx`, `pyprofane`) plus the
+English profanity, hate speech, and abuse are covered by the verified
+packages (`profanite`, `glin-profanity`, `gangajal`, `PyProfane`) plus the
 C-backed Aho-Corasick exact matcher.
 
 ## Detection Layers
