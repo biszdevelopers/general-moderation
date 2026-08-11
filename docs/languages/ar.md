@@ -2,7 +2,7 @@
 
 ## Coverage
 
-Arabic is covered by `badwords-py`, `glin-profanity`, and `profanite` Arabic
+Arabic is covered by `glin-profanity` and `profanite` Arabic
 dictionaries.
 
 ## Specifics
