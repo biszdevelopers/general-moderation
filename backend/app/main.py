@@ -8,6 +8,7 @@ guarded by the constant-time API key dependency.
 
 from __future__ import annotations
 
+import gc
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -58,13 +59,18 @@ RATE_LIMITER: RateLimiter = RateLimiter(
 
 ADMIN_AUTH = Depends(RequireAdminApiKey(SETTINGS.admin_api_key))
 
+# Tune the garbage collector for a request-heavy workload: fewer, larger
+# collections reduce GC pauses on hot paths.
+gc.set_threshold(700, 10, 5)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Yield control to the application then release resources.
+    """Start the model preload, yield, then release resources.
 
     :param app: the FastAPI application
     """
+    ENGINE.warm_up_model()
     yield
     ENGINE.shutdown()
 
