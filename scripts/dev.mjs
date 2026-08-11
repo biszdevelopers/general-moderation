@@ -1,8 +1,9 @@
 // Cross-platform developer launcher for the moderation monorepo.
 //
-// Resolves the backend virtualenv interpreter and the platform npm command so
-// the root package.json scripts work identically on Windows and Linux.
+// Prefers uv (the modern Python toolchain) for backend commands and falls
+// back to the backend virtualenv interpreter when uv is not installed.
 import { spawnSync } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,6 +14,25 @@ function venvPython() {
     return isWindows
         ? path.join(root, "backend", ".venv", "Scripts", "python.exe")
         : path.join(root, "backend", ".venv", "bin", "python");
+}
+
+function uvCommand() {
+    const candidates = [process.env.UV, "uv"];
+    if (isWindows) {
+        candidates.push(path.join(os.homedir(), ".local", "bin", "uv.exe"));
+    } else {
+        candidates.push(path.join(os.homedir(), ".local", "bin", "uv"));
+    }
+    for (const candidate of candidates) {
+        if (!candidate) {
+            continue;
+        }
+        const probe = spawnSync(candidate, ["--version"], { stdio: "ignore" });
+        if (probe.status === 0) {
+            return candidate;
+        }
+    }
+    return null;
 }
 
 function npmCommand() {
@@ -35,39 +55,67 @@ function run(command, args, cwd) {
     }
 }
 
+const backendDir = () => path.join(root, "backend");
+const frontendDir = () => path.join(root, "frontend");
+
+function runInBackend(toolArgs) {
+    const uv = uvCommand();
+    const args = Array.isArray(toolArgs) ? toolArgs : [toolArgs];
+    if (uv) {
+        run(uv, ["run", ...args], backendDir());
+        return;
+    }
+    if (args[0] === "python") {
+        run(venvPython(), args.slice(1), backendDir());
+        return;
+    }
+    run(venvPython(), ["-m", ...args], backendDir());
+}
+
+function syncBackend() {
+    const uv = uvCommand();
+    if (uv) {
+        run(uv, ["sync"], backendDir());
+        return;
+    }
+    run(venvPython(), ["-m", "pip", "install", "-r", "requirements.txt"], backendDir());
+}
+
 const command = process.argv[2];
 switch (command) {
     case "backend":
-        run(
-            venvPython(),
-            ["-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8080"],
-            path.join(root, "backend"),
-        );
+        runInBackend([
+            "python",
+            "-m",
+            "uvicorn",
+            "app.main:app",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8080",
+        ]);
         break;
     case "install":
         run(npmCommand(), ["install"], root);
-        run(
-            venvPython(),
-            ["-m", "pip", "install", "-r", "requirements.txt"],
-            path.join(root, "backend"),
-        );
-        run(npmCommand(), ["install"], path.join(root, "frontend"));
+        syncBackend();
+        run(npmCommand(), ["install"], frontendDir());
+        break;
+    case "install-backend":
+        syncBackend();
+        break;
+    case "format-backend":
+        runInBackend(["ruff", "format", "app", "run.py", "gunicorn.conf.py"]);
+        break;
+    case "lint-backend":
+        runInBackend(["ruff", "check", "app", "run.py", "gunicorn.conf.py"]);
         break;
     case "format":
-        run(
-            venvPython(),
-            ["-m", "ruff", "format", "app", "run.py", "gunicorn.conf.py"],
-            path.join(root, "backend"),
-        );
-        run(npmCommand(), ["run", "format"], path.join(root, "frontend"));
+        runInBackend(["ruff", "format", "app", "run.py", "gunicorn.conf.py"]);
+        run(npmCommand(), ["run", "format"], frontendDir());
         break;
     case "lint":
-        run(
-            venvPython(),
-            ["-m", "ruff", "check", "app", "run.py", "gunicorn.conf.py"],
-            path.join(root, "backend"),
-        );
-        run(npmCommand(), ["run", "lint"], path.join(root, "frontend"));
+        runInBackend(["ruff", "check", "app", "run.py", "gunicorn.conf.py"]);
+        run(npmCommand(), ["run", "lint"], frontendDir());
         break;
     default:
         console.error(`Unknown dev command: ${command}`);
