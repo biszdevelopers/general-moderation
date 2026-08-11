@@ -42,6 +42,9 @@ class BloomFilterDetector(DetectorInterface):
         """Whether a Bloom filter exists in the current snapshot."""
         return self._word_bank.snapshot.bloom is not None
 
+    def reload(self) -> None:
+        """No-op: the snapshot is read live on every detection."""
+
     def detect(self, text: str) -> DetectionResult:
         """Test every token against the Bloom filter.
 
