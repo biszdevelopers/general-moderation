@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
 from app.utils.unicode_utils import UnicodeUtils
@@ -46,9 +46,7 @@ class UpdateWordRequest(BaseModel):
     severity: int | None = Field(default=None, ge=0, le=10)
 
 
-def create_wordlist_router(
-    word_bank: WordBankManager, auth_dependency: Any
-) -> APIRouter:
+def create_wordlist_router(word_bank: WordBankManager, auth_dependency: Any) -> APIRouter:
     """Build the custom word list router with dependency injection.
 
     :param word_bank: the shared word bank manager
@@ -76,9 +74,7 @@ def create_wordlist_router(
                 severity=payload.severity,
             )
         except ValueError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT, detail=str(exc)
-            ) from exc
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
 
     @router.delete("/words")
     def remove_word(word_id: int = Query(..., ge=1)) -> dict[str, bool]:
@@ -117,8 +113,6 @@ def create_wordlist_router(
         try:
             return word_bank.update_word(word_id, **fields)
         except ValueError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)
-            ) from exc
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     return router
