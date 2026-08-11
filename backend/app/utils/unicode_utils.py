@@ -64,5 +64,7 @@ class UnicodeUtils:
         :return: lowercased tokens in document order
         """
         if _compiled_regex is not None:
-            return _compiled_regex.findall(r"\w+", UnicodeUtils.prepare(text), _compiled_regex.UNICODE)
+            return _compiled_regex.findall(
+                r"\w+", UnicodeUtils.prepare(text), _compiled_regex.UNICODE
+            )
         return _TOKEN_PATTERN.findall(UnicodeUtils.prepare(text))
