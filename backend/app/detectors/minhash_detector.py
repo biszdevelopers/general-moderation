@@ -83,7 +83,10 @@ class MinHashDetector(DetectorInterface):
         normalized: str = UnicodeUtils.prepare(text).lower()
         if len(normalized) < _SHINGLE_SIZE:
             return [normalized]
-        return [normalized[index : index + _SHINGLE_SIZE] for index in range(len(normalized) - _SHINGLE_SIZE + 1)]
+        return [
+            normalized[index : index + _SHINGLE_SIZE]
+            for index in range(len(normalized) - _SHINGLE_SIZE + 1)
+        ]
 
     def detect(self, text: str) -> DetectionResult:
         """Compare the text MinHash against every word MinHash.
