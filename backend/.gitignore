@@ -34,9 +34,9 @@ htmlcov/
 .ruff_cache/
 
 # Application data
-data/
-models/
-logs/
+/data/
+/models/
+/logs/
 
 # Local databases
 *.db
