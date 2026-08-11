@@ -29,8 +29,9 @@ uv sync
 cp .env.example .env
 ```
 
-Edit `.env` and replace every `CHANGE_ME` secret. The service refuses to start
-with placeholder secrets, so this step is mandatory.
+Security secrets are auto-generated on first startup and written to the
+gitignored `.env`; regenerate them at any time with
+`npm run generate:secrets` from the repository root.
 
 ### Development Server
 
