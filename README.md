@@ -76,6 +76,49 @@ uv run python run.py
 
 See `docs/` for the full guide, API reference, and deployment instructions.
 
+## Model Auto-Download
+
+On first startup, General Moderation automatically downloads the
+Qwen3.5-9B-Q4_K_M.gguf model (~5.78 GB) into `backend/models/`. The download
+runs in the background so the service starts immediately; the model is loaded
+once it is available.
+
+**For users in China:** the system probes connectivity and falls back in
+order:
+
+1. `https://huggingface.co` (primary)
+2. `https://hf-mirror.com` (primary mirror)
+3. `https://www.modelscope.cn` (Alibaba-owned platform)
+4. Manual download instructions if all endpoints fail
+
+Downloads retry with exponential backoff (1s, 2s, 4s) and resume partial
+transfers. The model unloads after `MODEL_IDLE_TIMEOUT_SECONDS` of inactivity
+to free memory.
+
+**To manually place the model:**
+
+1. Download from:
+   - Primary: <https://huggingface.co/bartowski/Qwen_Qwen3.5-9B-GGUF>
+   - Mirror: <https://hf-mirror.com/bartowski/Qwen_Qwen3.5-9B-GGUF>
+2. Place it at `backend/models/Qwen_Qwen3.5-9B-Q4_K_M.gguf`
+3. Or set `MODEL_PATH=/path/to/model.gguf` in `.env`
+
+## Performance Optimizations
+
+| Optimization | Implementation | Benefit |
+| :--- | :--- | :--- |
+| KV Cache Quantization | Q8_0 (`type_k`/`type_v`) | ~50% KV memory reduction |
+| Flash Attention | Enabled | Reduced memory bandwidth |
+| Memory Locking (mlock) | Enabled | Prevents OS swapping |
+| Idle Unloading | 300s timeout | Frees model memory when idle |
+| Result Cache | LRU + TTL (mmh3 key) | <50ms for repeated requests |
+| Parallel Detectors | ThreadPoolExecutor | Faster multi-package runs |
+| CPU Offload | `run_in_threadpool` | Non-blocking async API |
+| Worker Reduction | 3 gunicorn workers | Lower per-worker model memory |
+| Garbage Collection | Tuned thresholds | Fewer GC pauses |
+| Adaptive Short-Circuit | Hit-rate ordering | Faster common cases |
+| Download Retry | Exponential backoff | Robust network recovery |
+
 ## License
 
 [MIT](LICENSE)
