@@ -15,7 +15,7 @@ export interface AppContextType {
 }
 
 const apiBaseUrl: string =
-    (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "http://127.0.0.1:8080";
+    (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
 
 const AppContext = createContext<AppContextType | null>(null);
 
