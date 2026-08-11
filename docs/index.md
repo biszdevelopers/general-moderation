@@ -2,28 +2,34 @@
 layout: home
 
 hero:
-    name: Moderation Service
-    text: Multi-language content moderation microservice
-    tagline: Sub-millisecond rule-based detection over 20+ languages, backed by C/C++/Rust libraries and an optional llama.cpp inference engine.
+    name: General Moderation
+    text: Multi-language content moderation service
+    tagline: A three-stage pipeline that pre-filters content before human review — fast-path rules, semantic similarity, user profiling, and a local LLM.
     actions:
         - theme: brand
           text: Getting Started
           link: /guide/getting-started
         - theme: alt
-          text: API Reference
-          link: /api/index
+          text: Architecture
+          link: /architecture/index
 
 features:
     - icon: ⚡
-      title: Sub-millisecond Level 1
-      details: Bloom filters, Aho-Corasick, MurmurHash3, and C edit distance keep exact matching below a millisecond.
+      title: 3-Stage Pipeline
+      details: Safe-word fast path, parallel rule detectors with suspicion scoring, and a conditional LLM final verdict.
     - icon: 🌐
-      title: 20+ Languages
+      title: 26+ Languages
       details: Eleven C/C++/Rust/WebAssembly packages combine base dictionaries across the world's major languages.
-    - icon: 🔒
-      title: C/C++ First Security
-      details: Cryptography, hashing, TLS, rate limiting, and authentication all delegate to compiled libraries.
     - icon: 🧠
-      title: AI Final Verdict
-      details: Level 2 llama.cpp resolves borderline cases with a locally hosted GGUF model.
+      title: Semantic Similarity
+      details: Multilingual SentenceTransformer embeddings searched against per-category Faiss indexes.
+    - icon: 📊
+      title: User Profiling
+      details: A 91-day rolling window with archived, linked cycle summaries keeps long-term history with bounded storage.
+    - icon: 🔁
+      title: Active Learning
+      details: Administrator feedback tunes weights and thresholds daily through the auto-tuning batch.
+    - icon: 📦
+      title: Full Export
+      details: One ZIP archive of every database, CSV, log, config snapshot, and semantic index.
 ---
