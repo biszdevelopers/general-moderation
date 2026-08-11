@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode, ReactElement } from "react";
 import { AuditService } from "../services/AuditService";
 import { AuthService } from "../services/AuthService";
+import { ExportService } from "../services/ExportService";
 import { SettingsService } from "../services/SettingsService";
 import { WordBankService } from "../services/WordBankService";
 
@@ -9,6 +10,7 @@ export interface AppContextType {
     wordBankService: WordBankService;
     auditService: AuditService;
     settingsService: SettingsService;
+    exportService: ExportService;
     authenticated: boolean;
     login: (key: string) => void;
     logout: () => void;
@@ -26,6 +28,7 @@ export function AppProvider(props: { children: ReactNode }): ReactElement {
             wordBankService: new WordBankService(authService, apiBaseUrl),
             auditService: new AuditService(authService, apiBaseUrl),
             settingsService: new SettingsService(authService, apiBaseUrl),
+            exportService: new ExportService(authService, apiBaseUrl),
         };
     });
     const [authenticated, setAuthenticated] = useState<boolean>(
