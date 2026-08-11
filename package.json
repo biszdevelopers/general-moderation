@@ -8,6 +8,8 @@
         "frontend": "cd frontend && npm run dev",
         "install:all": "node scripts/dev.mjs install",
         "install:backend": "node scripts/dev.mjs install-backend",
+        "download": "node scripts/dev.mjs download",
+        "generate:secrets": "node scripts/dev.mjs gen-secrets",
         "format:backend": "node scripts/dev.mjs format-backend",
         "lint:backend": "node scripts/dev.mjs lint-backend",
         "build": "cd frontend && npm run build",
