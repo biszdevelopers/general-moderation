@@ -30,8 +30,7 @@ on Level 1, backed by an optional llama.cpp (C++) inference engine on Level 2.
 ## Detector Coverage
 
 Five detectors are active on a standard install; three more are guard-wired
-and activate only when a working index provides them
-(`backend/requirements-extra.txt`).
+and activate only when a working index provides them.
 
 | Detector | Languages | Key feature | Status |
 | :--- | :--- | :--- | :--- |
@@ -50,26 +49,29 @@ that needs a pre-built toxic-signature database.
 
 ## Quick Start
 
+Dependencies are managed with **uv** (the modern, Rust-based Python
+toolchain). Install it from <https://astral.sh/uv/>.
+
 ### One-command orchestration (recommended)
 
 From the repository root:
 
 ```bash
 npm install          # installs concurrently (root tooling)
-npm run install:all  # installs Python deps (backend/.venv) + npm deps
+npm run install:all  # uv sync (backend) + npm deps (frontend)
 npm run start        # runs backend (uvicorn :8080) + frontend (vite :5173)
 ```
 
-Other root scripts: `npm run lint`, `npm run format`, `npm run build`.
+Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
+`npm run install:backend`.
 
 ### Manual backend
 
 ```bash
 cd backend
-python -m venv .venv
-pip install -r requirements.txt
+uv sync              # create .venv and install all locked dependencies
 cp .env.example .env
-python run.py
+uv run python run.py
 ```
 
 See `docs/` for the full guide, API reference, and deployment instructions.
