@@ -46,17 +46,52 @@ All versions are verified and available on PyPI as of August 2026:
 | :--- | :--- | :--- |
 | `HOST` | `127.0.0.1` | Bind address. Never expose to the public network. |
 | `PORT` | `8080` | HTTP port for the ASGI server. |
-| `WORKERS` | `7` | Gunicorn worker count. Leave empty to auto-detect cores. |
+| `WORKERS` | `3` | Gunicorn worker count. Leave empty to auto-detect cores. |
 
-## Level 2 AI (llama.cpp)
+## Level 2 AI (llama.cpp, auto-download)
+
+The GGUF model is downloaded automatically on first use when `MODEL_PATH` is
+`auto`.
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `MODEL_PATH` | `/var/lib/.../mistral-7b-instruct.Q4_K_M.gguf` | Path to the GGUF model file. |
-| `MODEL_CONTEXT_SIZE` | `4096` | Model context window. |
-| `MODEL_THREADS` | `4` | CPU threads for inference. |
+| `MODEL_PATH` | `auto` | `auto` to auto-download, or a full path to an existing GGUF. |
+| `MODEL_PRIMARY_REPO` | `bartowski/Qwen_Qwen3.5-9B-GGUF` | Primary Hugging Face repository. |
+| `MODEL_FALLBACK_REPO` | `lmstudio-community/Qwen3.5-9B-GGUF` | Fallback repository. |
+| `MODEL_FILENAME` | `Qwen_Qwen3.5-9B-Q4_K_M.gguf` | File to download. |
+| `MODEL_DIR` | `./models` | Local model directory. |
+| `MODEL_CONTEXT_SIZE` | `16384` | Model context window. |
+| `MODEL_THREADS` | `auto` | `auto` uses CPU cores minus one, or a fixed count. |
 | `MODEL_BATCH_SIZE` | `512` | Prompt evaluation batch size. |
 | `MODEL_MAX_TOKENS` | `10` | Maximum reply tokens (classification only). |
+| `MODEL_CACHE_TYPE_K` | `q8_0` | KV cache quantization for keys. |
+| `MODEL_CACHE_TYPE_V` | `q8_0` | KV cache quantization for values. |
+| `MODEL_FLASH_ATTN` | `true` | Enable flash attention. |
+| `MODEL_MLOCK` | `true` | Lock model memory to prevent swapping. |
+| `MODEL_IDLE_TIMEOUT_SECONDS` | `300` | Unload the model after this many idle seconds. |
+
+### Hugging Face Endpoints
+
+Endpoints are probed in order and the first reachable one is used:
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `HF_ENDPOINT` | `https://huggingface.co` | Primary endpoint. |
+| `HF_MIRROR` | `https://hf-mirror.com` | China mirror. |
+| `MODELSCOPE_ENDPOINT` | `https://www.modelscope.cn` | ModelScope fallback. |
+
+## Result Cache
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `CACHE_MAX_SIZE` | `500` | Maximum cached moderation results. |
+| `CACHE_TTL_SECONDS` | `60` | How long a cached result stays valid. |
+
+## Concurrency
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `DETECTOR_THREAD_POOL_SIZE` | `4` | Worker threads for the multi-language detector pool. |
 
 ## Detector Thresholds
 
