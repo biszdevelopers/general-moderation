@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import orjson
-from fastapi import APIRouter, BackgroundTasks, Depends, Request, status
+from fastapi import APIRouter, BackgroundTasks, status
 from pydantic import BaseModel, Field
 
 from app.admin.wordlist import AddWordRequest
@@ -45,7 +45,7 @@ def _prometheus_lines(metrics: dict[str, float]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def create_wordbank_router(
+def create_wordbank_router(  # noqa: C901 - router factory with many sub-routes
     engine: ModerationEngine,
     word_bank: WordBankManager,
     log_file_path: str,
@@ -59,9 +59,7 @@ def create_wordbank_router(
     :param auth_dependency: FastAPI dependency guarding the routes
     :return: the configured APIRouter
     """
-    router: APIRouter = APIRouter(
-        prefix="/admin", tags=["admin"], dependencies=[auth_dependency]
-    )
+    router: APIRouter = APIRouter(prefix="/admin", tags=["admin"], dependencies=[auth_dependency])
     start_time: float = time.monotonic()
 
     @router.post("/wordbank/import")
@@ -71,9 +69,7 @@ def create_wordbank_router(
         :param payload: the words to import
         :return: the number of successfully imported words
         """
-        imported: int = word_bank.import_words(
-            [item.model_dump() for item in payload.items]
-        )
+        imported: int = word_bank.import_words([item.model_dump() for item in payload.items])
         return {"imported": imported}
 
     @router.get("/wordbank/export", response_model=list[CustomWord])
