@@ -228,6 +228,9 @@ backend/models/
 backend/logs/
 backend/.env
 
+# Root orchestration
+node_modules/
+
 # Frontend
 frontend/node_modules/
 frontend/dist/
