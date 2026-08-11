@@ -10,6 +10,11 @@ application calls the moderation API over `127.0.0.1`.
 User → Next.js (VPS) → FRP Tunnel (mTLS) → Python FastAPI (Private Server)
 ```
 
+## Node.js Requirements
+
+- Node.js 20.19+ is required (Vite 8 requires Node.js 20.19+)
+- npm 10.0+ is required
+
 ## systemd
 
 Install `deployment/systemd/moderation.service` as
