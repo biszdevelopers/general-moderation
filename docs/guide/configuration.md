@@ -61,15 +61,17 @@ Each verified package can be disabled independently:
 
 | Variable | Package |
 | :--- | :--- |
+| `ENABLE_BADWORDS_PY` | `badwords` (Rust) |
 | `ENABLE_PROFANITE` | `profanite` (Rust) |
 | `ENABLE_GLIN_PROFANITY` | `glin-profanity` (C) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
 
-The following packages were removed because they do not exist on PyPI or are
-not installable: `sensitive-word-filter`, `sensitive-word-filter-cn`,
-`safetext` (broken dependency), `profanity-filter2` (broken dependency),
-`badwords-py`, `scheckbl`, and `valx`.
+The following packages are not registered: `sensitive-word-filter` and
+`sensitive-word-filter-cn` (no PyPI package), `safetext` and
+`profanity-filter2` (broken dependencies), `scheckbl` (async-only API), and
+`valx` (non-functional model). `datasketch` runs as its own detector layer
+(MinHash).
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
