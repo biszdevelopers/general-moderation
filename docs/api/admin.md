@@ -142,3 +142,125 @@ Returns `[{"name": "moderation.log", "size": 12345}]`.
 
 Returns the file name, total line count, and the last 200 lines. Filenames
 are validated against a strict pattern to prevent path traversal.
+
+## Runtime Settings
+
+### List Settings
+
+`GET /admin/settings`
+
+Returns the full setting catalog with `key`, `value`, `type`,
+`description`, and `editable` flags. Secrets and restart-required values are
+excluded from editing.
+
+### Update Settings
+
+`POST /admin/settings`
+
+```json
+{
+    "settings": {
+        "MODEL_CONTEXT_SIZE": 16384,
+        "CACHE_MAX_SIZE": 600
+    }
+}
+```
+
+Values are validated; invalid or read-only keys return `400`. See the
+[Admin Settings](/guide/admin-settings) guide for the editable groups.
+
+## Data Export
+
+`GET /admin/export`
+
+Returns a ZIP archive of all databases, CSV dumps, logs, a redacted
+configuration snapshot, and semantic indexes. Rate-limited to one request per
+ten minutes per client. See the [Data Export](/guide/data-export) guide.
+
+## Feedback and Auto-Tuning
+
+### Submit Feedback
+
+`POST /admin/feedback`
+
+```json
+{
+    "request_id": "uuid",
+    "verdict": "BLOCK",
+    "is_correct": true,
+    "actual_action": "BLOCK"
+}
+```
+
+Returns `{"status": "ok"}`.
+
+### Run the Tuning Batch
+
+`POST /admin/tune`
+
+Runs the daily weight and threshold tuning on demand and returns a report
+with the adjusted weights and threshold.
+
+## Per-Application Trigger Policy
+
+### List Apps
+
+`GET /admin/app-config`
+
+### Get One App
+
+`GET /admin/app-config/{app_name}`
+
+### Set an App Policy
+
+`POST /admin/app-config`
+
+```json
+{
+    "app_name": "myapp",
+    "score_threshold": 50,
+    "semantic_boost": true,
+    "user_ratio_boost": true,
+    "logic_type": "or"
+}
+```
+
+## Semantic Index Management
+
+### Status
+
+`GET /admin/semantic`
+
+Returns availability, model name, and per-category entry counts.
+
+### Categories
+
+`GET /admin/semantic/categories`
+
+### Add or Delete an Example
+
+`POST /admin/semantic`
+
+```json
+{
+    "action": "add",
+    "category": "violence",
+    "text": "example sensitive phrase"
+}
+```
+
+## Statistics and Spot-Check
+
+### Dashboard Statistics
+
+`GET /admin/stats`
+
+Returns runtime counters, profiling stats, word bank totals, and semantic
+status.
+
+### Spot-Check
+
+`GET /admin/spot-check?count=50`
+
+Returns a random sample of recent audit entries with verdicts and suspicion
+scores.
