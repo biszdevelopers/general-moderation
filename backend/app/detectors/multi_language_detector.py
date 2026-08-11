@@ -34,6 +34,7 @@ The remaining packages are intentionally not registered:
 
 from __future__ import annotations
 
+import concurrent.futures
 import importlib
 import inspect
 import logging
@@ -247,6 +248,9 @@ class MultiLanguageDetector(DetectorInterface):
         self._settings: Any = settings
         self._logger: Any = logger
         self._adapters: list[_PackageAdapter] = self._build_adapters()
+        self._hit_counts: dict[str, int] = {}
+        self._total_counts: dict[str, int] = {}
+        self._pool_size: int = settings.detector_thread_pool_size
 
     def _build_adapters(self) -> list[_PackageAdapter]:
         """Instantiate the adapters, honoring the enable toggles.
@@ -313,27 +317,103 @@ class MultiLanguageDetector(DetectorInterface):
         return [adapter.package_name for adapter in self._adapters if adapter.available]
 
     def detect(self, text: str) -> DetectionResult:
-        """Run every enabled package over the text.
+        """Run the packages in parallel, short-circuiting on the first match.
+
+        Packages are ordered by their historical hit rate so the most likely
+        matchers run first. Falls back to sequential execution when the
+        thread pool cannot run (e.g. an incompatible runtime library).
 
         :param text: normalized input text
-        :return: aggregated positive results from all packages
+        :return: the first positive result, or a non-match
         """
         normalized: str = UnicodeUtils.prepare(text)
-        reasons: list[str] = []
-        languages: set[str] = set()
-        for adapter in self._adapters:
-            if not adapter.available:
-                continue
+        ordered: list[_PackageAdapter] = self._ordered_available()
+        if not ordered:
+            return DetectionResult(matched=False)
+        self._count_total(ordered)
+        if len(ordered) == 1:
+            return self._detect_sequential(ordered, normalized)
+        return self._detect_parallel(ordered, normalized)
+
+    def _ordered_available(self) -> list[_PackageAdapter]:
+        """Return the usable adapters ordered by historical hit rate.
+
+        :return: the ordered adapter list
+        """
+        adapters: list[_PackageAdapter] = [a for a in self._adapters if a.available]
+        return sorted(
+            adapters,
+            key=lambda adapter: self._hit_rate(adapter.package_name),
+            reverse=True,
+        )
+
+    def _count_total(self, ordered: list[_PackageAdapter]) -> None:
+        """Increment the total count for every adapter.
+
+        :param ordered: the adapters being run
+        """
+        for adapter in ordered:
+            self._total_counts[adapter.package_name] = (
+                self._total_counts.get(adapter.package_name, 0) + 1
+            )
+
+    def _detect_parallel(self, ordered: list[_PackageAdapter], normalized: str) -> DetectionResult:
+        """Run the adapters concurrently and return the first match.
+
+        :param ordered: adapters in priority order
+        :param normalized: normalized input text
+        :return: the first positive result, or a non-match
+        """
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=self._pool_size) as executor:
+                futures: dict[concurrent.futures.Future, _PackageAdapter] = {
+                    executor.submit(adapter.detect, normalized): adapter for adapter in ordered
+                }
+                for future in concurrent.futures.as_completed(futures):
+                    adapter: _PackageAdapter = futures[future]
+                    try:
+                        matched: DetectionResult = future.result()
+                    except Exception:
+                        continue
+                    if matched.matched:
+                        self._record_hit(adapter.package_name)
+                        for pending in futures:
+                            pending.cancel()
+                        return matched
+        except Exception:
+            pass
+        return self._detect_sequential(ordered, normalized)
+
+    def _detect_sequential(
+        self, ordered: list[_PackageAdapter], normalized: str
+    ) -> DetectionResult:
+        """Run the adapters one at a time and return the first match.
+
+        :param ordered: adapters in priority order
+        :param normalized: normalized input text
+        :return: the first positive result, or a non-match
+        """
+        for adapter in ordered:
             result: DetectionResult = adapter.detect(normalized)
             if result.matched:
-                reasons.append(str(result.reason))
-                if result.matched_language:
-                    languages.add(result.matched_language)
-        if not reasons:
-            return DetectionResult(matched=False)
-        return DetectionResult(
-            matched=True,
-            matched_language=",".join(sorted(languages)) if languages else "multi",
-            reason="; ".join(reasons),
-            confidence_score=0.8,
-        )
+                self._record_hit(adapter.package_name)
+                return result
+        return DetectionResult(matched=False)
+
+    def _record_hit(self, name: str) -> None:
+        """Increment the hit count for a package.
+
+        :param name: the package name
+        """
+        self._hit_counts[name] = self._hit_counts.get(name, 0) + 1
+
+    def _hit_rate(self, name: str) -> float:
+        """Return the observed match rate for a package.
+
+        :param name: the package name
+        :return: hit count divided by total count, or 0.0 when unused
+        """
+        total: int = self._total_counts.get(name, 0)
+        if total == 0:
+            return 0.0
+        return self._hit_counts.get(name, 0) / total
