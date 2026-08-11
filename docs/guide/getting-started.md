@@ -48,21 +48,30 @@ curl http://127.0.0.1:18427/health
 
 ### Production Server
 
+From the repository root, build the frontend and start the single-port
+service (the backend serves both the API and the React app):
+
 ```bash
-gunicorn -c gunicorn.conf.py app.main:app
+npm run start:prod
 ```
 
-In production the service also serves the built React app from
-`frontend/dist` on the same port:
+`start:prod` uses Gunicorn on Linux and a single uvicorn worker on Windows
+(Gunicorn is Unix-only). See [Deployment](/guide/deployment) for systemd, FRP,
+and Docker recipes.
+
+### Level 2 (llama.cpp)
+
+Level 2 needs the `ai` extra (`llama-cpp-python==0.3.34`). On Linux:
 
 ```bash
-cd ..            # repository root
-npm run build
 cd backend
-gunicorn -c gunicorn.conf.py app.main:app
+uv sync --extra ai
 ```
 
-See [Deployment](/guide/deployment) for systemd, FRP, and Docker recipes.
+On Windows install the prebuilt CPU wheel (see
+[Configuration](/guide/configuration) for the exact command). The service
+starts immediately and loads the model in the background; `/admin/health`
+reports `llama_available` once it is ready.
 
 ## Sensitive Stop Words Submodule
 
