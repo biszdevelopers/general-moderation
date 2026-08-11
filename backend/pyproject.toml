@@ -45,6 +45,13 @@ dependencies = [
 
 [project.optional-dependencies]
 ai = ["llama-cpp-python==0.3.34"]
+# Semantic similarity stage (SentenceTransformers + Faiss). Heavy: pulls torch.
+# Enable with: uv sync --extra ai --extra semantic
+semantic = [
+    "torch>=2.0",
+    "sentence-transformers==4.4.0",
+    "faiss-cpu==1.11.0",
+]
 
 [dependency-groups]
 dev = ["ruff==0.16.2"]
