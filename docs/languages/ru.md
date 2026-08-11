@@ -8,8 +8,8 @@ all of which ship Russian profanity dictionaries.
 ## Specifics
 
 Russian is highly inflected, so exact dictionary matching misses many word
-forms. The BK-tree layer (edit distance 2) and the MinHash layer help recover
-morphological variants and near-duplicates.
+forms. The BK-tree layer (edit distance 2) helps recover morphological
+variants and near-duplicates.
 
 ## Common Attacks
 
