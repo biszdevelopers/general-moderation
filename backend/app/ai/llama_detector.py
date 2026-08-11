@@ -37,6 +37,7 @@ try:
 except ImportError:  # pragma: no cover - huggingface_hub is a declared dependency
     hf_hub_download = None
 
+from app.ai.prompt import build_classification_prompt
 from app.detectors.interface import DetectorInterface
 from app.models.verdict import DetectionResult
 
@@ -44,12 +45,6 @@ from app.models.verdict import DetectionResult
 _CONTROL_TOKEN_PATTERN = re.compile(r"<\|im_start\|>|<\|im_end\|>|<\|endoftext\|>")
 _TOKEN_PREFIX_PATTERN = re.compile(r"^(system|user|assistant):", re.IGNORECASE)
 _GGUF_PATTERN = re.compile(r"\.gguf$", re.IGNORECASE)
-
-_SYSTEM_PROMPT = (
-    "You are a strict content moderation classifier. Analyze the user text for "
-    "vulgar, abusive, hateful, or politically sensitive content. Reply with "
-    "exactly one word: BLOCK or ALLOW."
-)
 
 _MAX_DOWNLOAD_RETRIES = 3
 
@@ -272,8 +267,6 @@ class LlamaCppDetector(DetectorInterface):
                 repo_id=repo,
                 filename=filename,
                 local_dir=str(model_dir),
-                local_dir_use_symlinks=False,
-                resume_download=True,
                 etag_timeout=30,
             )
             self._log_info("Download complete", path=local_path)
@@ -290,8 +283,6 @@ class LlamaCppDetector(DetectorInterface):
                 repo_id=fallback_repo,
                 filename=filename,
                 local_dir=str(model_dir),
-                local_dir_use_symlinks=False,
-                resume_download=True,
                 etag_timeout=30,
             )
             self._log_info("Download complete from fallback", path=local_path)
@@ -359,6 +350,14 @@ class LlamaCppDetector(DetectorInterface):
         """Whether the model loaded successfully."""
         return self._model is not None
 
+    def download_model(self) -> str:
+        """Download the configured model and return its local path.
+
+        :return: the path to the GGUF file
+        :raises RuntimeError: when every download source fails
+        """
+        return self._ensure_model_downloaded()
+
     @staticmethod
     def sanitize(text: str) -> str:
         """Sanitize text against prompt injection before inference.
@@ -380,12 +379,7 @@ class LlamaCppDetector(DetectorInterface):
         :return: the full prompt with the sanitized payload
         """
         payload: str = LlamaCppDetector.sanitize(text)
-        return (
-            "<|im_start|>system\n"
-            f"{_SYSTEM_PROMPT}<|im_end|>\n"
-            f"<|im_start|>user\n<user_text>{payload}</user_text><|im_end|>\n"
-            "<|im_start|>assistant\n"
-        )
+        return build_classification_prompt(payload)
 
     def _check_idle_unload(self) -> None:
         """Unload the model after the idle timeout to free memory."""
