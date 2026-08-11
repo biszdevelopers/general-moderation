@@ -99,7 +99,13 @@ switch (command) {
         ]);
         break;
     case "backend-prod":
-        runInBackend(["gunicorn", "-c", "gunicorn.conf.py", "app.main:app"]);
+        // Gunicorn requires fcntl and is Unix-only; on Windows the single
+        // Uvicorn worker from run.py reads the same .env configuration.
+        if (isWindows) {
+            runInBackend(["python", "run.py"]);
+        } else {
+            runInBackend(["gunicorn", "-c", "gunicorn.conf.py", "app.main:app"]);
+        }
         break;
     case "download":
         runInBackend(["python", "-m", "app.ai.download"]);
