@@ -17,13 +17,13 @@ on Level 1, backed by an optional llama.cpp (C++) inference engine on Level 2.
 
 ## Highlights
 
-- 8-layer detection pipeline, every layer backed by C/C++/Rust/WASM.
-- 11 multi-language pip packages covering 26+ languages.
+- 7-layer detection pipeline, every layer backed by C/C++/Rust/WASM.
+- 5 verified multi-language pip packages covering 26+ languages.
 - Zero local word-bank text files; base dictionaries come from pip packages.
 - Custom words stored in SQLite (C implementation).
 - All security-critical operations delegated to compiled libraries
   (OpenSSL, libsodium, Rust regex, Redis hiredis).
-- Java-flavored Python: ABCs, frozen dataclasses, private fields, full typing.
+- Well-structured Python: ABCs, frozen dataclasses, private fields, full typing.
 - TypeScript/React admin UI with strict UI/logic separation.
 
 ## Quick Start
