@@ -66,6 +66,25 @@ The compose file:
 to the backend. Point `YOUR_DOMAIN` at your VPS and terminate TLS with
 Certbot or your certificate authority.
 
+## Multi-Language Detection
+
+The service runs **five active detectors** on a standard PyPI install:
+
+1. **badwords** – Rust, 26+ languages (`filter_text`)
+2. **profanite** – Rust, anti-obfuscation (`contains_profanity`)
+3. **glin-profanity** – C, 25+ languages, context-aware (`is_profane`)
+4. **gangajal** – WebAssembly, all languages (`validate`)
+5. **PyProfane** – C, Soundex-based (`isProfane`)
+
+Three more packages are guard-wired (`safetext`, `sensitive-word-filter-cn`,
+`profanity-filter2`) but are not installable from public PyPI because of
+broken or missing dependencies. They activate automatically if a working
+index provides them; install them from `backend/requirements-extra.txt`.
+
+`scheckbl` and `valx` are not wired (their documented APIs do not exist in
+the installed versions). `datasketch` is a potential future semantic layer
+but requires a pre-built toxic-signature database and is not enabled.
+
 ## Backups
 
 | Component | Frequency | Retention |
