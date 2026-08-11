@@ -12,7 +12,7 @@ def _default_workers() -> int:
     return multiprocessing.cpu_count()
 
 
-bind = f"{os.getenv('HOST', '127.0.0.1')}:{os.getenv('PORT', '8080')}"
+bind = f"{os.getenv('APP_HOST', '0.0.0.0')}:{os.getenv('APP_PORT', '18427')}"
 workers = _default_workers()
 worker_class = "uvicorn.workers.UvicornWorker"
 max_requests = 10000
