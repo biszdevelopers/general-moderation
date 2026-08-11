@@ -1,0 +1,13 @@
+/opt/moderation-monorepo/backend/logs/moderation.log {
+    daily
+    rotate 30
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 moderation moderation
+    sharedscripts
+    postrotate
+        systemctl reload moderation > /dev/null 2>&1 || true
+    endscript
+}
