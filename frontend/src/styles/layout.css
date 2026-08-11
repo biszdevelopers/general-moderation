@@ -1,0 +1,44 @@
+/* Application shell layout styles. */
+
+.app-layout {
+    min-height: 100vh;
+}
+
+.app-sider {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: auto;
+}
+
+.app-sider__brand {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    background: #001529;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: #ffffff;
+}
+
+.app-header__title {
+    color: #001529;
+}
+
+.app-header__logout {
+    color: #001529;
+}
+
+.app-content {
+    padding: 0;
+    overflow: auto;
+}
