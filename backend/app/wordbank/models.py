@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 
-class WordCategory(str, Enum):
+class WordCategory(StrEnum):
     """Semantic bucket for a custom word."""
 
     PROFANITY = "profanity"
