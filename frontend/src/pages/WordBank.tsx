@@ -19,6 +19,7 @@ import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { WordEntry, WordPayload } from "../types";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { LoginPrompt } from "../components/LoginPrompt";
 
 const defaultCategories: string[] = [
     "profanity",
@@ -37,7 +38,7 @@ interface WordFormValues {
 }
 
 export function WordBank(): ReactElement {
-    const { wordBankService } = useAppContext();
+    const { wordBankService, authenticated } = useAppContext();
     const { message } = AntdApp.useApp();
     const [words, setWords] = useState<WordEntry[]>([]);
     const [categories, setCategories] = useState<string[]>(defaultCategories);
@@ -60,6 +61,10 @@ export function WordBank(): ReactElement {
     };
 
     useEffect(() => {
+        if (!authenticated) {
+            setLoading(false);
+            return;
+        }
         const loadAll = async (): Promise<void> => {
             try {
                 const [wordList, categoryList, languageList] = await Promise.all([
@@ -79,7 +84,7 @@ export function WordBank(): ReactElement {
             }
         };
         void loadAll();
-    }, [wordBankService, message]);
+    }, [wordBankService, message, authenticated]);
 
     const openAddModal = (): void => {
         setEditing(null);
@@ -210,6 +215,10 @@ export function WordBank(): ReactElement {
             ),
         },
     ];
+
+    if (!authenticated) {
+        return <LoginPrompt />;
+    }
 
     if (loading) {
         return <LoadingSpinner />;
