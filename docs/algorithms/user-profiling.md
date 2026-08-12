@@ -32,7 +32,7 @@ Score](/algorithms/suspicion-score). When the ratio exceeds
 ```mermaid
 flowchart TD
     A[Message for user u] --> B[Write daily row, day_offset + 1]
-    B --> C{day_offset == 91?}
+    B --> C{"day_offset == 91?"}
     C -->|no| D[Continue]
     C -->|yes| E[Aggregate days 1-91]
     E --> F[Insert summary, link previous via next_cycle_id]
