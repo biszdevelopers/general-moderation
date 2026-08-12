@@ -52,6 +52,9 @@ export function Export(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Data Export
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Download a complete archive of the service data.
+            </Typography.Paragraph>
             <Card title="Complete System Export" className="export-card">
                 <Space direction="vertical" style={{ width: "100%" }} size="middle">
                     <Typography.Paragraph>
