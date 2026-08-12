@@ -66,3 +66,55 @@ export interface WordPayload {
     category: string;
     severity: number;
 }
+
+export interface SettingRecord {
+    key: string;
+    value: string | number | boolean;
+    type: string;
+    description: string;
+    editable: boolean;
+}
+
+export interface AppConfigRecord {
+    app_name: string;
+    score_threshold: number;
+    semantic_boost: boolean;
+    user_ratio_boost: boolean;
+    logic_type: string;
+}
+
+export interface ProfilingStats {
+    activeUsers: number;
+    dailyRows: number;
+    summaryCount: number;
+    summaryUsers: number;
+}
+
+export interface StatsReport {
+    metrics: Record<string, number>;
+    profiling: ProfilingStats;
+    wordBank: WordBankStats;
+    semantic: { available: boolean; model?: string; categories?: Record<string, number> };
+    aiAvailable: boolean;
+    detectorCount: number;
+}
+
+export interface SpotCheckEntry {
+    requestId?: string | null;
+    userId?: string | null;
+    verdict?: string | null;
+    suspicionScore?: number;
+    matchedWord?: string | null;
+    levelUsed?: number;
+    aiTriggered?: boolean;
+    timestamp?: string | null;
+}
+
+export interface TuneReport {
+    status: string;
+    feedbackWindow?: number;
+    decisionWindow?: number;
+    precision?: number;
+    scoreThreshold?: number;
+    weights?: Record<string, number>;
+}

@@ -9,47 +9,90 @@
     top: 0;
     height: 100vh;
     overflow: auto;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+}
+
+.app-sider .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
 }
 
 .app-sider__brand {
     height: 64px;
     display: flex;
     align-items: center;
+    gap: 11px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.app-sider__logo {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
     color: #ffffff;
-    font-size: 16px;
-    font-weight: 600;
-    background: #001529;
+    border-radius: 9px;
+    font-size: 17px;
+}
+
+.app-sider__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.app-sider .ant-menu {
+    border-inline-end: none !important;
+    padding: 12px 0;
+    flex: 1;
+}
+
+.app-sider .ant-menu-item {
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    background: #ffffff;
+    padding: 0 32px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .app-header__title {
-    color: #001529;
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
 }
 
 .app-header__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.app-header__logout {
-    color: #001529;
+    gap: 10px;
 }
 
 .app-content {
-    padding: 0;
     overflow: auto;
 }
 
 .app-footer {
     text-align: center;
-    color: rgba(0, 0, 0, 0.45);
+    color: var(--color-text-secondary);
+    font-size: 12px;
 }

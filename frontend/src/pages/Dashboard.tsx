@@ -1,10 +1,17 @@
 import { App as AntdApp, Card, Col, Row, Space, Table, Tag, Typography } from "antd";
 import { TableProps } from "antd";
+import {
+    AppstoreAddOutlined,
+    BlockOutlined,
+    DatabaseOutlined,
+    GlobalOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { AuditEntry, HealthReport, WordBankStats } from "../types";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { LoginPrompt } from "../components/LoginPrompt";
 import { StatsCard } from "../components/StatsCard";
 
 function verdictTag(value: unknown): ReactElement {
@@ -14,7 +21,7 @@ function verdictTag(value: unknown): ReactElement {
 }
 
 export function Dashboard(): ReactElement {
-    const { settingsService, wordBankService, auditService } = useAppContext();
+    const { settingsService, wordBankService, auditService, authenticated } = useAppContext();
     const { message } = AntdApp.useApp();
     const [health, setHealth] = useState<HealthReport | null>(null);
     const [stats, setStats] = useState<WordBankStats | null>(null);
@@ -22,6 +29,10 @@ export function Dashboard(): ReactElement {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        if (!authenticated) {
+            setLoading(false);
+            return;
+        }
         const loadData = async (): Promise<void> => {
             try {
                 const [healthReport, wordBankStats, entries] = await Promise.all([
@@ -39,7 +50,7 @@ export function Dashboard(): ReactElement {
             }
         };
         void loadData();
-    }, [settingsService, wordBankService, auditService, message]);
+    }, [settingsService, wordBankService, auditService, message, authenticated]);
 
     const columns: TableProps<AuditEntry>["columns"] = [
         { title: "Timestamp", dataIndex: "timestamp", key: "timestamp" },
@@ -58,6 +69,10 @@ export function Dashboard(): ReactElement {
         },
     ];
 
+    if (!authenticated) {
+        return <LoginPrompt />;
+    }
+
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -67,18 +82,40 @@ export function Dashboard(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Dashboard
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Live overview of the moderation word bank, detection pipeline, and recent activity.
+            </Typography.Paragraph>
             <Row gutter={[16, 16]} className="dashboard-grid">
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Total Words" value={stats?.totalWords ?? 0} />
+                    <StatsCard
+                        title="Total Words"
+                        value={stats?.totalWords ?? 0}
+                        icon={<DatabaseOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Custom Words" value={stats?.customWords ?? 0} />
+                    <StatsCard
+                        title="Custom Words"
+                        value={stats?.customWords ?? 0}
+                        color="#7c3aed"
+                        icon={<AppstoreAddOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Base Words" value={stats?.baseWords ?? 0} />
+                    <StatsCard
+                        title="Base Words"
+                        value={stats?.baseWords ?? 0}
+                        color="#0ea5e9"
+                        icon={<BlockOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Languages" value={stats?.languages ?? 0} />
+                    <StatsCard
+                        title="Languages"
+                        value={stats?.languages ?? 0}
+                        color="#16a34a"
+                        icon={<GlobalOutlined />}
+                    />
                 </Col>
             </Row>
             <Row gutter={[16, 16]}>

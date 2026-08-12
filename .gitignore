@@ -227,6 +227,8 @@ backend/data/
 backend/models/
 backend/logs/
 backend/.env
+backend/semantic/
+backend/exports/
 
 # Root orchestration
 node_modules/

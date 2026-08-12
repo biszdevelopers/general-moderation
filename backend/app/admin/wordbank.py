@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 from app.admin.wordlist import AddWordRequest
 from app.engine.moderation_engine import ModerationEngine
+from app.models.admin import HealthReport, WordBankStats, WordEntry
 from app.wordbank.manager import WordBankManager
 from app.wordbank.models import CustomWord
 
@@ -72,7 +73,7 @@ def create_wordbank_router(  # noqa: C901 - router factory with many sub-routes
         imported: int = word_bank.import_words([item.model_dump() for item in payload.items])
         return {"imported": imported}
 
-    @router.get("/wordbank/export", response_model=list[CustomWord])
+    @router.get("/wordbank/export", response_model=list[WordEntry])
     def export_words() -> list[CustomWord]:
         """Export every custom word.
 
@@ -98,8 +99,8 @@ def create_wordbank_router(  # noqa: C901 - router factory with many sub-routes
                 continue
         return entries
 
-    @router.get("/wordbank/stats")
-    def word_bank_stats() -> dict[str, Any]:
+    @router.get("/wordbank/stats", response_model=WordBankStats)
+    def word_bank_stats() -> WordBankStats:
         """Return word bank summary statistics.
 
         :return: total, custom, and base word counts
@@ -148,8 +149,8 @@ def create_wordbank_router(  # noqa: C901 - router factory with many sub-routes
         background_tasks.add_task(_graceful_shutdown)
         return {"status": "shutting_down"}
 
-    @router.get("/health")
-    def health() -> dict[str, Any]:
+    @router.get("/health", response_model=HealthReport)
+    def health() -> HealthReport:
         """Return a detailed health report.
 
         :return: service status, detector availability, and uptime

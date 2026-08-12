@@ -80,7 +80,7 @@ async def lifespan(app: FastAPI):
 
 
 app: FastAPI = FastAPI(
-    title="Multi-Language Moderation Service",
+    title="General Moderation",
     version="1.0.0",
     lifespan=lifespan,
 )

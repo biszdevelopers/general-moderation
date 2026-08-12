@@ -20,7 +20,7 @@ JSON. Responses are serialized with Rust `orjson`.
 
 | Group | Base path | Auth |
 | :--- | :--- | :--- |
-| [Moderation](/api/moderation) | `/moderate` | None |
+| [Public moderation](/api/public) | `/moderate`, `/moderate/batch` | None |
 | [Admin](/api/admin) | `/admin` | API key |
 
 ## Error Format
@@ -39,6 +39,6 @@ Rate limiting returns HTTP 429 with `{"detail": "Rate limit exceeded"}`.
 
 - **Verdict**: `PASS`, `BLOCK`, or `REVIEW`.
 - **Level 1**: the C/C++/Rust rule-based pipeline.
-- **Level 2**: the llama.cpp model, used to settle `REVIEW` results.
+- **Level 2**: the llama.cpp model, used when the trigger policy fires.
 - **detector_chain**: the ordered names of detectors that ran, e.g.
   `["bloom_filter", "rolling_hash", "aho_corasick"]`.

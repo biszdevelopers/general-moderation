@@ -11,6 +11,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
+from app.models.admin import WordEntry
 from app.utils.unicode_utils import UnicodeUtils
 from app.wordbank.manager import WordBankManager
 from app.wordbank.models import CustomWord, WordCategory
@@ -57,7 +58,7 @@ def create_wordlist_router(word_bank: WordBankManager, auth_dependency: Any) -> 
         prefix="/admin/wordbank", tags=["wordlist"], dependencies=[auth_dependency]
     )
 
-    @router.post("/words", response_model=CustomWord, status_code=status.HTTP_201_CREATED)
+    @router.post("/words", response_model=WordEntry, status_code=status.HTTP_201_CREATED)
     def add_word(payload: AddWordRequest) -> CustomWord:
         """Add a custom word to the word bank.
 
@@ -85,7 +86,7 @@ def create_wordlist_router(word_bank: WordBankManager, auth_dependency: Any) -> 
         """
         return {"removed": word_bank.remove_word(word_id)}
 
-    @router.get("/words", response_model=list[CustomWord])
+    @router.get("/words", response_model=list[WordEntry])
     def list_words(search: str | None = None) -> list[CustomWord]:
         """List custom words, optionally filtered by a search term.
 
@@ -98,7 +99,7 @@ def create_wordlist_router(word_bank: WordBankManager, auth_dependency: Any) -> 
             words = [word for word in words if needle in word.word]
         return words
 
-    @router.put("/words/{word_id}", response_model=CustomWord)
+    @router.put("/words/{word_id}", response_model=WordEntry)
     def update_word(word_id: int, payload: UpdateWordRequest) -> CustomWord:
         """Update an existing custom word.
 

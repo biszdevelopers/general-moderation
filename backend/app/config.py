@@ -29,6 +29,10 @@ class Settings(BaseSettings):
 
     workers: int = 3
 
+    # Stage 1: fast path
+    safe_word_list_path: str = "./data/safe_words.txt"
+    safe_word_enabled: bool = True
+
     model_path: str = "auto"
     model_primary_repo: str = "bartowski/Qwen_Qwen3.5-9B-GGUF"
     model_fallback_repo: str = "lmstudio-community/Qwen3.5-9B-GGUF"
@@ -68,6 +72,61 @@ class Settings(BaseSettings):
     enable_pyprofane: bool = True
     enable_sensitive_stop_words: bool = True
     sensitive_stop_words_dir: str = "./data/sensitive-stop-words"
+
+    # Detector weights (Stage 2 suspicion scoring)
+    weight_detector_badwords: int = 25
+    weight_detector_profanite: int = 20
+    weight_detector_glin: int = 20
+    weight_detector_aho: int = 30
+    weight_detector_bktree: int = 20
+    weight_detector_metaphone: int = 15
+
+    # Stage 2: semantic similarity
+    semantic_enabled: bool = True
+    semantic_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
+    semantic_index_dir: str = "./semantic/"
+    semantic_similarity_threshold: float = 0.85
+    semantic_force_llm_threshold: float = 0.90
+    semantic_top_k: int = 5
+    weight_semantic_political: int = 35
+    weight_semantic_violence: int = 40
+    weight_semantic_sexual: int = 30
+    weight_semantic_hate: int = 35
+    weight_semantic_pii: int = 25
+    weight_semantic_ads: int = 15
+
+    # Stage 2: user profiling (91-day rolling window with archive)
+    user_profiling_enabled: bool = True
+    user_db_path: str = "./data/users.db"
+    user_archive_db_path: str = "./data/archive.db"
+    user_ratio_threshold: float = 0.3
+    user_score_modifier: int = 20
+    user_window_days: int = 91
+
+    # Stage 2: suspicion scoring
+    weight_user: int = 20
+    score_weights_cache_ttl_seconds: int = 300
+
+    # Stage 3: LLM trigger policy
+    ai_target_percentage: int = 5
+    force_llm_on_semantic_high: bool = True
+    force_llm_on_user_ratio_high: bool = True
+    llm_response_timeout_seconds: int = 30
+
+    # Feedback and auto-tuning
+    feedback_db_path: str = "./data/feedback.db"
+    auto_tuning_enabled: bool = True
+    weight_decay_half_life_days: int = 30
+    auto_tuning_batch_hour: int = 0
+
+    # Runtime settings persistence
+    settings_db_path: str = "./data/settings.db"
+    settings_cache_ttl_seconds: int = 60
+    app_config_db_path: str = "./data/config.db"
+
+    # Data export
+    export_temp_dir: str = "./exports"
+    export_retention_days: int = 7
 
     admin_api_key: str = "CHANGE_ME_SUPER_SECRET_KEY"
     secret_key: str = "CHANGE_ME_SECRET_KEY_FOR_SESSION"
@@ -123,7 +182,12 @@ class Settings(BaseSettings):
         :param force: regenerate every secret, even already-set ones
         :return: mapping of generated field names to their new values
         """
-        fields: tuple[str, ...] = ("admin_api_key", "secret_key", "encryption_key")
+        fields: tuple[str, ...] = (
+            "admin_api_key",
+            "webui_api_key",
+            "secret_key",
+            "encryption_key",
+        )
         current: dict[str, str] = {name: getattr(self, name) for name in fields}
         targets: dict[str, str]
         if force:
@@ -178,12 +242,29 @@ class Settings(BaseSettings):
             handle.write("\n".join(lines) + "\n")
 
     def ensure_directories(self) -> None:
-        """Create the data, log, and model directories if they do not exist."""
-        for raw_path in (self.custom_words_path, self.log_file_path):
+        """Create the data, log, model, semantic, and export directories."""
+        db_paths: tuple[str, ...] = (
+            self.custom_words_path,
+            self.user_db_path,
+            self.user_archive_db_path,
+            self.feedback_db_path,
+            self.settings_db_path,
+            self.log_file_path,
+        )
+        for raw_path in db_paths:
             path: Path = Path(raw_path).parent
             if raw_path.startswith("."):
                 path = Path(os.getcwd()) / path
             path.mkdir(parents=True, exist_ok=True)
+        for raw_dir in (self.semantic_index_dir, self.export_temp_dir):
+            directory: Path = Path(raw_dir)
+            if raw_dir.startswith("."):
+                directory = Path(os.getcwd()) / directory
+            directory.mkdir(parents=True, exist_ok=True)
+        safe_words: Path = Path(self.safe_word_list_path)
+        if self.safe_word_list_path.startswith("."):
+            safe_words = Path(os.getcwd()) / safe_words
+        safe_words.parent.mkdir(parents=True, exist_ok=True)
         model_dir: Path = Path(self.model_dir)
         if self.model_dir.startswith("."):
             model_dir = Path(os.getcwd()) / model_dir

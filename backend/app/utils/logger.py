@@ -83,6 +83,8 @@ class ModerationLogger:
         confidence_score: float | None,
         latency_ms: float,
         detector_chain: list[str],
+        suspicion_score: float = 0.0,
+        ai_triggered: bool = False,
     ) -> None:
         """Record a complete moderation decision.
 
@@ -93,10 +95,12 @@ class ModerationLogger:
         :param level_used: detection level that produced the verdict
         :param reason: human-readable reason, if any
         :param matched_word: offending word, if any
-        :param matched_language: ISO code of the matched language, if known
+        :param matched_language: ISO code of the detected language, if known
         :param confidence_score: overall confidence, if any
         :param latency_ms: total processing time in milliseconds
         :param detector_chain: ordered detector names that ran
+        :param suspicion_score: the computed 0-100 suspicion score
+        :param ai_triggered: whether the LLM was invoked
         """
         text_hash: str = hashlib.sha256(text.encode("utf-8")).hexdigest()
         text_preview: str = text[:50]
@@ -115,6 +119,8 @@ class ModerationLogger:
             confidenceScore=confidence_score,
             latencyMs=latency_ms,
             detectorChain=detector_chain,
+            suspicionScore=suspicion_score,
+            aiTriggered=ai_triggered,
         )
 
     def close(self) -> None:

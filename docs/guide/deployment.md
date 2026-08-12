@@ -35,8 +35,12 @@ Deploy from the repository root:
 npm install
 npm run install:all
 git submodule update --init          # fetch sensitive-stop-words word lists
-npm run start:prod                   # build frontend, then gunicorn on APP_PORT
+npm run build                        # build the frontend once
+npm run start:prod                   # serve everything on APP_PORT (no build)
 ```
+
+Start scripts never rebuild the frontend; re-run `npm run build` after any UI
+change.
 
 Verify:
 

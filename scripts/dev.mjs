@@ -1,8 +1,11 @@
-// Cross-platform developer launcher for the moderation monorepo.
+// Cross-platform developer launcher for the general-moderation monorepo.
 //
 // Prefers uv (the modern Python toolchain) for backend commands and falls
 // back to the backend virtualenv interpreter when uv is not installed.
 import { spawnSync } from "node:child_process";
+import { createInterface } from "node:readline/promises";
+import { randomInt, randomBytes } from "node:crypto";
+import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -84,6 +87,108 @@ function syncBackend() {
     process.exit(1);
 }
 
+const SECRET_CHARSET =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
+
+function secureSecret(length = 48) {
+    const bytes = randomBytes(length);
+    let secret = "";
+    for (let index = 0; index < length; index += 1) {
+        secret += SECRET_CHARSET[bytes[index] % SECRET_CHARSET.length];
+    }
+    return secret;
+}
+
+function envPath() {
+    return path.join(backendDir(), ".env");
+}
+
+function loadEnvFile() {
+    const env = envPath();
+    if (!fs.existsSync(env)) {
+        const example = path.join(backendDir(), ".env.example");
+        if (fs.existsSync(example)) {
+            fs.copyFileSync(example, env);
+        } else {
+            fs.writeFileSync(env, "");
+        }
+    }
+    return fs.readFileSync(env, "utf-8");
+}
+
+function isPlaceholder(value) {
+    return value.trim() === "" || value.trim().startsWith("CHANGE_ME");
+}
+
+function mask(value) {
+    if (value.length <= 8) {
+        return "*".repeat(value.length);
+    }
+    return `${value.slice(0, 2)}${"*".repeat(value.length - 4)}${value.slice(-2)}`;
+}
+
+async function genSecrets() {
+    const raw = loadEnvFile();
+    const lines = raw.split(/\r?\n/);
+    const targets = [];
+    for (const line of lines) {
+        const match = line.match(/^([A-Za-z0-9_]+(?:KEY|SECRET)[A-Za-z0-9_]*)=(.*)$/);
+        if (match === null) {
+            continue;
+        }
+        const key = match[1];
+        const value = match[2] ?? "";
+        if (isPlaceholder(value)) {
+            targets.push({ key, value });
+        }
+    }
+    if (targets.length === 0) {
+        console.log("All *_KEY and *_SECRET values in backend/.env are already set.");
+        return;
+    }
+    const existing = lines.some(
+        (line) =>
+            /^([A-Za-z0-9_]+(?:KEY|SECRET)[A-Za-z0-9_]*)=/.test(line) &&
+            !isPlaceholder(line.split("=", 2)[1] ?? ""),
+    );
+    if (existing && process.stdin.isTTY) {
+        const rl = createInterface({ input: process.stdin, output: process.stdout });
+        const answer = await rl.question(
+            "backend/.env already contains real secrets. Regenerate placeholders? (y/N) ",
+        );
+        rl.close();
+        if (answer.trim().toLowerCase() !== "y") {
+            console.log("Aborted: no secrets were changed.");
+            return;
+        }
+    }
+    const generated = new Map();
+    const next = lines.map((line) => {
+        for (const { key } of targets) {
+            if (!line.startsWith(`${key}=`)) {
+                continue;
+            }
+            const value = secureSecret();
+            generated.set(key, value);
+            return `${key}=${value}`;
+        }
+        return line;
+    });
+    for (const { key } of targets) {
+        if (!generated.has(key)) {
+            const value = secureSecret();
+            generated.set(key, value);
+            next.push(`${key}=${value}`);
+        }
+    }
+    fs.writeFileSync(envPath(), `${next.join("\n").replace(/\n+$/, "")}\n`);
+    console.log(`Generated ${generated.size} secret(s) in backend/.env:`);
+    for (const [key, value] of generated) {
+        console.log(`  ${key}=${mask(value)}`);
+    }
+    console.log("Full values are written to backend/.env only.");
+}
+
 const command = process.argv[2];
 switch (command) {
     case "backend":
@@ -113,7 +218,7 @@ switch (command) {
         runInBackend(["python", "-m", "app.ai.download"]);
         break;
     case "gen-secrets":
-        runInBackend(["python", "-m", "app.secret_gen", ...process.argv.slice(3)]);
+        genSecrets();
         break;
     case "install":
         run(npmCommand(), ["install"], root);

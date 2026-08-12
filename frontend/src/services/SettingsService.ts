@@ -1,5 +1,5 @@
 import { ApiError, AuthService } from "./AuthService";
-import { HealthReport } from "../types";
+import { HealthReport, SettingRecord, TuneReport } from "../types";
 
 export class SettingsService {
     public constructor(
@@ -37,5 +37,23 @@ export class SettingsService {
 
     public shutdown(): Promise<{ status: string }> {
         return this.request<{ status: string }>("/admin/shutdown", { method: "POST" });
+    }
+
+    public getSettings(): Promise<{ settings: SettingRecord[] }> {
+        return this.request<{ settings: SettingRecord[] }>("/admin/settings");
+    }
+
+    public updateSettings(settings: Record<string, string | number | boolean>): Promise<{
+        status: string;
+        updated: string[];
+    }> {
+        return this.request<{ status: string; updated: string[] }>("/admin/settings", {
+            method: "POST",
+            body: JSON.stringify({ settings }),
+        });
+    }
+
+    public runTuning(): Promise<TuneReport> {
+        return this.request<TuneReport>("/admin/tune", { method: "POST" });
     }
 }
