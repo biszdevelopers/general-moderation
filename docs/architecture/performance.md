@@ -279,13 +279,13 @@ its own.
 
 ```mermaid
 flowchart LR
-    subgraph Native work (fast)
+    subgraph "Native work (fast)"
         A1["Aho-Corasick · Levenshtein · MurmurHash · Bloom (C)"]
         A2["badwords · stop-words (Rust) · gangajal (WASM)"]
         A3["pydantic · orjson · cryptography (Rust)"]
         A4["SQLite (C) · llama.cpp (C++) · Faiss (C++)"]
     end
-    subgraph Glue work (policy only)
+    subgraph "Glue work (policy only)"
         B1["route · orchestrate · score (bounded arithmetic)"]
     end
     A1 --> B1
