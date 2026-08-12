@@ -1,248 +1,593 @@
-# Testing Pipeline
+# Testing Architecture
 
-General Moderation ships a **10,000-test suite** — 1,000 Phase 1 core cases
-and 9,000 Phase 2 golden-master cases — that is designed to run as fast as a
-modern JS test runner such as Vitest. This page documents the exact pipeline:
-how tests are discovered, how the machine's full core count is used, how
-fixtures are shared and isolated, and how the Phase 2 suite is generated and
-verified.
+General Moderation treats its test suite as a **first-class distributed
+system**, not a collection of scripts. The suite is engineered around four
+non-negotiable properties — **determinism**, **isolation**, **parallel
+throughput**, and **reproducible generation** — and is designed to scale from a
+single developer laptop to a large CI fleet without changing a single test.
 
-## Suite Shape
+This page documents the architecture to expert depth: how tests are modeled,
+discovered, parametrized, executed across every available core, isolated from
+one another, generated from observed behavior, verified for uniqueness, and
+extended into future phases.
 
-| Property | Value |
-| :--- | :--- |
-| Total tests | 10,000 |
-| Phase 1 | 1,000 hand-written core cases |
-| Phase 2 | 9,000 generated golden-master cases |
-| Test files | 92 Phase 2 files + 24 Phase 1 files |
-| Per-file cap | 100 test cases |
-| Runner | pytest + pytest-xdist |
-| Isolation | per-test sandbox directory |
+---
+
+## 1. Architectural Principles
+
+The entire test system is governed by a small set of invariants. Every design
+decision below derives from one of these.
+
+| Principle | Meaning | Enforcement point |
+| :--- | :--- | :--- |
+| **Determinism** | A given test produces the same verdict on every run, on every machine, in any interleaving with other tests. | Frozen clock, seeded fixtures, golden literals, per-test sandboxes |
+| **Isolation** | No test observes another test's state — filesystem, databases, logs, caches, or process globals. | Per-test sandbox directories, per-test database copies, process-per-worker |
+| **Throughput** | The suite saturates every available compute unit; parallelism is dynamic, never configured by a magic number. | pytest-xdist with auto worker derivation |
+| **Reproducibility** | Test expectations are captured from observed behavior and re-verified; nothing is hand-fabricated. | Golden-master generator with in-process oracles |
+| **Extensibility** | Adding coverage never requires new infrastructure — only new rows in dimension matrices. | Data-driven generator + regenerated READMEs |
+| **Verifiability** | Every artifact (tests, docs, uniqueness) is machine-checked. | Uniqueness report, collection assertions, lint gates |
+
+```mermaid
+mindmap
+  root((Testing System))
+    Determinism
+      Frozen clock
+      Seeded fixtures
+      Golden literals
+    Isolation
+      Per-test sandbox
+      Per-test DB copies
+      Process-per-worker
+    Throughput
+      Auto worker count
+      Dynamic distribution
+      Shared session seeds
+    Reproducibility
+      Golden-master oracle
+      Regeneration
+    Extensibility
+      Dimension matrices
+      Generator pipeline
+    Verifiability
+      Uniqueness report
+      Collection checks
+      Lint gates
+```
+
+---
+
+## 2. Test Taxonomy and Repository Topology
+
+The suite is organized into **layers** by the seam they exercise, and each
+layer is further split into **module suites** that own a bounded slice of the
+product surface.
+
+```mermaid
+flowchart TB
+    subgraph Suite["Test Suite"]
+        subgraph U["Unit layer"]
+            D["Detector suite"]
+            E["Engine suite"]
+            S["Semantic suite"]
+            P["Profiling suite"]
+        end
+        subgraph I["Integration layer"]
+            A["Archive suite"]
+            T["Auto-tuning suite"]
+            M["Model/LLM suite"]
+            C["Settings suite"]
+        end
+        subgraph X["Cross-cutting layer"]
+            Sec["Security suite"]
+            Ch["Chaos / resilience suite"]
+            Exp["Export suite"]
+        end
+        subgraph E2E["End-to-end layer"]
+            Pub["Public API suite"]
+            Adm["Admin API suite"]
+        end
+    end
+    Suite --> Runner["Shared execution engine"]
+    Runner --> Fx["Fixture architecture"]
+    Runner --> Gen["Golden-master generator"]
+```
+
+- **Unit layer** exercises a single component in isolation: individual
+  detectors against a controlled word bank, the moderation pipeline against
+  seeded dictionaries and thresholds, the semantic similarity service against
+  a deterministic embedding oracle, and the user profiler against an
+  in-memory database pair.
+- **Integration layer** wires several services together: the archive cycle
+  (profiler plus SQLite persistence), the auto-tuning batch (feedback
+  ingestion plus weight/threshold mutation), the LLM boundary (sanitization,
+  download retry, prompt assembly), and the runtime settings store
+  (validation, coercion, read-only discipline).
+- **Cross-cutting layer** owns concerns that span the product: export
+  integrity and secret redaction, security headers and injection resistance,
+  and chaos/resilience scenarios (malformed inputs, broken adapters,
+  concurrency bursts, recovery ordering).
+- **End-to-end layer** drives the fully wired FastAPI application through its
+  ASGI interface, asserting the public moderation surface and the
+  administrative surface as the operators see them.
+
+Each module suite is a directory containing a documentation ledger and a set
+of test files. Every test file is bounded in cardinality so that any single
+file remains reviewable and debuggable; when a matrix grows past that bound,
+the generator splits it into an additional file rather than enlarging an
+existing one.
+
+---
+
+## 3. Discovery, Parametrization, and Collection
+
+The runner discovers tests by filesystem convention, then expands each
+parametrized case into its own **concrete execution unit** at collection time.
 
 ```mermaid
 flowchart LR
-    subgraph Source["Test Sources"]
-        A["Phase 1<br/>1,000 hand-written cases"]
-        B["Phase 2<br/>9,000 generated cases"]
-    end
-    A --> C["pytest collection<br/>tests/"]
-    B --> C
-    C --> D["pytest-xdist<br/>-n auto"]
-    D --> E["Worker 1"]
-    D --> F["Worker 2"]
-    D --> G["Worker N"]
-    E --> H["conftest fixtures<br/>db_template + engine + client"]
-    F --> H
-    G --> H
-    H --> I["PASS / FAIL summary"]
+    A["Source tree"] --> B["Collector"]
+    B --> C{"File matches<br/>test convention?"}
+    C -- yes --> D["Parse parametrize rows"]
+    D --> E["Expand one execution unit per row"]
+    E --> F["Attach unique uid per row"]
+    F --> G["Execution plan"]
+    C -- no --> H["Skip (helpers, tools, ledgers)"]
+    G --> I["Scheduler"]
 ```
 
-## Execution Model: Every Core, No Hard-Coded Worker Count
+Two details make collection exact:
 
-The suite is invoked with `-n auto`, which asks pytest-xdist to pick the
-worker count from the machine's logical CPU count at runtime. There is no
-hard-coded `-n 8` or `-n 16` anywhere: on a 4-core laptop it uses 4 workers,
-on a 128-core server it uses 128. `test:serial` exists for deterministic
-CI debugging but is not the default.
+1. **Row expansion.** A parametrized method with a tuple of dimension rows
+   yields one execution unit per row. The collector asserts the total number
+   of units it expects, so a regression that silently drops rows (for example,
+   by a generator change) fails collection immediately rather than quietly
+   under-testing.
+2. **Row uniqueness.** Every parametrized row carries a monotonically
+   increasing, globally unique discriminator column. This guarantees the
+   runner never collapses two rows that happen to carry identical dimension
+   values — a failure mode that would otherwise reduce effective coverage
+   without any error being raised.
+
+---
+
+## 4. Execution Engine: Dynamic Parallelism Across Every Core
+
+The execution engine is **pytest + pytest-xdist**. The worker population is
+derived from the runtime environment: the scheduler queries the logical CPU
+count of the machine it is running on and spawns exactly that many worker
+processes. There is no fixed worker constant in configuration, so a
+single-core container, a developer workstation, and a high-core build machine
+all behave optimally without any edits.
 
 ```mermaid
-flowchart TD
-    R["npm run test<br/>(pytest tests -n auto)"] --> A{"os.cpu_count()"}
-    A --> W1["Worker process 1"]
-    A --> W2["Worker process 2"]
-    A --> W3["Worker process ..."]
-    A --> W4["Worker process N"]
-    W1 --> C["Each worker owns a slice of test files"]
-    W2 --> C
-    W3 --> C
-    W4 --> C
-    C --> D["Shared session fixtures built once per worker"]
-    D --> E["Per-test sandbox copies"]
-    E --> F["100% green or red verdict"]
+flowchart TB
+    S["Invocation<br/>(pytest -n auto)"] --> D["Scheduler"]
+    D --> C{"Derive worker count<br/>from environment"}
+    C -->|"logical CPU count"| W1["Worker process 1"]
+    C --> W2["Worker process 2"]
+    C --> WN["Worker process N"]
+    subgraph W1W["Each worker is a full Python process"]
+        W1 --> I1["Own interpreter"]
+        W1 --> R1["Own detector runtime"]
+        W1 --> D1["Own SQLite engines"]
+    end
+    subgraph W2W["Each worker is a full Python process"]
+        W2 --> I2["Own interpreter"]
+        W2 --> R2["Own detector runtime"]
+        W2 --> D2["Own SQLite engines"]
+    end
+    WN --> IN["Own interpreter"]
 ```
 
-Each worker is a full Python process with its own interpreter, so the
-C/C++/Rust detector packages and SQLite engines run truly in parallel across
-all cores. Test files are distributed, never duplicated, so there is no
-re-execution between workers.
+Why full processes rather than threads:
 
-## Fixture Lifecycle: One Seed, Many Sandboxes
+- The detector stack is a collection of C, C++, Rust, and WebAssembly
+  bindings that release the GIL; only true parallelism extracts their
+  throughput.
+- SQLite, the audit logger, and the profiler hold file handles and
+  connections; a process-per-worker keeps every one of those resources
+  thread-confined and race-free.
+- A worker crash (for example, a native detector fault) terminates only that
+  worker; the scheduler isolates the failure instead of corrupting the whole
+  run.
 
-The single most expensive operation used to be fixture construction: every
-test created and seeded five SQLite databases (settings, app-config, profiler
-live, profiler archive, feedback) plus the custom-words store — roughly
-100+ ms of schema creation and seeding per test, serialized across the suite.
+### 4.1 Work Distribution
 
-The `conftest.py` `db_template` fixture fixes this. It is **session-scoped**
-per worker: it builds and seeds every database exactly once, then each test's
-`settings` fixture **copies** the files into that test's sandbox. Opening an
-existing, schema-complete SQLite file costs a fraction of a millisecond versus
-creating and seeding it from scratch.
+The scheduler partitions the execution plan into slices of **test files**, not
+individual tests. File-granular distribution has a decisive advantage for this
+suite: a worker can build its session-scoped fixtures once and reuse them for
+every file it owns, amortizing the most expensive setup across many tests.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant W as Worker process
-    participant T as db_template (session)
-    participant S as settings (per test)
-    participant E as engine / client
-    participant DB as SQLite sandbox
+    participant S as Scheduler
+    participant W1 as Worker A
+    participant W2 as Worker B
+    participant WN as Worker N
+    participant Q as Execution queue
 
-    W->>T: build once: create + seed settings.db, config.db,<br/>users.db, archive.db, feedback.db, custom_words.db
-    T-->>W: template data/ directory
-    Note over W: for every test
-    W->>S: copy template data/* -> tmp_path/data (file copies)
-    S-->>E: settings point at sandbox paths
-    E->>DB: open existing schema-complete files
-    E-->>W: engine / TestClient ready
-    W->>E: run test body
-    W-->>S: teardown (sandbox discarded)
+    S->>Q: enqueue file slices
+    loop while slices remain
+        Q->>W1: claim slice (files F1..Fk)
+        Q->>W2: claim slice (files Fm..Fn)
+        Q->>WN: claim slice (files Fp..Fq)
+        activate W1
+        W1->>W1: build session fixtures once
+        W1->>W1: run owned files
+        deactivate W1
+    end
+    Q-->>S: drained; aggregate results
 ```
 
-Isolation is unchanged: every test still gets its own physical database
-copies, so no test can observe another test's writes. The optimization only
-moves schema creation and seeding out of the per-test critical path.
+Because distribution is dynamic, faster workers naturally claim more slices —
+the engine self-balances without a static partition.
 
-## Per-Test Path
+### 4.2 Determinism Under Parallelism
+
+Parallelism never weakens determinism:
+
+- Each worker owns a private filesystem sandbox root, so SQLite files, log
+  files, and export archives from different workers never collide.
+- Session-scoped fixtures are scoped **per worker**: every worker builds its
+  own copy of the shared seeds, so there is zero cross-process shared mutable
+  state.
+- All time-dependent logic is driven through a **frozen clock** (below), so a
+  test's outcome is independent of when, or on which worker, it executes.
+
+---
+
+## 5. Fixture Architecture
+
+Fixtures are the connective tissue of the suite. They are designed on a
+strict **scope ladder**: build once per session where a value is read-only or
+immutable, build per test where a value must be isolated and mutable.
+
+```mermaid
+flowchart TB
+    subgraph Session["Session scope (per worker)"]
+        T["Database template<br/>pre-seeded SQLite files"]
+    end
+    subgraph Test["Test scope (per test)"]
+        C["Sandbox copy<br/>of template files"]
+        S["Settings object<br/>pointing at sandbox"]
+        L["JSONL audit logger"]
+        WB["Custom-word store"]
+        E["Moderation engine"]
+        AP["FastAPI application"]
+        CL["ASGI test client"]
+    end
+    Session --> C
+    C --> S --> L
+    L --> WB
+    WB --> E
+    E --> AP
+    AP --> CL
+```
+
+### 5.1 The Database-Template Pattern
+
+The single largest per-test cost in a naive design is **schema construction
+and seeding**: several SQLite databases must be created with tables, indexes,
+and default rows before any service can run. Creating and seeding them inside
+every test multiplies that cost across the entire suite.
+
+The suite solves this with a **pre-seeded template**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant W as Worker
+    participant T as Template builder (session)
+    participant S as Settings (per test)
+    participant V as Services
+    participant D as Sandbox
+
+    W->>T: construct every database engine once<br/>(settings, config, profiler live,<br/>profiler archive, feedback, custom words)
+    T-->>W: immutable data directory
+    Note over W: for each test in this worker
+    W->>S: materialize sandbox data dir
+    S->>D: copy template files into sandbox<br/>(physical file copies, not re-seeding)
+    S-->>V: point settings at sandbox paths
+    V->>D: open schema-complete files
+    V-->>W: ready in constant time
+```
+
+The template is **functionally immutable**: it is built once, then only ever
+read and copied. Because SQLite writes are confined to the per-test copy, the
+template can never be corrupted by a test, and every test still observes a
+pristine, freshly materialized database set. Isolation semantics are
+therefore identical to a naive per-test creation approach — only the constant
+factor of setup changes, and it changes decisively.
+
+This is the same shape of optimization a high-performance build system uses
+for cache warming, or a database uses for cloning a snapshot: **amortize
+expensive construction once, distribute cheap copies many times.**
+
+---
+
+## 6. Isolation and Sandboxing Model
+
+Every test executes inside a **private sandbox** — a temporary directory
+tree that is created on setup and discarded on teardown. The sandbox contains
+every mutable artifact the product could touch:
 
 ```mermaid
 flowchart LR
-    subgraph Setup["Per-test setup (fast)"]
-        C["copy DB template files"]
-        S["build Settings object"]
-        L["open JSONL logger"]
-        WB["open custom-words store"]
-        E["build ModerationEngine<br/>(detectors, profiler, scorer)"]
+    subgraph Sandbox["Per-test sandbox"]
+        Data["data/<br/>settings.db · config.db ·<br/>users.db · archive.db ·<br/>feedback.db · custom_words.db"]
+        Logs["logs/<br/>moderation.log (+ rotated tails)"]
+        Exports["exports/<br/>archive staging"]
+        Sem["semantic/<br/>category index files"]
+        Models["models/"]
     end
-    subgraph Body["Test body"]
-        M["run the real code paths"]
-        A["assert golden / property outcome"]
-    end
-    subgraph Teardown["Teardown"]
-        T["close engine + logger"]
-        D["discard sandbox"]
-    end
-    C --> S --> L --> WB --> E --> M --> A --> T --> D
+    Sandbox --> Svc["Services resolve every path<br/>from the per-test Settings"]
 ```
 
-## Phase 2: Golden-Master Generation
+Because the settings object is constructed to point **exclusively** inside the
+sandbox, the suite can never read or write the real `data/`, `logs/`,
+`models/`, `semantic/`, or `exports/` directories of a running deployment.
+This is a hard guarantee, not a convention: any service that opens a path
+outside the sandbox fails the test that exercised it, because that path does
+not exist in the sandbox.
 
-The 9,000 Phase 2 cases are emitted by `backend/tests/tools/phase2_generator.py`.
-It runs the **real application** at generation time to capture expected values
-(a golden master), then writes parametrized pytest files plus every module
-README and a uniqueness report. Because generation and execution share the
-same locked environment, the emitted assertions reproduce observed behavior
-exactly and lock it in as regression coverage.
+The isolation guarantees, enumerated:
+
+| Concern | Guarantee |
+| :--- | :--- |
+| Filesystem | Every writable path resolves inside the per-test sandbox |
+| Databases | Physical copies per test; template is immutable |
+| Logs | Per-test JSONL logger; rotation confined to the sandbox |
+| Process globals | Per-test runtime; process-per-worker for native isolation |
+| Time | Frozen, per-test clock with deterministic advancement |
+| Concurrency | No cross-test mutable state; worker-local session scope |
+
+---
+
+## 7. Determinism: The Frozen Clock
+
+Moderation is full of time-branched logic — long rolling profiling windows,
+archive cycles, auto-tuning half-life decay, cache TTLs, log rotation. Naive
+tests of this logic are flaky: their outcome depends on the wall clock.
+
+The suite makes time a **controlled input**. A clock abstraction is frozen at
+a fixed epoch instant and injected into every time-sensitive module. A test
+advances the clock deterministically (`advance` by days or hours) to reach the
+exact scenario boundary it targets.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant T as Test
+    participant C as Frozen clock
+    participant P as Profiler
+    participant F as Feedback service
+
+    T->>C: fixture freezes epoch instant
+    T->>P: record activity (day one)
+    T->>C: advance one day
+    T->>P: record activity (day two)
+    T->>C: advance past window boundary
+    T->>P: observe archive cycle fires
+    T->>F: record feedback at epoch
+    T->>F: advance half-life window
+    T->>F: observe weight decay
+```
+
+Because the clock is injected at the module seam, the same frozen instant is
+visible to the profiler, the feedback/auto-tuning service, and any consumer
+that branches on `now`. The result: archive cycles, decay curves, and TTL
+expirations are tested with exactness — including boundary days, negative
+offsets, and large gaps — without ever sleeping or relying on wall-clock
+timing.
+
+The frozen clock is a **session-stable epoch**: it is anchored once and
+advanced only explicitly, so the same test on any machine, at any real time,
+observes the same sequence of instants.
+
+---
+
+## 8. Golden-Master Generation Methodology
+
+The expansive phase-two portion of the suite is not hand-written. It is
+**emitted by a generator** that treats the real application as an oracle.
+This is characterization testing at industrial scale: rather than asserting
+what the software *should* do from first principles, the generator runs the
+software, records what it *does*, and freezes that behavior as a golden
+literal. Future regressions are then detected as deviations from the frozen
+observations.
+
+```mermaid
+flowchart TB
+    subgraph Inputs["Generator inputs"]
+        DIM["Dimension matrices<br/>(languages · lengths · content classes ·<br/>distances · volumes · fault types · vectors)"]
+        SRC["Module specs<br/>(file layout, imports, helpers)"]
+    end
+    subgraph Oracle["In-process oracles"]
+        DET["Detector instances"]
+        ENG["Moderation engine"]
+        PRF["User profiler"]
+        FB["Feedback / auto-tuning service"]
+        MOD["Model boundary (sanitize, KV, retries)"]
+    end
+    DIM --> GEN["Generator"]
+    SRC --> GEN
+    GEN --> Oracle
+    Oracle --> GOLD["Golden expected values"]
+    GOLD --> FILES["Emit test files<br/>(bounded per-file cardinality)"]
+    GOLD --> LEDGERS["Emit module README ledgers"]
+    GOLD --> REPORT["Emit uniqueness report"]
+    FILES --> RUN["Runner executes emitted files"]
+```
+
+### 8.1 Why an Oracle
+
+For a multilingual moderation stack, expected outcomes are genuinely
+computable only by executing the real stack: fuzzy matching across scripts,
+package-level positives and negatives, sanitization of control tokens, and
+archive arithmetic all depend on the precise installed runtimes. Hand-written
+expectations for these would be guesswork. The oracle removes the guess:
+
+- **Detection** outcomes are captured by constructing the real detector over a
+  seeded word bank and observing the match flag.
+- **Pipeline verdicts** are captured by seeding the real engine with
+  dictionary words and thresholds and observing the verdict, suspicion score,
+  and pipeline stage.
+- **Archive/profiling** totals and ratios are captured by recording through
+  the real profiler across a deterministic day sequence and observing summary
+  counts and ratios.
+- **Deterministic transforms** (sanitization, KV-type mapping, thread
+  resolution, typed coercion) are captured by invoking the pure functions and
+  freezing exact outputs.
+
+### 8.2 Regeneration Contract
+
+The generator is **idempotent and deterministic**: running it on an unchanged
+environment emits byte-identical artifacts. Regeneration is therefore a safe,
+recurring operation — it is what keeps the emitted files, the documentation
+ledgers, and the uniqueness report in lockstep after any change to a
+dimension matrix or a module spec.
 
 ```mermaid
 flowchart LR
-    subgraph Gen["phase2_generator.py (one-time)"]
-        M["dimension matrices<br/>(26 languages, lengths, volumes, faults)"]
-        M --> R["invoke real app"]
-        R --> G["golden expected values"]
-        G --> F["emit 92 test files (<=100 cases each)"]
-        G --> D["emit module README tables"]
-        G --> U["emit uniqueness report"]
-    end
-    F --> PT["pytest runs the emitted cases"]
-    PT --> V["10,000 cases collected"]
-    U --> V
+    A["Edit dimension matrix or module spec"] --> B["Run generator"]
+    B --> C["Files"]
+    B --> D["README ledgers"]
+    B --> E["Uniqueness report"]
+    C --> F["Collection assert: exact expected unit count"]
+    F --> G["Suite execution"]
 ```
 
-The uniqueness report (`backend/tests/tools/phase2_uniqueness_report.md`)
-proves zero overlap: Phase 2 IDs start after each module's Phase 1 ceiling,
-and no dimension combination from Phase 1 is reused.
+---
 
-## Module Allocation
+## 9. Uniqueness and Anti-Collision Guarantees
 
-| Module | Phase 1 | Phase 2 | Phase 2 files |
-| :--- | :--- | :--- | :--- |
-| Detectors | 125 | 1,200 | 12 |
-| Engine | 80 | 700 | 7 |
-| Semantic | 80 | 700 | 7 |
-| User Profiling | 80 | 700 | 7 |
-| Archive | 115 | 950 | 10 |
-| Auto-Tuning | 60 | 550 | 6 |
-| Model/LLM | 60 | 550 | 6 |
-| Settings | 60 | 550 | 6 |
-| Public API | 80 | 700 | 7 |
-| Admin API | 50 | 600 | 6 |
-| Export | 70 | 600 | 6 |
-| Security | 80 | 700 | 7 |
-| Chaos/Resilience | 60 | 500 | 5 |
-| **Total** | **1,000** | **9,000** | **92** |
+Coverage is worthless if it is duplicated. The suite enforces **structural
+uniqueness** at two independent layers:
+
+1. **Identifier space.** Each phase allocates identifiers in a disjoint,
+   monotonically increasing range that begins strictly after the previous
+   phase's ceiling. No two phases can ever collide on an identifier.
+2. **Dimension space.** Every emitted case is built from a dimension tuple
+   that is distinct from every previously emitted tuple within its module, and
+   the generator re-derives matrices to avoid reusing combinations already
+   exercised by the hand-written core.
 
 ```mermaid
-pie showData title Phase 2 allocation by module
-    "Detectors" : 1200
-    "Engine" : 700
-    "Semantic" : 700
-    "Profiling" : 700
-    "Archive" : 950
-    "Auto-Tuning" : 550
-    "Model/LLM" : 550
-    "Settings" : 550
-    "Public API" : 700
-    "Admin API" : 600
-    "Export" : 600
-    "Security" : 700
-    "Chaos" : 500
+flowchart TB
+    SUB["Per-module phase ID ranges"] --> A{"Collision?"}
+    A -- no --> B{"Dimension tuple<br/>already used?"}
+    B -- no --> C["Emit case"]
+    B -- yes --> R["Regenerate distinct tuple"]
+    C --> D["Uniqueness report"]
+    D --> E{"Zero overlap<br/>verified?"}
+    E -- yes --> OK["PASS"]
+    E -- no --> F["Renumber affected cases"]
 ```
 
-## The 25M Universe
+The resulting report is a machine-readable ledger asserting the total number
+of emitted cases, the per-module distribution, and the absence of overlap —
+so uniqueness is a verified property of every generation run, not a claim in
+prose.
 
-The per-module READMEs document the full planned universe of 25,000,000+
-cases. Each phase extends the dimension matrices; the tooling and fixture
-design above are built so later phases only add rows to the generator or the
-matrices, never new infrastructure.
+---
+
+## 10. Quality Gates
+
+The suite sits behind the same quality bar as production code. Every emitted
+file must satisfy the static-analysis gate before it is considered shippable:
+
+| Gate | Tool | Intent |
+| :--- | :--- | :--- |
+| Lint | ruff (selective rule set) | unused imports, undefined names, shadowing, mutable class defaults |
+| Format | ruff formatter | deterministic, opinionated layout across every file |
+| Collection | pytest | exact expected unit count, zero collection errors |
+| Uniqueness | generator report | zero overlap across phases |
+| Typing | full annotations | no untyped public seams in test code |
+
+Because the generator emits imports per module and suppresses only the
+rules that are false positives for multilingual fixtures, the emitted files
+lint and format cleanly out of the box — a property that is itself
+regression-tested.
+
+---
+
+## 11. Lifecycle and CI Pipeline
+
+From change to green, the pipeline is fully defined:
 
 ```mermaid
 flowchart LR
-    P1["Phase 1<br/>1,000 cases"] --> P2["Phase 2<br/>9,000 cases"]
-    P2 --> P3["Phase 3<br/>100,000 cases"]
-    P3 --> P4["Phase 4<br/>1,000,000 cases"]
-    P4 --> P5["Phase 5<br/>23,890,000 cases"]
-    P5 --> U["25,000,000+ universe"]
+    A["Edit generator or matrices"] --> B["Regenerate artifacts"]
+    B --> C["Lint + format gate"]
+    C --> D["Collect gate<br/>(exact unit count)"]
+    D --> E["Execute suite<br/>(all cores)"]
+    E --> F{"All green?"}
+    F -- yes --> G["Unique + documented"]
+    F -- no --> H["Diagnose failing file slice"]
+    H --> A
+    G --> I["Ship (one file per commit)"]
 ```
 
-## Running the Pipeline
+A dedicated serial entry point exists for deterministic CI debugging, while
+the default parallel entry point is used for speed in every other context.
 
-```bash
-# Everything, using all available cores (worker count = logical CPU count)
-npm run test
+---
 
-# Scoped runs (all also use -n auto)
-npm run test:unit          # tests/unit
-npm run test:integration   # tests/integration
-npm run test:e2e           # tests/e2e
-npm run test:phase2        # all *_phase2_* files
+## 12. Extensibility into Future Phases
 
-# Deterministic serial run (CI debugging)
-npm run test:serial
+The architecture makes growth a **data-entry exercise, not an engineering
+effort**. Later phases are modeled as additional rows in the dimension
+matrices and additional identifier ranges in the per-module ledgers; nothing
+about the runner, the fixtures, the sandbox, or the generation pipeline
+changes.
 
-# Regenerate the Phase 2 suite, READMEs, and uniqueness report
-cd backend && uv run python tests/tools/phase2_generator.py
-
-# Lint and format the suite
-cd backend && uv run python -m ruff check tests
-cd backend && uv run python -m ruff format --check tests
+```mermaid
+flowchart TB
+    subgraph Existing["Existing infrastructure (unchanged)"]
+        Runner["Runner + worker model"]
+        Fx["Fixture + template architecture"]
+        Gen["Generator + oracle pipeline"]
+        Rep["Uniqueness + lint gates"]
+    end
+    subgraph Future["Future phases (data only)"]
+        M1["Extended dimension matrices"]
+        M2["Additional identifier ranges"]
+        M3["New module ledgers"]
+    end
+    Future --> Existing
+    Existing --> Done["Expanded coverage on the same rails"]
 ```
 
-## Adding New Tests
+Because every future case is born through the same oracle, isolation, and
+uniqueness machinery, the marginal cost of a case approaches zero while the
+guarantees remain identical to the first.
 
-1. Read the module README under `backend/tests/` for the dimension matrix and
-   the phase it belongs to.
-2. For Phase 2+: add rows to `backend/tests/tools/phase2_generator.py` and
-   regenerate (the generator emits files, READMEs, and the uniqueness report).
-3. For hand-written cases: follow the Phase 1 pattern (`BaseTest`, frozen
-   clock, `conftest` fixtures) and add the case to a file with at most 100
-   cases.
-4. Update the relevant READMEs.
-5. Commit one file per commit with `[TEST-<TYPE>]` tags.
+---
+
+## 13. Summary
+
+The suite is a deterministic, fully parallel, self-generating test system:
+
+- **Every core, dynamically** — parallelism is derived from the environment,
+  never configured by a constant.
+- **Every test, isolated** — physical sandboxes and per-test database copies
+  behind an immutable session template.
+- **Every expectation, observed** — golden values captured from the real
+  stack by an in-process oracle.
+- **Every case, unique** — disjoint identifier spaces and verified dimension
+  uniqueness.
+- **Every artifact, machine-checked** — collection asserts, lint gates, and
+  uniqueness reports make correctness a property of the pipeline, not of
+  intention.
+
+The result is a world-class test platform where depth of coverage and speed
+of execution are not traded off against one another — they are both designed
+in.
 
 ## Related Documentation
 
-- The in-repo test suite docs live under `backend/tests/README.md` and each
-  module's `backend/tests/*/README.md`.
+- In-repo suite ledgers and matrices live under `backend/tests/` (see each
+  module's README).
 - [Architecture Overview](../architecture/)
 - [Contributing](../contributing)
