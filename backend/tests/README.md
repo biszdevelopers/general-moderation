@@ -12,9 +12,12 @@ all future phases.
 - **Phase 2 (current):** 9,000 cases across 92 generated files — golden-master
   characterization tests emitted by `tests/tools/phase2_generator.py`, with
   zero overlap against Phase 1 (verified by `phase2_uniqueness_report.md`).
-- **Execution target:** ~2 minutes in parallel (`pytest -n auto`); ~45 minutes
-  serial. The `conftest.py` session-scoped `db_template` fixture pre-seeds the
-  SQLite files once and copies them per test, cutting per-test setup ~4x.
+- **Speed:** the suite parallelizes across every available CPU core via
+  pytest-xdist (`-n auto`; worker count derived from the machine at runtime).
+  The session-scoped `db_template` fixture pre-seeds the SQLite files once per
+  worker and copies them into each test's sandbox, so per-test setup is file
+  copies instead of schema creation and seeding. No hard-coded worker counts
+  or wall-clock figures are baked in.
 - **Report target:** `test_reports/index.html` (generated with `pytest-html`).
 
 ## Phase 2 Allocation (Implemented)
@@ -195,4 +198,4 @@ add the next batch of cases.
 - [Architecture](../../docs/architecture/)
 - [API Reference](../../docs/api/)
 - [Configuration](../../docs/guide/configuration.md)
-- [Testing Guide](../docs/guide/testing.md)
+- [Testing Guide](../../docs/guide/testing.md)
