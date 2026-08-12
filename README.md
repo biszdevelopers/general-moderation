@@ -198,7 +198,7 @@ preview it locally.
 
 ## Testing
 
-### Phase 1 (Current)
+### Phase 1 (Complete)
 - **1,000 core test cases** covering critical paths across detectors, engine,
   semantic similarity, user profiling, 91-day archive, auto-tuning, the LLM
   model, settings, security, export, and chaos resilience.
@@ -208,6 +208,19 @@ preview it locally.
   `pytest --html`).
 - Each test file contains at most 100 test cases; every test is isolated in
   its own temporary directory.
+
+### Phase 2 (Current)
+- **9,000 additional test cases** (10,000 total) across 92 generated files,
+  expanding every module's dimension matrix: 26 languages, full text-length
+  ranges, obfuscation/encoded/transliterated content, edit distances 1-3, all
+  semantic categories, windows 1-365 days, user/app counts to 1,000, batch
+  sizes to 100, and the full security/chaos fault and attack vectors.
+- **100% uniqueness** — no Phase 2 case overlaps any Phase 1 case (verified by
+  `backend/tests/tools/phase2_uniqueness_report.md`).
+- **Golden-master generation**: the suite is emitted by
+  `backend/tests/tools/phase2_generator.py`, which runs the real application
+  to capture expected values, so the tests lock in observed behavior.
+- **Execution time**: ~45 minutes serial; under 5 minutes parallel.
 
 ### Future Phases
 - A full test universe of 25,000,000+ cases is documented in
@@ -223,11 +236,16 @@ npm run test        # all backend tests (uv run python -m pytest tests)
 npm run test:unit   # unit tests only (tests/unit)
 npm run test:e2e    # E2E only (tests/e2e)
 npm run test:integration  # integration tests only (tests/integration)
+npm run test:phase2 # Phase 2 tests only (tests -k phase2)
+npm run test:serial # full suite serial (used by CI)
 ```
 
 ### Adding New Tests
 - See the README in each test directory for step-by-step instructions.
 - Follow the same patterns as Phase 1 (BaseTest, frozen clock, fixtures).
+- Phase 2 cases are generated: edit `tests/tools/phase2_generator.py`, then
+  run `uv run python tests/tools/phase2_generator.py` to regenerate the files
+  and README tables.
 - Update the corresponding README when adding new tests.
 - Commit one file per commit with `[TEST-<TYPE>]` tags.
 
