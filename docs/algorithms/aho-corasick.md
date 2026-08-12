@@ -24,6 +24,35 @@ non-empty match set or any of its failure-link ancestors does.
   is the alphabet size.
 - **Search**: \(O(n + z)\), where \(z\) is the number of emitted matches.
 
+## Integration in General Moderation
+
+The detector is the exact-match workhorse of the rule pipeline and is wired
+directly to the live word bank:
+
+```mermaid
+flowchart LR
+    WB["Word bank<br/>(base words + custom words)"] -->|add / update / delete| REBUILD["Atomic reload<br/>(C automaton rebuild)"]
+    REBUILD --> SNAP["Immutable snapshot swap"]
+    SNAP --> DET["AhoCorasickDetector"]
+    TEXT["Input text"] --> NORM["NFKC normalization + tokenization"]
+    NORM --> DET
+    DET --> R["DetectionResult<br/>matched · matched_words · confidence"]
+    R --> SCORE["Suspicion score weighting"]
+```
+
+- **Language** — the detector is language-agnostic (`any`); dictionary
+  entries are normalized and lowercased on write, and input is NFKC-folded
+  before scanning, so full-width and decomposed Unicode variants are caught.
+- **Blocking semantics** — exact matches are decisive (blocking) with full
+  confidence; the primary reason string names the Aho-Corasick automaton.
+- **Deduplication** — repeated dictionary words in one message are reported
+  once; multiple distinct words are all reported.
+- **Rebuild atomicity** — every word-bank mutation rebuilds the automaton off
+  the hot path and swaps an immutable snapshot, so concurrent readers never
+  observe a half-built structure.
+- **Native core** — the automaton and scan run in C (`pyahocorasick`); the
+  detector wrapper is pure orchestration.
+
 ## Flowchart
 
 ```mermaid
