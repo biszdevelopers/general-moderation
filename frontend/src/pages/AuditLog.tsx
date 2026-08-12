@@ -74,6 +74,9 @@ export function AuditLog(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Audit Log
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Review recent moderation decisions and inspect the JSONL log files.
+            </Typography.Paragraph>
             <Tabs
                 items={[
                     {
