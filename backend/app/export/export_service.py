@@ -91,7 +91,7 @@ class ExportService:
         connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
         try:
             rows = connection.execute(f"SELECT * FROM {table}").fetchall()
-            columns = [column[0] for column in connection.execute(f"PRAGMA table_info({table})")]
+            columns = [column[1] for column in connection.execute(f"PRAGMA table_info({table})")]
             buffer = io.StringIO()
             writer = csv.writer(buffer)
             writer.writerow(columns)

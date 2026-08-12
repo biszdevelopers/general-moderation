@@ -196,6 +196,41 @@ configuration, the 3-stage pipeline, archive strategy, algorithm
 formulations, the API reference, and deployment. Run `npm run docs:dev` to
 preview it locally.
 
+## Testing
+
+### Phase 1 (Current)
+- **1,000 core test cases** covering critical paths across detectors, engine,
+  semantic similarity, user profiling, 91-day archive, auto-tuning, the LLM
+  model, settings, security, export, and chaos resilience.
+- **Execution time**: under 5 minutes in parallel (`pytest -n auto`), ~4
+  minutes serial.
+- **Report**: `backend/test_reports/index.html` (generated with
+  `pytest --html`).
+- Each test file contains at most 100 test cases; every test is isolated in
+  its own temporary directory.
+
+### Future Phases
+- A full test universe of 25,000,000+ cases is documented in
+  `backend/tests/*/README.md`.
+- Each README contains the planned ID ranges, the dimension matrix, current
+  implementation status, and detailed instructions for adding new cases.
+- Later phases expand coverage to every dimension combination (languages,
+  volumes, thresholds, concurrency, obfuscation, and more).
+
+### Run Tests
+```bash
+npm run test        # all backend tests (uv run python -m pytest tests)
+npm run test:unit   # unit tests only (tests/unit)
+npm run test:e2e    # E2E only (tests/e2e)
+npm run test:integration  # integration tests only (tests/integration)
+```
+
+### Adding New Tests
+- See the README in each test directory for step-by-step instructions.
+- Follow the same patterns as Phase 1 (BaseTest, frozen clock, fixtures).
+- Update the corresponding README when adding new tests.
+- Commit one file per commit with `[TEST-<TYPE>]` tags.
+
 ## License
 
 [MIT](LICENSE)

@@ -23,7 +23,11 @@
         "build:prod": "cd frontend && npm run build -- --mode production",
         "docs:dev": "cd docs && npm run docs:dev",
         "docs:build": "cd docs && npm run docs:build",
-        "test": "echo \"No tests configured yet\""
+        "test": "cd backend && uv run python -m pytest tests -n auto",
+        "test:unit": "cd backend && uv run python -m pytest tests/unit -n auto",
+        "test:integration": "cd backend && uv run python -m pytest tests/integration -n auto",
+        "test:e2e": "cd backend && uv run python -m pytest tests/e2e -n auto",
+        "test:serial": "cd backend && uv run python -m pytest tests"
     },
     "devDependencies": {
         "concurrently": "9.1.0"
