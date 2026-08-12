@@ -70,9 +70,9 @@ Returns the last 100 parsed JSONL audit records.
 
 ```json
 {
-    "total_words": 1024,
-    "custom_words": 24,
-    "base_words": 1000,
+    "totalWords": 1024,
+    "customWords": 24,
+    "baseWords": 1000,
     "languages": 26,
     "categories": 6
 }
@@ -106,9 +106,9 @@ Releases the model, storage, and logger, then stops the process. Returns
 ```json
 {
     "status": "ok",
-    "uptime_seconds": 4321.5,
-    "word_count": { "total_words": 1024, "custom_words": 24, "base_words": 1000, "languages": 26, "categories": 6 },
-    "llama_available": true,
+    "uptimeSeconds": 4321.5,
+    "wordCount": { "totalWords": 1024, "customWords": 24, "baseWords": 1000, "languages": 26, "categories": 6 },
+    "llamaAvailable": true,
     "detectors": [
         { "name": "bloom_filter", "available": true },
         { "name": "aho_corasick", "available": true }
