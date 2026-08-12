@@ -35,7 +35,7 @@ sequenceDiagram
     U->>C: enter web UI API key
     C->>S: request with X-API-Key header
     S-->>C: 200 (key valid) or 401 (key invalid)
-    C-->>U: unlock pages on 200; keep prompt on 401
+    C-->>U: unlock pages on success, keep prompt on 401
     C->>S: subsequent admin requests carry the key
 ```
 
