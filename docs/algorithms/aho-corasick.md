@@ -30,10 +30,10 @@ non-empty match set or any of its failure-link ancestors does.
 flowchart TD
     A[Insert patterns into trie] --> B[Compute failure links via BFS]
     B --> C[Start at root, i = 0]
-    C --> D{More characters?}
+    C --> D{"More characters?"}
     D -->|no| F[Done]
     D -->|yes| E[Follow trie edge or failure link]
-    E --> G{State has matches?}
+    E --> G{"State has matches?"}
     G -->|yes| H[Emit matches, advance i]
     G -->|no| H
     H --> D
