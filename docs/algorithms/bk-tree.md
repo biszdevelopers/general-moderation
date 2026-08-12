@@ -26,10 +26,10 @@ whose edge label lies in \([d(q, w) - t,\ d(q, w) + t]\), pruning the rest.
 
 ```mermaid
 flowchart TD
-    A[Root word] --> B{Child edge k near d(q,w)?}
+    A[Root word] --> B{"Child edge near query?"}
     B -->|yes| C[Recurse into subtree]
     B -->|no| D[Prune subtree]
-    C --> E{Levenshtein(q, node) <= t?}
+    C --> E{"Distance from query <= t?"}
     E -->|yes| F[Emit node as candidate]
     E -->|no| G[Skip]
 ```
