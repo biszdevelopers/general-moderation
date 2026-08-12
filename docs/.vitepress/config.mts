@@ -38,6 +38,7 @@ export default defineConfig(
                             { text: "Admin Settings", link: "/guide/admin-settings" },
                             { text: "Data Export", link: "/guide/data-export" },
                             { text: "Security", link: "/guide/security" },
+                            { text: "Testing", link: "/guide/testing" },
                             { text: "Deployment", link: "/guide/deployment" },
                         ],
                     },
