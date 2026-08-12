@@ -38,12 +38,12 @@ flowchart TD
     B --> C[Search category index 1]
     B --> D[Search category index 2]
     B --> E[Search category index k]
-    C --> F{max similarity > threshold?}
+    C --> F{"max similarity > threshold?"}
     D --> F
     E --> F
     F -->|yes| G[Add category weight to suspicion score]
     F -->|no| H[No contribution]
-    G --> I{similarity > force threshold?}
+    G --> I{"similarity > force threshold?"}
     I -->|yes| J[Force LLM]
 ```
 
