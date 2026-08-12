@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { LoginPrompt } from "../components/LoginPrompt";
 
 const LAST_EXPORT_KEY: string = "moderation_last_export";
 
@@ -43,17 +44,7 @@ export function Export(): ReactElement {
     };
 
     if (!authenticated) {
-        return (
-            <div className="page">
-                <Typography.Title level={2} className="page__title">
-                    Data Export
-                </Typography.Title>
-                <Alert
-                    type="info"
-                    message="Enter an admin API key in the Settings page to export data."
-                />
-            </div>
-        );
+        return <LoginPrompt />;
     }
 
     return (
