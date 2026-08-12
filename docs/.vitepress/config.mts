@@ -3,29 +3,47 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 import { katex } from "@mdit/plugin-katex";
 
 export default defineConfig(
-    withMermaid({
-        title: "General Moderation",
-        description:
-            "Multi-language content moderation service with a 3-stage detection pipeline: fast-path rules, semantic similarity, user profiling, and a local LLM",
-        lang: "en-US",
-        lastUpdated: true,
-        head: [
-            ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
-        ],
-        markdown: {
-            config: (md) => {
-                md.use(katex, { delimiters: "all" });
+    withMermaid(
+        {
+            title: "General Moderation",
+            description:
+                "Multi-language content moderation service with a 3-stage detection pipeline: fast-path rules, semantic similarity, user profiling, and a local LLM",
+            lang: "en-US",
+            lastUpdated: true,
+            // Mermaid configuration (merged by vitepress-plugin-mermaid).
+            maxTextSize: 1000000,
+            securityLevel: "loose",
+            startOnLoad: true,
+            fontFamily: '"Inter", "Segoe UI", -apple-system, sans-serif',
+            flowchart: {
+                curve: "basis",
+                htmlLabels: true,
+                rankSpacing: 60,
+                nodeSpacing: 40,
+                padding: 16,
             },
-        },
-        themeConfig: {
-            nav: [
-                { text: "Guide", link: "/guide/" },
-                { text: "Architecture", link: "/architecture/" },
-                { text: "Algorithms", link: "/algorithms/" },
-                { text: "API", link: "/api/" },
-                { text: "Languages", link: "/languages/" },
-                { text: "Contributing", link: "/contributing" },
+            sequence: {
+                mirrorActors: false,
+                useMaxWidth: false,
+                wrap: true,
+            },
+            head: [
+                ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
             ],
+            markdown: {
+                config: (md) => {
+                    md.use(katex, { delimiters: "all" });
+                },
+            },
+            themeConfig: {
+                nav: [
+                    { text: "Guide", link: "/guide/" },
+                    { text: "Architecture", link: "/architecture/" },
+                    { text: "Algorithms", link: "/algorithms/" },
+                    { text: "API", link: "/api/" },
+                    { text: "Languages", link: "/languages/" },
+                    { text: "Contributing", link: "/contributing" },
+                ],
             sidebar: {
                 "/guide/": [
                     {
