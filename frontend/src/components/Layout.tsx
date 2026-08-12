@@ -6,6 +6,7 @@ import {
     ExportOutlined,
     FileSearchOutlined,
     LogoutOutlined,
+    SafetyCertificateOutlined,
     SettingOutlined,
     UserOutlined,
 } from "@ant-design/icons";
@@ -14,6 +15,14 @@ import { ReactElement, useState } from "react";
 import { useAppContext } from "../contexts/AppContext";
 
 const { Header, Sider, Content, Footer } = AntdLayout;
+
+const TITLES: Record<string, string> = {
+    "/dashboard": "Dashboard",
+    "/word-bank": "Word Bank",
+    "/audit-log": "Audit Log",
+    "/export": "Data Export",
+    "/settings": "Settings",
+};
 
 export function Layout(): ReactElement {
     const navigate = useNavigate();
@@ -31,6 +40,8 @@ export function Layout(): ReactElement {
               ? "/settings"
               : "/dashboard";
 
+    const headerTitle: string = TITLES[selectedKey] ?? "General Moderation";
+
     return (
         <AntdLayout className="app-layout">
             <Sider
@@ -38,11 +49,16 @@ export function Layout(): ReactElement {
                 collapsible
                 collapsed={collapsed}
                 onCollapse={setCollapsed}
-                width={220}
+                width={224}
+                theme="light"
             >
-                <div className="app-sider__brand">{collapsed ? "GM" : "General Moderation"}</div>
+                <div className="app-sider__brand">
+                    <div className="app-sider__logo">
+                        <SafetyCertificateOutlined />
+                    </div>
+                    {!collapsed && <span className="app-sider__name">General Moderation</span>}
+                </div>
                 <Menu
-                    theme="dark"
                     mode="inline"
                     selectedKeys={[selectedKey]}
                     onClick={(info) => navigate(info.key)}
@@ -58,7 +74,7 @@ export function Layout(): ReactElement {
             <AntdLayout>
                 <Header className="app-header">
                     <Typography.Text strong className="app-header__title">
-                        General Moderation Console
+                        {headerTitle}
                     </Typography.Text>
                     <div className="app-header__actions">
                         <Badge dot offset={[-6, 6]}>
