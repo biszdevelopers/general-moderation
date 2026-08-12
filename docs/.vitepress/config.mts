@@ -1,11 +1,13 @@
 import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default defineConfig({
-    title: "General Moderation",
-    description:
-        "Multi-language content moderation service with a 3-stage detection pipeline: fast-path rules, semantic similarity, user profiling, and a local LLM",
-    lang: "en-US",
-    lastUpdated: true,
+export default defineConfig(
+    withMermaid({
+        title: "General Moderation",
+        description:
+            "Multi-language content moderation service with a 3-stage detection pipeline: fast-path rules, semantic similarity, user profiling, and a local LLM",
+        lang: "en-US",
+        lastUpdated: true,
     themeConfig: {
         nav: [
             { text: "Guide", link: "/guide/getting-started" },
@@ -89,5 +91,6 @@ export default defineConfig({
                 },
             ],
         },
-    },
-});
+        },
+    }),
+);
