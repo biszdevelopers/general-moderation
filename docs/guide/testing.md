@@ -217,7 +217,7 @@ sequenceDiagram
         W1->>W1: run owned files
         deactivate W1
     end
-    Q-->>S: drained; aggregate results
+    Q-->>S: drained, aggregate results
 ```
 
 Because distribution is dynamic, faster workers naturally claim more slices —
