@@ -229,6 +229,9 @@ export function WordBank(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Word Bank
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Manage the custom words that feed the detection pipeline.
+            </Typography.Paragraph>
             <div className="wordbank-toolbar">
                 <Input.Search
                     placeholder="Search words"
