@@ -36,6 +36,7 @@ export default defineConfig(
                             { text: "Configuration", link: "/guide/configuration" },
                             { text: "Word Banks", link: "/guide/wordbanks" },
                             { text: "Admin Settings", link: "/guide/admin-settings" },
+                            { text: "Admin Console", link: "/guide/admin-console" },
                             { text: "Data Export", link: "/guide/data-export" },
                             { text: "Security", link: "/guide/security" },
                             { text: "Testing", link: "/guide/testing" },
@@ -51,6 +52,7 @@ export default defineConfig(
                             { text: "3-Stage Pipeline", link: "/architecture/pipeline" },
                             { text: "Data Flow", link: "/architecture/data-flow" },
                             { text: "Archive Strategy", link: "/architecture/archive-strategy" },
+                            { text: "Performance Engineering", link: "/architecture/performance" },
                         ],
                     },
                 ],
@@ -74,6 +76,7 @@ export default defineConfig(
                         text: "API Reference",
                         items: [
                             { text: "Overview", link: "/api/" },
+                            { text: "Moderation", link: "/api/moderation" },
                             { text: "Public", link: "/api/public" },
                             { text: "Admin", link: "/api/admin" },
                         ],
