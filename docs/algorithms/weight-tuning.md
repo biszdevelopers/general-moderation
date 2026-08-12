@@ -21,7 +21,7 @@ w' = \text{clamp}\left(\text{default} + (w - \text{default}) \cdot \delta + \Del
 \]
 
 where \(\delta = 2^{-t / \tau}\) is the exponential decay with half-life
-\(\tau = \text{WEIGHT_DECAY_HALF_LIFE_DAYS}\) and
+\(\tau = \text{WEIGHT\_DECAY\_HALF\_LIFE\_DAYS}\) and
 
 \[
 \Delta(p) = \begin{cases}
@@ -54,15 +54,15 @@ traffic.
 ```mermaid
 flowchart TD
     A[Collect last 24h feedback and decisions] --> B[Compute precision p]
-    B --> C{total >= 10?}
-    C -->|yes| D[Adjust each weight by Delta(p)]
+    B --> C{"total >= 10?"}
+    C -->|yes| D["Adjust each weight by Delta(p)"]
     C -->|no| E[Decay weights toward defaults only]
     D --> F[Clamp weights to 5-50]
     E --> F
     F --> G[Compute LLM pass rate]
-    G --> H{pass rate > 0.90?}
+    G --> H{"pass rate > 0.90?"}
     H -->|yes| I[Increase threshold by 2]
-    H -->|no| J{block rate > 0.30?}
+    H -->|no| J{"block rate > 0.30?"}
     J -->|yes| K[Decrease threshold by 2]
     I --> L[Persist weights and threshold]
     K --> L
