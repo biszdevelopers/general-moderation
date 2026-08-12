@@ -5,9 +5,10 @@ import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { AuditEntry, LogContent, LogFileInfo } from "../types";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { LoginPrompt } from "../components/LoginPrompt";
 
 export function AuditLog(): ReactElement {
-    const { auditService } = useAppContext();
+    const { auditService, authenticated } = useAppContext();
     const { message } = AntdApp.useApp();
     const [entries, setEntries] = useState<AuditEntry[]>([]);
     const [logFiles, setLogFiles] = useState<LogFileInfo[]>([]);
@@ -15,6 +16,10 @@ export function AuditLog(): ReactElement {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        if (!authenticated) {
+            setLoading(false);
+            return;
+        }
         const loadAll = async (): Promise<void> => {
             try {
                 const [auditEntries, files] = await Promise.all([
@@ -30,7 +35,7 @@ export function AuditLog(): ReactElement {
             }
         };
         void loadAll();
-    }, [auditService, message]);
+    }, [auditService, message, authenticated]);
 
     const viewLog = async (filename: string): Promise<void> => {
         try {
@@ -55,6 +60,10 @@ export function AuditLog(): ReactElement {
                 value !== undefined ? value.toFixed(2) : "",
         },
     ];
+
+    if (!authenticated) {
+        return <LoginPrompt />;
+    }
 
     if (loading) {
         return <LoadingSpinner />;
