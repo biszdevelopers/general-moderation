@@ -1,5 +1,11 @@
 import { App as AntdApp, Card, Col, Row, Space, Table, Tag, Typography } from "antd";
 import { TableProps } from "antd";
+import {
+    AppstoreAddOutlined,
+    BlockOutlined,
+    DatabaseOutlined,
+    GlobalOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
@@ -76,18 +82,40 @@ export function Dashboard(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Dashboard
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Live overview of the moderation word bank, detection pipeline, and recent activity.
+            </Typography.Paragraph>
             <Row gutter={[16, 16]} className="dashboard-grid">
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Total Words" value={stats?.totalWords ?? 0} />
+                    <StatsCard
+                        title="Total Words"
+                        value={stats?.totalWords ?? 0}
+                        icon={<DatabaseOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Custom Words" value={stats?.customWords ?? 0} />
+                    <StatsCard
+                        title="Custom Words"
+                        value={stats?.customWords ?? 0}
+                        color="#7c3aed"
+                        icon={<AppstoreAddOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Base Words" value={stats?.baseWords ?? 0} />
+                    <StatsCard
+                        title="Base Words"
+                        value={stats?.baseWords ?? 0}
+                        color="#0ea5e9"
+                        icon={<BlockOutlined />}
+                    />
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <StatsCard title="Languages" value={stats?.languages ?? 0} />
+                    <StatsCard
+                        title="Languages"
+                        value={stats?.languages ?? 0}
+                        color="#16a34a"
+                        icon={<GlobalOutlined />}
+                    />
                 </Col>
             </Row>
             <Row gutter={[16, 16]}>
