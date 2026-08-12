@@ -5,6 +5,7 @@ import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { AuditEntry, HealthReport, WordBankStats } from "../types";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { LoginPrompt } from "../components/LoginPrompt";
 import { StatsCard } from "../components/StatsCard";
 
 function verdictTag(value: unknown): ReactElement {
@@ -14,7 +15,7 @@ function verdictTag(value: unknown): ReactElement {
 }
 
 export function Dashboard(): ReactElement {
-    const { settingsService, wordBankService, auditService } = useAppContext();
+    const { settingsService, wordBankService, auditService, authenticated } = useAppContext();
     const { message } = AntdApp.useApp();
     const [health, setHealth] = useState<HealthReport | null>(null);
     const [stats, setStats] = useState<WordBankStats | null>(null);
@@ -22,6 +23,10 @@ export function Dashboard(): ReactElement {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        if (!authenticated) {
+            setLoading(false);
+            return;
+        }
         const loadData = async (): Promise<void> => {
             try {
                 const [healthReport, wordBankStats, entries] = await Promise.all([
@@ -39,7 +44,7 @@ export function Dashboard(): ReactElement {
             }
         };
         void loadData();
-    }, [settingsService, wordBankService, auditService, message]);
+    }, [settingsService, wordBankService, auditService, message, authenticated]);
 
     const columns: TableProps<AuditEntry>["columns"] = [
         { title: "Timestamp", dataIndex: "timestamp", key: "timestamp" },
@@ -57,6 +62,10 @@ export function Dashboard(): ReactElement {
             },
         },
     ];
+
+    if (!authenticated) {
+        return <LoginPrompt />;
+    }
 
     if (loading) {
         return <LoadingSpinner />;
