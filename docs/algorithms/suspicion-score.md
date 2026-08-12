@@ -34,7 +34,7 @@ flowchart TD
     B[Category similarities above threshold] --> S
     C[User ratio] --> S
     S --> CLAMP[Clamp to 0-100]
-    CLAMP --> T{score > app threshold?}
+    CLAMP --> T{"score > app threshold?"}
     T -->|yes| LLM[Trigger LLM]
     T -->|no| PASS[PASS without LLM]
 ```
