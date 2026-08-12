@@ -9,6 +9,9 @@ export default defineConfig(
             "Multi-language content moderation service with a 3-stage detection pipeline: fast-path rules, semantic similarity, user profiling, and a local LLM",
         lang: "en-US",
         lastUpdated: true,
+        head: [
+            ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+        ],
         markdown: {
             config: (md) => {
                 md.use(katex, { delimiters: "all" });
