@@ -54,7 +54,12 @@ semantic = [
 ]
 
 [dependency-groups]
-dev = ["ruff==0.16.2"]
+dev = [
+    "ruff==0.16.2",
+    "pytest==8.4.1",
+    "pytest-mock==3.14.0",
+    "pytest-xdist==3.6.1",
+]
 
 # Not included because no reachable index (pypi.org, Tsinghua, Aliyun)
 # provides an installable release:
@@ -78,3 +83,13 @@ line-ending = "lf"
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "C", "B", "UP", "RUF"]
 ignore = ["E501", "B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -ra"
+pythonpath = ["."]
+filterwarnings = [
+    "ignore::pydantic.warnings.PydanticDeprecatedSince211",
+    "ignore::DeprecationWarning:slowapi.*",
+    "ignore::starlette.exceptions.StarletteDeprecationWarning",
+]
