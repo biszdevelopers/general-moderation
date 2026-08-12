@@ -24,6 +24,9 @@ export function LoginPrompt(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Administrator Login
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Authenticate to continue.
+            </Typography.Paragraph>
             <Card className="settings-card">
                 <Space direction="vertical" style={{ width: "100%" }} size="middle">
                     <Typography.Paragraph>
