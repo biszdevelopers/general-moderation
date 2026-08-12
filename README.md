@@ -202,8 +202,9 @@ preview it locally.
 - **1,000 core test cases** covering critical paths across detectors, engine,
   semantic similarity, user profiling, 91-day archive, auto-tuning, the LLM
   model, settings, security, export, and chaos resilience.
-- **Execution time**: under 5 minutes in parallel (`pytest -n auto`), ~4
-  minutes serial.
+- **Speed**: runs across every available CPU core via pytest-xdist
+  (`-n auto`, worker count derived from the machine at runtime — never
+  hard-coded).
 - **Report**: `backend/test_reports/index.html` (generated with
   `pytest --html`).
 - Each test file contains at most 100 test cases; every test is isolated in
@@ -220,10 +221,14 @@ preview it locally.
 - **Golden-master generation**: the suite is emitted by
   `backend/tests/tools/phase2_generator.py`, which runs the real application
   to capture expected values, so the tests lock in observed behavior.
-- **Execution time**: ~2 minutes in parallel (`pytest -n auto`); ~45 minutes
-  serial. A session-scoped database template in `backend/tests/conftest.py`
-  pre-seeds the SQLite files once and copies them per test, cutting per-test
-  fixture setup by ~4x.
+- **Speed**: like Phase 1, the suite is parallelized across all available
+  cores. A session-scoped database template in `backend/tests/conftest.py`
+  pre-seeds the SQLite files once per worker and copies them into each test's
+  sandbox, so per-test fixture setup costs only file copies instead of schema
+  creation and seeding.
+- The full testing pipeline — discovery, worker distribution, fixture
+  lifecycle, generation, and verification — is documented with diagrams in
+  `docs/guide/testing.md`.
 
 ### Future Phases
 - A full test universe of 25,000,000+ cases is documented in
@@ -235,12 +240,12 @@ preview it locally.
 
 ### Run Tests
 ```bash
-npm run test        # all backend tests (uv run python -m pytest tests)
+npm run test        # all backend tests, all available cores (-n auto)
 npm run test:unit   # unit tests only (tests/unit)
 npm run test:e2e    # E2E only (tests/e2e)
 npm run test:integration  # integration tests only (tests/integration)
 npm run test:phase2 # Phase 2 tests only (tests -k phase2)
-npm run test:serial # full suite serial (used by CI)
+npm run test:serial # full suite serial (deterministic CI debugging)
 ```
 
 ### Adding New Tests
