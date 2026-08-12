@@ -198,64 +198,75 @@ preview it locally.
 
 ## Testing
 
-### Phase 1 (Complete)
-- **1,000 core test cases** covering critical paths across detectors, engine,
-  semantic similarity, user profiling, 91-day archive, auto-tuning, the LLM
-  model, settings, security, export, and chaos resilience.
-- **Speed**: runs across every available CPU core via pytest-xdist
-  (`-n auto`, worker count derived from the machine at runtime — never
-  hard-coded).
-- **Report**: `backend/test_reports/index.html` (generated with
-  `pytest --html`).
-- Each test file contains at most 100 test cases; every test is isolated in
-  its own temporary directory.
+The test suite is a deterministic, fully parallel, self-generating system.
+It grows through **phases**: a hand-written core that locks in the critical
+paths, followed by generated golden-master suites that sweep every module's
+dimension matrix. Once all planned phases are delivered, the application
+encompasses **on the order of tens of millions of test cases** — the full
+combinatorial universe of languages, text lengths, content classes, edit
+distances, volumes, thresholds, concurrency levels, fault types, and attack
+vectors is documented per module under `backend/tests/`.
 
-### Phase 2 (Current)
-- **9,000 additional test cases** (10,000 total) across 92 generated files,
-  expanding every module's dimension matrix: 26 languages, full text-length
-  ranges, obfuscation/encoded/transliterated content, edit distances 1-3, all
-  semantic categories, windows 1-365 days, user/app counts to 1,000, batch
-  sizes to 100, and the full security/chaos fault and attack vectors.
-- **100% uniqueness** — no Phase 2 case overlaps any Phase 1 case (verified by
-  `backend/tests/tools/phase2_uniqueness_report.md`).
-- **Golden-master generation**: the suite is emitted by
+The suite is engineered to be fast, not just large:
+
+- **Every core, dynamically.** Tests run with pytest-xdist across all
+  available CPU cores; the worker count is derived from the machine at
+  runtime, never hard-coded.
+- **Pre-seeded databases.** A session-scoped template builds the SQLite
+  schema and seed data once per worker; each test copies those files into its
+  own sandbox instead of recreating them, so per-test setup is file copies
+  rather than schema construction.
+- **Isolated.** Every test gets a private temporary directory and its own
+  database copies; nothing can leak across tests.
+- **Golden-master generation.** The generated suites are emitted by
   `backend/tests/tools/phase2_generator.py`, which runs the real application
-  to capture expected values, so the tests lock in observed behavior.
-- **Speed**: like Phase 1, the suite is parallelized across all available
-  cores. A session-scoped database template in `backend/tests/conftest.py`
-  pre-seeds the SQLite files once per worker and copies them into each test's
-  sandbox, so per-test fixture setup costs only file copies instead of schema
-  creation and seeding.
-- The full testing pipeline — discovery, worker distribution, fixture
-  lifecycle, generation, and verification — is documented with diagrams in
-  `docs/guide/testing.md`.
+  to capture expected values and freezes them as regression expectations.
+  Regenerating is a safe, idempotent operation that also refreshes the
+  per-module documentation and the uniqueness report.
+- **Machine-checked.** Collection asserts an exact expected test count,
+  generation emits a uniqueness report proving zero overlap with earlier
+  phases, and every file passes the same `ruff` lint and format gates as
+  production code.
 
-### Future Phases
-- A full test universe of 25,000,000+ cases is documented in
-  `backend/tests/*/README.md`.
-- Each README contains the planned ID ranges, the dimension matrix, current
-  implementation status, and detailed instructions for adding new cases.
-- Later phases expand coverage to every dimension combination (languages,
-  volumes, thresholds, concurrency, obfuscation, and more).
+The full pipeline — discovery, parametrization, worker distribution, fixture
+lifecycle, generation, and verification — is documented with diagrams in
+`docs/guide/testing.md`.
 
 ### Run Tests
+
 ```bash
 npm run test        # all backend tests, all available cores (-n auto)
 npm run test:unit   # unit tests only (tests/unit)
-npm run test:e2e    # E2E only (tests/e2e)
 npm run test:integration  # integration tests only (tests/integration)
-npm run test:phase2 # Phase 2 tests only (tests -k phase2)
+npm run test:e2e    # E2E only (tests/e2e)
+npm run test:phase2 # generated golden-master tests only (tests -k phase2)
 npm run test:serial # full suite serial (deterministic CI debugging)
 ```
 
+A single test file can also be run directly, e.g.
+`cd backend && uv run python -m pytest tests/unit/detectors -v`.
+
 ### Adding New Tests
-- See the README in each test directory for step-by-step instructions.
-- Follow the same patterns as Phase 1 (BaseTest, frozen clock, fixtures).
-- Phase 2 cases are generated: edit `tests/tools/phase2_generator.py`, then
-  run `uv run python tests/tools/phase2_generator.py` to regenerate the files
-  and README tables.
-- Update the corresponding README when adding new tests.
-- Commit one file per commit with `[TEST-<TYPE>]` tags.
+
+1. Pick the module and phase from its README under `backend/tests/` — each
+   one documents its dimension matrix, planned identifier ranges, and status.
+2. **Hand-written core cases** follow the established pattern: extend the
+   `BaseTest` helper, use the frozen clock and the shared fixtures from
+   `backend/tests/conftest.py`, and keep every test isolated in its own
+   temporary directory.
+3. **Generated golden-master cases** are data entry: add rows to a module's
+   dimension matrix in `backend/tests/tools/phase2_generator.py`, then run
+   `cd backend && uv run python tests/tools/phase2_generator.py` to emit the
+   new test files, refresh every module README, and regenerate the uniqueness
+   report.
+4. Verify with `ruff check`, `ruff format`, and the relevant test slice.
+5. Update the corresponding README.
+6. Commit **one file per commit** with `[TEST-<TYPE>]` tags.
+
+### Report
+
+`backend/test_reports/index.html` is generated with `pytest --html` and
+contains the full pass/fail history of the suite.
 
 ## License
 
