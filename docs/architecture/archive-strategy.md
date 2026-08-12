@@ -71,7 +71,7 @@ Archive table `user_summaries`:
 
 ```mermaid
 flowchart TD
-    W[Write today's daily row] --> C{day_offset == 91?}
+    W[Write today's daily row] --> C{"day_offset == 91?"}
     C -->|no| DONE[Keep writing]
     C -->|yes| AGG[Aggregate days 1-91]
     AGG --> INS[Insert summary, cycle_id = max + 1]
