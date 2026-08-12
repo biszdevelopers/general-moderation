@@ -305,6 +305,10 @@ export function Settings(): ReactElement {
             <Typography.Title level={2} className="page__title">
                 Settings
             </Typography.Title>
+            <Typography.Paragraph className="page__subtitle">
+                Manage the admin API key, service health, and every runtime setting without a
+                restart.
+            </Typography.Paragraph>
             <Card title="Admin API Key" className="settings-card">
                 <Space direction="vertical" style={{ width: "100%" }} size="middle">
                     <Input.Password
