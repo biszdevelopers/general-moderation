@@ -220,7 +220,10 @@ preview it locally.
 - **Golden-master generation**: the suite is emitted by
   `backend/tests/tools/phase2_generator.py`, which runs the real application
   to capture expected values, so the tests lock in observed behavior.
-- **Execution time**: ~45 minutes serial; under 5 minutes parallel.
+- **Execution time**: ~2 minutes in parallel (`pytest -n auto`); ~45 minutes
+  serial. A session-scoped database template in `backend/tests/conftest.py`
+  pre-seeds the SQLite files once and copies them per test, cutting per-test
+  fixture setup by ~4x.
 
 ### Future Phases
 - A full test universe of 25,000,000+ cases is documented in
