@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Callable
 from typing import Any
 
 import mmh3
@@ -34,6 +35,14 @@ from app.profiling.user_profiler import UserProfiler
 from app.scoring.suspicion_scorer import SuspicionScorer
 from app.semantic.semantic_service import SemanticService
 from app.settings_service import SettingsService
+from app.test.pipeline_trace import (
+    DetectorRunTrace,
+    PipelineTrace,
+    Stage1Trace,
+    Stage2Trace,
+    Stage3Trace,
+    WeightContribution,
+)
 from app.wordbank.manager import WordBankManager
 
 
@@ -169,16 +178,61 @@ class ModerationEngine:
         :param request: the incoming moderation request
         :return: the moderation response
         """
+        response, _trace = self._moderate_core(request)
+        return response
+
+    def moderate_detailed(
+        self,
+        request: ModerationRequest,
+        event_sink: Callable[[str, dict[str, Any]], None] | None = None,
+        record_training: bool = True,
+    ) -> tuple[ModerationResponse, PipelineTrace]:
+        """Moderate a message and capture a full pipeline trace.
+
+        The trace bypasses the response cache so every call re-runs the
+        pipeline against the current runtime settings. When ``event_sink`` is
+        provided it receives ``(event_name, payload)`` pairs as each stage
+        completes, which the test workbench streams over SSE.
+
+        :param request: the incoming moderation request
+        :param event_sink: optional callback for stage completion events
+        :param record_training: record profile/feedback rows (False for load tests)
+        :return: the moderation response and its detailed trace
+        """
+        return self._moderate_core(
+            request,
+            trace_mode=True,
+            event_sink=event_sink,
+            record_training=record_training,
+        )
+
+    def _moderate_core(  # noqa: C901 - one long pipeline with trace bookkeeping
+        self,
+        request: ModerationRequest,
+        *,
+        trace_mode: bool = False,
+        event_sink: Callable[[str, dict[str, Any]], None] | None = None,
+        record_training: bool = True,
+    ) -> tuple[ModerationResponse, PipelineTrace | None]:
+        """Run the three-stage pipeline and return the response and a trace.
+
+        :param request: the incoming moderation request
+        :param trace_mode: when True, build a full trace and bypass the cache
+        :param event_sink: optional callback for stage completion events
+        :param record_training: record profile/feedback rows (False for load tests)
+        :return: the moderation response and the trace (None in fast mode)
+        """
         start_ns: int = time.perf_counter_ns()
-        cache_key: int = self._get_cache_key(request.text)
-        cached: ModerationResponse | None = self._get_cached(cache_key)
-        if cached is not None:
-            self._metrics["requests_total"] += 1.0
-            self._metrics[f"requests_{cached.verdict.value.lower()}_total"] = (
-                self._metrics.get(f"requests_{cached.verdict.value.lower()}_total", 0.0) + 1.0
-            )
-            latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
-            return self._restore_cached(request, cached, latency_ms)
+        if not trace_mode:
+            cache_key: int = self._get_cache_key(request.text)
+            cached: ModerationResponse | None = self._get_cached(cache_key)
+            if cached is not None:
+                self._metrics["requests_total"] += 1.0
+                self._metrics[f"requests_{cached.verdict.value.lower()}_total"] = (
+                    self._metrics.get(f"requests_{cached.verdict.value.lower()}_total", 0.0) + 1.0
+                )
+                latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
+                return self._restore_cached(request, cached, latency_ms), None
 
         app_name: str = request.app_name or "default"
         verdict: Verdict = Verdict.PASS
@@ -186,14 +240,21 @@ class ModerationEngine:
         chain: list[str] = []
         reasons: list[str] = []
         matched_words: list[str] = []
+        matched_detectors: list[str] = []
         matched_language: str | None = None
         confidence: float | None = None
         suspicion_score: float = 0.0
         ai_triggered: bool = False
+        trigger_info: dict[str, Any] = {}
+        runs: list[DetectorRunTrace] = []
 
+        # Stage 1: safe word fast path.
+        stage1_start: int = time.perf_counter_ns()
+        fast_path: bool = False
         if self._safe_word.is_available() and self._safe_word.is_safe(request.text):
             chain.append("safe_word_list")
             self._metrics["stage1_fast_path_total"] += 1.0
+            fast_path = True
         else:
             (
                 chain,
@@ -203,16 +264,42 @@ class ModerationEngine:
                 confidence,
                 verdict,
                 matched_detectors,
-            ) = self._run_level_one(request.text)
+            ) = self._run_level_one(request.text, runs=runs if trace_mode else None)
+        stage1_ms: float = (time.perf_counter_ns() - stage1_start) / 1_000_000.0
+        if event_sink is not None:
+            event_sink(
+                "stage1_complete",
+                {
+                    "stage": 1,
+                    "fast_path": fast_path,
+                    "verdict": "PASS" if fast_path else verdict.value,
+                    "latency_ms": round(stage1_ms, 3),
+                },
+            )
 
-            semantic_similarities: dict[str, float] = {}
-            if self._semantic.is_available():
+        # Stage 2: semantic similarity and user profiling. The safe word fast
+        # path skips the queries so clean traffic exits with minimal work, but
+        # the message is still counted in the user profile below.
+        stage2_start: int = time.perf_counter_ns()
+        semantic_similarities: dict[str, float] = {}
+        semantic_enabled: bool = False
+        user_ratio: float = 0.0
+        user_profile: dict[str, Any] | None = None
+        profiling_enabled: bool = bool(
+            self._settings_service.get("USER_PROFILING_ENABLED", True)
+        ) and self._profiler is not None
+        if not fast_path:
+            semantic_enabled = bool(
+                self._settings_service.get("SEMANTIC_ENABLED", True)
+            ) and self._semantic.is_available()
+            if semantic_enabled:
                 self._metrics["semantic_queries_total"] += 1.0
                 semantic_similarities = self._semantic.query(request.text)
 
-            user_ratio: float = 0.0
-            if self._profiler is not None and request.user_id:
+            if profiling_enabled and request.user_id:
                 user_ratio = self._profiler.get_ratio(app_name, request.user_id)
+                if trace_mode:
+                    user_profile = self._profiler.get_profile(app_name, request.user_id)
 
             suspicion_score = self._scorer.score(
                 detector_names=matched_detectors,
@@ -220,7 +307,7 @@ class ModerationEngine:
                 user_ratio=user_ratio,
             )
 
-            ai_triggered, level_used, verdict, chain, reasons, confidence = (
+            ai_triggered, level_used, verdict, chain, reasons, confidence, trigger_info = (
                 self._resolve_stage_three(
                     request.text,
                     app_name,
@@ -233,10 +320,42 @@ class ModerationEngine:
                     user_ratio,
                 )
             )
+        stage2_ms: float = (time.perf_counter_ns() - stage2_start) / 1_000_000.0
+        if event_sink is not None:
+            for run in runs:
+                event_sink(
+                    "detector_result",
+                    {
+                        "name": run.name,
+                        "matched": run.matched,
+                        "blocking": run.blocking,
+                        "confidence": run.confidence,
+                        "matched_words": run.matched_words,
+                        "reason": run.reason,
+                        "latency_ms": round(run.latency_ms, 3),
+                    },
+                )
+            event_sink(
+                "stage2_complete",
+                {
+                    "stage": 2,
+                    "suspicion_score": suspicion_score,
+                    "latency_ms": round(stage2_ms, 3),
+                    "semantic_similarities": semantic_similarities,
+                    "user_profile": user_profile,
+                    "weight_contributions": (
+                        self._score_contributions(
+                            matched_detectors, semantic_similarities, user_ratio
+                        )
+                        if not fast_path
+                        else []
+                    ),
+                },
+            )
 
         if verdict is Verdict.BLOCK:
             self._rolling_hash.record_hit(request.text)
-        if self._profiler is not None and request.user_id:
+        if record_training and profiling_enabled and request.user_id:
             self._profiler.record(
                 app_name=app_name,
                 user_id=request.user_id,
@@ -244,7 +363,8 @@ class ModerationEngine:
                 flagged_msgs=1 if (reasons or suspicion_score >= 50) else 0,
                 blocked_msgs=1 if verdict is Verdict.BLOCK else 0,
             )
-        self._feedback.record_decision(verdict.value, ai_triggered)
+        if record_training:
+            self._feedback.record_decision(verdict.value, ai_triggered)
 
         matched_words = list(dict.fromkeys(matched_words))
 
@@ -282,8 +402,210 @@ class ModerationEngine:
             latency_ms,
             chain,
         )
-        self._set_cache(cache_key, response)
-        return response
+        if not trace_mode:
+            self._set_cache(cache_key, response)
+
+        if not trace_mode:
+            return response, None
+
+        stage3_trace: Stage3Trace | None = None
+        if ai_triggered:
+            stage3_trace = Stage3Trace(
+                invoked=True,
+                trigger=self._describe_trigger(trigger_info),
+                model_available=self._llama.is_available(),
+                prompt=self._llama._last_prompt,
+                response=self._llama._last_reply,
+                verdict=("BLOCK" if verdict is Verdict.BLOCK else "ALLOW"),
+                confidence=confidence,
+                latency_ms=float(trigger_info.get("latency_ms", 0.0)),
+            )
+        trace: PipelineTrace = self._build_trace(
+            request=request,
+            verdict=verdict,
+            suspicion_score=suspicion_score,
+            level_used=level_used,
+            ai_triggered=ai_triggered,
+            reasons=reasons,
+            matched_words=matched_words,
+            matched_language=matched_language,
+            confidence=confidence,
+            total_latency_ms=latency_ms,
+            stage1_ms=stage1_ms,
+            stage2_ms=stage2_ms,
+            fast_path=fast_path,
+            runs=runs,
+            semantic_similarities=semantic_similarities,
+            semantic_enabled=semantic_enabled,
+            user_profile=user_profile,
+            user_ratio=user_ratio,
+            matched_detectors=matched_detectors,
+            stage3=stage3_trace,
+        )
+        if event_sink is not None:
+            event_sink(
+                "stage3_complete",
+                {
+                    "stage": 3,
+                    "invoked": ai_triggered,
+                    "trigger": trace.stage_3.trigger if trace.stage_3 else None,
+                    "model_available": (
+                        trace.stage_3.model_available if trace.stage_3 else self._llama.is_available()
+                    ),
+                    "prompt": trace.stage_3.prompt if trace.stage_3 else None,
+                    "response": trace.stage_3.response if trace.stage_3 else None,
+                    "verdict": trace.stage_3.verdict if trace.stage_3 else None,
+                    "confidence": trace.stage_3.confidence if trace.stage_3 else None,
+                    "latency_ms": trace.stage_3.latency_ms if trace.stage_3 else 0.0,
+                },
+            )
+            event_sink(
+                "complete",
+                {
+                    "response": response.model_dump(by_alias=True),
+                    "trace": trace.to_dict(),
+                },
+            )
+        return response, trace
+
+    def _score_contributions(
+        self,
+        matched_detectors: list[str],
+        semantic_similarities: dict[str, float],
+        user_ratio: float,
+    ) -> list[dict[str, Any]]:
+        """Break the suspicion score into its component contributions.
+
+        :param matched_detectors: detectors that matched
+        :param semantic_similarities: per-category similarities
+        :param user_ratio: the user bad-content ratio
+        :return: score breakdown lines
+        """
+        contributions: list[dict[str, Any]] = []
+        for name in matched_detectors:
+            weight: int = self._scorer.detector_weight(name)
+            if weight > 0:
+                contributions.append(
+                    {"kind": "detector", "name": name, "value": 1.0, "weight": weight,
+                     "contributed": weight}
+                )
+        threshold: float = float(self._settings_service.get("SEMANTIC_SIMILARITY_THRESHOLD", 0.85))
+        for category, similarity in semantic_similarities.items():
+            if similarity > threshold:
+                category_weight: int = self._scorer._category_weight(category)
+                if category_weight > 0:
+                    contributions.append(
+                        {
+                            "kind": "semantic",
+                            "name": category,
+                            "value": round(similarity, 4),
+                            "weight": category_weight,
+                            "contributed": category_weight,
+                        }
+                    )
+        user_weight: int = int(self._settings_service.get("WEIGHT_USER", 0) or 0)
+        if user_weight > 0 and user_ratio > 0:
+            contributions.append(
+                {
+                    "kind": "user",
+                    "name": "user_ratio",
+                    "value": round(user_ratio, 4),
+                    "weight": user_weight,
+                    "contributed": round(user_ratio * user_weight, 4),
+                }
+            )
+        return contributions
+
+    @staticmethod
+    def _describe_trigger(trigger_info: dict[str, Any]) -> str:
+        """Render the LLM trigger policy into a short human-readable string.
+
+        :param trigger_info: trigger flags captured by ``_resolve_stage_three``
+        :return: a description such as "score 55 > 50"
+        """
+        parts: list[str] = []
+        score: bool = trigger_info.get("score_trigger", False)
+        semantic: bool = trigger_info.get("semantic_force", False)
+        user: bool = trigger_info.get("user_ratio_force", False)
+        if score:
+            parts.append(
+                f"score {trigger_info.get('score', 0.0):g} > {trigger_info.get('score_threshold', 0)}"
+            )
+        if semantic:
+            parts.append(
+                f"semantic {trigger_info.get('max_semantic', 0.0):g} >= "
+                f"{trigger_info.get('semantic_threshold', 0.0):g}"
+            )
+        if user:
+            parts.append(
+                f"user ratio {trigger_info.get('user_ratio', 0.0):g} >= "
+                f"{trigger_info.get('user_threshold', 0.0):g}"
+            )
+        logic: str = str(trigger_info.get("logic_type", "or"))
+        return (f"[{logic}] " + " | ".join(parts)) if parts else "no trigger"
+
+    def _build_trace(
+        self,
+        *,
+        request: ModerationRequest,
+        verdict: Verdict,
+        suspicion_score: float,
+        level_used: int,
+        ai_triggered: bool,
+        reasons: list[str],
+        matched_words: list[str],
+        matched_language: str | None,
+        confidence: float | None,
+        total_latency_ms: float,
+        stage1_ms: float,
+        stage2_ms: float,
+        fast_path: bool,
+        runs: list[DetectorRunTrace],
+        semantic_similarities: dict[str, float],
+        semantic_enabled: bool,
+        user_profile: dict[str, Any] | None,
+        user_ratio: float,
+        matched_detectors: list[str],
+        stage3: Stage3Trace | None,
+    ) -> PipelineTrace:
+        """Assemble the full pipeline trace.
+
+        :return: the populated pipeline trace
+        """
+        return PipelineTrace(
+            request_id=request.id,
+            app_name=request.app_name or "default",
+            user_id=request.user_id,
+            text=request.text,
+            verdict=verdict.value,
+            suspicion_score=suspicion_score,
+            level_used=level_used,
+            ai_triggered=ai_triggered,
+            reasons=reasons,
+            matched_words=matched_words,
+            matched_language=matched_language,
+            confidence_score=confidence,
+            stage_1=Stage1Trace(
+                fast_path=fast_path,
+                verdict="PASS" if fast_path else verdict.value,
+                latency_ms=round(stage1_ms, 3),
+            ),
+            stage_2=Stage2Trace(
+                detector_results=runs,
+                semantic_similarities=semantic_similarities,
+                semantic_enabled=semantic_enabled,
+                user_profile=user_profile,
+                suspicion_score=suspicion_score,
+                weight_contributions=[
+                    WeightContribution(**line) for line in self._score_contributions(
+                        matched_detectors, semantic_similarities, user_ratio
+                    )
+                ],
+                latency_ms=round(stage2_ms, 3),
+            ),
+            stage_3=stage3,
+            total_latency_ms=round(total_latency_ms, 3),
+        )
 
     @staticmethod
     def _restore_cached(
@@ -313,12 +635,15 @@ class ModerationEngine:
             detector_chain=cached.detector_chain,
         )
 
-    def _run_level_one(
-        self, text: str
+    def _run_level_one(  # noqa: C901 - many short detector bookkeeping branches
+        self,
+        text: str,
+        runs: list[DetectorRunTrace] | None = None,
     ) -> tuple[list[str], list[str], list[str], str | None, float | None, Verdict, list[str]]:
         """Run the ordered Level 1 detectors over the text.
 
         :param text: normalized input text
+        :param runs: optional list that receives one execution record per detector
         :return: chain, reasons, matched words, language, confidence, verdict,
             names of detectors that matched
         """
@@ -332,14 +657,56 @@ class ModerationEngine:
 
         for detector in self._detectors:
             if not detector.is_available():
+                if runs is not None:
+                    runs.append(
+                        DetectorRunTrace(
+                            name=detector.name,
+                            enabled=self._detector_enabled(detector.name),
+                            available=False,
+                            matched=False,
+                            blocking=detector.blocking,
+                            latency_ms=0.0,
+                            weight=self._scorer.detector_weight(detector.name),
+                        )
+                    )
+                continue
+            if not self._detector_enabled(detector.name):
+                if runs is not None:
+                    runs.append(
+                        DetectorRunTrace(
+                            name=detector.name,
+                            enabled=False,
+                            available=True,
+                            matched=False,
+                            blocking=detector.blocking,
+                            latency_ms=0.0,
+                            weight=self._scorer.detector_weight(detector.name),
+                        )
+                    )
                 continue
             chain.append(detector.name)
             detector_start: int = time.perf_counter_ns()
             result: DetectionResult = detector.detect(text)
+            detector_ms: float = (time.perf_counter_ns() - detector_start) / 1_000_000.0
             self._detector_seconds[detector.name] = (
-                self._detector_seconds.get(detector.name, 0.0)
-                + (time.perf_counter_ns() - detector_start) / 1_000_000_000.0
+                self._detector_seconds.get(detector.name, 0.0) + detector_ms / 1_000.0
             )
+            if runs is not None:
+                runs.append(
+                    DetectorRunTrace(
+                        name=detector.name,
+                        enabled=True,
+                        available=True,
+                        matched=result.matched,
+                        blocking=detector.blocking,
+                        confidence=result.confidence_score,
+                        matched_words=list(result.matched_words),
+                        matched_language=result.matched_language,
+                        reason=result.reason,
+                        latency_ms=round(detector_ms, 3),
+                        weight=self._scorer.detector_weight(detector.name),
+                    )
+                )
             if not result.matched:
                 continue
             matched_detectors.append(detector.name)
@@ -368,6 +735,15 @@ class ModerationEngine:
             matched_detectors,
         )
 
+    def _detector_enabled(self, name: str) -> bool:
+        """Resolve the runtime enable toggle for one detector.
+
+        :param name: detector identifier
+        :return: True unless the toggle is explicitly disabled
+        """
+        key: str = "ENABLE_DETECTOR_" + name.upper()
+        return bool(self._settings_service.get(key, True))
+
     def _resolve_stage_three(
         self,
         text: str,
@@ -379,7 +755,7 @@ class ModerationEngine:
         suspicion_score: float,
         semantic_similarities: dict[str, float],
         user_ratio: float,
-    ) -> tuple[bool, int, Verdict, list[str], list[str], float | None]:
+    ) -> tuple[bool, int, Verdict, list[str], list[str], float | None, dict[str, Any]]:
         """Decide whether the LLM must settle the verdict.
 
         :param text: the original request text
@@ -391,38 +767,58 @@ class ModerationEngine:
         :param suspicion_score: the computed suspicion score
         :param semantic_similarities: per-category semantic similarities
         :param user_ratio: the user bad-content ratio
-        :return: ai_triggered, level_used, final verdict, chain, reasons, confidence
+        :return: ai_triggered, level_used, final verdict, chain, reasons,
+            confidence, and a trigger info mapping
         """
         policy: dict[str, Any] = self._app_config.get(app_name)
-        score_trigger: bool = suspicion_score > int(policy["score_threshold"])
+        score_threshold: int = int(policy["score_threshold"])
+        semantic_threshold: float = float(
+            self._settings_service.get("SEMANTIC_FORCE_LLM_THRESHOLD", 0.90)
+        )
+        user_threshold: float = float(self._settings_service.get("USER_RATIO_THRESHOLD", 0.3))
+        score_trigger: bool = suspicion_score > score_threshold
         force_semantic: bool = bool(policy["semantic_boost"]) and bool(
-            semantic_similarities
-            and max(semantic_similarities.values())
-            >= float(self._settings_service.get("SEMANTIC_FORCE_LLM_THRESHOLD", 0.90))
+            semantic_similarities and max(semantic_similarities.values()) >= semantic_threshold
         )
-        force_user: bool = bool(policy["user_ratio_boost"]) and user_ratio >= float(
-            self._settings_service.get("USER_RATIO_THRESHOLD", 0.3)
-        )
-        if policy["logic_type"] == "and":
+        force_user: bool = bool(policy["user_ratio_boost"]) and user_ratio >= user_threshold
+        logic_type: str = str(policy["logic_type"])
+        if logic_type == "and":
             trigger: bool = score_trigger and force_semantic and force_user
         else:
             trigger = score_trigger or force_semantic or force_user
 
+        trigger_info: dict[str, Any] = {
+            "score_trigger": score_trigger,
+            "semantic_force": force_semantic,
+            "user_ratio_force": force_user,
+            "logic_type": logic_type,
+            "score": suspicion_score,
+            "score_threshold": score_threshold,
+            "max_semantic": max(semantic_similarities.values(), default=0.0),
+            "semantic_threshold": semantic_threshold,
+            "user_ratio": user_ratio,
+            "user_threshold": user_threshold,
+            "latency_ms": 0.0,
+        }
+
         if not trigger:
             final_verdict: Verdict = verdict if verdict is Verdict.BLOCK else Verdict.PASS
-            return False, 1, final_verdict, chain, reasons, confidence
+            return False, 1, final_verdict, chain, reasons, confidence, trigger_info
 
         if not self._llama.is_available():
-            return False, 2, Verdict.REVIEW, chain, reasons, confidence
+            trigger_info["latency_ms"] = 0.0
+            return False, 2, Verdict.REVIEW, chain, reasons, confidence, trigger_info
 
         chain.append(self._llama.name)
         self._metrics["ai_requests_total"] += 1.0
+        llm_start: int = time.perf_counter_ns()
         llm_result: DetectionResult = self._llama.detect(text)
+        trigger_info["latency_ms"] = (time.perf_counter_ns() - llm_start) / 1_000_000.0
         if llm_result.matched:
             reasons.append(llm_result.reason or self._llama.name)
             confidence = llm_result.confidence_score or confidence
-            return True, 2, Verdict.BLOCK, chain, reasons, confidence
-        return True, 2, Verdict.PASS, chain, reasons, confidence
+            return True, 2, Verdict.BLOCK, chain, reasons, confidence, trigger_info
+        return True, 2, Verdict.PASS, chain, reasons, confidence, trigger_info
 
     def _build_response(
         self,
