@@ -8,6 +8,19 @@ export class ApiError extends Error {
     }
 }
 
+export function errorDetail(body: unknown, fallback: string): string {
+    if (body !== null && typeof body === "object") {
+        const record: Record<string, unknown> = body as Record<string, unknown>;
+        if ("detail" in record) {
+            return String(record.detail);
+        }
+        if ("error" in record) {
+            return String(record.error);
+        }
+    }
+    return fallback;
+}
+
 export class AuthService {
     private static readonly storageKey: string = "moderation_admin_api_key";
 
