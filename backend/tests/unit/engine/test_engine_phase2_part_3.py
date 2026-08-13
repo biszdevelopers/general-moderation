@@ -18,926 +18,269 @@ from app.models.response import ModerationResponse
 from app.scoring.suspicion_scorer import SuspicionScorer
 from tests.base_test import BaseTest
 
-_APP_POLICY_OR_CASES: tuple[tuple[str, int, str, str, int, int], ...] = (
-    (
-        "you are a zaphrin",
-        0,
-        "or",
-        "REVIEW",
-        2,
-        1419,
-    ),
-    (
-        "you are a zaphrin",
-        50,
-        "or",
-        "REVIEW",
-        2,
-        1420,
-    ),
-    (
-        "you are a zaphrin",
-        100,
-        "or",
-        "BLOCK",
-        1,
-        1421,
-    ),
+_CACHE_BOUNDED_CASES: tuple[tuple[int, int], ...] = (
+    (10, 1401,),
+    (15, 1402,),
+    (20, 1403,),
+    (25, 1404,),
+    (30, 1405,),
+    (40, 1406,),
+    (50, 1407,),
+    (60, 1408,),
+    (75, 1409,),
+    (100, 1410,),
+    (150, 1411,),
 )
 
+class TestCacheBounded(BaseTest):
+    """The result cache never exceeds its configured size."""
+
+    @pytest.mark.parametrize(('n_texts', 'uid',), _CACHE_BOUNDED_CASES)
+    def test_cache_bounded(self, engine: ModerationEngine, n_texts: int, uid: int) -> None:
+        """The result cache never exceeds its configured size."""
+        for index in range(n_texts):
+            engine.moderate(ModerationRequest(text=f'cache seed {index}', app_name='a'))
+        assert len(engine._cache) == min(n_texts, engine._cache_max_size)
+        assert engine._cache_max_size > 0
+
+
+_BATCH_SIZE_CASES: tuple[tuple[int, int], ...] = (
+    (2, 1412,),
+    (5, 1413,),
+    (10, 1414,),
+    (25, 1415,),
+    (50, 1416,),
+    (75, 1417,),
+    (100, 1418,),
+)
+
+class TestBatchSize(BaseTest):
+    """A batch returns exactly one result per item."""
+
+    @pytest.mark.parametrize(('size', 'uid',), _BATCH_SIZE_CASES)
+    def test_batch_size(self, engine: ModerationEngine, size: int, uid: int) -> None:
+        """A batch returns exactly one result per item."""
+        batch: BatchModerationRequest = BatchModerationRequest(
+            items=[BatchItem(id=f'i{i}', text=f'message {i}', app_name='a') for i in range(size)]
+        )
+        response = engine.moderate_batch(batch)
+        assert len(response.results) == size
+        assert [item.id for item in response.results] == [f'i{i}' for i in range(size)]
+        assert response.total_latency_ms >= 0.0
+
+
+_APP_POLICY_OR_CASES: tuple[tuple[str, int, str, str, int, int], ...] = (
+    ('you are a zaphrin', 0, 'or', 'REVIEW', 2, 1419,),
+    ('you are a zaphrin', 50, 'or', 'REVIEW', 2, 1420,),
+    ('you are a zaphrin', 100, 'or', 'BLOCK', 1, 1421,),
+)
 
 class TestAppPolicyOr(BaseTest):
     """OR policies resolve deterministically."""
 
-    @pytest.mark.parametrize(
-        (
-            "text",
-            "threshold",
-            "logic",
-            "expected",
-            "level",
-            "uid",
-        ),
-        _APP_POLICY_OR_CASES,
-    )
-    def test_app_policy_or(
-        self,
-        engine: ModerationEngine,
-        word_bank: Any,
-        text: str,
-        threshold: int,
-        logic: str,
-        expected: str,
-        level: int,
-        uid: int,
-    ) -> None:
+    @pytest.mark.parametrize(('text', 'threshold', 'logic', 'expected', 'level', 'uid',), _APP_POLICY_OR_CASES)
+    def test_app_policy_or(self, engine: ModerationEngine, word_bank: Any, text: str, threshold: int, logic: str, expected: str, level: int, uid: int) -> None:
         """OR policies resolve deterministically."""
-        word_bank.add_word("zaphrin")
+        word_bank.add_word('zaphrin')
         engine.refresh_detectors()
-        engine._app_config.set("app", score_threshold=threshold, logic_type=logic)
+        engine._app_config.set('app', score_threshold=threshold, logic_type=logic)
         result: ModerationResponse = engine.moderate(
-            ModerationRequest(text=text, app_name="app", user_id="u")
+            ModerationRequest(text=text, app_name='app', user_id='u')
         )
         assert result.verdict.value == expected
         assert result.level_used == level
 
 
 _APP_POLICY_AND_CASES: tuple[tuple[str, int, str, str, int, int], ...] = (
-    (
-        "you are a zaphrin",
-        0,
-        "and",
-        "BLOCK",
-        1,
-        1422,
-    ),
-    (
-        "you are a zaphrin",
-        50,
-        "and",
-        "BLOCK",
-        1,
-        1423,
-    ),
-    (
-        "you are a zaphrin",
-        100,
-        "and",
-        "BLOCK",
-        1,
-        1424,
-    ),
+    ('you are a zaphrin', 0, 'and', 'BLOCK', 1, 1422,),
+    ('you are a zaphrin', 50, 'and', 'BLOCK', 1, 1423,),
+    ('you are a zaphrin', 100, 'and', 'BLOCK', 1, 1424,),
 )
-
 
 class TestAppPolicyAnd(BaseTest):
     """AND policies resolve deterministically."""
 
-    @pytest.mark.parametrize(
-        (
-            "text",
-            "threshold",
-            "logic",
-            "expected",
-            "level",
-            "uid",
-        ),
-        _APP_POLICY_AND_CASES,
-    )
-    def test_app_policy_and(
-        self,
-        engine: ModerationEngine,
-        word_bank: Any,
-        text: str,
-        threshold: int,
-        logic: str,
-        expected: str,
-        level: int,
-        uid: int,
-    ) -> None:
+    @pytest.mark.parametrize(('text', 'threshold', 'logic', 'expected', 'level', 'uid',), _APP_POLICY_AND_CASES)
+    def test_app_policy_and(self, engine: ModerationEngine, word_bank: Any, text: str, threshold: int, logic: str, expected: str, level: int, uid: int) -> None:
         """AND policies resolve deterministically."""
-        word_bank.add_word("zaphrin")
+        word_bank.add_word('zaphrin')
         engine.refresh_detectors()
-        engine._app_config.set("app", score_threshold=threshold, logic_type=logic)
+        engine._app_config.set('app', score_threshold=threshold, logic_type=logic)
         result: ModerationResponse = engine.moderate(
-            ModerationRequest(text=text, app_name="app", user_id="u")
+            ModerationRequest(text=text, app_name='app', user_id='u')
         )
         assert result.verdict.value == expected
         assert result.level_used == level
 
 
-class TestCacheSizes(BaseTest):
-    """CacheSizes scenarios."""
+_SCORER_WEIGHT_CASES: tuple[tuple[str, int], ...] = (
+    ('aho_corasick', 1425,),
+    ('bk_tree', 1426,),
+    ('double_metaphone', 1427,),
+    ('multi_language', 1428,),
+    ('rolling_hash', 1429,),
+    ('bloom_filter', 1430,),
+    ('badwords', 1431,),
+    ('profanite', 1432,),
+)
 
-    def test_cache_bounded_1_60_1401(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
+class TestScorerWeight(BaseTest):
+    """Every registered detector weight resolves within the valid range."""
 
-    def test_cache_bounded_1_300_1402(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_5_1_1403(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_5_60_1404(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_5_300_1405(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_10_1_1406(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_10_60_1407(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_10_300_1408(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_50_1_1409(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_50_60_1410(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-    def test_cache_bounded_50_300_1411(self, engine: ModerationEngine) -> None:
-        """The result cache never exceeds its configured size."""
-        engine.moderate(ModerationRequest(text="seed cache", app_name="a"))
-        assert len(engine._cache) <= 100
-        assert engine._cache is not None
-
-
-class TestBatchSizes(BaseTest):
-    """BatchSizes scenarios."""
-
-    def test_batch_size_2_1412(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(2)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 2
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(2)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_5_1413(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(5)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 5
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(5)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_10_1414(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(10)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 10
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(10)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_25_1415(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(25)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 25
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(25)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_50_1416(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(50)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 50
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(50)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_75_1417(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(75)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 75
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(75)]
-        assert response.total_latency_ms >= 0.0
-
-    def test_batch_size_100_1418(self, engine: ModerationEngine) -> None:
-        """A batch returns exactly one result per item."""
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(id=f"i{i}", text=f"message {i}", app_name="a") for i in range(100)]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == 100
-        assert [item.id for item in response.results] == [f"i{i}" for i in range(100)]
-        assert response.total_latency_ms >= 0.0
-
-
-class TestScorerWeights(BaseTest):
-    """ScorerWeights scenarios."""
-
-    def test_scorer_weight_aho_corasick_1425(self, engine: ModerationEngine) -> None:
+    @pytest.mark.parametrize(('detector', 'uid',), _SCORER_WEIGHT_CASES)
+    def test_scorer_weight(self, engine: ModerationEngine, detector: str, uid: int) -> None:
         """Every registered detector weight resolves within the valid range."""
         scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("aho_corasick")
+        weight = scorer.detector_weight(detector)
         assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["aho_corasick"])
-        assert score >= 0.0
-
-    def test_scorer_weight_bk_tree_1426(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("bk_tree")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["bk_tree"])
-        assert score >= 0.0
-
-    def test_scorer_weight_double_metaphone_1427(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("double_metaphone")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["double_metaphone"])
-        assert score >= 0.0
-
-    def test_scorer_weight_multi_language_1428(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("multi_language")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["multi_language"])
-        assert score >= 0.0
-
-    def test_scorer_weight_rolling_hash_1429(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("rolling_hash")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["rolling_hash"])
-        assert score >= 0.0
-
-    def test_scorer_weight_bloom_filter_1430(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("bloom_filter")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["bloom_filter"])
-        assert score >= 0.0
-
-    def test_scorer_weight_badwords_1431(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("badwords")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["badwords"])
-        assert score >= 0.0
-
-    def test_scorer_weight_profanite_1432(self, engine: ModerationEngine) -> None:
-        """Every registered detector weight resolves within the valid range."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        weight = scorer.detector_weight("profanite")
-        assert 0 <= weight <= 50
-        score = scorer.score(detector_names=["profanite"])
+        score = scorer.score(detector_names=[detector])
         assert score >= 0.0
 
 
-class TestScorerSums(BaseTest):
-    """ScorerSums scenarios."""
+_SCORER_SUM_CASES: tuple[tuple[tuple[object, ...], int], ...] = (
+    (('aho_corasick', 'bk_tree',), 1433,),
+    (('aho_corasick', 'bk_tree', 'double_metaphone',), 1434,),
+    (('aho_corasick', 'bk_tree', 'double_metaphone', 'multi_language',), 1435,),
+    (('aho_corasick', 'bk_tree', 'double_metaphone', 'multi_language', 'rolling_hash',), 1436,),
+)
 
-    def test_scorer_sum_2_1433(self, engine: ModerationEngine) -> None:
+class TestScorerSum(BaseTest):
+    """Multiple detector hits sum their configured weights."""
+
+    @pytest.mark.parametrize(('names', 'uid',), _SCORER_SUM_CASES)
+    def test_scorer_sum(self, engine: ModerationEngine, names: tuple[object, ...], uid: int) -> None:
         """Multiple detector hits sum their configured weights."""
         scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        names = ["aho_corasick", "bk_tree"]
         score = scorer.score(detector_names=names, user_ratio=0.0)
         expected = sum(scorer.detector_weight(n) for n in names)
         assert score == min(100.0, expected)
         assert score <= 100.0
 
-    def test_scorer_sum_3_1434(self, engine: ModerationEngine) -> None:
-        """Multiple detector hits sum their configured weights."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        names = ["aho_corasick", "bk_tree", "double_metaphone"]
-        score = scorer.score(detector_names=names, user_ratio=0.0)
-        expected = sum(scorer.detector_weight(n) for n in names)
-        assert score == min(100.0, expected)
-        assert score <= 100.0
 
-    def test_scorer_sum_4_1435(self, engine: ModerationEngine) -> None:
-        """Multiple detector hits sum their configured weights."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        names = ["aho_corasick", "bk_tree", "double_metaphone", "multi_language"]
-        score = scorer.score(detector_names=names, user_ratio=0.0)
-        expected = sum(scorer.detector_weight(n) for n in names)
-        assert score == min(100.0, expected)
-        assert score <= 100.0
-
-    def test_scorer_sum_5_1436(self, engine: ModerationEngine) -> None:
-        """Multiple detector hits sum their configured weights."""
-        scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)
-        names = ["aho_corasick", "bk_tree", "double_metaphone", "multi_language", "rolling_hash"]
-        score = scorer.score(detector_names=names, user_ratio=0.0)
-        expected = sum(scorer.detector_weight(n) for n in names)
-        assert score == min(100.0, expected)
-        assert score <= 100.0
-
+_SAFE_LANGUAGE_CASES: tuple[tuple[str, int], ...] = (
+    ('the weather is pleasant today', 1437,),
+    ('今天天气不错', 1438,),
+    ('今日は天気が良いです', 1439,),
+    ('오늘 날씨가 좋아요', 1440,),
+    ('сегодня хорошая погода', 1441,),
+    ('hoy hace buen tiempo', 1442,),
+    ("il fait beau aujourd'hui", 1443,),
+    ('das wetter ist schön heute', 1444,),
+    ('oggi il tempo è bello', 1445,),
+    ('الطقس جميل اليوم', 1446,),
+    ('आज मौसम अच्छा है', 1447,),
+    ('bugün hava güzel', 1448,),
+    ('o tempo está bom hoje', 1449,),
+    ('het weer is mooi vandaag', 1450,),
+    ('dzisiaj jest ładna pogoda', 1451,),
+    ('сьогодні гарна погода', 1452,),
+    ('dnes je hezké počasí', 1453,),
+    ('σήμερα έχει καλό καιρό', 1454,),
+    ('vädret är fint idag', 1455,),
+    ('været er fint i dag', 1456,),
+    ('vejret er dejligt i dag', 1457,),
+    ('tänään on kaunis sää', 1458,),
+    ('ma szép az idő', 1459,),
+    ('astăzi este vreme frumoasă', 1460,),
+    ('днес е хубаво време', 1461,),
+    ('מזג האוויר נחמד היום', 1462,),
+    ('วันนี้อากาศดี', 1463,),
+)
 
 class TestSafeLanguage(BaseTest):
-    """SafeLanguage scenarios."""
+    """Stage 1 language detection classifies the script."""
 
-    def test_safe_language_en_1437(self, engine: ModerationEngine) -> None:
+    @pytest.mark.parametrize(('text', 'uid',), _SAFE_LANGUAGE_CASES)
+    def test_safe_language(self, engine: ModerationEngine, text: str, uid: int) -> None:
         """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("the weather is pleasant today")
-        assert isinstance(detected, str)
-        assert detected != ""
+        detected = SafeWordFilter.detect_language(text)
+        import re
+        assert re.match(r'^[a-z]{2,3}$', detected) is not None
 
-    def test_safe_language_zh_CN_1438(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("今天天气不错")
-        assert isinstance(detected, str)
-        assert detected != ""
 
-    def test_safe_language_ja_1439(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("今日は天気が良いです")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_ko_1440(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("오늘 날씨가 좋아요")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_ru_1441(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("сегодня хорошая погода")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_es_1442(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("hoy hace buen tiempo")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_fr_1443(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("il fait beau aujourd'hui")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_de_1444(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("das wetter ist schön heute")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_it_1445(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("oggi il tempo è bello")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_ar_1446(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("الطقس جميل اليوم")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_hi_1447(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("आज मौसम अच्छा है")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_tr_1448(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("bugün hava güzel")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_pt_1449(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("o tempo está bom hoje")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_nl_1450(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("het weer is mooi vandaag")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_pl_1451(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("dzisiaj jest ładna pogoda")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_uk_1452(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("сьогодні гарна погода")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_cs_1453(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("dnes je hezké počasí")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_el_1454(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("σήμερα έχει καλό καιρό")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_sv_1455(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("vädret är fint idag")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_no_1456(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("været er fint i dag")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_da_1457(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("vejret er dejligt i dag")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_fi_1458(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("tänään on kaunis sää")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_hu_1459(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("ma szép az idő")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_ro_1460(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("astăzi este vreme frumoasă")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_bg_1461(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("днес е хубаво време")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_he_1462(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("מזג האוויר נחמד היום")
-        assert isinstance(detected, str)
-        assert detected != ""
-
-    def test_safe_language_th_1463(self, engine: ModerationEngine) -> None:
-        """Stage 1 language detection classifies the script."""
-        detected = SafeWordFilter.detect_language("วันนี้อากาศดี")
-        assert isinstance(detected, str)
-        assert detected != ""
-
+_SAFE_FILTER_CASES: tuple[tuple[tuple[object, ...], tuple[object, ...], str, bool, str, bool, int], ...] = (
+    (('alpha',), (), 'alpha', True, 'alpha gamma', False, 1464,),
+    (('alpha',), ('alpha',), 'alpha', False, 'alpha gamma', False, 1465,),
+    (('alpha', 'beta',), (), 'alpha beta', True, 'gamma', False, 1466,),
+    (('alpha', 'beta',), ('alpha',), 'beta', True, 'alpha beta', False, 1467,),
+    (('car', 'dog', 'fish',), (), 'car dog fish', True, 'car cat', False, 1468,),
+    (('car', 'dog',), ('car',), 'dog', True, 'car', False, 1469,),
+    (('safe', 'word', 'list',), ('word',), 'safe list', True, 'word', False, 1470,),
+    (('hello', 'world',), ('hello', 'world',), 'hello world', False, 'hello', False, 1471,),
+    (('one',), ('one',), 'one two', False, 'one', False, 1472,),
+    (('two', 'three',), (), 'two three', True, 'three four', False, 1473,),
+    (('alpha',), (), 'ALPHA', True, 'beta', False, 1474,),
+    (('alpha',), (), 'alpha!', True, '!alpha', True, 1475,),
+    (('multi', 'token',), (), 'multi token', True, 'single', False, 1476,),
+    (('a', 'b', 'c',), ('b',), 'a c', True, 'a b', False, 1477,),
+    (('x', 'y',), ('x',), 'y', True, 'x y', False, 1478,),
+    (('kitten', 'puppy',), (), 'kitten puppy', True, 'kitten dog', False, 1479,),
+    (('alpha',), ('beta',), 'alpha', True, 'beta', False, 1480,),
+    (('red', 'green',), ('red', 'green',), 'red', False, 'red green', False, 1481,),
+    (('blue', 'yellow',), ('blue',), 'yellow', True, 'blue yellow', False, 1482,),
+    (('eins', 'zwei',), (), 'eins zwei', True, 'drei', False, 1483,),
+    (('uno', 'dos',), ('uno',), 'dos', True, 'uno', False, 1484,),
+    (('ichi', 'ni', 'san',), ('ni',), 'ichi san', True, 'ichi ni', False, 1485,),
+    (('alpha', 'beta', 'gamma',), ('beta', 'gamma',), 'alpha', True, 'beta gamma', False, 1486,),
+    (('only',), ('only',), 'only', False, 'not', False, 1487,),
+)
 
 class TestSafeFilter(BaseTest):
-    """SafeFilter scenarios."""
+    """Safe word add/remove/is_safe stays consistent."""
 
-    def test_safe_filter_scenario_0_1464(self, engine: ModerationEngine) -> None:
+    @pytest.mark.parametrize(('add_words', 'remove_words', 'present', 'present_expected', 'absent', 'absent_expected', 'uid',), _SAFE_FILTER_CASES)
+    def test_safe_filter(self, engine: ModerationEngine, add_words: tuple[object, ...], remove_words: tuple[object, ...], present: str, present_expected: bool, absent: str, absent_expected: bool, uid: int) -> None:
         """Safe word add/remove/is_safe stays consistent."""
         safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
+        for word in add_words:
+            safe_word.add_word(word)
+        for word in remove_words:
+            safe_word.remove_word(word)
+        assert safe_word.is_safe(present) is present_expected
+        assert safe_word.is_safe(absent) is absent_expected
 
-    def test_safe_filter_scenario_1_1465(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
 
-    def test_safe_filter_scenario_2_1466(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_3_1467(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_4_1468(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_5_1469(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_6_1470(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_7_1471(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_8_1472(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_9_1473(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_10_1474(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_11_1475(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_12_1476(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_13_1477(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_14_1478(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_15_1479(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_16_1480(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_17_1481(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_18_1482(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_19_1483(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_20_1484(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_21_1485(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_22_1486(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
-    def test_safe_filter_scenario_23_1487(self, engine: ModerationEngine) -> None:
-        """Safe word add/remove/is_safe stays consistent."""
-        safe_word: SafeWordFilter = engine._safe_word
-        safe_word.add_word("alpha")
-        safe_word.add_word("beta")
-        assert safe_word.is_safe("alpha beta") is True
-        assert safe_word.is_safe("alpha gamma") is False
-        assert safe_word.remove_word("beta") is True
-        assert safe_word.remove_word("missing") is False
-
+_ROLLING_HASH_CASES: tuple[tuple[int, int, int], ...] = (
+    (1, 0, 1488,),
+    (1, 1, 1489,),
+    (1, 60, 1490,),
+    (3, 0, 1491,),
+    (3, 1, 1492,),
+    (3, 60, 1493,),
+    (10, 0, 1494,),
+    (10, 1, 1495,),
+    (10, 60, 1496,),
+    (100, 0, 1497,),
+    (100, 1, 1498,),
+    (100, 60, 1499,),
+)
 
 class TestRollingHash(BaseTest):
-    """RollingHash scenarios."""
+    """Rolling hash caches stay bounded and honor their TTL."""
 
-    def test_rolling_hash_1_0_1488(self) -> None:
+    @pytest.mark.parametrize(('cache_size', 'ttl', 'uid',), _ROLLING_HASH_CASES)
+    def test_rolling_hash(self, cache_size: int, ttl: int, uid: int) -> None:
         """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        detector.record_hit("spam phrase")
+        detector: RollingHashDetector = RollingHashDetector(cache_size=cache_size, ttl_seconds=ttl)
+        detector.record_hit('spam phrase')
         for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 1
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
+            detector.detect(f'unique {index}')
+        assert len(detector._cache) <= cache_size
+        assert isinstance(detector.detect('spam phrase').matched, bool)
+        assert detector.detect('unrelated text').matched is False
 
-    def test_rolling_hash_1_1_1489(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 1
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
 
-    def test_rolling_hash_1_60_1490(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 1
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_3_0_1491(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=3, ttl_seconds=0)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 3
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_3_1_1492(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=3, ttl_seconds=1)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 3
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_3_60_1493(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=3, ttl_seconds=60)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 3
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_10_0_1494(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 10
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_10_1_1495(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 10
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_10_60_1496(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 10
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_100_0_1497(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 100
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_100_1_1498(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 100
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
-    def test_rolling_hash_100_60_1499(self) -> None:
-        """Rolling hash caches stay bounded and honor their TTL."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        detector.record_hit("spam phrase")
-        for index in range(50):
-            detector.detect(f"unique {index}")
-        assert len(detector._cache) <= 100
-        assert isinstance(detector.detect("spam phrase").matched, bool)
-        assert detector.detect("unrelated text").matched is False
-
+_ROLLING_HASH_REPEAT_CASES: tuple[tuple[str, int], ...] = (
+    ('repeat spam 0', 1500,),
+)
 
 class TestRollingHashRepeat(BaseTest):
-    """RollingHashRepeat scenarios."""
+    """Repeated flagged messages are caught deterministically."""
 
-    def test_rolling_hash_repeat_0_1500(self) -> None:
+    @pytest.mark.parametrize(('text', 'uid',), _ROLLING_HASH_REPEAT_CASES)
+    def test_rolling_hash_repeat(self, text: str, uid: int) -> None:
         """Repeated flagged messages are caught deterministically."""
         detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        detector.record_hit("repeat spam 0")
-        assert detector.detect("repeat spam 0").matched is True
-        assert detector.detect("clean text 0").matched is False
+        detector.record_hit(text)
+        assert detector.detect(text).matched is True
+        assert detector.detect('clean text here').matched is False
