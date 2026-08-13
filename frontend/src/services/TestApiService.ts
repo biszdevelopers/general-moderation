@@ -1,4 +1,4 @@
-import { ApiError, AuthService } from "./AuthService";
+import { ApiError, AuthService, errorDetail } from "./AuthService";
 import {
     DashboardReport,
     LoadTestConfig,
@@ -32,11 +32,7 @@ export class TestApiService {
                 this.authService.handleUnauthorized();
             }
             const body: unknown = await response.json().catch(() => null);
-            const detail: unknown =
-                body !== null && typeof body === "object" && "detail" in body
-                    ? (body as { detail: unknown }).detail
-                    : "Request failed";
-            throw new ApiError(response.status, String(detail));
+            throw new ApiError(response.status, errorDetail(body, "Request failed"));
         }
         return (await response.json()) as T;
     }
@@ -62,8 +58,14 @@ export class TestApiService {
             if (response.status === 401) {
                 this.authService.handleUnauthorized();
             }
-            const detail: unknown = await response.text().catch(() => "");
-            throw new ApiError(response.status, String(detail || "Request failed"));
+            const raw: string = await response.text().catch(() => "");
+            let detail: string = raw || "Request failed";
+            try {
+                detail = errorDetail(JSON.parse(raw), raw || "Request failed");
+            } catch {
+                // non-JSON body: surface the raw text as-is
+            }
+            throw new ApiError(response.status, detail);
         }
         if (response.body === null) {
             throw new ApiError(0, "Response has no body");
