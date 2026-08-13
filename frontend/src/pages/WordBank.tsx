@@ -287,6 +287,7 @@ export function WordBank(): ReactElement {
                 columns={columns}
                 dataSource={filteredWords}
                 pagination={{ pageSize: 20 }}
+                scroll={{ x: "max-content" }}
                 locale={{ emptyText: "No words match your filters" }}
             />
             <Modal
