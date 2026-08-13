@@ -6,480 +6,83 @@ archives and boundary edges under the frozen clock."""
 # multilingual fixtures use non-ASCII on purpose
 from __future__ import annotations
 
+import pytest
+
 from app.profiling.user_profiler import UserProfiler
 from tests.base_test import BaseTest
 
+_EDGE_ARCHIVE_CASES: tuple[tuple[int, int, int, int, int, int, float, int, int, int], ...] = (
+    (1, 2, 5, 5, 0, 0, 1.0, 2, 5, 4209,),
+    (1, 2, 5, 0, 0, 0, 0.0, 2, 5, 4210,),
+    (1, 2, 5, 2, 0, 0, 0.4, 2, 5, 4211,),
+    (1, 2, 5, 0, 5, 0, 1.0, 2, 5, 4212,),
+    (1, 2, 5, 0, 0, 5, 0.0, 2, 5, 4213,),
+    (1, 2, 10, 10, 0, 0, 1.0, 2, 10, 4214,),
+    (1, 2, 10, 0, 0, 0, 0.0, 2, 10, 4215,),
+    (1, 2, 10, 5, 0, 0, 0.5, 2, 10, 4216,),
+    (1, 2, 10, 0, 10, 0, 1.0, 2, 10, 4217,),
+    (1, 2, 10, 0, 0, 10, 0.0, 2, 10, 4218,),
+    (1, 2, 1, 1, 0, 0, 1.0, 2, 1, 4219,),
+    (1, 2, 1, 0, 0, 0, 0.0, 2, 1, 4220,),
+    (1, 2, 1, 0, 0, 0, 0.0, 2, 1, 4221,),
+    (1, 2, 1, 0, 1, 0, 1.0, 2, 1, 4222,),
+    (1, 2, 1, 0, 0, 1, 0.0, 2, 1, 4223,),
+    (1, 2, 2, 2, 0, 0, 1.0, 2, 2, 4224,),
+    (1, 2, 2, 0, 0, 0, 0.0, 2, 2, 4225,),
+    (1, 2, 2, 1, 0, 0, 0.5, 2, 2, 4226,),
+    (1, 2, 2, 0, 2, 0, 1.0, 2, 2, 4227,),
+    (1, 2, 2, 0, 0, 2, 0.0, 2, 2, 4228,),
+    (1, 2, 5, 5, 0, 0, 1.0, 2, 5, 4229,),
+    (1, 2, 5, 0, 0, 0, 0.0, 2, 5, 4230,),
+    (1, 2, 5, 2, 0, 0, 0.4, 2, 5, 4231,),
+    (1, 2, 5, 0, 5, 0, 1.0, 2, 5, 4232,),
+    (1, 2, 5, 0, 0, 5, 0.0, 2, 5, 4233,),
+    (1, 2, 10, 10, 0, 0, 1.0, 2, 10, 4234,),
+    (1, 2, 10, 0, 0, 0, 0.0, 2, 10, 4235,),
+    (1, 2, 10, 5, 0, 0, 0.5, 2, 10, 4236,),
+    (1, 2, 10, 0, 10, 0, 1.0, 2, 10, 4237,),
+    (1, 2, 10, 0, 0, 10, 0.0, 2, 10, 4238,),
+    (2, 1, 1, 1, 0, 0, 1.0, 0, 0, 4239,),
+    (2, 1, 1, 0, 0, 0, 0.0, 0, 0, 4240,),
+    (2, 1, 1, 0, 0, 0, 0.0, 0, 0, 4241,),
+    (2, 1, 1, 0, 1, 0, 1.0, 0, 0, 4242,),
+    (2, 1, 1, 0, 0, 1, 0.0, 0, 0, 4243,),
+    (2, 1, 2, 2, 0, 0, 1.0, 0, 0, 4244,),
+    (2, 1, 2, 0, 0, 0, 0.0, 0, 0, 4245,),
+    (2, 1, 2, 1, 0, 0, 0.5, 0, 0, 4246,),
+    (2, 1, 2, 0, 2, 0, 1.0, 0, 0, 4247,),
+    (2, 1, 2, 0, 0, 2, 0.0, 0, 0, 4248,),
+    (2, 1, 5, 5, 0, 0, 1.0, 0, 0, 4249,),
+    (2, 1, 5, 0, 0, 0, 0.0, 0, 0, 4250,),
+    (2, 1, 5, 2, 0, 0, 0.4, 0, 0, 4251,),
+    (2, 1, 5, 0, 5, 0, 1.0, 0, 0, 4252,),
+    (2, 1, 5, 0, 0, 5, 0.0, 0, 0, 4253,),
+    (2, 1, 10, 10, 0, 0, 1.0, 0, 0, 4254,),
+    (2, 1, 10, 0, 0, 0, 0.0, 0, 0, 4255,),
+    (2, 1, 10, 5, 0, 0, 0.5, 0, 0, 4256,),
+    (2, 1, 10, 0, 10, 0, 1.0, 0, 0, 4257,),
+    (2, 1, 10, 0, 0, 10, 0.0, 0, 0, 4258,),
+)
 
-class TestArchiveEdges(BaseTest):
-    """ArchiveEdges scenarios."""
+class TestEdgeArchive(BaseTest):
+    """Boundary window and verdict states keep archive invariants."""
 
-    def test_edge_50_4209(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
+    @pytest.mark.parametrize(('window', 'days', 'volume', 'flagged', 'blocked', 'reviewed', 'expected_ratio', 'expected_summaries', 'expected_total', 'uid',), _EDGE_ARCHIVE_CASES)
+    def test_edge_archive(self, window: int, days: int, volume: int, flagged: int, blocked: int, reviewed: int, expected_ratio: float, expected_summaries: int, expected_total: int, uid: int) -> None:
+        """Boundary window and verdict states keep archive invariants."""
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', window)
+        for _ in range(days):
+            profiler.record(
+                'app', 'u',
+                total_msgs=volume,
+                flagged_msgs=flagged,
+                blocked_msgs=blocked,
+                reviewed_msgs=reviewed,
+            )
             self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_51_4210(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_52_4211(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_53_4212(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_54_4213(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_55_4214(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_56_4215(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_57_4216(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_58_4217(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_59_4218(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_60_4219(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_61_4220(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_62_4221(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_63_4222(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_64_4223(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_65_4224(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_66_4225(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_67_4226(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_68_4227(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_69_4228(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_70_4229(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_71_4230(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_72_4231(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_73_4232(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_74_4233(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_75_4234(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_76_4235(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_77_4236(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_78_4237(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_79_4238(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_80_4239(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_81_4240(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_82_4241(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_83_4242(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_84_4243(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_85_4244(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_86_4245(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_87_4246(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_88_4247(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_89_4248(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_90_4249(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_91_4250(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_92_4251(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_93_4252(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_94_4253(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_95_4254(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_96_4255(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_97_4256(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_98_4257(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_99_4258(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
+        profile = profiler.get_profile('app', 'u')
+        assert profiler.get_ratio('app', 'u') == expected_ratio
+        assert len(profile['summaries']) == expected_summaries
+        if expected_summaries:
+            assert profile['summaries'][0]['total_msgs'] == expected_total
         profiler.close()
