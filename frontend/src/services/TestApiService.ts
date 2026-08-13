@@ -3,11 +3,18 @@ import {
     DashboardReport,
     LoadTestConfig,
     LoadTestResult,
+    ModerateDetailRequest,
     ModerateDetailResult,
     SettingRecord,
     StreamEvent,
     UserProfile,
 } from "../types";
+
+interface StreamOptions {
+    method?: "GET" | "POST";
+    body?: unknown;
+    params?: Record<string, string>;
+}
 
 export class TestApiService {
     public constructor(
@@ -21,6 +28,9 @@ export class TestApiService {
             headers: { ...this.authService.headers(), ...init?.headers },
         });
         if (!response.ok) {
+            if (response.status === 401) {
+                this.authService.handleUnauthorized();
+            }
             const body: unknown = await response.json().catch(() => null);
             const detail: unknown =
                 body !== null && typeof body === "object" && "detail" in body
@@ -33,15 +43,25 @@ export class TestApiService {
 
     private async stream(
         path: string,
-        body: unknown,
+        options: StreamOptions,
         onEvent: (event: StreamEvent) => void,
     ): Promise<void> {
-        const response: Response = await fetch(`${this.apiBaseUrl}${path}`, {
-            method: "POST",
+        const url: string =
+            options.params !== undefined
+                ? `${this.apiBaseUrl}${path}?${new URLSearchParams(options.params).toString()}`
+                : `${this.apiBaseUrl}${path}`;
+        const init: RequestInit = {
+            method: options.method ?? "POST",
             headers: this.authService.headers(),
-            body: JSON.stringify(body),
-        });
+        };
+        if (options.body !== undefined) {
+            init.body = JSON.stringify(options.body);
+        }
+        const response: Response = await fetch(url, init);
         if (!response.ok) {
+            if (response.status === 401) {
+                this.authService.handleUnauthorized();
+            }
             const detail: unknown = await response.text().catch(() => "");
             throw new ApiError(response.status, String(detail || "Request failed"));
         }
@@ -88,16 +108,49 @@ export class TestApiService {
     }
 
     public async moderateDetail(
-        payload: { text: string; userId?: string; appName?: string },
+        payload: ModerateDetailRequest,
         onEvent: (event: StreamEvent) => void,
     ): Promise<ModerateDetailResult | null> {
         let result: ModerateDetailResult | null = null;
-        await this.stream("/test/moderate-detail?stream=true", payload, (event) => {
-            onEvent(event);
-            if (event.name === "complete") {
-                result = event.data as unknown as ModerateDetailResult;
-            }
-        });
+        await this.stream(
+            "/test/moderate-detail?stream=true",
+            { method: "POST", body: payload },
+            (event) => {
+                onEvent(event);
+                if (event.name === "complete") {
+                    result = event.data as unknown as ModerateDetailResult;
+                }
+            },
+        );
+        return result;
+    }
+
+    public async pipelineStatus(
+        payload: ModerateDetailRequest,
+        onEvent: (event: StreamEvent) => void,
+    ): Promise<ModerateDetailResult | null> {
+        let result: ModerateDetailResult | null = null;
+        await this.stream(
+            "/test/pipeline-status",
+            {
+                method: "GET",
+                params: {
+                    text: payload.text,
+                    ...(payload.user_id !== undefined && payload.user_id !== null
+                        ? { user_id: payload.user_id }
+                        : {}),
+                    ...(payload.app_name !== undefined && payload.app_name !== null
+                        ? { app_name: payload.app_name }
+                        : {}),
+                },
+            },
+            (event) => {
+                onEvent(event);
+                if (event.name === "complete") {
+                    result = event.data as unknown as ModerateDetailResult;
+                }
+            },
+        );
         return result;
     }
 
@@ -106,7 +159,7 @@ export class TestApiService {
         onEvent: (event: StreamEvent) => void,
     ): Promise<LoadTestResult | null> {
         let result: LoadTestResult | null = null;
-        await this.stream("/test/load-test", config, (event) => {
+        await this.stream("/test/load-test", { method: "POST", body: config }, (event) => {
             onEvent(event);
             if (event.name === "complete") {
                 result = event.data as unknown as LoadTestResult;
