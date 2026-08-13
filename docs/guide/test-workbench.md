@@ -183,6 +183,7 @@ All endpoints are mounted under `/test` and require the admin API key.
 | Route | Method | Purpose |
 | :--- | :--- | :--- |
 | `/test/moderate-detail` | POST | Run the pipeline and return a full trace. JSON by default; SSE when `?stream=true` |
+| `/test/pipeline-status` | GET | Stream one moderation run over SSE (message passed as a query parameter) |
 | `/test/load-test` | POST | Run a concurrent load test, streaming `progress` and `complete` events over SSE |
 | `/test/dashboard` | GET | Aggregate today's audit records into live metrics |
 | `/test/config` | GET | Return the full settings catalog (same shape as `/admin/settings`) |
@@ -503,6 +504,11 @@ event: <name>
 data: <json>
 
 ```
+
+`GET /test/pipeline-status` is a query-parameter variant of the streaming
+`moderate-detail` call: pass the message as `?text=...` and it streams the
+identical event sequence for the same pipeline run. It is intended for scripts
+and simple browser clients that want the live trace without a POST body.
 
 The browser parses these frames incrementally, so the UI updates as the events
 arrive rather than after the request completes.
