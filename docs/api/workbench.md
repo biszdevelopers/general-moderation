@@ -14,6 +14,7 @@ and are intended for developer and operations use.
 | Area | Endpoint | Method | Purpose |
 | :--- | :--- | :--- | :--- |
 | Traces | `/test/moderate-detail` | POST | Full pipeline trace (JSON, or SSE with `?stream=true`) |
+| Traces | `/test/pipeline-status` | GET | Stream one moderation run over SSE |
 | Load test | `/test/load-test` | POST | Concurrent load test, streamed over SSE |
 | Dashboard | `/test/dashboard` | GET | Aggregate today's audit records |
 | Config | `/test/config` | GET | Full settings catalog |
@@ -186,6 +187,53 @@ curl -X POST "http://127.0.0.1:18427/test/moderate-detail?stream=true" \
 | Constraint | Failure |
 | :--- | :--- |
 | `text` shorter than 1 character | `422` |
+| `text` longer than 8192 characters | `422` |
+| missing `X-API-Key` | `401` |
+
+---
+
+### `GET /test/pipeline-status`
+
+Streams one moderation run as Server-Sent Events. The message is passed as a
+query parameter, making the endpoint convenient for scripts and simple browser
+clients that want the live pipeline without a POST body. It emits the exact
+same event sequence as `POST /test/moderate-detail?stream=true` and finishes
+with an identical `complete` payload.
+
+#### Query Parameters
+
+| Parameter | Type | Constraint | Default |
+| :--- | :--- | :--- | :--- |
+| `text` | string | 1–8192 characters | required |
+| `user_id` | string \| null | 1–256 characters | `null` |
+| `app_name` | string \| null | 1–64 characters | `null` |
+
+#### Response
+
+`text/event-stream` with the same events as
+[`moderate-detail` streaming](#streaming-response-streamtrue):
+
+| Event | Payload |
+| :--- | :--- |
+| `stage1_complete` | `{"stage":1,"fast_path":false,"verdict":"REVIEW","latency_ms":0.11}` |
+| `detector_result` | one frame per detector |
+| `stage2_complete` | `{"stage":2,"suspicion_score":55.0,...}` |
+| `stage3_complete` | `{"stage":3,"invoked":true,...}` |
+| `complete` | `{"response":{...},"trace":{...}}` |
+| `error` | `{"detail":"message"}` — replaces `complete` when the pipeline raises |
+
+#### Example
+
+```bash
+curl -N "http://127.0.0.1:18427/test/pipeline-status?text=hello+world&user_id=u1" \
+     -H "X-API-Key: $ADMIN_API_KEY"
+```
+
+#### Validation
+
+| Constraint | Failure |
+| :--- | :--- |
+| missing or empty `text` | `422` |
 | `text` longer than 8192 characters | `422` |
 | missing `X-API-Key` | `401` |
 
