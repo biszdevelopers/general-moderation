@@ -258,6 +258,7 @@ export function AuditLog(): ReactElement {
                                         pageSize: 20,
                                         showTotal: (total) => `${total} records`,
                                     }}
+                                    scroll={{ x: "max-content" }}
                                     locale={{
                                         emptyText: "No audit records match the current filters",
                                     }}
