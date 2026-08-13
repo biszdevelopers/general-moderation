@@ -24,106 +24,106 @@
 ### Phase 2 (Current) - 700 cases
 | ID | Priority | Description | Dimensions | Expected Outcome | File |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| TC-SEM-2101 | P2 | Unavailable path scenario 0 | scenario=0 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2102 | P2 | Unavailable path scenario 1 | scenario=1 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2103 | P2 | Unavailable path scenario 2 | scenario=2 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2104 | P2 | Unavailable path scenario 3 | scenario=3 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2105 | P2 | Unavailable path scenario 4 | scenario=4 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2106 | P2 | Unavailable path scenario 5 | scenario=5 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2107 | P2 | Unavailable path scenario 6 | scenario=6 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2108 | P2 | Unavailable path scenario 7 | scenario=7 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2109 | P2 | Unavailable path scenario 8 | scenario=8 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2110 | P2 | Unavailable path scenario 9 | scenario=9 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2111 | P2 | Unavailable path scenario 10 | scenario=10 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2112 | P2 | Unavailable path scenario 11 | scenario=11 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2113 | P2 | Unavailable path scenario 12 | scenario=12 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2114 | P2 | Unavailable path scenario 13 | scenario=13 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2115 | P2 | Unavailable path scenario 14 | scenario=14 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2116 | P2 | Unavailable path scenario 15 | scenario=15 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2117 | P2 | Unavailable path scenario 16 | scenario=16 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2118 | P2 | Unavailable path scenario 17 | scenario=17 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2119 | P2 | Unavailable path scenario 18 | scenario=18 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2120 | P2 | Unavailable path scenario 19 | scenario=19 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2121 | P2 | Unavailable path scenario 20 | scenario=20 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2122 | P2 | Unavailable path scenario 21 | scenario=21 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2123 | P2 | Unavailable path scenario 22 | scenario=22 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2124 | P2 | Unavailable path scenario 23 | scenario=23 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2125 | P2 | Unavailable path scenario 24 | scenario=24 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2126 | P2 | Unavailable path scenario 25 | scenario=25 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2127 | P2 | Unavailable path scenario 26 | scenario=26 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2128 | P2 | Unavailable path scenario 27 | scenario=27 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2129 | P2 | Unavailable path scenario 28 | scenario=28 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2130 | P2 | Unavailable path scenario 29 | scenario=29 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2131 | P2 | Unavailable path scenario 30 | scenario=30 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2132 | P2 | Unavailable path scenario 31 | scenario=31 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2133 | P2 | Unavailable path scenario 32 | scenario=32 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2134 | P2 | Unavailable path scenario 33 | scenario=33 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2135 | P2 | Unavailable path scenario 34 | scenario=34 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2136 | P2 | Unavailable path scenario 35 | scenario=35 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2137 | P2 | Unavailable path scenario 36 | scenario=36 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2138 | P2 | Unavailable path scenario 37 | scenario=37 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2139 | P2 | Unavailable path scenario 38 | scenario=38 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2140 | P2 | Unavailable path scenario 39 | scenario=39 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2141 | P2 | Unavailable path scenario 40 | scenario=40 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2142 | P2 | Unavailable path scenario 41 | scenario=41 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2143 | P2 | Unavailable path scenario 42 | scenario=42 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2144 | P2 | Unavailable path scenario 43 | scenario=43 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2145 | P2 | Unavailable path scenario 44 | scenario=44 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2146 | P2 | Unavailable path scenario 45 | scenario=45 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2147 | P2 | Unavailable path scenario 46 | scenario=46 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2148 | P2 | Unavailable path scenario 47 | scenario=47 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2149 | P2 | Unavailable path scenario 48 | scenario=48 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2150 | P2 | Unavailable path scenario 49 | scenario=49 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2151 | P2 | Unavailable path scenario 50 | scenario=50 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2152 | P2 | Unavailable path scenario 51 | scenario=51 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2153 | P2 | Unavailable path scenario 52 | scenario=52 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2154 | P2 | Unavailable path scenario 53 | scenario=53 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2155 | P2 | Unavailable path scenario 54 | scenario=54 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2156 | P2 | Unavailable path scenario 55 | scenario=55 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2157 | P2 | Unavailable path scenario 56 | scenario=56 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2158 | P2 | Unavailable path scenario 57 | scenario=57 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2159 | P2 | Unavailable path scenario 58 | scenario=58 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2160 | P2 | Unavailable path scenario 59 | scenario=59 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2161 | P2 | Unavailable path scenario 60 | scenario=60 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2162 | P2 | Unavailable path scenario 61 | scenario=61 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2163 | P2 | Unavailable path scenario 62 | scenario=62 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2164 | P2 | Unavailable path scenario 63 | scenario=63 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2165 | P2 | Unavailable path scenario 64 | scenario=64 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2166 | P2 | Unavailable path scenario 65 | scenario=65 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2167 | P2 | Unavailable path scenario 66 | scenario=66 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2168 | P2 | Unavailable path scenario 67 | scenario=67 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2169 | P2 | Unavailable path scenario 68 | scenario=68 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2170 | P2 | Unavailable path scenario 69 | scenario=69 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2171 | P2 | Unavailable path scenario 70 | scenario=70 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2172 | P2 | Unavailable path scenario 71 | scenario=71 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2173 | P2 | Unavailable path scenario 72 | scenario=72 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2174 | P2 | Unavailable path scenario 73 | scenario=73 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2175 | P2 | Unavailable path scenario 74 | scenario=74 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2176 | P2 | Unavailable path scenario 75 | scenario=75 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2177 | P2 | Unavailable path scenario 76 | scenario=76 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2178 | P2 | Unavailable path scenario 77 | scenario=77 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2179 | P2 | Unavailable path scenario 78 | scenario=78 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2180 | P2 | Unavailable path scenario 79 | scenario=79 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2181 | P2 | Unavailable path scenario 80 | scenario=80 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2182 | P2 | Unavailable path scenario 81 | scenario=81 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2183 | P2 | Unavailable path scenario 82 | scenario=82 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2184 | P2 | Unavailable path scenario 83 | scenario=83 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2185 | P2 | Unavailable path scenario 84 | scenario=84 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2186 | P2 | Unavailable path scenario 85 | scenario=85 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2187 | P2 | Unavailable path scenario 86 | scenario=86 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2188 | P2 | Unavailable path scenario 87 | scenario=87 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2189 | P2 | Unavailable path scenario 88 | scenario=88 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2190 | P2 | Unavailable path scenario 89 | scenario=89 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2191 | P2 | Unavailable path scenario 90 | scenario=90 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2192 | P2 | Unavailable path scenario 91 | scenario=91 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2193 | P2 | Unavailable path scenario 92 | scenario=92 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2194 | P2 | Unavailable path scenario 93 | scenario=93 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2195 | P2 | Unavailable path scenario 94 | scenario=94 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2196 | P2 | Unavailable path scenario 95 | scenario=95 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2197 | P2 | Unavailable path scenario 96 | scenario=96 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2198 | P2 | Unavailable path scenario 97 | scenario=97 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2199 | P2 | Unavailable path scenario 98 | scenario=98 | unavailable | test_semantic_phase2_part_1.py |
-| TC-SEM-2200 | P2 | Unavailable path scenario 99 | scenario=99 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2101 | P2 | Unavailable path top_k 1 | top_k=1 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2102 | P2 | Unavailable path top_k 2 | top_k=2 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2103 | P2 | Unavailable path top_k 3 | top_k=3 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2104 | P2 | Unavailable path top_k 4 | top_k=4 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2105 | P2 | Unavailable path top_k 5 | top_k=5 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2106 | P2 | Unavailable path top_k 6 | top_k=6 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2107 | P2 | Unavailable path top_k 7 | top_k=7 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2108 | P2 | Unavailable path top_k 8 | top_k=8 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2109 | P2 | Unavailable path top_k 9 | top_k=9 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2110 | P2 | Unavailable path top_k 10 | top_k=10 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2111 | P2 | Unavailable path top_k 11 | top_k=11 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2112 | P2 | Unavailable path top_k 12 | top_k=12 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2113 | P2 | Unavailable path top_k 13 | top_k=13 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2114 | P2 | Unavailable path top_k 14 | top_k=14 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2115 | P2 | Unavailable path top_k 15 | top_k=15 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2116 | P2 | Unavailable path top_k 16 | top_k=16 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2117 | P2 | Unavailable path top_k 17 | top_k=17 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2118 | P2 | Unavailable path top_k 18 | top_k=18 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2119 | P2 | Unavailable path top_k 19 | top_k=19 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2120 | P2 | Unavailable path top_k 20 | top_k=20 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2121 | P2 | Unavailable path top_k 21 | top_k=21 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2122 | P2 | Unavailable path top_k 22 | top_k=22 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2123 | P2 | Unavailable path top_k 23 | top_k=23 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2124 | P2 | Unavailable path top_k 24 | top_k=24 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2125 | P2 | Unavailable path top_k 25 | top_k=25 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2126 | P2 | Unavailable path top_k 26 | top_k=26 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2127 | P2 | Unavailable path top_k 27 | top_k=27 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2128 | P2 | Unavailable path top_k 28 | top_k=28 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2129 | P2 | Unavailable path top_k 29 | top_k=29 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2130 | P2 | Unavailable path top_k 30 | top_k=30 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2131 | P2 | Unavailable path top_k 31 | top_k=31 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2132 | P2 | Unavailable path top_k 32 | top_k=32 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2133 | P2 | Unavailable path top_k 33 | top_k=33 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2134 | P2 | Unavailable path top_k 34 | top_k=34 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2135 | P2 | Unavailable path top_k 35 | top_k=35 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2136 | P2 | Unavailable path top_k 36 | top_k=36 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2137 | P2 | Unavailable path top_k 37 | top_k=37 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2138 | P2 | Unavailable path top_k 38 | top_k=38 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2139 | P2 | Unavailable path top_k 39 | top_k=39 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2140 | P2 | Unavailable path top_k 40 | top_k=40 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2141 | P2 | Unavailable path top_k 41 | top_k=41 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2142 | P2 | Unavailable path top_k 42 | top_k=42 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2143 | P2 | Unavailable path top_k 43 | top_k=43 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2144 | P2 | Unavailable path top_k 44 | top_k=44 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2145 | P2 | Unavailable path top_k 45 | top_k=45 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2146 | P2 | Unavailable path top_k 46 | top_k=46 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2147 | P2 | Unavailable path top_k 47 | top_k=47 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2148 | P2 | Unavailable path top_k 48 | top_k=48 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2149 | P2 | Unavailable path top_k 49 | top_k=49 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2150 | P2 | Unavailable path top_k 50 | top_k=50 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2151 | P2 | Unavailable path top_k 51 | top_k=51 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2152 | P2 | Unavailable path top_k 52 | top_k=52 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2153 | P2 | Unavailable path top_k 53 | top_k=53 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2154 | P2 | Unavailable path top_k 54 | top_k=54 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2155 | P2 | Unavailable path top_k 55 | top_k=55 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2156 | P2 | Unavailable path top_k 56 | top_k=56 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2157 | P2 | Unavailable path top_k 57 | top_k=57 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2158 | P2 | Unavailable path top_k 58 | top_k=58 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2159 | P2 | Unavailable path top_k 59 | top_k=59 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2160 | P2 | Unavailable path top_k 60 | top_k=60 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2161 | P2 | Unavailable path top_k 61 | top_k=61 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2162 | P2 | Unavailable path top_k 62 | top_k=62 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2163 | P2 | Unavailable path top_k 63 | top_k=63 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2164 | P2 | Unavailable path top_k 64 | top_k=64 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2165 | P2 | Unavailable path top_k 65 | top_k=65 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2166 | P2 | Unavailable path top_k 66 | top_k=66 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2167 | P2 | Unavailable path top_k 67 | top_k=67 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2168 | P2 | Unavailable path top_k 68 | top_k=68 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2169 | P2 | Unavailable path top_k 69 | top_k=69 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2170 | P2 | Unavailable path top_k 70 | top_k=70 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2171 | P2 | Unavailable path top_k 71 | top_k=71 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2172 | P2 | Unavailable path top_k 72 | top_k=72 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2173 | P2 | Unavailable path top_k 73 | top_k=73 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2174 | P2 | Unavailable path top_k 74 | top_k=74 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2175 | P2 | Unavailable path top_k 75 | top_k=75 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2176 | P2 | Unavailable path top_k 76 | top_k=76 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2177 | P2 | Unavailable path top_k 77 | top_k=77 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2178 | P2 | Unavailable path top_k 78 | top_k=78 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2179 | P2 | Unavailable path top_k 79 | top_k=79 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2180 | P2 | Unavailable path top_k 80 | top_k=80 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2181 | P2 | Unavailable path top_k 81 | top_k=81 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2182 | P2 | Unavailable path top_k 82 | top_k=82 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2183 | P2 | Unavailable path top_k 83 | top_k=83 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2184 | P2 | Unavailable path top_k 84 | top_k=84 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2185 | P2 | Unavailable path top_k 85 | top_k=85 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2186 | P2 | Unavailable path top_k 86 | top_k=86 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2187 | P2 | Unavailable path top_k 87 | top_k=87 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2188 | P2 | Unavailable path top_k 88 | top_k=88 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2189 | P2 | Unavailable path top_k 89 | top_k=89 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2190 | P2 | Unavailable path top_k 90 | top_k=90 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2191 | P2 | Unavailable path top_k 91 | top_k=91 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2192 | P2 | Unavailable path top_k 92 | top_k=92 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2193 | P2 | Unavailable path top_k 93 | top_k=93 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2194 | P2 | Unavailable path top_k 94 | top_k=94 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2195 | P2 | Unavailable path top_k 95 | top_k=95 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2196 | P2 | Unavailable path top_k 96 | top_k=96 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2197 | P2 | Unavailable path top_k 97 | top_k=97 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2198 | P2 | Unavailable path top_k 98 | top_k=98 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2199 | P2 | Unavailable path top_k 99 | top_k=99 | unavailable | test_semantic_phase2_part_1.py |
+| TC-SEM-2200 | P2 | Unavailable path top_k 100 | top_k=100 | unavailable | test_semantic_phase2_part_1.py |
 | TC-SEM-2201 | P1 | Threshold 0.1 similarity 0.0 | threshold=0.1,sim=0.0 | weighted or zero | test_semantic_phase2_part_2.py |
 | TC-SEM-2202 | P1 | Threshold 0.1 similarity 0.1 | threshold=0.1,sim=0.1 | weighted or zero | test_semantic_phase2_part_2.py |
 | TC-SEM-2203 | P1 | Threshold 0.1 similarity 0.25 | threshold=0.1,sim=0.25 | weighted or zero | test_semantic_phase2_part_2.py |
@@ -437,34 +437,34 @@
 | TC-SEM-2511 | P2 | Delete roundtrip for other x 20 | category=other,count=20 | count restored | test_semantic_phase2_part_5.py |
 | TC-SEM-2512 | P1 | Add 25 examples to other | category=other,count=25 | count grows | test_semantic_phase2_part_5.py |
 | TC-SEM-2513 | P2 | Delete roundtrip for other x 25 | category=other,count=25 | count restored | test_semantic_phase2_part_5.py |
-| TC-SEM-2514 | P2 | Stats field for political (verify) | category=political,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2515 | P2 | Stats field for political (sample) | category=political,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2516 | P2 | Stats field for political (count) | category=political,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2517 | P2 | Stats field for political (shape) | category=political,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2518 | P2 | Stats field for violence (verify) | category=violence,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2519 | P2 | Stats field for violence (sample) | category=violence,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2520 | P2 | Stats field for violence (count) | category=violence,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2521 | P2 | Stats field for violence (shape) | category=violence,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2522 | P2 | Stats field for sexual (verify) | category=sexual,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2523 | P2 | Stats field for sexual (sample) | category=sexual,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2524 | P2 | Stats field for sexual (count) | category=sexual,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2525 | P2 | Stats field for sexual (shape) | category=sexual,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2526 | P2 | Stats field for hate (verify) | category=hate,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2527 | P2 | Stats field for hate (sample) | category=hate,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2528 | P2 | Stats field for hate (count) | category=hate,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2529 | P2 | Stats field for hate (shape) | category=hate,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2530 | P2 | Stats field for pii (verify) | category=pii,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2531 | P2 | Stats field for pii (sample) | category=pii,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2532 | P2 | Stats field for pii (count) | category=pii,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2533 | P2 | Stats field for pii (shape) | category=pii,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2534 | P2 | Stats field for ads (verify) | category=ads,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2535 | P2 | Stats field for ads (sample) | category=ads,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2536 | P2 | Stats field for ads (count) | category=ads,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2537 | P2 | Stats field for ads (shape) | category=ads,query=shape | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2538 | P2 | Stats field for other (verify) | category=other,query=verify | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2539 | P2 | Stats field for other (sample) | category=other,query=sample | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2540 | P2 | Stats field for other (count) | category=other,query=count | stats valid | test_semantic_phase2_part_5.py |
-| TC-SEM-2541 | P2 | Stats field for other (shape) | category=other,query=shape | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2514 | P2 | Stats field political (categories) | category=political,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2515 | P2 | Stats field political (model) | category=political,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2516 | P2 | Stats field political (available) | category=political,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2517 | P2 | Stats field political (top_k) | category=political,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2518 | P2 | Stats field violence (categories) | category=violence,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2519 | P2 | Stats field violence (model) | category=violence,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2520 | P2 | Stats field violence (available) | category=violence,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2521 | P2 | Stats field violence (top_k) | category=violence,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2522 | P2 | Stats field sexual (categories) | category=sexual,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2523 | P2 | Stats field sexual (model) | category=sexual,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2524 | P2 | Stats field sexual (available) | category=sexual,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2525 | P2 | Stats field sexual (top_k) | category=sexual,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2526 | P2 | Stats field hate (categories) | category=hate,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2527 | P2 | Stats field hate (model) | category=hate,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2528 | P2 | Stats field hate (available) | category=hate,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2529 | P2 | Stats field hate (top_k) | category=hate,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2530 | P2 | Stats field pii (categories) | category=pii,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2531 | P2 | Stats field pii (model) | category=pii,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2532 | P2 | Stats field pii (available) | category=pii,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2533 | P2 | Stats field pii (top_k) | category=pii,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2534 | P2 | Stats field ads (categories) | category=ads,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2535 | P2 | Stats field ads (model) | category=ads,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2536 | P2 | Stats field ads (available) | category=ads,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2537 | P2 | Stats field ads (top_k) | category=ads,field=top_k | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2538 | P2 | Stats field other (categories) | category=other,field=categories | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2539 | P2 | Stats field other (model) | category=other,field=model | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2540 | P2 | Stats field other (available) | category=other,field=available | stats valid | test_semantic_phase2_part_5.py |
+| TC-SEM-2541 | P2 | Stats field other (top_k) | category=other,field=top_k | stats valid | test_semantic_phase2_part_5.py |
 | TC-SEM-2542 | P3 | Top-k 1 accepted | top_k=1 | accepted | test_semantic_phase2_part_5.py |
 | TC-SEM-2543 | P3 | Top-k 2 accepted | top_k=2 | accepted | test_semantic_phase2_part_5.py |
 | TC-SEM-2544 | P3 | Top-k 3 accepted | top_k=3 | accepted | test_semantic_phase2_part_5.py |
@@ -478,252 +478,252 @@
 | TC-SEM-2552 | P3 | Top-k 64 accepted | top_k=64 | accepted | test_semantic_phase2_part_5.py |
 | TC-SEM-2553 | P3 | Top-k 100 accepted | top_k=100 | accepted | test_semantic_phase2_part_5.py |
 | TC-SEM-2554 | P3 | Top-k 128 accepted | top_k=128 | accepted | test_semantic_phase2_part_5.py |
-| TC-SEM-2555 | P2 | Weight mapping badwords #0 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2556 | P2 | Weight mapping badwords #1 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2557 | P2 | Weight mapping badwords #2 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2558 | P2 | Weight mapping badwords #3 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2559 | P2 | Weight mapping badwords #4 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2560 | P2 | Weight mapping badwords #5 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2561 | P2 | Weight mapping badwords #6 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2562 | P2 | Weight mapping badwords #7 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2563 | P2 | Weight mapping badwords #8 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2564 | P2 | Weight mapping badwords #9 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2565 | P2 | Weight mapping badwords #10 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2566 | P2 | Weight mapping badwords #11 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2567 | P2 | Weight mapping profanite #0 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2568 | P2 | Weight mapping profanite #1 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2569 | P2 | Weight mapping profanite #2 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2570 | P2 | Weight mapping profanite #3 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2571 | P2 | Weight mapping profanite #4 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2572 | P2 | Weight mapping profanite #5 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2573 | P2 | Weight mapping profanite #6 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2574 | P2 | Weight mapping profanite #7 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2575 | P2 | Weight mapping profanite #8 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2576 | P2 | Weight mapping profanite #9 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2577 | P2 | Weight mapping profanite #10 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2578 | P2 | Weight mapping profanite #11 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2579 | P2 | Weight mapping glin-profanity #0 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2580 | P2 | Weight mapping glin-profanity #1 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2581 | P2 | Weight mapping glin-profanity #2 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2582 | P2 | Weight mapping glin-profanity #3 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2583 | P2 | Weight mapping glin-profanity #4 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2584 | P2 | Weight mapping glin-profanity #5 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2585 | P2 | Weight mapping glin-profanity #6 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2586 | P2 | Weight mapping glin-profanity #7 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2587 | P2 | Weight mapping glin-profanity #8 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2588 | P2 | Weight mapping glin-profanity #9 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2589 | P2 | Weight mapping glin-profanity #10 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2590 | P2 | Weight mapping glin-profanity #11 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2591 | P2 | Weight mapping bk_tree #0 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2592 | P2 | Weight mapping bk_tree #1 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2593 | P2 | Weight mapping bk_tree #2 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2594 | P2 | Weight mapping bk_tree #3 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2595 | P2 | Weight mapping bk_tree #4 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2596 | P2 | Weight mapping bk_tree #5 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2597 | P2 | Weight mapping bk_tree #6 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2598 | P2 | Weight mapping bk_tree #7 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2599 | P2 | Weight mapping bk_tree #8 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2600 | P2 | Weight mapping bk_tree #9 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_5.py |
-| TC-SEM-2601 | P2 | Weight mapping bk_tree #10 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2602 | P2 | Weight mapping bk_tree #11 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2603 | P2 | Weight mapping double_metaphone #0 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2604 | P2 | Weight mapping double_metaphone #1 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2605 | P2 | Weight mapping double_metaphone #2 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2606 | P2 | Weight mapping double_metaphone #3 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2607 | P2 | Weight mapping double_metaphone #4 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2608 | P2 | Weight mapping double_metaphone #5 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2609 | P2 | Weight mapping double_metaphone #6 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2610 | P2 | Weight mapping double_metaphone #7 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2611 | P2 | Weight mapping double_metaphone #8 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2612 | P2 | Weight mapping double_metaphone #9 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2613 | P2 | Weight mapping double_metaphone #10 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2614 | P2 | Weight mapping double_metaphone #11 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2615 | P2 | Weight mapping multi_language #0 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2616 | P2 | Weight mapping multi_language #1 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2617 | P2 | Weight mapping multi_language #2 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2618 | P2 | Weight mapping multi_language #3 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2619 | P2 | Weight mapping multi_language #4 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2620 | P2 | Weight mapping multi_language #5 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2621 | P2 | Weight mapping multi_language #6 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2622 | P2 | Weight mapping multi_language #7 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2623 | P2 | Weight mapping multi_language #8 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2624 | P2 | Weight mapping multi_language #9 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2625 | P2 | Weight mapping multi_language #10 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2626 | P2 | Weight mapping multi_language #11 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2627 | P2 | Weight mapping rolling_hash #0 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2628 | P2 | Weight mapping rolling_hash #1 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2629 | P2 | Weight mapping rolling_hash #2 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2630 | P2 | Weight mapping rolling_hash #3 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2631 | P2 | Weight mapping rolling_hash #4 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2632 | P2 | Weight mapping rolling_hash #5 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2633 | P2 | Weight mapping rolling_hash #6 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2634 | P2 | Weight mapping rolling_hash #7 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2635 | P2 | Weight mapping rolling_hash #8 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2636 | P2 | Weight mapping rolling_hash #9 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2637 | P2 | Weight mapping rolling_hash #10 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2638 | P2 | Weight mapping rolling_hash #11 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2639 | P2 | Weight mapping bloom_filter #0 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2640 | P2 | Weight mapping bloom_filter #1 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2641 | P2 | Weight mapping bloom_filter #2 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2642 | P2 | Weight mapping bloom_filter #3 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2643 | P2 | Weight mapping bloom_filter #4 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2644 | P2 | Weight mapping bloom_filter #5 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2645 | P2 | Weight mapping bloom_filter #6 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2646 | P2 | Weight mapping bloom_filter #7 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2647 | P2 | Weight mapping bloom_filter #8 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2648 | P2 | Weight mapping bloom_filter #9 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2649 | P2 | Weight mapping bloom_filter #10 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2650 | P2 | Weight mapping bloom_filter #11 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO | weight in range | test_semantic_phase2_part_6.py |
-| TC-SEM-2651 | P2 | Category weight political #0 | category=political | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2652 | P2 | Category weight political #1 | category=political | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2653 | P2 | Category weight political #2 | category=political | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2654 | P2 | Category weight political #3 | category=political | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2655 | P2 | Category weight violence #0 | category=violence | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2656 | P2 | Category weight violence #1 | category=violence | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2657 | P2 | Category weight violence #2 | category=violence | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2658 | P2 | Category weight violence #3 | category=violence | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2659 | P2 | Category weight sexual #0 | category=sexual | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2660 | P2 | Category weight sexual #1 | category=sexual | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2661 | P2 | Category weight sexual #2 | category=sexual | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2662 | P2 | Category weight sexual #3 | category=sexual | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2663 | P2 | Category weight hate #0 | category=hate | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2664 | P2 | Category weight hate #1 | category=hate | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2665 | P2 | Category weight hate #2 | category=hate | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2666 | P2 | Category weight hate #3 | category=hate | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2667 | P2 | Category weight pii #0 | category=pii | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2668 | P2 | Category weight pii #1 | category=pii | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2669 | P2 | Category weight pii #2 | category=pii | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2670 | P2 | Category weight pii #3 | category=pii | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2671 | P2 | Category weight ads #0 | category=ads | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2672 | P2 | Category weight ads #1 | category=ads | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2673 | P2 | Category weight ads #2 | category=ads | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2674 | P2 | Category weight ads #3 | category=ads | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2675 | P2 | Category weight other #0 | category=other | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2676 | P2 | Category weight other #1 | category=other | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2677 | P2 | Category weight other #2 | category=other | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2678 | P2 | Category weight other #3 | category=other | boosted | test_semantic_phase2_part_6.py |
-| TC-SEM-2679 | P2 | Availability toggle scenario 0 | scenario=0,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2680 | P2 | Availability toggle scenario 1 | scenario=1,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2681 | P2 | Availability toggle scenario 2 | scenario=2,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2682 | P2 | Availability toggle scenario 3 | scenario=3,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2683 | P2 | Availability toggle scenario 4 | scenario=4,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2684 | P2 | Availability toggle scenario 5 | scenario=5,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2685 | P2 | Availability toggle scenario 6 | scenario=6,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2686 | P2 | Availability toggle scenario 7 | scenario=7,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2687 | P2 | Availability toggle scenario 8 | scenario=8,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2688 | P2 | Availability toggle scenario 9 | scenario=9,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2689 | P2 | Availability toggle scenario 10 | scenario=10,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2690 | P2 | Availability toggle scenario 11 | scenario=11,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2691 | P2 | Availability toggle scenario 12 | scenario=12,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2692 | P2 | Availability toggle scenario 13 | scenario=13,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2693 | P2 | Availability toggle scenario 14 | scenario=14,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2694 | P2 | Availability toggle scenario 15 | scenario=15,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2695 | P2 | Availability toggle scenario 16 | scenario=16,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2696 | P2 | Availability toggle scenario 17 | scenario=17,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2697 | P2 | Availability toggle scenario 18 | scenario=18,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2698 | P2 | Availability toggle scenario 19 | scenario=19,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2699 | P2 | Availability toggle scenario 20 | scenario=20,enabled=True | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2700 | P2 | Availability toggle scenario 21 | scenario=21,enabled=False | consistent | test_semantic_phase2_part_6.py |
-| TC-SEM-2701 | P2 | Availability toggle scenario 22 | scenario=22,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2702 | P2 | Availability toggle scenario 23 | scenario=23,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2703 | P2 | Availability toggle scenario 24 | scenario=24,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2704 | P2 | Availability toggle scenario 25 | scenario=25,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2705 | P2 | Availability toggle scenario 26 | scenario=26,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2706 | P2 | Availability toggle scenario 27 | scenario=27,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2707 | P2 | Availability toggle scenario 28 | scenario=28,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2708 | P2 | Availability toggle scenario 29 | scenario=29,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2709 | P2 | Availability toggle scenario 30 | scenario=30,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2710 | P2 | Availability toggle scenario 31 | scenario=31,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2711 | P2 | Availability toggle scenario 32 | scenario=32,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2712 | P2 | Availability toggle scenario 33 | scenario=33,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2713 | P2 | Availability toggle scenario 34 | scenario=34,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2714 | P2 | Availability toggle scenario 35 | scenario=35,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2715 | P2 | Availability toggle scenario 36 | scenario=36,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2716 | P2 | Availability toggle scenario 37 | scenario=37,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2717 | P2 | Availability toggle scenario 38 | scenario=38,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2718 | P2 | Availability toggle scenario 39 | scenario=39,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2719 | P2 | Availability toggle scenario 40 | scenario=40,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2720 | P2 | Availability toggle scenario 41 | scenario=41,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2721 | P2 | Availability toggle scenario 42 | scenario=42,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2722 | P2 | Availability toggle scenario 43 | scenario=43,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2723 | P2 | Availability toggle scenario 44 | scenario=44,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2724 | P2 | Availability toggle scenario 45 | scenario=45,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2725 | P2 | Availability toggle scenario 46 | scenario=46,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2726 | P2 | Availability toggle scenario 47 | scenario=47,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2727 | P2 | Availability toggle scenario 48 | scenario=48,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2728 | P2 | Availability toggle scenario 49 | scenario=49,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2729 | P2 | Availability toggle scenario 50 | scenario=50,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2730 | P2 | Availability toggle scenario 51 | scenario=51,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2731 | P2 | Availability toggle scenario 52 | scenario=52,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2732 | P2 | Availability toggle scenario 53 | scenario=53,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2733 | P2 | Availability toggle scenario 54 | scenario=54,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2734 | P2 | Availability toggle scenario 55 | scenario=55,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2735 | P2 | Availability toggle scenario 56 | scenario=56,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2736 | P2 | Availability toggle scenario 57 | scenario=57,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2737 | P2 | Availability toggle scenario 58 | scenario=58,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2738 | P2 | Availability toggle scenario 59 | scenario=59,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2739 | P2 | Availability toggle scenario 60 | scenario=60,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2740 | P2 | Availability toggle scenario 61 | scenario=61,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2741 | P2 | Availability toggle scenario 62 | scenario=62,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2742 | P2 | Availability toggle scenario 63 | scenario=63,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2743 | P2 | Availability toggle scenario 64 | scenario=64,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2744 | P2 | Availability toggle scenario 65 | scenario=65,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2745 | P2 | Availability toggle scenario 66 | scenario=66,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2746 | P2 | Availability toggle scenario 67 | scenario=67,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2747 | P2 | Availability toggle scenario 68 | scenario=68,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2748 | P2 | Availability toggle scenario 69 | scenario=69,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2749 | P2 | Availability toggle scenario 70 | scenario=70,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2750 | P2 | Availability toggle scenario 71 | scenario=71,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2751 | P2 | Availability toggle scenario 72 | scenario=72,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2752 | P2 | Availability toggle scenario 73 | scenario=73,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2753 | P2 | Availability toggle scenario 74 | scenario=74,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2754 | P2 | Availability toggle scenario 75 | scenario=75,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2755 | P2 | Availability toggle scenario 76 | scenario=76,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2756 | P2 | Availability toggle scenario 77 | scenario=77,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2757 | P2 | Availability toggle scenario 78 | scenario=78,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2758 | P2 | Availability toggle scenario 79 | scenario=79,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2759 | P2 | Availability toggle scenario 80 | scenario=80,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2760 | P2 | Availability toggle scenario 81 | scenario=81,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2761 | P2 | Availability toggle scenario 82 | scenario=82,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2762 | P2 | Availability toggle scenario 83 | scenario=83,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2763 | P2 | Availability toggle scenario 84 | scenario=84,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2764 | P2 | Availability toggle scenario 85 | scenario=85,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2765 | P2 | Availability toggle scenario 86 | scenario=86,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2766 | P2 | Availability toggle scenario 87 | scenario=87,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2767 | P2 | Availability toggle scenario 88 | scenario=88,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2768 | P2 | Availability toggle scenario 89 | scenario=89,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2769 | P2 | Availability toggle scenario 90 | scenario=90,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2770 | P2 | Availability toggle scenario 91 | scenario=91,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2771 | P2 | Availability toggle scenario 92 | scenario=92,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2772 | P2 | Availability toggle scenario 93 | scenario=93,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2773 | P2 | Availability toggle scenario 94 | scenario=94,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2774 | P2 | Availability toggle scenario 95 | scenario=95,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2775 | P2 | Availability toggle scenario 96 | scenario=96,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2776 | P2 | Availability toggle scenario 97 | scenario=97,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2777 | P2 | Availability toggle scenario 98 | scenario=98,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2778 | P2 | Availability toggle scenario 99 | scenario=99,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2779 | P2 | Availability toggle scenario 100 | scenario=100,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2780 | P2 | Availability toggle scenario 101 | scenario=101,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2781 | P2 | Availability toggle scenario 102 | scenario=102,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2782 | P2 | Availability toggle scenario 103 | scenario=103,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2783 | P2 | Availability toggle scenario 104 | scenario=104,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2784 | P2 | Availability toggle scenario 105 | scenario=105,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2785 | P2 | Availability toggle scenario 106 | scenario=106,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2786 | P2 | Availability toggle scenario 107 | scenario=107,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2787 | P2 | Availability toggle scenario 108 | scenario=108,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2788 | P2 | Availability toggle scenario 109 | scenario=109,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2789 | P2 | Availability toggle scenario 110 | scenario=110,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2790 | P2 | Availability toggle scenario 111 | scenario=111,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2791 | P2 | Availability toggle scenario 112 | scenario=112,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2792 | P2 | Availability toggle scenario 113 | scenario=113,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2793 | P2 | Availability toggle scenario 114 | scenario=114,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2794 | P2 | Availability toggle scenario 115 | scenario=115,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2795 | P2 | Availability toggle scenario 116 | scenario=116,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2796 | P2 | Availability toggle scenario 117 | scenario=117,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2797 | P2 | Availability toggle scenario 118 | scenario=118,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2798 | P2 | Availability toggle scenario 119 | scenario=119,enabled=False | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2799 | P2 | Availability toggle scenario 120 | scenario=120,enabled=True | consistent | test_semantic_phase2_part_7.py |
-| TC-SEM-2800 | P2 | Availability toggle scenario 121 | scenario=121,enabled=False | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2555 | P2 | Weight mapping badwords = 5 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=5 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2556 | P2 | Weight mapping badwords = 8 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=8 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2557 | P2 | Weight mapping badwords = 10 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=10 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2558 | P2 | Weight mapping badwords = 12 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=12 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2559 | P2 | Weight mapping badwords = 15 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=15 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2560 | P2 | Weight mapping badwords = 20 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=20 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2561 | P2 | Weight mapping badwords = 25 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=25 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2562 | P2 | Weight mapping badwords = 30 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=30 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2563 | P2 | Weight mapping badwords = 35 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=35 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2564 | P2 | Weight mapping badwords = 40 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=40 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2565 | P2 | Weight mapping badwords = 45 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=45 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2566 | P2 | Weight mapping badwords = 50 | detector=badwords,key=WEIGHT_DETECTOR_BADWORDS,value=50 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2567 | P2 | Weight mapping profanite = 5 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=5 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2568 | P2 | Weight mapping profanite = 8 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=8 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2569 | P2 | Weight mapping profanite = 10 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=10 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2570 | P2 | Weight mapping profanite = 12 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=12 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2571 | P2 | Weight mapping profanite = 15 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=15 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2572 | P2 | Weight mapping profanite = 20 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=20 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2573 | P2 | Weight mapping profanite = 25 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=25 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2574 | P2 | Weight mapping profanite = 30 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=30 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2575 | P2 | Weight mapping profanite = 35 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=35 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2576 | P2 | Weight mapping profanite = 40 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=40 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2577 | P2 | Weight mapping profanite = 45 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=45 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2578 | P2 | Weight mapping profanite = 50 | detector=profanite,key=WEIGHT_DETECTOR_PROFANITE,value=50 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2579 | P2 | Weight mapping glin-profanity = 5 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=5 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2580 | P2 | Weight mapping glin-profanity = 8 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=8 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2581 | P2 | Weight mapping glin-profanity = 10 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=10 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2582 | P2 | Weight mapping glin-profanity = 12 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=12 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2583 | P2 | Weight mapping glin-profanity = 15 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=15 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2584 | P2 | Weight mapping glin-profanity = 20 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=20 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2585 | P2 | Weight mapping glin-profanity = 25 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=25 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2586 | P2 | Weight mapping glin-profanity = 30 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=30 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2587 | P2 | Weight mapping glin-profanity = 35 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=35 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2588 | P2 | Weight mapping glin-profanity = 40 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=40 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2589 | P2 | Weight mapping glin-profanity = 45 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=45 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2590 | P2 | Weight mapping glin-profanity = 50 | detector=glin-profanity,key=WEIGHT_DETECTOR_GLIN,value=50 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2591 | P2 | Weight mapping bk_tree = 5 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=5 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2592 | P2 | Weight mapping bk_tree = 8 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=8 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2593 | P2 | Weight mapping bk_tree = 10 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=10 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2594 | P2 | Weight mapping bk_tree = 12 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=12 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2595 | P2 | Weight mapping bk_tree = 15 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=15 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2596 | P2 | Weight mapping bk_tree = 20 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=20 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2597 | P2 | Weight mapping bk_tree = 25 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=25 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2598 | P2 | Weight mapping bk_tree = 30 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=30 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2599 | P2 | Weight mapping bk_tree = 35 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=35 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2600 | P2 | Weight mapping bk_tree = 40 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=40 | weight in range | test_semantic_phase2_part_5.py |
+| TC-SEM-2601 | P2 | Weight mapping bk_tree = 45 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=45 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2602 | P2 | Weight mapping bk_tree = 50 | detector=bk_tree,key=WEIGHT_DETECTOR_BKTREE,value=50 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2603 | P2 | Weight mapping double_metaphone = 5 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=5 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2604 | P2 | Weight mapping double_metaphone = 8 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=8 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2605 | P2 | Weight mapping double_metaphone = 10 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=10 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2606 | P2 | Weight mapping double_metaphone = 12 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=12 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2607 | P2 | Weight mapping double_metaphone = 15 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=15 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2608 | P2 | Weight mapping double_metaphone = 20 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=20 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2609 | P2 | Weight mapping double_metaphone = 25 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=25 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2610 | P2 | Weight mapping double_metaphone = 30 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=30 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2611 | P2 | Weight mapping double_metaphone = 35 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=35 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2612 | P2 | Weight mapping double_metaphone = 40 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=40 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2613 | P2 | Weight mapping double_metaphone = 45 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=45 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2614 | P2 | Weight mapping double_metaphone = 50 | detector=double_metaphone,key=WEIGHT_DETECTOR_METAPHONE,value=50 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2615 | P2 | Weight mapping multi_language = 5 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=5 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2616 | P2 | Weight mapping multi_language = 8 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=8 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2617 | P2 | Weight mapping multi_language = 10 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=10 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2618 | P2 | Weight mapping multi_language = 12 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=12 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2619 | P2 | Weight mapping multi_language = 15 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=15 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2620 | P2 | Weight mapping multi_language = 20 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=20 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2621 | P2 | Weight mapping multi_language = 25 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=25 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2622 | P2 | Weight mapping multi_language = 30 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=30 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2623 | P2 | Weight mapping multi_language = 35 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=35 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2624 | P2 | Weight mapping multi_language = 40 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=40 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2625 | P2 | Weight mapping multi_language = 45 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=45 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2626 | P2 | Weight mapping multi_language = 50 | detector=multi_language,key=WEIGHT_DETECTOR_BADWORDS,value=50 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2627 | P2 | Weight mapping rolling_hash = 5 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=5 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2628 | P2 | Weight mapping rolling_hash = 8 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=8 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2629 | P2 | Weight mapping rolling_hash = 10 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=10 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2630 | P2 | Weight mapping rolling_hash = 12 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=12 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2631 | P2 | Weight mapping rolling_hash = 15 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=15 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2632 | P2 | Weight mapping rolling_hash = 20 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=20 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2633 | P2 | Weight mapping rolling_hash = 25 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=25 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2634 | P2 | Weight mapping rolling_hash = 30 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=30 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2635 | P2 | Weight mapping rolling_hash = 35 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=35 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2636 | P2 | Weight mapping rolling_hash = 40 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=40 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2637 | P2 | Weight mapping rolling_hash = 45 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=45 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2638 | P2 | Weight mapping rolling_hash = 50 | detector=rolling_hash,key=WEIGHT_DETECTOR_AHO,value=50 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2639 | P2 | Weight mapping bloom_filter = 5 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=5 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2640 | P2 | Weight mapping bloom_filter = 8 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=8 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2641 | P2 | Weight mapping bloom_filter = 10 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=10 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2642 | P2 | Weight mapping bloom_filter = 12 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=12 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2643 | P2 | Weight mapping bloom_filter = 15 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=15 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2644 | P2 | Weight mapping bloom_filter = 20 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=20 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2645 | P2 | Weight mapping bloom_filter = 25 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=25 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2646 | P2 | Weight mapping bloom_filter = 30 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=30 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2647 | P2 | Weight mapping bloom_filter = 35 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=35 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2648 | P2 | Weight mapping bloom_filter = 40 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=40 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2649 | P2 | Weight mapping bloom_filter = 45 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=45 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2650 | P2 | Weight mapping bloom_filter = 50 | detector=bloom_filter,key=WEIGHT_DETECTOR_AHO,value=50 | weight in range | test_semantic_phase2_part_6.py |
+| TC-SEM-2651 | P2 | Category weight political at 0.5 | category=political,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2652 | P2 | Category weight political at 0.84 | category=political,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2653 | P2 | Category weight political at 0.86 | category=political,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2654 | P2 | Category weight political at 0.95 | category=political,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2655 | P2 | Category weight violence at 0.5 | category=violence,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2656 | P2 | Category weight violence at 0.84 | category=violence,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2657 | P2 | Category weight violence at 0.86 | category=violence,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2658 | P2 | Category weight violence at 0.95 | category=violence,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2659 | P2 | Category weight sexual at 0.5 | category=sexual,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2660 | P2 | Category weight sexual at 0.84 | category=sexual,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2661 | P2 | Category weight sexual at 0.86 | category=sexual,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2662 | P2 | Category weight sexual at 0.95 | category=sexual,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2663 | P2 | Category weight hate at 0.5 | category=hate,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2664 | P2 | Category weight hate at 0.84 | category=hate,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2665 | P2 | Category weight hate at 0.86 | category=hate,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2666 | P2 | Category weight hate at 0.95 | category=hate,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2667 | P2 | Category weight pii at 0.5 | category=pii,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2668 | P2 | Category weight pii at 0.84 | category=pii,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2669 | P2 | Category weight pii at 0.86 | category=pii,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2670 | P2 | Category weight pii at 0.95 | category=pii,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2671 | P2 | Category weight ads at 0.5 | category=ads,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2672 | P2 | Category weight ads at 0.84 | category=ads,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2673 | P2 | Category weight ads at 0.86 | category=ads,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2674 | P2 | Category weight ads at 0.95 | category=ads,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2675 | P2 | Category weight other at 0.5 | category=other,similarity=0.5 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2676 | P2 | Category weight other at 0.84 | category=other,similarity=0.84 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2677 | P2 | Category weight other at 0.86 | category=other,similarity=0.86 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2678 | P2 | Category weight other at 0.95 | category=other,similarity=0.95 | boosted | test_semantic_phase2_part_6.py |
+| TC-SEM-2679 | P2 | Availability enabled=True top_k=1 | scenario=0,enabled=True,top_k=1 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2680 | P2 | Availability enabled=False top_k=1 | scenario=1,enabled=False,top_k=1 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2681 | P2 | Availability enabled=True top_k=2 | scenario=2,enabled=True,top_k=2 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2682 | P2 | Availability enabled=False top_k=2 | scenario=3,enabled=False,top_k=2 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2683 | P2 | Availability enabled=True top_k=3 | scenario=4,enabled=True,top_k=3 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2684 | P2 | Availability enabled=False top_k=3 | scenario=5,enabled=False,top_k=3 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2685 | P2 | Availability enabled=True top_k=4 | scenario=6,enabled=True,top_k=4 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2686 | P2 | Availability enabled=False top_k=4 | scenario=7,enabled=False,top_k=4 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2687 | P2 | Availability enabled=True top_k=5 | scenario=8,enabled=True,top_k=5 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2688 | P2 | Availability enabled=False top_k=5 | scenario=9,enabled=False,top_k=5 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2689 | P2 | Availability enabled=True top_k=6 | scenario=10,enabled=True,top_k=6 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2690 | P2 | Availability enabled=False top_k=6 | scenario=11,enabled=False,top_k=6 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2691 | P2 | Availability enabled=True top_k=7 | scenario=12,enabled=True,top_k=7 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2692 | P2 | Availability enabled=False top_k=7 | scenario=13,enabled=False,top_k=7 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2693 | P2 | Availability enabled=True top_k=8 | scenario=14,enabled=True,top_k=8 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2694 | P2 | Availability enabled=False top_k=8 | scenario=15,enabled=False,top_k=8 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2695 | P2 | Availability enabled=True top_k=9 | scenario=16,enabled=True,top_k=9 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2696 | P2 | Availability enabled=False top_k=9 | scenario=17,enabled=False,top_k=9 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2697 | P2 | Availability enabled=True top_k=10 | scenario=18,enabled=True,top_k=10 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2698 | P2 | Availability enabled=False top_k=10 | scenario=19,enabled=False,top_k=10 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2699 | P2 | Availability enabled=True top_k=11 | scenario=20,enabled=True,top_k=11 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2700 | P2 | Availability enabled=False top_k=11 | scenario=21,enabled=False,top_k=11 | consistent | test_semantic_phase2_part_6.py |
+| TC-SEM-2701 | P2 | Availability enabled=True top_k=12 | scenario=22,enabled=True,top_k=12 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2702 | P2 | Availability enabled=False top_k=12 | scenario=23,enabled=False,top_k=12 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2703 | P2 | Availability enabled=True top_k=13 | scenario=24,enabled=True,top_k=13 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2704 | P2 | Availability enabled=False top_k=13 | scenario=25,enabled=False,top_k=13 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2705 | P2 | Availability enabled=True top_k=14 | scenario=26,enabled=True,top_k=14 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2706 | P2 | Availability enabled=False top_k=14 | scenario=27,enabled=False,top_k=14 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2707 | P2 | Availability enabled=True top_k=15 | scenario=28,enabled=True,top_k=15 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2708 | P2 | Availability enabled=False top_k=15 | scenario=29,enabled=False,top_k=15 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2709 | P2 | Availability enabled=True top_k=16 | scenario=30,enabled=True,top_k=16 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2710 | P2 | Availability enabled=False top_k=16 | scenario=31,enabled=False,top_k=16 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2711 | P2 | Availability enabled=True top_k=17 | scenario=32,enabled=True,top_k=17 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2712 | P2 | Availability enabled=False top_k=17 | scenario=33,enabled=False,top_k=17 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2713 | P2 | Availability enabled=True top_k=18 | scenario=34,enabled=True,top_k=18 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2714 | P2 | Availability enabled=False top_k=18 | scenario=35,enabled=False,top_k=18 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2715 | P2 | Availability enabled=True top_k=19 | scenario=36,enabled=True,top_k=19 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2716 | P2 | Availability enabled=False top_k=19 | scenario=37,enabled=False,top_k=19 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2717 | P2 | Availability enabled=True top_k=20 | scenario=38,enabled=True,top_k=20 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2718 | P2 | Availability enabled=False top_k=20 | scenario=39,enabled=False,top_k=20 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2719 | P2 | Availability enabled=True top_k=21 | scenario=40,enabled=True,top_k=21 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2720 | P2 | Availability enabled=False top_k=21 | scenario=41,enabled=False,top_k=21 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2721 | P2 | Availability enabled=True top_k=22 | scenario=42,enabled=True,top_k=22 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2722 | P2 | Availability enabled=False top_k=22 | scenario=43,enabled=False,top_k=22 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2723 | P2 | Availability enabled=True top_k=23 | scenario=44,enabled=True,top_k=23 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2724 | P2 | Availability enabled=False top_k=23 | scenario=45,enabled=False,top_k=23 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2725 | P2 | Availability enabled=True top_k=24 | scenario=46,enabled=True,top_k=24 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2726 | P2 | Availability enabled=False top_k=24 | scenario=47,enabled=False,top_k=24 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2727 | P2 | Availability enabled=True top_k=25 | scenario=48,enabled=True,top_k=25 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2728 | P2 | Availability enabled=False top_k=25 | scenario=49,enabled=False,top_k=25 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2729 | P2 | Availability enabled=True top_k=26 | scenario=50,enabled=True,top_k=26 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2730 | P2 | Availability enabled=False top_k=26 | scenario=51,enabled=False,top_k=26 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2731 | P2 | Availability enabled=True top_k=27 | scenario=52,enabled=True,top_k=27 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2732 | P2 | Availability enabled=False top_k=27 | scenario=53,enabled=False,top_k=27 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2733 | P2 | Availability enabled=True top_k=28 | scenario=54,enabled=True,top_k=28 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2734 | P2 | Availability enabled=False top_k=28 | scenario=55,enabled=False,top_k=28 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2735 | P2 | Availability enabled=True top_k=29 | scenario=56,enabled=True,top_k=29 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2736 | P2 | Availability enabled=False top_k=29 | scenario=57,enabled=False,top_k=29 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2737 | P2 | Availability enabled=True top_k=30 | scenario=58,enabled=True,top_k=30 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2738 | P2 | Availability enabled=False top_k=30 | scenario=59,enabled=False,top_k=30 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2739 | P2 | Availability enabled=True top_k=31 | scenario=60,enabled=True,top_k=31 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2740 | P2 | Availability enabled=False top_k=31 | scenario=61,enabled=False,top_k=31 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2741 | P2 | Availability enabled=True top_k=32 | scenario=62,enabled=True,top_k=32 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2742 | P2 | Availability enabled=False top_k=32 | scenario=63,enabled=False,top_k=32 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2743 | P2 | Availability enabled=True top_k=33 | scenario=64,enabled=True,top_k=33 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2744 | P2 | Availability enabled=False top_k=33 | scenario=65,enabled=False,top_k=33 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2745 | P2 | Availability enabled=True top_k=34 | scenario=66,enabled=True,top_k=34 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2746 | P2 | Availability enabled=False top_k=34 | scenario=67,enabled=False,top_k=34 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2747 | P2 | Availability enabled=True top_k=35 | scenario=68,enabled=True,top_k=35 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2748 | P2 | Availability enabled=False top_k=35 | scenario=69,enabled=False,top_k=35 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2749 | P2 | Availability enabled=True top_k=36 | scenario=70,enabled=True,top_k=36 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2750 | P2 | Availability enabled=False top_k=36 | scenario=71,enabled=False,top_k=36 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2751 | P2 | Availability enabled=True top_k=37 | scenario=72,enabled=True,top_k=37 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2752 | P2 | Availability enabled=False top_k=37 | scenario=73,enabled=False,top_k=37 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2753 | P2 | Availability enabled=True top_k=38 | scenario=74,enabled=True,top_k=38 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2754 | P2 | Availability enabled=False top_k=38 | scenario=75,enabled=False,top_k=38 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2755 | P2 | Availability enabled=True top_k=39 | scenario=76,enabled=True,top_k=39 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2756 | P2 | Availability enabled=False top_k=39 | scenario=77,enabled=False,top_k=39 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2757 | P2 | Availability enabled=True top_k=40 | scenario=78,enabled=True,top_k=40 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2758 | P2 | Availability enabled=False top_k=40 | scenario=79,enabled=False,top_k=40 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2759 | P2 | Availability enabled=True top_k=41 | scenario=80,enabled=True,top_k=41 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2760 | P2 | Availability enabled=False top_k=41 | scenario=81,enabled=False,top_k=41 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2761 | P2 | Availability enabled=True top_k=42 | scenario=82,enabled=True,top_k=42 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2762 | P2 | Availability enabled=False top_k=42 | scenario=83,enabled=False,top_k=42 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2763 | P2 | Availability enabled=True top_k=43 | scenario=84,enabled=True,top_k=43 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2764 | P2 | Availability enabled=False top_k=43 | scenario=85,enabled=False,top_k=43 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2765 | P2 | Availability enabled=True top_k=44 | scenario=86,enabled=True,top_k=44 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2766 | P2 | Availability enabled=False top_k=44 | scenario=87,enabled=False,top_k=44 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2767 | P2 | Availability enabled=True top_k=45 | scenario=88,enabled=True,top_k=45 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2768 | P2 | Availability enabled=False top_k=45 | scenario=89,enabled=False,top_k=45 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2769 | P2 | Availability enabled=True top_k=46 | scenario=90,enabled=True,top_k=46 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2770 | P2 | Availability enabled=False top_k=46 | scenario=91,enabled=False,top_k=46 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2771 | P2 | Availability enabled=True top_k=47 | scenario=92,enabled=True,top_k=47 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2772 | P2 | Availability enabled=False top_k=47 | scenario=93,enabled=False,top_k=47 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2773 | P2 | Availability enabled=True top_k=48 | scenario=94,enabled=True,top_k=48 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2774 | P2 | Availability enabled=False top_k=48 | scenario=95,enabled=False,top_k=48 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2775 | P2 | Availability enabled=True top_k=49 | scenario=96,enabled=True,top_k=49 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2776 | P2 | Availability enabled=False top_k=49 | scenario=97,enabled=False,top_k=49 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2777 | P2 | Availability enabled=True top_k=50 | scenario=98,enabled=True,top_k=50 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2778 | P2 | Availability enabled=False top_k=50 | scenario=99,enabled=False,top_k=50 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2779 | P2 | Availability enabled=True top_k=51 | scenario=100,enabled=True,top_k=51 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2780 | P2 | Availability enabled=False top_k=51 | scenario=101,enabled=False,top_k=51 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2781 | P2 | Availability enabled=True top_k=52 | scenario=102,enabled=True,top_k=52 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2782 | P2 | Availability enabled=False top_k=52 | scenario=103,enabled=False,top_k=52 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2783 | P2 | Availability enabled=True top_k=53 | scenario=104,enabled=True,top_k=53 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2784 | P2 | Availability enabled=False top_k=53 | scenario=105,enabled=False,top_k=53 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2785 | P2 | Availability enabled=True top_k=54 | scenario=106,enabled=True,top_k=54 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2786 | P2 | Availability enabled=False top_k=54 | scenario=107,enabled=False,top_k=54 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2787 | P2 | Availability enabled=True top_k=55 | scenario=108,enabled=True,top_k=55 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2788 | P2 | Availability enabled=False top_k=55 | scenario=109,enabled=False,top_k=55 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2789 | P2 | Availability enabled=True top_k=56 | scenario=110,enabled=True,top_k=56 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2790 | P2 | Availability enabled=False top_k=56 | scenario=111,enabled=False,top_k=56 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2791 | P2 | Availability enabled=True top_k=57 | scenario=112,enabled=True,top_k=57 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2792 | P2 | Availability enabled=False top_k=57 | scenario=113,enabled=False,top_k=57 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2793 | P2 | Availability enabled=True top_k=58 | scenario=114,enabled=True,top_k=58 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2794 | P2 | Availability enabled=False top_k=58 | scenario=115,enabled=False,top_k=58 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2795 | P2 | Availability enabled=True top_k=59 | scenario=116,enabled=True,top_k=59 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2796 | P2 | Availability enabled=False top_k=59 | scenario=117,enabled=False,top_k=59 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2797 | P2 | Availability enabled=True top_k=60 | scenario=118,enabled=True,top_k=60 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2798 | P2 | Availability enabled=False top_k=60 | scenario=119,enabled=False,top_k=60 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2799 | P2 | Availability enabled=True top_k=61 | scenario=120,enabled=True,top_k=61 | consistent | test_semantic_phase2_part_7.py |
+| TC-SEM-2800 | P2 | Availability enabled=False top_k=61 | scenario=121,enabled=False,top_k=61 | consistent | test_semantic_phase2_part_7.py |
 
 ### Phase 3 - 15,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-SEM-0781 onward.
