@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, ORJSONResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -29,6 +29,7 @@ from app.models.response import BatchModerationResponse, ModerationResponse
 from app.security.auth import RequireAdminApiKey
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.ratelimit import RateLimiter
+from app.static import serve_frontend
 from app.test.router import create_test_router
 from app.utils.logger import ModerationLogger
 from app.wordbank.manager import WordBankManager
@@ -166,17 +167,17 @@ if _frontend_dist.is_dir():
 
     @app.get("/{full_path:path}")
     def spa_fallback(full_path: str) -> Response:
-        """Serve the SPA entry for client-side routes.
+        """Serve built assets and the SPA entry for client-side routes.
+
+        Real files under the dist directory (``logo.svg``, ``favicon.svg``,
+        and every ``public/`` asset) are served as-is; anything else is the
+        SPA ``index.html`` so the React router handles client-side navigation.
+        Unknown API-prefixed paths return 404.
 
         :param full_path: the requested path
-        :return: index.html, or 404 for unknown API paths
+        :return: the matched asset, index.html, or a 404
         """
-        if full_path.startswith(("admin", "test", "moderate", "health", "metrics")):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        index_file: Path = _frontend_dist / "index.html"
-        if index_file.is_file():
-            return FileResponse(index_file)
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return serve_frontend(_frontend_dist, full_path)
 
 
 @app.post("/moderate", response_model=ModerationResponse)
