@@ -8,808 +8,121 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from tests.base_test import BaseTest
 
+_API_BURST_CASES: tuple[tuple[int, int, int, int], ...] = (
+    (1, 1, 200, 9706,),
+    (1, 5000, 200, 9707,),
+    (1, 8192, 200, 9708,),
+    (1, 8193, 422, 9709,),
+    (1, 9000, 422, 9710,),
+    (2, 1, 200, 9711,),
+    (2, 5000, 200, 9712,),
+    (2, 8192, 200, 9713,),
+    (2, 8193, 422, 9714,),
+    (2, 9000, 422, 9715,),
+    (3, 1, 200, 9716,),
+    (3, 5000, 200, 9717,),
+    (3, 8192, 200, 9718,),
+    (3, 8193, 422, 9719,),
+    (3, 9000, 422, 9720,),
+    (4, 1, 200, 9721,),
+    (4, 5000, 200, 9722,),
+    (4, 8192, 200, 9723,),
+    (4, 8193, 422, 9724,),
+    (4, 9000, 422, 9725,),
+    (5, 1, 200, 9726,),
+    (5, 5000, 200, 9727,),
+    (5, 8192, 200, 9728,),
+    (5, 8193, 422, 9729,),
+    (5, 9000, 422, 9730,),
+    (6, 1, 200, 9731,),
+    (6, 5000, 200, 9732,),
+    (6, 8192, 200, 9733,),
+    (6, 8193, 422, 9734,),
+    (6, 9000, 422, 9735,),
+    (7, 1, 200, 9736,),
+    (7, 5000, 200, 9737,),
+    (7, 8192, 200, 9738,),
+    (7, 8193, 422, 9739,),
+    (7, 9000, 422, 9740,),
+    (8, 1, 200, 9741,),
+    (8, 5000, 200, 9742,),
+    (8, 8192, 200, 9743,),
+    (8, 8193, 422, 9744,),
+    (8, 9000, 422, 9745,),
+    (9, 1, 200, 9746,),
+    (9, 5000, 200, 9747,),
+    (9, 8192, 200, 9748,),
+    (9, 8193, 422, 9749,),
+    (9, 9000, 422, 9750,),
+    (10, 1, 200, 9751,),
+    (10, 5000, 200, 9752,),
+    (10, 8192, 200, 9753,),
+    (10, 8193, 422, 9754,),
+    (10, 9000, 422, 9755,),
+    (11, 1, 200, 9756,),
+    (11, 5000, 200, 9757,),
+    (11, 8192, 200, 9758,),
+    (11, 8193, 422, 9759,),
+    (11, 9000, 422, 9760,),
+    (12, 1, 200, 9761,),
+    (12, 5000, 200, 9762,),
+    (12, 8192, 200, 9763,),
+    (12, 8193, 422, 9764,),
+    (12, 9000, 422, 9765,),
+    (13, 1, 200, 9766,),
+    (13, 5000, 200, 9767,),
+    (13, 8192, 200, 9768,),
+    (13, 8193, 422, 9769,),
+    (13, 9000, 422, 9770,),
+    (14, 1, 200, 9771,),
+    (14, 5000, 200, 9772,),
+    (14, 8192, 200, 9773,),
+    (14, 8193, 422, 9774,),
+    (14, 9000, 422, 9775,),
+    (15, 1, 200, 9776,),
+    (15, 5000, 200, 9777,),
+    (15, 8192, 200, 9778,),
+    (15, 8193, 422, 9779,),
+    (15, 9000, 422, 9780,),
+    (16, 1, 200, 9781,),
+    (16, 5000, 200, 9782,),
+    (16, 8192, 200, 9783,),
+    (16, 8193, 422, 9784,),
+    (16, 9000, 422, 9785,),
+    (17, 1, 200, 9786,),
+    (17, 5000, 200, 9787,),
+    (17, 8192, 200, 9788,),
+    (17, 8193, 422, 9789,),
+    (17, 9000, 422, 9790,),
+    (18, 1, 200, 9791,),
+    (18, 5000, 200, 9792,),
+    (18, 8192, 200, 9793,),
+    (18, 8193, 422, 9794,),
+    (18, 9000, 422, 9795,),
+    (19, 1, 200, 9796,),
+    (19, 5000, 200, 9797,),
+    (19, 8192, 200, 9798,),
+    (19, 8193, 422, 9799,),
+    (19, 9000, 422, 9800,),
+    (20, 1, 200, 9801,),
+    (20, 5000, 200, 9802,),
+    (20, 8192, 200, 9803,),
+    (20, 8193, 422, 9804,),
+    (20, 9000, 422, 9805,),
+)
 
-class TestApiBursts(BaseTest):
-    """ApiBursts scenarios."""
+class TestApiBurst(BaseTest):
+    """Rapid API requests and boundary lengths never error."""
 
-    def test_api_burst_0_9742(self, client: Any) -> None:
+    @pytest.mark.parametrize(('burst_size', 'boundary_len', 'expected_status', 'uid',), _API_BURST_CASES)
+    def test_api_burst(self, client: Any, burst_size: int, boundary_len: int, expected_status: int, uid: int) -> None:
         """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
+        for index in range(burst_size):
+            response = client.post('/moderate', json={'text': f'burst {index}', 'app_name': 'a'})
             assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_1_9743(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_2_9744(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_3_9745(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_4_9746(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_5_9747(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_6_9748(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_7_9749(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_8_9750(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_9_9751(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_10_9752(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_11_9753(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_12_9754(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_13_9755(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_14_9756(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_15_9757(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_16_9758(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_17_9759(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_18_9760(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_19_9761(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_20_9762(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_21_9763(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_22_9764(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_23_9765(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_24_9766(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_25_9767(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_26_9768(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_27_9769(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_28_9770(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_29_9771(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_30_9772(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_31_9773(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_32_9774(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_33_9775(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_34_9776(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_35_9777(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_36_9778(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_37_9779(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_38_9780(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_39_9781(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_40_9782(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_41_9783(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_42_9784(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_43_9785(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_44_9786(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_45_9787(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_46_9788(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_47_9789(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_48_9790(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_49_9791(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_50_9792(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_51_9793(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_52_9794(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_53_9795(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_54_9796(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_55_9797(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_56_9798(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_57_9799(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_58_9800(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_59_9801(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_60_9802(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_61_9803(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_62_9804(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_63_9805(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_64_9806(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_65_9807(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_66_9808(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_67_9809(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_68_9810(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_69_9811(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_70_9812(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_71_9813(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_72_9814(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_73_9815(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_74_9816(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_75_9817(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_76_9818(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_77_9819(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_78_9820(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_79_9821(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_80_9822(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_81_9823(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_82_9824(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_83_9825(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_84_9826(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_85_9827(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_86_9828(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_87_9829(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_88_9830(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_89_9831(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_90_9832(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_91_9833(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_92_9834(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_93_9835(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_94_9836(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_95_9837(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_96_9838(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_97_9839(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_98_9840(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
-
-    def test_api_burst_99_9841(self, client: Any) -> None:
-        """Rapid API requests and boundary lengths never error."""
-        for index in range(25):
-            response = client.post("/moderate", json={"text": f"burst {index}", "app_name": "a"})
-            assert response.status_code == 200
-        long_response = client.post("/moderate", json={"text": "x" * 8192, "app_name": "a"})
-        assert long_response.status_code in (200, 422)
+        long_response = client.post('/moderate', json={'text': 'x' * boundary_len, 'app_name': 'a'})
+        assert long_response.status_code == expected_status
