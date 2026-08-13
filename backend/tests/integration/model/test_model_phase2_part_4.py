@@ -17,1347 +17,154 @@ from tests.base_test import BaseTest
 
 
 def _detector(tmp_path: Path) -> LlamaCppDetector:
-    (tmp_path / "models").mkdir(parents=True, exist_ok=True)
+    (tmp_path / 'models').mkdir(parents=True, exist_ok=True)
     settings = Settings(
         app_port=0,
-        model_path="auto",
-        model_dir=str(tmp_path / "models"),
-        model_filename="model.gguf",
-        model_primary_repo="owner/repo",
-        model_fallback_repo="fallback/repo",
-        hf_endpoint="http://127.0.0.1:1",
-        hf_mirror="http://127.0.0.1:2",
-        modelscope_endpoint="http://127.0.0.1:3",
-        log_file_path=str(tmp_path / "l.log"),
+        model_path='auto',
+        model_dir=str(tmp_path / 'models'),
+        model_filename='model.gguf',
+        model_primary_repo='owner/repo',
+        model_fallback_repo='fallback/repo',
+        hf_endpoint='http://127.0.0.1:1',
+        hf_mirror='http://127.0.0.1:2',
+        modelscope_endpoint='http://127.0.0.1:3',
+        log_file_path=str(tmp_path / 'l.log'),
     )
     return LlamaCppDetector(settings, None)
 
-
 class _FakeModel:
     metadata: dict[str, str] = {}  # noqa: RUF012
-
     def __init__(self, reply: str) -> None:
         self._reply = reply
-
     def __call__(self, prompt: str, **kwargs: object) -> dict[str, object]:
-        return {"choices": [{"text": self._reply}]}
-
+        return {'choices': [{'text': self._reply}]}
     def close(self) -> None:
         return None
 
-
 def _side_effect_factory(results: list[object]) -> Any:
     index: list[int] = [0]
-
     def _side_effect(*args: object, **kwargs: object) -> str:
         current: object = results[min(index[0], len(results) - 1)]
         index[0] += 1
         if isinstance(current, Exception):
             raise current
         return str(current)
-
     return _side_effect
 
+_DOWNLOAD_RETRY_CASES: tuple[tuple[int, str, int], ...] = (
+    (1, 'http://127.0.0.1:1/mirror0', 5113,),
+    (1, 'http://127.0.0.1:1/mirror1', 5114,),
+    (1, 'http://127.0.0.1:1/mirror2', 5115,),
+    (1, 'http://127.0.0.1:1/mirror3', 5116,),
+    (1, 'http://127.0.0.1:1/mirror4', 5117,),
+    (1, 'http://127.0.0.1:1/mirror5', 5118,),
+    (1, 'http://127.0.0.1:1/mirror6', 5119,),
+    (1, 'http://127.0.0.1:1/mirror7', 5120,),
+    (1, 'http://127.0.0.1:1/mirror8', 5121,),
+    (1, 'http://127.0.0.1:1/mirror9', 5122,),
+    (1, 'http://127.0.0.1:1/mirror10', 5123,),
+    (1, 'http://127.0.0.1:1/mirror11', 5124,),
+    (1, 'http://127.0.0.1:1/mirror12', 5125,),
+    (1, 'http://127.0.0.1:1/mirror13', 5126,),
+    (1, 'http://127.0.0.1:1/mirror14', 5127,),
+    (1, 'http://127.0.0.1:1/mirror15', 5128,),
+    (1, 'http://127.0.0.1:1/mirror16', 5129,),
+    (1, 'http://127.0.0.1:1/mirror17', 5130,),
+    (1, 'http://127.0.0.1:1/mirror18', 5131,),
+    (1, 'http://127.0.0.1:1/mirror19', 5132,),
+    (1, 'http://127.0.0.1:1/mirror20', 5133,),
+    (1, 'http://127.0.0.1:1/mirror21', 5134,),
+    (1, 'http://127.0.0.1:1/mirror22', 5135,),
+    (1, 'http://127.0.0.1:1/mirror23', 5136,),
+    (1, 'http://127.0.0.1:1/mirror24', 5137,),
+    (1, 'http://127.0.0.1:1/mirror25', 5138,),
+    (1, 'http://127.0.0.1:1/mirror26', 5139,),
+    (1, 'http://127.0.0.1:1/mirror27', 5140,),
+    (1, 'http://127.0.0.1:1/mirror28', 5141,),
+    (1, 'http://127.0.0.1:1/mirror29', 5142,),
+    (1, 'http://127.0.0.1:1/mirror30', 5143,),
+    (1, 'http://127.0.0.1:1/mirror31', 5144,),
+    (1, 'http://127.0.0.1:1/mirror32', 5145,),
+    (1, 'http://127.0.0.1:1/mirror33', 5146,),
+    (1, 'http://127.0.0.1:1/mirror34', 5147,),
+    (1, 'http://127.0.0.1:1/mirror35', 5148,),
+    (1, 'http://127.0.0.1:1/mirror36', 5149,),
+    (1, 'http://127.0.0.1:1/mirror37', 5150,),
+    (1, 'http://127.0.0.1:1/mirror38', 5151,),
+    (1, 'http://127.0.0.1:1/mirror39', 5152,),
+    (1, 'http://127.0.0.1:1/mirror40', 5153,),
+    (1, 'http://127.0.0.1:1/mirror41', 5154,),
+    (1, 'http://127.0.0.1:1/mirror42', 5155,),
+    (1, 'http://127.0.0.1:1/mirror43', 5156,),
+    (1, 'http://127.0.0.1:1/mirror44', 5157,),
+    (1, 'http://127.0.0.1:1/mirror45', 5158,),
+    (1, 'http://127.0.0.1:1/mirror46', 5159,),
+    (1, 'http://127.0.0.1:1/mirror47', 5160,),
+    (1, 'http://127.0.0.1:1/mirror48', 5161,),
+    (1, 'http://127.0.0.1:1/mirror49', 5162,),
+    (2, 'http://127.0.0.1:1/mirror0', 5163,),
+    (2, 'http://127.0.0.1:1/mirror1', 5164,),
+    (2, 'http://127.0.0.1:1/mirror2', 5165,),
+    (2, 'http://127.0.0.1:1/mirror3', 5166,),
+    (2, 'http://127.0.0.1:1/mirror4', 5167,),
+    (2, 'http://127.0.0.1:1/mirror5', 5168,),
+    (2, 'http://127.0.0.1:1/mirror6', 5169,),
+    (2, 'http://127.0.0.1:1/mirror7', 5170,),
+    (2, 'http://127.0.0.1:1/mirror8', 5171,),
+    (2, 'http://127.0.0.1:1/mirror9', 5172,),
+    (2, 'http://127.0.0.1:1/mirror10', 5173,),
+    (2, 'http://127.0.0.1:1/mirror11', 5174,),
+    (2, 'http://127.0.0.1:1/mirror12', 5175,),
+    (2, 'http://127.0.0.1:1/mirror13', 5176,),
+    (2, 'http://127.0.0.1:1/mirror14', 5177,),
+    (2, 'http://127.0.0.1:1/mirror15', 5178,),
+    (2, 'http://127.0.0.1:1/mirror16', 5179,),
+    (2, 'http://127.0.0.1:1/mirror17', 5180,),
+    (2, 'http://127.0.0.1:1/mirror18', 5181,),
+    (2, 'http://127.0.0.1:1/mirror19', 5182,),
+    (2, 'http://127.0.0.1:1/mirror20', 5183,),
+    (2, 'http://127.0.0.1:1/mirror21', 5184,),
+    (2, 'http://127.0.0.1:1/mirror22', 5185,),
+    (2, 'http://127.0.0.1:1/mirror23', 5186,),
+    (2, 'http://127.0.0.1:1/mirror24', 5187,),
+    (2, 'http://127.0.0.1:1/mirror25', 5188,),
+    (2, 'http://127.0.0.1:1/mirror26', 5189,),
+    (2, 'http://127.0.0.1:1/mirror27', 5190,),
+    (2, 'http://127.0.0.1:1/mirror28', 5191,),
+    (2, 'http://127.0.0.1:1/mirror29', 5192,),
+    (2, 'http://127.0.0.1:1/mirror30', 5193,),
+    (2, 'http://127.0.0.1:1/mirror31', 5194,),
+    (2, 'http://127.0.0.1:1/mirror32', 5195,),
+    (2, 'http://127.0.0.1:1/mirror33', 5196,),
+    (2, 'http://127.0.0.1:1/mirror34', 5197,),
+    (2, 'http://127.0.0.1:1/mirror35', 5198,),
+    (2, 'http://127.0.0.1:1/mirror36', 5199,),
+    (2, 'http://127.0.0.1:1/mirror37', 5200,),
+    (2, 'http://127.0.0.1:1/mirror38', 5201,),
+    (2, 'http://127.0.0.1:1/mirror39', 5202,),
+    (2, 'http://127.0.0.1:1/mirror40', 5203,),
+    (2, 'http://127.0.0.1:1/mirror41', 5204,),
+    (2, 'http://127.0.0.1:1/mirror42', 5205,),
+    (2, 'http://127.0.0.1:1/mirror43', 5206,),
+    (2, 'http://127.0.0.1:1/mirror44', 5207,),
+    (2, 'http://127.0.0.1:1/mirror45', 5208,),
+    (2, 'http://127.0.0.1:1/mirror46', 5209,),
+    (2, 'http://127.0.0.1:1/mirror47', 5210,),
+    (2, 'http://127.0.0.1:1/mirror48', 5211,),
+    (2, 'http://127.0.0.1:1/mirror49', 5212,),
+)
 
-class TestDownloadScenarios(BaseTest):
-    """DownloadScenarios scenarios."""
+class TestDownloadRetry(BaseTest):
+    """Download retries and mirror fallbacks stay resilient."""
 
-    def test_download_50_5113(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    @pytest.mark.parametrize(('n_failures', 'endpoint', 'uid',), _DOWNLOAD_RETRY_CASES)
+    def test_download_retry(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, n_failures: int, endpoint: str, uid: int) -> None:
         """Download retries and mirror fallbacks stay resilient."""
         detector: LlamaCppDetector = _detector(tmp_path)
         monkeypatch.setattr(
             detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
+            '_download_from_huggingface',
+            _side_effect_factory([Exception('boom')] * n_failures + ['recovered']),
         )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_51_5114(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_52_5115(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_53_5116(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_54_5117(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_55_5118(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_56_5119(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_57_5120(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_58_5121(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_59_5122(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_60_5123(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_61_5124(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_62_5125(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_63_5126(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_64_5127(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_65_5128(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_66_5129(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_67_5130(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_68_5131(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_69_5132(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_70_5133(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_71_5134(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_72_5135(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_73_5136(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_74_5137(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_75_5138(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_76_5139(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_77_5140(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_78_5141(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_79_5142(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_80_5143(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_81_5144(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_82_5145(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_83_5146(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_84_5147(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_85_5148(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_86_5149(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_87_5150(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_88_5151(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_89_5152(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_90_5153(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_91_5154(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_92_5155(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_93_5156(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_94_5157(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_95_5158(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_96_5159(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_97_5160(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_98_5161(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_99_5162(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_100_5163(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_101_5164(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_102_5165(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_103_5166(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_104_5167(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_105_5168(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_106_5169(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_107_5170(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_108_5171(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_109_5172(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_110_5173(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_111_5174(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_112_5175(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_113_5176(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_114_5177(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_115_5178(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_116_5179(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_117_5180(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_118_5181(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_119_5182(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_120_5183(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_121_5184(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_122_5185(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_123_5186(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_124_5187(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_125_5188(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_126_5189(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_127_5190(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_128_5191(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_129_5192(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_130_5193(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_131_5194(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_132_5195(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_133_5196(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_134_5197(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_135_5198(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_136_5199(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_137_5200(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_138_5201(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_139_5202(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_140_5203(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_141_5204(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_142_5205(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_143_5206(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_144_5207(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_145_5208(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_146_5209(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_147_5210(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_148_5211(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
-        detector.shutdown()
-
-    def test_download_149_5212(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Download retries and mirror fallbacks stay resilient."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        monkeypatch.setattr(
-            detector,
-            "_download_from_huggingface",
-            _side_effect_factory([Exception("boom"), "recovered"]),
-        )
-        assert (
-            detector._download_with_retry("r", "f", tmp_path / "models", "http://e") == "recovered"
-        )
+        assert detector._download_with_retry('r', 'f', tmp_path / 'models', endpoint) == 'recovered'
         detector.shutdown()
