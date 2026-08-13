@@ -1,4 +1,4 @@
-import { ApiError, AuthService } from "./AuthService";
+import { ApiError, AuthService, errorDetail } from "./AuthService";
 import { WordBankStats, WordEntry, WordPayload } from "../types";
 
 export class WordBankService {
@@ -17,11 +17,7 @@ export class WordBankService {
                 this.authService.handleUnauthorized();
             }
             const body: unknown = await response.json().catch(() => null);
-            const detail: unknown =
-                body !== null && typeof body === "object" && "detail" in body
-                    ? (body as { detail: unknown }).detail
-                    : "Request failed";
-            throw new ApiError(response.status, String(detail));
+            throw new ApiError(response.status, errorDetail(body, "Request failed"));
         }
         if (response.status === 204) {
             return undefined as T;
