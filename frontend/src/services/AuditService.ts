@@ -1,4 +1,4 @@
-import { ApiError, AuthService } from "./AuthService";
+import { ApiError, AuthService, errorDetail } from "./AuthService";
 import { AuditEntry, LogContent, LogFileInfo } from "../types";
 
 export class AuditService {
@@ -17,11 +17,7 @@ export class AuditService {
                 this.authService.handleUnauthorized();
             }
             const body: unknown = await response.json().catch(() => null);
-            const detail: unknown =
-                body !== null && typeof body === "object" && "detail" in body
-                    ? (body as { detail: unknown }).detail
-                    : "Request failed";
-            throw new ApiError(response.status, String(detail));
+            throw new ApiError(response.status, errorDetail(body, "Request failed"));
         }
         return (await response.json()) as T;
     }
