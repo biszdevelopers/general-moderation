@@ -29,6 +29,7 @@ from app.models.response import BatchModerationResponse, ModerationResponse
 from app.security.auth import RequireAdminApiKey
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.ratelimit import RateLimiter
+from app.test.router import create_test_router
 from app.utils.logger import ModerationLogger
 from app.wordbank.manager import WordBankManager
 from app.wordbank.storage import create_storage
@@ -99,6 +100,7 @@ app.state.limiter = RATE_LIMITER.limiter
 app.add_middleware(SlowAPIMiddleware)
 
 app.include_router(create_admin_router(ENGINE, WORD_BANK, SETTINGS.log_file_path, ADMIN_AUTH))
+app.include_router(create_test_router(ENGINE, SETTINGS.log_file_path, ADMIN_AUTH))
 
 
 @app.exception_handler(RateLimitExceeded)
@@ -169,7 +171,7 @@ if _frontend_dist.is_dir():
         :param full_path: the requested path
         :return: index.html, or 404 for unknown API paths
         """
-        if full_path.startswith(("admin", "moderate", "health", "metrics")):
+        if full_path.startswith(("admin", "test", "moderate", "health", "metrics")):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         index_file: Path = _frontend_dist / "index.html"
         if index_file.is_file():
