@@ -176,256 +176,256 @@
 | TC-MODEL-5160 | P1 | Sanitize #147 (absent) | mode=absent,marker='system:' | sanitized | test_model_phase2_part_2.py |
 | TC-MODEL-5161 | P1 | Sanitize #148 (absent) | mode=absent,marker='user:' | sanitized | test_model_phase2_part_2.py |
 | TC-MODEL-5162 | P1 | Sanitize #149 (absent) | mode=absent,marker='assistant:' | sanitized | test_model_phase2_part_2.py |
-| TC-MODEL-5163 | P1 | Threads auto #0 | configured=auto | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5164 | P1 | Threads auto #1 | configured=auto | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5165 | P1 | Threads auto #2 | configured=auto | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5166 | P1 | Threads auto #3 | configured=auto | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5167 | P1 | Threads auto #4 | configured=auto | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5168 | P1 | Threads 0 #0 | configured=0 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5169 | P1 | Threads 0 #1 | configured=0 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5170 | P1 | Threads 0 #2 | configured=0 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5171 | P1 | Threads 0 #3 | configured=0 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5172 | P1 | Threads 0 #4 | configured=0 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5173 | P1 | Threads -1 #0 | configured=-1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5174 | P1 | Threads -1 #1 | configured=-1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5175 | P1 | Threads -1 #2 | configured=-1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5176 | P1 | Threads -1 #3 | configured=-1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5177 | P1 | Threads -1 #4 | configured=-1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5178 | P1 | Threads abc #0 | configured=abc | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5179 | P1 | Threads abc #1 | configured=abc | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5180 | P1 | Threads abc #2 | configured=abc | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5181 | P1 | Threads abc #3 | configured=abc | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5182 | P1 | Threads abc #4 | configured=abc | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5183 | P1 | Threads 1 #0 | configured=1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5184 | P1 | Threads 1 #1 | configured=1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5185 | P1 | Threads 1 #2 | configured=1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5186 | P1 | Threads 1 #3 | configured=1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5187 | P1 | Threads 1 #4 | configured=1 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5188 | P1 | Threads 2 #0 | configured=2 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5189 | P1 | Threads 2 #1 | configured=2 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5190 | P1 | Threads 2 #2 | configured=2 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5191 | P1 | Threads 2 #3 | configured=2 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5192 | P1 | Threads 2 #4 | configured=2 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5193 | P1 | Threads 4 #0 | configured=4 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5194 | P1 | Threads 4 #1 | configured=4 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5195 | P1 | Threads 4 #2 | configured=4 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5196 | P1 | Threads 4 #3 | configured=4 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5197 | P1 | Threads 4 #4 | configured=4 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5198 | P1 | Threads 8 #0 | configured=8 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5199 | P1 | Threads 8 #1 | configured=8 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5200 | P1 | Threads 8 #2 | configured=8 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5201 | P1 | Threads 8 #3 | configured=8 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5202 | P1 | Threads 8 #4 | configured=8 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5203 | P1 | Threads 16 #0 | configured=16 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5204 | P1 | Threads 16 #1 | configured=16 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5205 | P1 | Threads 16 #2 | configured=16 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5206 | P1 | Threads 16 #3 | configured=16 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5207 | P1 | Threads 16 #4 | configured=16 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5208 | P1 | Threads 32 #0 | configured=32 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5209 | P1 | Threads 32 #1 | configured=32 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5210 | P1 | Threads 32 #2 | configured=32 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5211 | P1 | Threads 32 #3 | configured=32 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5212 | P1 | Threads 32 #4 | configured=32 | valid | test_model_phase2_part_2.py |
-| TC-MODEL-5213 | P2 | KV cache q8_0 #0 | raw=q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5214 | P2 | KV cache q8_0 #1 | raw=q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5215 | P2 | KV cache q8_0 #2 | raw=q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5216 | P2 | KV cache q8_0 #3 | raw=q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5217 | P2 | KV cache q8_0 #4 | raw=q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5218 | P2 | KV cache Q8_0 #0 | raw=Q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5219 | P2 | KV cache Q8_0 #1 | raw=Q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5220 | P2 | KV cache Q8_0 #2 | raw=Q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5221 | P2 | KV cache Q8_0 #3 | raw=Q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5222 | P2 | KV cache Q8_0 #4 | raw=Q8_0 | enum=7 | test_model_phase2_part_3.py |
-| TC-MODEL-5223 | P2 | KV cache f16 #0 | raw=f16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5224 | P2 | KV cache f16 #1 | raw=f16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5225 | P2 | KV cache f16 #2 | raw=f16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5226 | P2 | KV cache f16 #3 | raw=f16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5227 | P2 | KV cache f16 #4 | raw=f16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5228 | P2 | KV cache F16 #0 | raw=F16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5229 | P2 | KV cache F16 #1 | raw=F16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5230 | P2 | KV cache F16 #2 | raw=F16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5231 | P2 | KV cache F16 #3 | raw=F16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5232 | P2 | KV cache F16 #4 | raw=F16 | enum=15 | test_model_phase2_part_3.py |
-| TC-MODEL-5233 | P2 | KV cache q4_0 #0 | raw=q4_0 | enum=2 | test_model_phase2_part_3.py |
-| TC-MODEL-5234 | P2 | KV cache q4_0 #1 | raw=q4_0 | enum=2 | test_model_phase2_part_3.py |
-| TC-MODEL-5235 | P2 | KV cache q4_0 #2 | raw=q4_0 | enum=2 | test_model_phase2_part_3.py |
-| TC-MODEL-5236 | P2 | KV cache q4_0 #3 | raw=q4_0 | enum=2 | test_model_phase2_part_3.py |
-| TC-MODEL-5237 | P2 | KV cache q4_0 #4 | raw=q4_0 | enum=2 | test_model_phase2_part_3.py |
-| TC-MODEL-5238 | P2 | KV cache q4_1 #0 | raw=q4_1 | enum=3 | test_model_phase2_part_3.py |
-| TC-MODEL-5239 | P2 | KV cache q4_1 #1 | raw=q4_1 | enum=3 | test_model_phase2_part_3.py |
-| TC-MODEL-5240 | P2 | KV cache q4_1 #2 | raw=q4_1 | enum=3 | test_model_phase2_part_3.py |
-| TC-MODEL-5241 | P2 | KV cache q4_1 #3 | raw=q4_1 | enum=3 | test_model_phase2_part_3.py |
-| TC-MODEL-5242 | P2 | KV cache q4_1 #4 | raw=q4_1 | enum=3 | test_model_phase2_part_3.py |
-| TC-MODEL-5243 | P2 | KV cache q5_0 #0 | raw=q5_0 | enum=8 | test_model_phase2_part_3.py |
-| TC-MODEL-5244 | P2 | KV cache q5_0 #1 | raw=q5_0 | enum=8 | test_model_phase2_part_3.py |
-| TC-MODEL-5245 | P2 | KV cache q5_0 #2 | raw=q5_0 | enum=8 | test_model_phase2_part_3.py |
-| TC-MODEL-5246 | P2 | KV cache q5_0 #3 | raw=q5_0 | enum=8 | test_model_phase2_part_3.py |
-| TC-MODEL-5247 | P2 | KV cache q5_0 #4 | raw=q5_0 | enum=8 | test_model_phase2_part_3.py |
-| TC-MODEL-5248 | P2 | KV cache q5_1 #0 | raw=q5_1 | enum=9 | test_model_phase2_part_3.py |
-| TC-MODEL-5249 | P2 | KV cache q5_1 #1 | raw=q5_1 | enum=9 | test_model_phase2_part_3.py |
-| TC-MODEL-5250 | P2 | KV cache q5_1 #2 | raw=q5_1 | enum=9 | test_model_phase2_part_3.py |
-| TC-MODEL-5251 | P2 | KV cache q5_1 #3 | raw=q5_1 | enum=9 | test_model_phase2_part_3.py |
-| TC-MODEL-5252 | P2 | KV cache q5_1 #4 | raw=q5_1 | enum=9 | test_model_phase2_part_3.py |
-| TC-MODEL-5253 | P2 | KV cache q2_k #0 | raw=q2_k | enum=10 | test_model_phase2_part_3.py |
-| TC-MODEL-5254 | P2 | KV cache q2_k #1 | raw=q2_k | enum=10 | test_model_phase2_part_3.py |
-| TC-MODEL-5255 | P2 | KV cache q2_k #2 | raw=q2_k | enum=10 | test_model_phase2_part_3.py |
-| TC-MODEL-5256 | P2 | KV cache q2_k #3 | raw=q2_k | enum=10 | test_model_phase2_part_3.py |
-| TC-MODEL-5257 | P2 | KV cache q2_k #4 | raw=q2_k | enum=10 | test_model_phase2_part_3.py |
-| TC-MODEL-5258 | P2 | KV cache f32 #0 | raw=f32 | enum=0 | test_model_phase2_part_3.py |
-| TC-MODEL-5259 | P2 | KV cache f32 #1 | raw=f32 | enum=0 | test_model_phase2_part_3.py |
-| TC-MODEL-5260 | P2 | KV cache f32 #2 | raw=f32 | enum=0 | test_model_phase2_part_3.py |
-| TC-MODEL-5261 | P2 | KV cache f32 #3 | raw=f32 | enum=0 | test_model_phase2_part_3.py |
-| TC-MODEL-5262 | P2 | KV cache f32 #4 | raw=f32 | enum=0 | test_model_phase2_part_3.py |
-| TC-MODEL-5263 | P2 | Download scenario 0 | scenario=0,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5264 | P2 | Download scenario 1 | scenario=1,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5265 | P2 | Download scenario 2 | scenario=2,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5266 | P2 | Download scenario 3 | scenario=3,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5267 | P2 | Download scenario 4 | scenario=4,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5268 | P2 | Download scenario 5 | scenario=5,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5269 | P2 | Download scenario 6 | scenario=6,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5270 | P2 | Download scenario 7 | scenario=7,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5271 | P2 | Download scenario 8 | scenario=8,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5272 | P2 | Download scenario 9 | scenario=9,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5273 | P2 | Download scenario 10 | scenario=10,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5274 | P2 | Download scenario 11 | scenario=11,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5275 | P2 | Download scenario 12 | scenario=12,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5276 | P2 | Download scenario 13 | scenario=13,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5277 | P2 | Download scenario 14 | scenario=14,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5278 | P2 | Download scenario 15 | scenario=15,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5279 | P2 | Download scenario 16 | scenario=16,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5280 | P2 | Download scenario 17 | scenario=17,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5281 | P2 | Download scenario 18 | scenario=18,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5282 | P2 | Download scenario 19 | scenario=19,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5283 | P2 | Download scenario 20 | scenario=20,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5284 | P2 | Download scenario 21 | scenario=21,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5285 | P2 | Download scenario 22 | scenario=22,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5286 | P2 | Download scenario 23 | scenario=23,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5287 | P2 | Download scenario 24 | scenario=24,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5288 | P2 | Download scenario 25 | scenario=25,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5289 | P2 | Download scenario 26 | scenario=26,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5290 | P2 | Download scenario 27 | scenario=27,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5291 | P2 | Download scenario 28 | scenario=28,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5292 | P2 | Download scenario 29 | scenario=29,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5293 | P2 | Download scenario 30 | scenario=30,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5294 | P2 | Download scenario 31 | scenario=31,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5295 | P2 | Download scenario 32 | scenario=32,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5296 | P2 | Download scenario 33 | scenario=33,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5297 | P2 | Download scenario 34 | scenario=34,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5298 | P2 | Download scenario 35 | scenario=35,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5299 | P2 | Download scenario 36 | scenario=36,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5300 | P2 | Download scenario 37 | scenario=37,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5301 | P2 | Download scenario 38 | scenario=38,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5302 | P2 | Download scenario 39 | scenario=39,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5303 | P2 | Download scenario 40 | scenario=40,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5304 | P2 | Download scenario 41 | scenario=41,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5305 | P2 | Download scenario 42 | scenario=42,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5306 | P2 | Download scenario 43 | scenario=43,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5307 | P2 | Download scenario 44 | scenario=44,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5308 | P2 | Download scenario 45 | scenario=45,variant=0 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5309 | P2 | Download scenario 46 | scenario=46,variant=1 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5310 | P2 | Download scenario 47 | scenario=47,variant=2 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5311 | P2 | Download scenario 48 | scenario=48,variant=3 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5312 | P2 | Download scenario 49 | scenario=49,variant=4 | resilient | test_model_phase2_part_3.py |
-| TC-MODEL-5313 | P2 | Download scenario 50 | scenario=50,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5314 | P2 | Download scenario 51 | scenario=51,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5315 | P2 | Download scenario 52 | scenario=52,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5316 | P2 | Download scenario 53 | scenario=53,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5317 | P2 | Download scenario 54 | scenario=54,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5318 | P2 | Download scenario 55 | scenario=55,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5319 | P2 | Download scenario 56 | scenario=56,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5320 | P2 | Download scenario 57 | scenario=57,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5321 | P2 | Download scenario 58 | scenario=58,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5322 | P2 | Download scenario 59 | scenario=59,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5323 | P2 | Download scenario 60 | scenario=60,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5324 | P2 | Download scenario 61 | scenario=61,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5325 | P2 | Download scenario 62 | scenario=62,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5326 | P2 | Download scenario 63 | scenario=63,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5327 | P2 | Download scenario 64 | scenario=64,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5328 | P2 | Download scenario 65 | scenario=65,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5329 | P2 | Download scenario 66 | scenario=66,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5330 | P2 | Download scenario 67 | scenario=67,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5331 | P2 | Download scenario 68 | scenario=68,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5332 | P2 | Download scenario 69 | scenario=69,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5333 | P2 | Download scenario 70 | scenario=70,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5334 | P2 | Download scenario 71 | scenario=71,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5335 | P2 | Download scenario 72 | scenario=72,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5336 | P2 | Download scenario 73 | scenario=73,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5337 | P2 | Download scenario 74 | scenario=74,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5338 | P2 | Download scenario 75 | scenario=75,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5339 | P2 | Download scenario 76 | scenario=76,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5340 | P2 | Download scenario 77 | scenario=77,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5341 | P2 | Download scenario 78 | scenario=78,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5342 | P2 | Download scenario 79 | scenario=79,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5343 | P2 | Download scenario 80 | scenario=80,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5344 | P2 | Download scenario 81 | scenario=81,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5345 | P2 | Download scenario 82 | scenario=82,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5346 | P2 | Download scenario 83 | scenario=83,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5347 | P2 | Download scenario 84 | scenario=84,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5348 | P2 | Download scenario 85 | scenario=85,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5349 | P2 | Download scenario 86 | scenario=86,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5350 | P2 | Download scenario 87 | scenario=87,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5351 | P2 | Download scenario 88 | scenario=88,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5352 | P2 | Download scenario 89 | scenario=89,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5353 | P2 | Download scenario 90 | scenario=90,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5354 | P2 | Download scenario 91 | scenario=91,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5355 | P2 | Download scenario 92 | scenario=92,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5356 | P2 | Download scenario 93 | scenario=93,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5357 | P2 | Download scenario 94 | scenario=94,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5358 | P2 | Download scenario 95 | scenario=95,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5359 | P2 | Download scenario 96 | scenario=96,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5360 | P2 | Download scenario 97 | scenario=97,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5361 | P2 | Download scenario 98 | scenario=98,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5362 | P2 | Download scenario 99 | scenario=99,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5363 | P2 | Download scenario 100 | scenario=100,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5364 | P2 | Download scenario 101 | scenario=101,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5365 | P2 | Download scenario 102 | scenario=102,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5366 | P2 | Download scenario 103 | scenario=103,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5367 | P2 | Download scenario 104 | scenario=104,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5368 | P2 | Download scenario 105 | scenario=105,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5369 | P2 | Download scenario 106 | scenario=106,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5370 | P2 | Download scenario 107 | scenario=107,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5371 | P2 | Download scenario 108 | scenario=108,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5372 | P2 | Download scenario 109 | scenario=109,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5373 | P2 | Download scenario 110 | scenario=110,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5374 | P2 | Download scenario 111 | scenario=111,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5375 | P2 | Download scenario 112 | scenario=112,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5376 | P2 | Download scenario 113 | scenario=113,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5377 | P2 | Download scenario 114 | scenario=114,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5378 | P2 | Download scenario 115 | scenario=115,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5379 | P2 | Download scenario 116 | scenario=116,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5380 | P2 | Download scenario 117 | scenario=117,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5381 | P2 | Download scenario 118 | scenario=118,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5382 | P2 | Download scenario 119 | scenario=119,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5383 | P2 | Download scenario 120 | scenario=120,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5384 | P2 | Download scenario 121 | scenario=121,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5385 | P2 | Download scenario 122 | scenario=122,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5386 | P2 | Download scenario 123 | scenario=123,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5387 | P2 | Download scenario 124 | scenario=124,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5388 | P2 | Download scenario 125 | scenario=125,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5389 | P2 | Download scenario 126 | scenario=126,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5390 | P2 | Download scenario 127 | scenario=127,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5391 | P2 | Download scenario 128 | scenario=128,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5392 | P2 | Download scenario 129 | scenario=129,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5393 | P2 | Download scenario 130 | scenario=130,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5394 | P2 | Download scenario 131 | scenario=131,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5395 | P2 | Download scenario 132 | scenario=132,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5396 | P2 | Download scenario 133 | scenario=133,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5397 | P2 | Download scenario 134 | scenario=134,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5398 | P2 | Download scenario 135 | scenario=135,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5399 | P2 | Download scenario 136 | scenario=136,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5400 | P2 | Download scenario 137 | scenario=137,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5401 | P2 | Download scenario 138 | scenario=138,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5402 | P2 | Download scenario 139 | scenario=139,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5403 | P2 | Download scenario 140 | scenario=140,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5404 | P2 | Download scenario 141 | scenario=141,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5405 | P2 | Download scenario 142 | scenario=142,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5406 | P2 | Download scenario 143 | scenario=143,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5407 | P2 | Download scenario 144 | scenario=144,variant=4 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5408 | P2 | Download scenario 145 | scenario=145,variant=0 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5409 | P2 | Download scenario 146 | scenario=146,variant=1 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5410 | P2 | Download scenario 147 | scenario=147,variant=2 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5411 | P2 | Download scenario 148 | scenario=148,variant=3 | resilient | test_model_phase2_part_4.py |
-| TC-MODEL-5412 | P2 | Download scenario 149 | scenario=149,variant=4 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5163 | P1 | Threads auto | configured=auto | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5164 | P1 | Threads 0 | configured=0 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5165 | P1 | Threads -1 | configured=-1 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5166 | P1 | Threads abc | configured=abc | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5167 | P1 | Threads 1 | configured=1 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5168 | P1 | Threads 2 | configured=2 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5169 | P1 | Threads 3 | configured=3 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5170 | P1 | Threads 4 | configured=4 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5171 | P1 | Threads 5 | configured=5 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5172 | P1 | Threads 6 | configured=6 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5173 | P1 | Threads 7 | configured=7 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5174 | P1 | Threads 8 | configured=8 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5175 | P1 | Threads 9 | configured=9 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5176 | P1 | Threads 10 | configured=10 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5177 | P1 | Threads 11 | configured=11 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5178 | P1 | Threads 12 | configured=12 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5179 | P1 | Threads 13 | configured=13 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5180 | P1 | Threads 14 | configured=14 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5181 | P1 | Threads 15 | configured=15 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5182 | P1 | Threads 16 | configured=16 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5183 | P1 | Threads 17 | configured=17 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5184 | P1 | Threads 18 | configured=18 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5185 | P1 | Threads 19 | configured=19 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5186 | P1 | Threads 20 | configured=20 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5187 | P1 | Threads 21 | configured=21 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5188 | P1 | Threads 22 | configured=22 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5189 | P1 | Threads 23 | configured=23 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5190 | P1 | Threads 24 | configured=24 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5191 | P1 | Threads 25 | configured=25 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5192 | P1 | Threads 26 | configured=26 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5193 | P1 | Threads 27 | configured=27 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5194 | P1 | Threads 28 | configured=28 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5195 | P1 | Threads 29 | configured=29 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5196 | P1 | Threads 30 | configured=30 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5197 | P1 | Threads 31 | configured=31 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5198 | P1 | Threads 32 | configured=32 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5199 | P1 | Threads 33 | configured=33 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5200 | P1 | Threads 34 | configured=34 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5201 | P1 | Threads 35 | configured=35 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5202 | P1 | Threads 36 | configured=36 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5203 | P1 | Threads 37 | configured=37 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5204 | P1 | Threads 38 | configured=38 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5205 | P1 | Threads 39 | configured=39 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5206 | P1 | Threads 40 | configured=40 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5207 | P1 | Threads 41 | configured=41 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5208 | P1 | Threads 42 | configured=42 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5209 | P1 | Threads 43 | configured=43 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5210 | P1 | Threads 44 | configured=44 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5211 | P1 | Threads 45 | configured=45 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5212 | P1 | Threads 46 | configured=46 | valid | test_model_phase2_part_2.py |
+| TC-MODEL-5213 | P2 | KV cache 'q8_0' | raw='q8_0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5214 | P2 | KV cache 'Q8_0' | raw='Q8_0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5215 | P2 | KV cache ' q8_0 ' | raw=' q8_0 ' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5216 | P2 | KV cache 'q8-0' | raw='q8-0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5217 | P2 | KV cache 'q8_0 ' | raw='q8_0 ' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5218 | P2 | KV cache 'f16' | raw='f16' | enum=15 | test_model_phase2_part_3.py |
+| TC-MODEL-5219 | P2 | KV cache 'F16' | raw='F16' | enum=15 | test_model_phase2_part_3.py |
+| TC-MODEL-5220 | P2 | KV cache ' f16 ' | raw=' f16 ' | enum=15 | test_model_phase2_part_3.py |
+| TC-MODEL-5221 | P2 | KV cache 'f16' | raw='f16' | enum=15 | test_model_phase2_part_3.py |
+| TC-MODEL-5222 | P2 | KV cache 'f16 ' | raw='f16 ' | enum=15 | test_model_phase2_part_3.py |
+| TC-MODEL-5223 | P2 | KV cache 'q4_0' | raw='q4_0' | enum=2 | test_model_phase2_part_3.py |
+| TC-MODEL-5224 | P2 | KV cache 'Q4_0' | raw='Q4_0' | enum=2 | test_model_phase2_part_3.py |
+| TC-MODEL-5225 | P2 | KV cache ' q4_0 ' | raw=' q4_0 ' | enum=2 | test_model_phase2_part_3.py |
+| TC-MODEL-5226 | P2 | KV cache 'q4-0' | raw='q4-0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5227 | P2 | KV cache 'q4_0 ' | raw='q4_0 ' | enum=2 | test_model_phase2_part_3.py |
+| TC-MODEL-5228 | P2 | KV cache 'q4_1' | raw='q4_1' | enum=3 | test_model_phase2_part_3.py |
+| TC-MODEL-5229 | P2 | KV cache 'Q4_1' | raw='Q4_1' | enum=3 | test_model_phase2_part_3.py |
+| TC-MODEL-5230 | P2 | KV cache ' q4_1 ' | raw=' q4_1 ' | enum=3 | test_model_phase2_part_3.py |
+| TC-MODEL-5231 | P2 | KV cache 'q4-1' | raw='q4-1' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5232 | P2 | KV cache 'q4_1 ' | raw='q4_1 ' | enum=3 | test_model_phase2_part_3.py |
+| TC-MODEL-5233 | P2 | KV cache 'q5_0' | raw='q5_0' | enum=8 | test_model_phase2_part_3.py |
+| TC-MODEL-5234 | P2 | KV cache 'Q5_0' | raw='Q5_0' | enum=8 | test_model_phase2_part_3.py |
+| TC-MODEL-5235 | P2 | KV cache ' q5_0 ' | raw=' q5_0 ' | enum=8 | test_model_phase2_part_3.py |
+| TC-MODEL-5236 | P2 | KV cache 'q5-0' | raw='q5-0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5237 | P2 | KV cache 'q5_0 ' | raw='q5_0 ' | enum=8 | test_model_phase2_part_3.py |
+| TC-MODEL-5238 | P2 | KV cache 'q5_1' | raw='q5_1' | enum=9 | test_model_phase2_part_3.py |
+| TC-MODEL-5239 | P2 | KV cache 'Q5_1' | raw='Q5_1' | enum=9 | test_model_phase2_part_3.py |
+| TC-MODEL-5240 | P2 | KV cache ' q5_1 ' | raw=' q5_1 ' | enum=9 | test_model_phase2_part_3.py |
+| TC-MODEL-5241 | P2 | KV cache 'q5-1' | raw='q5-1' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5242 | P2 | KV cache 'q5_1 ' | raw='q5_1 ' | enum=9 | test_model_phase2_part_3.py |
+| TC-MODEL-5243 | P2 | KV cache 'q2_k' | raw='q2_k' | enum=10 | test_model_phase2_part_3.py |
+| TC-MODEL-5244 | P2 | KV cache 'Q2_K' | raw='Q2_K' | enum=10 | test_model_phase2_part_3.py |
+| TC-MODEL-5245 | P2 | KV cache ' q2_k ' | raw=' q2_k ' | enum=10 | test_model_phase2_part_3.py |
+| TC-MODEL-5246 | P2 | KV cache 'q2-k' | raw='q2-k' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5247 | P2 | KV cache 'q2_k ' | raw='q2_k ' | enum=10 | test_model_phase2_part_3.py |
+| TC-MODEL-5248 | P2 | KV cache 'f32' | raw='f32' | enum=0 | test_model_phase2_part_3.py |
+| TC-MODEL-5249 | P2 | KV cache 'F32' | raw='F32' | enum=0 | test_model_phase2_part_3.py |
+| TC-MODEL-5250 | P2 | KV cache ' f32 ' | raw=' f32 ' | enum=0 | test_model_phase2_part_3.py |
+| TC-MODEL-5251 | P2 | KV cache 'f32' | raw='f32' | enum=0 | test_model_phase2_part_3.py |
+| TC-MODEL-5252 | P2 | KV cache 'f32 ' | raw='f32 ' | enum=0 | test_model_phase2_part_3.py |
+| TC-MODEL-5253 | P2 | KV cache 'q3_0' | raw='q3_0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5254 | P2 | KV cache 'q6_0' | raw='q6_0' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5255 | P2 | KV cache 'q3_k' | raw='q3_k' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5256 | P2 | KV cache 'auto' | raw='auto' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5257 | P2 | KV cache 'unknown' | raw='unknown' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5258 | P2 | KV cache 'Q4_2' | raw='Q4_2' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5259 | P2 | KV cache 'f64' | raw='f64' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5260 | P2 | KV cache 'i8' | raw='i8' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5261 | P2 | KV cache 'nf4' | raw='nf4' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5262 | P2 | KV cache 'q8' | raw='q8' | enum=7 | test_model_phase2_part_3.py |
+| TC-MODEL-5263 | P2 | Download retry after 0 failures via 0 | failures=0,endpoint=0 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5264 | P2 | Download retry after 0 failures via 1 | failures=0,endpoint=1 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5265 | P2 | Download retry after 0 failures via 2 | failures=0,endpoint=2 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5266 | P2 | Download retry after 0 failures via 3 | failures=0,endpoint=3 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5267 | P2 | Download retry after 0 failures via 4 | failures=0,endpoint=4 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5268 | P2 | Download retry after 0 failures via 5 | failures=0,endpoint=5 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5269 | P2 | Download retry after 0 failures via 6 | failures=0,endpoint=6 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5270 | P2 | Download retry after 0 failures via 7 | failures=0,endpoint=7 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5271 | P2 | Download retry after 0 failures via 8 | failures=0,endpoint=8 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5272 | P2 | Download retry after 0 failures via 9 | failures=0,endpoint=9 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5273 | P2 | Download retry after 0 failures via 10 | failures=0,endpoint=10 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5274 | P2 | Download retry after 0 failures via 11 | failures=0,endpoint=11 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5275 | P2 | Download retry after 0 failures via 12 | failures=0,endpoint=12 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5276 | P2 | Download retry after 0 failures via 13 | failures=0,endpoint=13 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5277 | P2 | Download retry after 0 failures via 14 | failures=0,endpoint=14 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5278 | P2 | Download retry after 0 failures via 15 | failures=0,endpoint=15 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5279 | P2 | Download retry after 0 failures via 16 | failures=0,endpoint=16 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5280 | P2 | Download retry after 0 failures via 17 | failures=0,endpoint=17 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5281 | P2 | Download retry after 0 failures via 18 | failures=0,endpoint=18 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5282 | P2 | Download retry after 0 failures via 19 | failures=0,endpoint=19 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5283 | P2 | Download retry after 0 failures via 20 | failures=0,endpoint=20 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5284 | P2 | Download retry after 0 failures via 21 | failures=0,endpoint=21 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5285 | P2 | Download retry after 0 failures via 22 | failures=0,endpoint=22 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5286 | P2 | Download retry after 0 failures via 23 | failures=0,endpoint=23 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5287 | P2 | Download retry after 0 failures via 24 | failures=0,endpoint=24 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5288 | P2 | Download retry after 0 failures via 25 | failures=0,endpoint=25 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5289 | P2 | Download retry after 0 failures via 26 | failures=0,endpoint=26 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5290 | P2 | Download retry after 0 failures via 27 | failures=0,endpoint=27 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5291 | P2 | Download retry after 0 failures via 28 | failures=0,endpoint=28 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5292 | P2 | Download retry after 0 failures via 29 | failures=0,endpoint=29 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5293 | P2 | Download retry after 0 failures via 30 | failures=0,endpoint=30 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5294 | P2 | Download retry after 0 failures via 31 | failures=0,endpoint=31 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5295 | P2 | Download retry after 0 failures via 32 | failures=0,endpoint=32 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5296 | P2 | Download retry after 0 failures via 33 | failures=0,endpoint=33 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5297 | P2 | Download retry after 0 failures via 34 | failures=0,endpoint=34 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5298 | P2 | Download retry after 0 failures via 35 | failures=0,endpoint=35 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5299 | P2 | Download retry after 0 failures via 36 | failures=0,endpoint=36 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5300 | P2 | Download retry after 0 failures via 37 | failures=0,endpoint=37 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5301 | P2 | Download retry after 0 failures via 38 | failures=0,endpoint=38 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5302 | P2 | Download retry after 0 failures via 39 | failures=0,endpoint=39 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5303 | P2 | Download retry after 0 failures via 40 | failures=0,endpoint=40 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5304 | P2 | Download retry after 0 failures via 41 | failures=0,endpoint=41 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5305 | P2 | Download retry after 0 failures via 42 | failures=0,endpoint=42 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5306 | P2 | Download retry after 0 failures via 43 | failures=0,endpoint=43 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5307 | P2 | Download retry after 0 failures via 44 | failures=0,endpoint=44 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5308 | P2 | Download retry after 0 failures via 45 | failures=0,endpoint=45 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5309 | P2 | Download retry after 0 failures via 46 | failures=0,endpoint=46 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5310 | P2 | Download retry after 0 failures via 47 | failures=0,endpoint=47 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5311 | P2 | Download retry after 0 failures via 48 | failures=0,endpoint=48 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5312 | P2 | Download retry after 0 failures via 49 | failures=0,endpoint=49 | resilient | test_model_phase2_part_3.py |
+| TC-MODEL-5313 | P2 | Download retry after 1 failures via 0 | failures=1,endpoint=0 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5314 | P2 | Download retry after 1 failures via 1 | failures=1,endpoint=1 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5315 | P2 | Download retry after 1 failures via 2 | failures=1,endpoint=2 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5316 | P2 | Download retry after 1 failures via 3 | failures=1,endpoint=3 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5317 | P2 | Download retry after 1 failures via 4 | failures=1,endpoint=4 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5318 | P2 | Download retry after 1 failures via 5 | failures=1,endpoint=5 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5319 | P2 | Download retry after 1 failures via 6 | failures=1,endpoint=6 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5320 | P2 | Download retry after 1 failures via 7 | failures=1,endpoint=7 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5321 | P2 | Download retry after 1 failures via 8 | failures=1,endpoint=8 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5322 | P2 | Download retry after 1 failures via 9 | failures=1,endpoint=9 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5323 | P2 | Download retry after 1 failures via 10 | failures=1,endpoint=10 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5324 | P2 | Download retry after 1 failures via 11 | failures=1,endpoint=11 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5325 | P2 | Download retry after 1 failures via 12 | failures=1,endpoint=12 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5326 | P2 | Download retry after 1 failures via 13 | failures=1,endpoint=13 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5327 | P2 | Download retry after 1 failures via 14 | failures=1,endpoint=14 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5328 | P2 | Download retry after 1 failures via 15 | failures=1,endpoint=15 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5329 | P2 | Download retry after 1 failures via 16 | failures=1,endpoint=16 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5330 | P2 | Download retry after 1 failures via 17 | failures=1,endpoint=17 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5331 | P2 | Download retry after 1 failures via 18 | failures=1,endpoint=18 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5332 | P2 | Download retry after 1 failures via 19 | failures=1,endpoint=19 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5333 | P2 | Download retry after 1 failures via 20 | failures=1,endpoint=20 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5334 | P2 | Download retry after 1 failures via 21 | failures=1,endpoint=21 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5335 | P2 | Download retry after 1 failures via 22 | failures=1,endpoint=22 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5336 | P2 | Download retry after 1 failures via 23 | failures=1,endpoint=23 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5337 | P2 | Download retry after 1 failures via 24 | failures=1,endpoint=24 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5338 | P2 | Download retry after 1 failures via 25 | failures=1,endpoint=25 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5339 | P2 | Download retry after 1 failures via 26 | failures=1,endpoint=26 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5340 | P2 | Download retry after 1 failures via 27 | failures=1,endpoint=27 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5341 | P2 | Download retry after 1 failures via 28 | failures=1,endpoint=28 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5342 | P2 | Download retry after 1 failures via 29 | failures=1,endpoint=29 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5343 | P2 | Download retry after 1 failures via 30 | failures=1,endpoint=30 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5344 | P2 | Download retry after 1 failures via 31 | failures=1,endpoint=31 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5345 | P2 | Download retry after 1 failures via 32 | failures=1,endpoint=32 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5346 | P2 | Download retry after 1 failures via 33 | failures=1,endpoint=33 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5347 | P2 | Download retry after 1 failures via 34 | failures=1,endpoint=34 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5348 | P2 | Download retry after 1 failures via 35 | failures=1,endpoint=35 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5349 | P2 | Download retry after 1 failures via 36 | failures=1,endpoint=36 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5350 | P2 | Download retry after 1 failures via 37 | failures=1,endpoint=37 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5351 | P2 | Download retry after 1 failures via 38 | failures=1,endpoint=38 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5352 | P2 | Download retry after 1 failures via 39 | failures=1,endpoint=39 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5353 | P2 | Download retry after 1 failures via 40 | failures=1,endpoint=40 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5354 | P2 | Download retry after 1 failures via 41 | failures=1,endpoint=41 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5355 | P2 | Download retry after 1 failures via 42 | failures=1,endpoint=42 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5356 | P2 | Download retry after 1 failures via 43 | failures=1,endpoint=43 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5357 | P2 | Download retry after 1 failures via 44 | failures=1,endpoint=44 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5358 | P2 | Download retry after 1 failures via 45 | failures=1,endpoint=45 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5359 | P2 | Download retry after 1 failures via 46 | failures=1,endpoint=46 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5360 | P2 | Download retry after 1 failures via 47 | failures=1,endpoint=47 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5361 | P2 | Download retry after 1 failures via 48 | failures=1,endpoint=48 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5362 | P2 | Download retry after 1 failures via 49 | failures=1,endpoint=49 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5363 | P2 | Download retry after 2 failures via 0 | failures=2,endpoint=0 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5364 | P2 | Download retry after 2 failures via 1 | failures=2,endpoint=1 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5365 | P2 | Download retry after 2 failures via 2 | failures=2,endpoint=2 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5366 | P2 | Download retry after 2 failures via 3 | failures=2,endpoint=3 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5367 | P2 | Download retry after 2 failures via 4 | failures=2,endpoint=4 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5368 | P2 | Download retry after 2 failures via 5 | failures=2,endpoint=5 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5369 | P2 | Download retry after 2 failures via 6 | failures=2,endpoint=6 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5370 | P2 | Download retry after 2 failures via 7 | failures=2,endpoint=7 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5371 | P2 | Download retry after 2 failures via 8 | failures=2,endpoint=8 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5372 | P2 | Download retry after 2 failures via 9 | failures=2,endpoint=9 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5373 | P2 | Download retry after 2 failures via 10 | failures=2,endpoint=10 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5374 | P2 | Download retry after 2 failures via 11 | failures=2,endpoint=11 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5375 | P2 | Download retry after 2 failures via 12 | failures=2,endpoint=12 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5376 | P2 | Download retry after 2 failures via 13 | failures=2,endpoint=13 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5377 | P2 | Download retry after 2 failures via 14 | failures=2,endpoint=14 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5378 | P2 | Download retry after 2 failures via 15 | failures=2,endpoint=15 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5379 | P2 | Download retry after 2 failures via 16 | failures=2,endpoint=16 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5380 | P2 | Download retry after 2 failures via 17 | failures=2,endpoint=17 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5381 | P2 | Download retry after 2 failures via 18 | failures=2,endpoint=18 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5382 | P2 | Download retry after 2 failures via 19 | failures=2,endpoint=19 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5383 | P2 | Download retry after 2 failures via 20 | failures=2,endpoint=20 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5384 | P2 | Download retry after 2 failures via 21 | failures=2,endpoint=21 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5385 | P2 | Download retry after 2 failures via 22 | failures=2,endpoint=22 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5386 | P2 | Download retry after 2 failures via 23 | failures=2,endpoint=23 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5387 | P2 | Download retry after 2 failures via 24 | failures=2,endpoint=24 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5388 | P2 | Download retry after 2 failures via 25 | failures=2,endpoint=25 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5389 | P2 | Download retry after 2 failures via 26 | failures=2,endpoint=26 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5390 | P2 | Download retry after 2 failures via 27 | failures=2,endpoint=27 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5391 | P2 | Download retry after 2 failures via 28 | failures=2,endpoint=28 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5392 | P2 | Download retry after 2 failures via 29 | failures=2,endpoint=29 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5393 | P2 | Download retry after 2 failures via 30 | failures=2,endpoint=30 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5394 | P2 | Download retry after 2 failures via 31 | failures=2,endpoint=31 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5395 | P2 | Download retry after 2 failures via 32 | failures=2,endpoint=32 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5396 | P2 | Download retry after 2 failures via 33 | failures=2,endpoint=33 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5397 | P2 | Download retry after 2 failures via 34 | failures=2,endpoint=34 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5398 | P2 | Download retry after 2 failures via 35 | failures=2,endpoint=35 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5399 | P2 | Download retry after 2 failures via 36 | failures=2,endpoint=36 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5400 | P2 | Download retry after 2 failures via 37 | failures=2,endpoint=37 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5401 | P2 | Download retry after 2 failures via 38 | failures=2,endpoint=38 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5402 | P2 | Download retry after 2 failures via 39 | failures=2,endpoint=39 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5403 | P2 | Download retry after 2 failures via 40 | failures=2,endpoint=40 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5404 | P2 | Download retry after 2 failures via 41 | failures=2,endpoint=41 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5405 | P2 | Download retry after 2 failures via 42 | failures=2,endpoint=42 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5406 | P2 | Download retry after 2 failures via 43 | failures=2,endpoint=43 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5407 | P2 | Download retry after 2 failures via 44 | failures=2,endpoint=44 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5408 | P2 | Download retry after 2 failures via 45 | failures=2,endpoint=45 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5409 | P2 | Download retry after 2 failures via 46 | failures=2,endpoint=46 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5410 | P2 | Download retry after 2 failures via 47 | failures=2,endpoint=47 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5411 | P2 | Download retry after 2 failures via 48 | failures=2,endpoint=48 | resilient | test_model_phase2_part_4.py |
+| TC-MODEL-5412 | P2 | Download retry after 2 failures via 49 | failures=2,endpoint=49 | resilient | test_model_phase2_part_4.py |
 | TC-MODEL-5413 | P2 | Prompt building scenario 0 | scenario=0 | prompt built | test_model_phase2_part_5.py |
 | TC-MODEL-5414 | P2 | Prompt building scenario 1 | scenario=1 | prompt built | test_model_phase2_part_5.py |
 | TC-MODEL-5415 | P2 | Prompt building scenario 2 | scenario=2 | prompt built | test_model_phase2_part_5.py |
