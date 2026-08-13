@@ -12,523 +12,124 @@ import pytest
 
 from tests.base_test import BaseTest
 
-_METHOD_RESTRICTION_CASES: tuple[tuple[str, str, int], ...] = (
-    (
-        "GET",
-        "/moderate",
-        9122,
-    ),
-    (
-        "GET",
-        "/moderate",
-        9123,
-    ),
-    (
-        "GET",
-        "/moderate",
-        9124,
-    ),
-    (
-        "GET",
-        "/moderate",
-        9125,
-    ),
-    (
-        "POST",
-        "/moderate",
-        9126,
-    ),
-    (
-        "POST",
-        "/moderate",
-        9127,
-    ),
-    (
-        "POST",
-        "/moderate",
-        9128,
-    ),
-    (
-        "POST",
-        "/moderate",
-        9129,
-    ),
-    (
-        "PUT",
-        "/moderate",
-        9130,
-    ),
-    (
-        "PUT",
-        "/moderate",
-        9131,
-    ),
-    (
-        "PUT",
-        "/moderate",
-        9132,
-    ),
-    (
-        "PUT",
-        "/moderate",
-        9133,
-    ),
-    (
-        "DELETE",
-        "/moderate",
-        9134,
-    ),
-    (
-        "DELETE",
-        "/moderate",
-        9135,
-    ),
-    (
-        "DELETE",
-        "/moderate",
-        9136,
-    ),
-    (
-        "DELETE",
-        "/moderate",
-        9137,
-    ),
-    (
-        "PATCH",
-        "/moderate",
-        9138,
-    ),
-    (
-        "PATCH",
-        "/moderate",
-        9139,
-    ),
-    (
-        "PATCH",
-        "/moderate",
-        9140,
-    ),
-    (
-        "PATCH",
-        "/moderate",
-        9141,
-    ),
-    (
-        "GET",
-        "/moderate/batch",
-        9142,
-    ),
-    (
-        "GET",
-        "/moderate/batch",
-        9143,
-    ),
-    (
-        "GET",
-        "/moderate/batch",
-        9144,
-    ),
-    (
-        "GET",
-        "/moderate/batch",
-        9145,
-    ),
-    (
-        "POST",
-        "/moderate/batch",
-        9146,
-    ),
-    (
-        "POST",
-        "/moderate/batch",
-        9147,
-    ),
-    (
-        "POST",
-        "/moderate/batch",
-        9148,
-    ),
-    (
-        "POST",
-        "/moderate/batch",
-        9149,
-    ),
-    (
-        "PUT",
-        "/moderate/batch",
-        9150,
-    ),
-    (
-        "PUT",
-        "/moderate/batch",
-        9151,
-    ),
-    (
-        "PUT",
-        "/moderate/batch",
-        9152,
-    ),
-    (
-        "PUT",
-        "/moderate/batch",
-        9153,
-    ),
-    (
-        "DELETE",
-        "/moderate/batch",
-        9154,
-    ),
-    (
-        "DELETE",
-        "/moderate/batch",
-        9155,
-    ),
-    (
-        "DELETE",
-        "/moderate/batch",
-        9156,
-    ),
-    (
-        "DELETE",
-        "/moderate/batch",
-        9157,
-    ),
-    (
-        "PATCH",
-        "/moderate/batch",
-        9158,
-    ),
-    (
-        "PATCH",
-        "/moderate/batch",
-        9159,
-    ),
-    (
-        "PATCH",
-        "/moderate/batch",
-        9160,
-    ),
-    (
-        "PATCH",
-        "/moderate/batch",
-        9161,
-    ),
-    (
-        "GET",
-        "/health",
-        9162,
-    ),
-    (
-        "GET",
-        "/health",
-        9163,
-    ),
-    (
-        "GET",
-        "/health",
-        9164,
-    ),
-    (
-        "GET",
-        "/health",
-        9165,
-    ),
-    (
-        "POST",
-        "/health",
-        9166,
-    ),
-    (
-        "POST",
-        "/health",
-        9167,
-    ),
-    (
-        "POST",
-        "/health",
-        9168,
-    ),
-    (
-        "POST",
-        "/health",
-        9169,
-    ),
-    (
-        "PUT",
-        "/health",
-        9170,
-    ),
-    (
-        "PUT",
-        "/health",
-        9171,
-    ),
-    (
-        "PUT",
-        "/health",
-        9172,
-    ),
-    (
-        "PUT",
-        "/health",
-        9173,
-    ),
-    (
-        "DELETE",
-        "/health",
-        9174,
-    ),
-    (
-        "DELETE",
-        "/health",
-        9175,
-    ),
-    (
-        "DELETE",
-        "/health",
-        9176,
-    ),
-    (
-        "DELETE",
-        "/health",
-        9177,
-    ),
-    (
-        "PATCH",
-        "/health",
-        9178,
-    ),
-    (
-        "PATCH",
-        "/health",
-        9179,
-    ),
-    (
-        "PATCH",
-        "/health",
-        9180,
-    ),
-    (
-        "PATCH",
-        "/health",
-        9181,
-    ),
-    (
-        "GET",
-        "/metrics",
-        9182,
-    ),
-    (
-        "GET",
-        "/metrics",
-        9183,
-    ),
-    (
-        "GET",
-        "/metrics",
-        9184,
-    ),
-    (
-        "GET",
-        "/metrics",
-        9185,
-    ),
-    (
-        "POST",
-        "/metrics",
-        9186,
-    ),
-    (
-        "POST",
-        "/metrics",
-        9187,
-    ),
-    (
-        "POST",
-        "/metrics",
-        9188,
-    ),
-    (
-        "POST",
-        "/metrics",
-        9189,
-    ),
-    (
-        "PUT",
-        "/metrics",
-        9190,
-    ),
-    (
-        "PUT",
-        "/metrics",
-        9191,
-    ),
-    (
-        "PUT",
-        "/metrics",
-        9192,
-    ),
-    (
-        "PUT",
-        "/metrics",
-        9193,
-    ),
-    (
-        "DELETE",
-        "/metrics",
-        9194,
-    ),
-    (
-        "DELETE",
-        "/metrics",
-        9195,
-    ),
-    (
-        "DELETE",
-        "/metrics",
-        9196,
-    ),
-    (
-        "DELETE",
-        "/metrics",
-        9197,
-    ),
-    (
-        "PATCH",
-        "/metrics",
-        9198,
-    ),
-    (
-        "PATCH",
-        "/metrics",
-        9199,
-    ),
-    (
-        "PATCH",
-        "/metrics",
-        9200,
-    ),
-    (
-        "PATCH",
-        "/metrics",
-        9201,
-    ),
-    (
-        "GET",
-        "/",
-        9202,
-    ),
-    (
-        "GET",
-        "/",
-        9203,
-    ),
-    (
-        "GET",
-        "/",
-        9204,
-    ),
-    (
-        "GET",
-        "/",
-        9205,
-    ),
-    (
-        "POST",
-        "/",
-        9206,
-    ),
-    (
-        "POST",
-        "/",
-        9207,
-    ),
-    (
-        "POST",
-        "/",
-        9208,
-    ),
-    (
-        "POST",
-        "/",
-        9209,
-    ),
-    (
-        "PUT",
-        "/",
-        9210,
-    ),
-    (
-        "PUT",
-        "/",
-        9211,
-    ),
-    (
-        "PUT",
-        "/",
-        9212,
-    ),
-    (
-        "PUT",
-        "/",
-        9213,
-    ),
-    (
-        "DELETE",
-        "/",
-        9214,
-    ),
-    (
-        "DELETE",
-        "/",
-        9215,
-    ),
-    (
-        "DELETE",
-        "/",
-        9216,
-    ),
-    (
-        "DELETE",
-        "/",
-        9217,
-    ),
-    (
-        "PATCH",
-        "/",
-        9218,
-    ),
-    (
-        "PATCH",
-        "/",
-        9219,
-    ),
-    (
-        "PATCH",
-        "/",
-        9220,
-    ),
-    (
-        "PATCH",
-        "/",
-        9221,
-    ),
+_METHOD_RESTRICTION_CASES: tuple[tuple[str, str, int, int], ...] = (
+    ('POST', '/moderate', 200, 9102,),
+    ('GET', '/moderate', 405, 9103,),
+    ('PUT', '/moderate', 405, 9104,),
+    ('DELETE', '/moderate', 405, 9105,),
+    ('PATCH', '/moderate', 405, 9106,),
+    ('POST', '/moderate/batch', 200, 9107,),
+    ('GET', '/moderate/batch', 405, 9108,),
+    ('PUT', '/moderate/batch', 405, 9109,),
+    ('DELETE', '/moderate/batch', 405, 9110,),
+    ('PATCH', '/moderate/batch', 405, 9111,),
+    ('GET', '/health', 200, 9112,),
+    ('POST', '/health', 405, 9113,),
+    ('PUT', '/health', 405, 9114,),
+    ('DELETE', '/health', 405, 9115,),
+    ('PATCH', '/health', 405, 9116,),
+    ('GET', '/metrics', 200, 9117,),
+    ('POST', '/metrics', 405, 9118,),
+    ('PUT', '/metrics', 405, 9119,),
+    ('DELETE', '/metrics', 405, 9120,),
+    ('PATCH', '/metrics', 405, 9121,),
+    ('GET', '/', 200, 9122,),
+    ('POST', '/', 405, 9123,),
+    ('PUT', '/', 405, 9124,),
+    ('DELETE', '/', 405, 9125,),
+    ('PATCH', '/', 405, 9126,),
+    ('GET', '/admin/wordbank/stats', 200, 9127,),
+    ('POST', '/admin/wordbank/stats', 405, 9128,),
+    ('PUT', '/admin/wordbank/stats', 405, 9129,),
+    ('DELETE', '/admin/wordbank/stats', 405, 9130,),
+    ('PATCH', '/admin/wordbank/stats', 405, 9131,),
+    ('GET', '/admin/wordbank/words', 200, 9132,),
+    ('POST', '/admin/wordbank/words', 422, 9133,),
+    ('PUT', '/admin/wordbank/words', 405, 9134,),
+    ('DELETE', '/admin/wordbank/words', 422, 9135,),
+    ('PATCH', '/admin/wordbank/words', 405, 9136,),
+    ('GET', '/admin/wordbank/export', 200, 9137,),
+    ('POST', '/admin/wordbank/export', 405, 9138,),
+    ('PUT', '/admin/wordbank/export', 405, 9139,),
+    ('DELETE', '/admin/wordbank/export', 405, 9140,),
+    ('PATCH', '/admin/wordbank/export', 405, 9141,),
+    ('GET', '/admin/wordbank/languages', 200, 9142,),
+    ('POST', '/admin/wordbank/languages', 405, 9143,),
+    ('PUT', '/admin/wordbank/languages', 405, 9144,),
+    ('DELETE', '/admin/wordbank/languages', 405, 9145,),
+    ('PATCH', '/admin/wordbank/languages', 405, 9146,),
+    ('GET', '/admin/wordbank/categories', 200, 9147,),
+    ('POST', '/admin/wordbank/categories', 405, 9148,),
+    ('PUT', '/admin/wordbank/categories', 405, 9149,),
+    ('DELETE', '/admin/wordbank/categories', 405, 9150,),
+    ('PATCH', '/admin/wordbank/categories', 405, 9151,),
+    ('POST', '/admin/wordbank/import', 200, 9152,),
+    ('GET', '/admin/wordbank/import', 405, 9153,),
+    ('PUT', '/admin/wordbank/import', 405, 9154,),
+    ('DELETE', '/admin/wordbank/import', 405, 9155,),
+    ('PATCH', '/admin/wordbank/import', 405, 9156,),
+    ('POST', '/admin/reload', 200, 9157,),
+    ('GET', '/admin/reload', 405, 9158,),
+    ('PUT', '/admin/reload', 405, 9159,),
+    ('DELETE', '/admin/reload', 405, 9160,),
+    ('PATCH', '/admin/reload', 405, 9161,),
+    ('GET', '/admin/app-config', 200, 9162,),
+    ('POST', '/admin/app-config', 200, 9163,),
+    ('PUT', '/admin/app-config', 405, 9164,),
+    ('DELETE', '/admin/app-config', 405, 9165,),
+    ('PATCH', '/admin/app-config', 405, 9166,),
+    ('GET', '/admin/app-config/demo', 200, 9167,),
+    ('POST', '/admin/app-config/demo', 405, 9168,),
+    ('PUT', '/admin/app-config/demo', 405, 9169,),
+    ('DELETE', '/admin/app-config/demo', 405, 9170,),
+    ('PATCH', '/admin/app-config/demo', 405, 9171,),
+    ('GET', '/admin/app-config/other', 200, 9172,),
+    ('POST', '/admin/app-config/other', 405, 9173,),
+    ('PUT', '/admin/app-config/other', 405, 9174,),
+    ('DELETE', '/admin/app-config/other', 405, 9175,),
+    ('PATCH', '/admin/app-config/other', 405, 9176,),
+    ('GET', '/admin/settings', 200, 9177,),
+    ('POST', '/admin/settings', 200, 9178,),
+    ('PUT', '/admin/settings', 405, 9179,),
+    ('DELETE', '/admin/settings', 405, 9180,),
+    ('PATCH', '/admin/settings', 405, 9181,),
+    ('GET', '/admin/logs', 200, 9182,),
+    ('POST', '/admin/logs', 405, 9183,),
+    ('PUT', '/admin/logs', 405, 9184,),
+    ('DELETE', '/admin/logs', 405, 9185,),
+    ('PATCH', '/admin/logs', 405, 9186,),
+    ('GET', '/admin/stats', 200, 9187,),
+    ('POST', '/admin/stats', 405, 9188,),
+    ('PUT', '/admin/stats', 405, 9189,),
+    ('DELETE', '/admin/stats', 405, 9190,),
+    ('PATCH', '/admin/stats', 405, 9191,),
+    ('GET', '/admin/health', 200, 9192,),
+    ('POST', '/admin/health', 405, 9193,),
+    ('PUT', '/admin/health', 405, 9194,),
+    ('DELETE', '/admin/health', 405, 9195,),
+    ('PATCH', '/admin/health', 405, 9196,),
+    ('GET', '/admin/spot-check', 200, 9197,),
+    ('POST', '/admin/spot-check', 405, 9198,),
+    ('PUT', '/admin/spot-check', 405, 9199,),
+    ('DELETE', '/admin/spot-check', 405, 9200,),
+    ('PATCH', '/admin/spot-check', 405, 9201,),
 )
-
 
 class TestMethodRestriction(BaseTest):
     """Disallowed methods are rejected without error."""
 
-    @pytest.mark.parametrize(
-        (
-            "method",
-            "endpoint",
-            "uid",
-        ),
-        _METHOD_RESTRICTION_CASES,
-    )
-    def test_method_restriction(self, client: Any, method: str, endpoint: str, uid: int) -> None:
+    @pytest.mark.parametrize(('method', 'endpoint', 'expected_status', 'uid',), _METHOD_RESTRICTION_CASES)
+    def test_method_restriction(self, client: Any, admin_headers: dict[str, str], method: str, endpoint: str, expected_status: int, uid: int) -> None:
         """Disallowed methods are rejected without error."""
-        payload = {"text": "hi"} if endpoint.startswith("/moderate") and method == "POST" else None
-        response = client.request(method, endpoint, json=payload)
-        assert response.status_code in (200, 405, 422)
+        body = None
+        if method == 'POST' and 'moderate' in endpoint:
+            body = {'text': 'hi'} if endpoint == '/moderate' else {'items': [{'text': 'hi'}]}
+        elif method == 'POST' and endpoint == '/admin/wordbank/import':
+            body = {'items': [{'word': 'probe'}]}
+        elif method == 'POST' and endpoint == '/admin/app-config':
+            body = {'app_name': 'x', 'score_threshold': 50}
+        elif method == 'POST' and endpoint == '/admin/settings':
+            body = {'settings': {'WEIGHT_USER': 25}}
+        headers = admin_headers if endpoint.startswith('/admin') else None
+        response = client.request(method, endpoint, json=body, headers=headers)
+        assert response.status_code == expected_status
