@@ -28,6 +28,7 @@ from app.models.response import BatchModerationResponse, ModerationResponse
 from app.security.auth import RequireAdminApiKey
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.ratelimit import RateLimiter
+from app.test.router import create_test_router
 from app.utils.logger import ModerationLogger
 from app.wordbank.manager import WordBankManager
 from app.wordbank.storage import create_storage
@@ -313,6 +314,7 @@ def build_app(
     application.include_router(
         create_admin_router(engine, word_bank, settings.log_file_path, auth_dependency)
     )
+    application.include_router(create_test_router(engine, settings.log_file_path, auth_dependency))
 
     @application.get("/health")
     def health() -> dict[str, str]:
