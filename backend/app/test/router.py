@@ -17,10 +17,10 @@ import threading
 from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
 
 import orjson
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 from starlette.responses import StreamingResponse
@@ -45,6 +45,47 @@ def _sse(event: str, payload: dict[str, Any]) -> str:
     """
     body: str = json.dumps(payload, ensure_ascii=False, default=str)
     return f"event: {event}\ndata: {body}\n\n"
+
+
+def _stream_pipeline(engine: ModerationEngine, payload: ModerationRequest) -> StreamingResponse:
+    """Run a detailed moderation in a worker thread and stream its events.
+
+    Every stage completion is pushed through a thread-safe queue and emitted
+    as an SSE frame in pipeline order: ``stage1_complete``, one
+    ``detector_result`` per detector, ``stage2_complete``,
+    ``stage3_complete``, then ``complete`` (or ``error`` when the pipeline
+    raises). Both ``moderate-detail?stream=true`` and ``pipeline-status``
+    share this single ordering path.
+
+    :param engine: the moderation engine
+    :param payload: the moderation request to run
+    :return: a text/event-stream response
+    """
+    events: queue.Queue[tuple[str | None, dict[str, Any] | None]] = queue.Queue()
+
+    def worker() -> None:
+        """Run the pipeline and publish every stage event to the queue."""
+        try:
+            engine.moderate_detailed(
+                payload,
+                event_sink=lambda name, data: events.put((name, data)),
+            )
+        except Exception as exc:
+            events.put(("error", {"detail": str(exc)}))
+        finally:
+            events.put((None, None))
+
+    threading.Thread(target=worker, daemon=True).start()
+
+    def generate() -> Any:
+        """Yield the buffered events as SSE frames as they arrive."""
+        while True:
+            name, data = events.get()
+            if name is None:
+                break
+            yield _sse(name, data or {})
+
+    return StreamingResponse(generate(), media_type="text/event-stream", headers=_SSE_HEADERS)
 
 
 class ConfigUpdateRequest(BaseModel):
@@ -156,31 +197,31 @@ def create_test_router(  # noqa: C901 - router factory with many sub-routes
                 "trace": trace.to_dict(),
             }
 
-        events: queue.Queue[tuple[str | None, dict[str, Any] | None]] = queue.Queue()
+        return _stream_pipeline(engine, payload)
 
-        def worker() -> None:
-            """Run the pipeline and publish every stage event to the queue."""
-            try:
-                engine.moderate_detailed(
-                    payload,
-                    event_sink=lambda name, data: events.put((name, data)),
-                )
-            except Exception as exc:
-                events.put(("error", {"detail": str(exc)}))
-            finally:
-                events.put((None, None))
+    @router.get("/pipeline-status")
+    async def pipeline_status(
+        text: Annotated[str, Query(min_length=1, max_length=8192)],
+        user_id: Annotated[str | None, Query(min_length=1, max_length=256)] = None,
+        app_name: Annotated[str | None, Query(min_length=1, max_length=64)] = None,
+    ) -> Any:
+        """Stream one moderation pipeline run as Server-Sent Events.
 
-        threading.Thread(target=worker, daemon=True).start()
+        Accepts the message as a query parameter and emits the identical event
+        sequence as ``POST /test/moderate-detail?stream=true``:
+        ``stage1_complete``, one ``detector_result`` per detector,
+        ``stage2_complete``, ``stage3_complete``, then ``complete`` with the
+        full trace.
 
-        def generate() -> Any:
-            """Yield the buffered events as SSE frames as they arrive."""
-            while True:
-                name, data = events.get()
-                if name is None:
-                    break
-                yield _sse(name, data or {})
-
-        return StreamingResponse(generate(), media_type="text/event-stream", headers=_SSE_HEADERS)
+        :param text: the message to moderate (1-8192 characters)
+        :param user_id: optional caller-supplied user identifier
+        :param app_name: optional calling application name
+        :return: a text/event-stream response ending in a complete trace
+        """
+        return _stream_pipeline(
+            engine,
+            ModerationRequest(text=text, user_id=user_id, app_name=app_name),
+        )
 
     @router.post("/load-test")
     async def load_test(payload: LoadTestConfig) -> Any:
