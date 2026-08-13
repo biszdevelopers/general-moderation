@@ -13,6 +13,9 @@ export class WordBankService {
             headers: { ...this.authService.headers(), ...init?.headers },
         });
         if (!response.ok) {
+            if (response.status === 401) {
+                this.authService.handleUnauthorized();
+            }
             const body: unknown = await response.json().catch(() => null);
             const detail: unknown =
                 body !== null && typeof body === "object" && "detail" in body
