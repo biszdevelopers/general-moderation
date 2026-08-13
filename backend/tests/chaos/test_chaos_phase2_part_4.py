@@ -8,1108 +8,124 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from tests.base_test import BaseTest
 
+_ENGINE_RESILIENCE_CASES: tuple[tuple[int, int], ...] = (
+    (1, 9606,),
+    (2, 9607,),
+    (3, 9608,),
+    (4, 9609,),
+    (5, 9610,),
+    (6, 9611,),
+    (7, 9612,),
+    (8, 9613,),
+    (9, 9614,),
+    (10, 9615,),
+    (11, 9616,),
+    (12, 9617,),
+    (13, 9618,),
+    (14, 9619,),
+    (15, 9620,),
+    (16, 9621,),
+    (17, 9622,),
+    (18, 9623,),
+    (19, 9624,),
+    (20, 9625,),
+    (21, 9626,),
+    (22, 9627,),
+    (23, 9628,),
+    (24, 9629,),
+    (25, 9630,),
+    (26, 9631,),
+    (27, 9632,),
+    (28, 9633,),
+    (29, 9634,),
+    (30, 9635,),
+    (31, 9636,),
+    (32, 9637,),
+    (33, 9638,),
+    (34, 9639,),
+    (35, 9640,),
+    (36, 9641,),
+    (37, 9642,),
+    (38, 9643,),
+    (39, 9644,),
+    (40, 9645,),
+    (41, 9646,),
+    (42, 9647,),
+    (43, 9648,),
+    (44, 9649,),
+    (45, 9650,),
+    (46, 9651,),
+    (47, 9652,),
+    (48, 9653,),
+    (49, 9654,),
+    (50, 9655,),
+    (51, 9656,),
+    (52, 9657,),
+    (53, 9658,),
+    (54, 9659,),
+    (55, 9660,),
+    (56, 9661,),
+    (57, 9662,),
+    (58, 9663,),
+    (59, 9664,),
+    (60, 9665,),
+    (61, 9666,),
+    (62, 9667,),
+    (63, 9668,),
+    (64, 9669,),
+    (65, 9670,),
+    (66, 9671,),
+    (67, 9672,),
+    (68, 9673,),
+    (69, 9674,),
+    (70, 9675,),
+    (71, 9676,),
+    (72, 9677,),
+    (73, 9678,),
+    (74, 9679,),
+    (75, 9680,),
+    (76, 9681,),
+    (77, 9682,),
+    (78, 9683,),
+    (79, 9684,),
+    (80, 9685,),
+    (81, 9686,),
+    (82, 9687,),
+    (83, 9688,),
+    (84, 9689,),
+    (85, 9690,),
+    (86, 9691,),
+    (87, 9692,),
+    (88, 9693,),
+    (89, 9694,),
+    (90, 9695,),
+    (91, 9696,),
+    (92, 9697,),
+    (93, 9698,),
+    (94, 9699,),
+    (95, 9700,),
+    (96, 9701,),
+    (97, 9702,),
+    (98, 9703,),
+    (99, 9704,),
+    (100, 9705,),
+)
 
 class TestEngineResilience(BaseTest):
-    """EngineResilience scenarios."""
+    """The engine recovers across clear, refresh and re-moderate."""
 
-    def test_engine_resilience_0_9642(self, engine: Any, word_bank: Any) -> None:
+    @pytest.mark.parametrize(('n_moderations', 'uid',), _ENGINE_RESILIENCE_CASES)
+    def test_engine_resilience(self, engine: Any, word_bank: Any, n_moderations: int, uid: int) -> None:
         """The engine recovers across clear, refresh and re-moderate."""
         from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_1_9643(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_2_9644(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_3_9645(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_4_9646(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_5_9647(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_6_9648(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_7_9649(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_8_9650(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_9_9651(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_10_9652(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_11_9653(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_12_9654(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_13_9655(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_14_9656(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_15_9657(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_16_9658(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_17_9659(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_18_9660(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_19_9661(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_20_9662(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_21_9663(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_22_9664(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_23_9665(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_24_9666(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_25_9667(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_26_9668(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_27_9669(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_28_9670(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_29_9671(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_30_9672(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_31_9673(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_32_9674(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_33_9675(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_34_9676(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_35_9677(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_36_9678(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_37_9679(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_38_9680(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_39_9681(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_40_9682(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_41_9683(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_42_9684(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_43_9685(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_44_9686(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_45_9687(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_46_9688(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_47_9689(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_48_9690(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_49_9691(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_50_9692(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_51_9693(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_52_9694(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_53_9695(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_54_9696(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_55_9697(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_56_9698(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_57_9699(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_58_9700(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_59_9701(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_60_9702(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_61_9703(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_62_9704(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_63_9705(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_64_9706(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_65_9707(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_66_9708(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_67_9709(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_68_9710(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_69_9711(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_70_9712(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_71_9713(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_72_9714(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_73_9715(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_74_9716(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_75_9717(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_76_9718(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_77_9719(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_78_9720(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_79_9721(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_80_9722(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_81_9723(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_82_9724(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_83_9725(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_84_9726(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_85_9727(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_86_9728(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_87_9729(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_88_9730(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_89_9731(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_90_9732(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_91_9733(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_92_9734(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_93_9735(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_94_9736(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_95_9737(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_96_9738(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_97_9739(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_98_9740(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
-        engine.clear_cache()
-        assert isinstance(engine.metrics(), dict)
-        engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
-        assert result.verdict is not None
-
-    def test_engine_resilience_99_9741(self, engine: Any, word_bank: Any) -> None:
-        """The engine recovers across clear, refresh and re-moderate."""
-        from app.models.request import ModerationRequest
-
-        engine.moderate(ModerationRequest(text="resilient", app_name="a"))
+        for index in range(n_moderations):
+            engine.moderate(ModerationRequest(text=f'resilient {index}', app_name='a'))
         engine.clear_cache()
         assert isinstance(engine.metrics(), dict)
         engine.refresh_detectors()
-        result = engine.moderate(ModerationRequest(text="after refresh", app_name="a"))
+        result = engine.moderate(ModerationRequest(text='after refresh', app_name='a'))
         assert result.verdict is not None
