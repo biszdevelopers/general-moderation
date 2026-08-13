@@ -364,13 +364,16 @@ class SettingsService:
     def describe(self) -> list[dict[str, Any]]:
         """Return the full metadata list for the admin settings UI.
 
+        Secret values (``*_KEY`` and ``*_SECRET`` suffixes) are redacted so the
+        catalog never exposes credentials through the admin or test APIs.
+
         :return: key, value, type, description, and editability per setting
         """
         values: dict[str, Any] = self.all()
         return [
             {
                 "key": key,
-                "value": values[key],
+                "value": "********" if key.endswith(_SECRET_SUFFIXES) else values[key],
                 "type": self._value_type(values[key]),
                 "description": _DESCRIPTIONS.get(key, ""),
                 "editable": self.is_public(key),
