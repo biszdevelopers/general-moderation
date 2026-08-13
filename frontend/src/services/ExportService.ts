@@ -12,6 +12,9 @@ export class ExportService {
             headers: { ...this.authService.headers() },
         }).then((response: Response): Promise<Blob> => {
             if (!response.ok) {
+                if (response.status === 401) {
+                    this.authService.handleUnauthorized();
+                }
                 return response
                     .json()
                     .catch(() => null)
