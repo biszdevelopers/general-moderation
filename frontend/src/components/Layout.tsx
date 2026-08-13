@@ -1,12 +1,10 @@
-import { Avatar, Badge, Breadcrumb, Button, Layout as AntdLayout, Menu, Typography } from "antd";
+import { Avatar, Breadcrumb, Button, Layout as AntdLayout, Menu, Typography } from "antd";
 import {
-    BellOutlined,
     DashboardOutlined,
     DatabaseOutlined,
     ExportOutlined,
     FileSearchOutlined,
     LogoutOutlined,
-    SafetyCertificateOutlined,
     SettingOutlined,
     ToolOutlined,
     UserOutlined,
@@ -14,6 +12,7 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ReactElement, useState } from "react";
 import { useAppContext } from "../contexts/AppContext";
+import { NotificationBell } from "./NotificationBell";
 
 const { Header, Sider, Content, Footer } = AntdLayout;
 
@@ -58,9 +57,11 @@ export function Layout(): ReactElement {
                 theme="light"
             >
                 <div className="app-sider__brand">
-                    <div className="app-sider__logo">
-                        <SafetyCertificateOutlined />
-                    </div>
+                    <img
+                        src="/logo.svg"
+                        alt="General Moderation logo"
+                        className="app-sider__logo"
+                    />
                     {!collapsed && <span className="app-sider__name">General Moderation</span>}
                 </div>
                 <Menu
@@ -87,13 +88,7 @@ export function Layout(): ReactElement {
                         {headerTitle}
                     </Typography.Text>
                     <div className="app-header__actions">
-                        <Badge dot offset={[-6, 6]}>
-                            <Button
-                                type="text"
-                                icon={<BellOutlined />}
-                                aria-label="Notifications"
-                            />
-                        </Badge>
+                        <NotificationBell />
                         <Avatar size="small" icon={<UserOutlined />} />
                         <Button type="text" icon={<LogoutOutlined />} onClick={logout}>
                             Sign Out
