@@ -9,953 +9,160 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from app.ai.llama_detector import LlamaCppDetector
 from app.config import Settings
 from tests.base_test import BaseTest
 
 
 def _detector(tmp_path: Path) -> LlamaCppDetector:
-    (tmp_path / "models").mkdir(parents=True, exist_ok=True)
+    (tmp_path / 'models').mkdir(parents=True, exist_ok=True)
     settings = Settings(
         app_port=0,
-        model_path="auto",
-        model_dir=str(tmp_path / "models"),
-        model_filename="model.gguf",
-        model_primary_repo="owner/repo",
-        model_fallback_repo="fallback/repo",
-        hf_endpoint="http://127.0.0.1:1",
-        hf_mirror="http://127.0.0.1:2",
-        modelscope_endpoint="http://127.0.0.1:3",
-        log_file_path=str(tmp_path / "l.log"),
+        model_path='auto',
+        model_dir=str(tmp_path / 'models'),
+        model_filename='model.gguf',
+        model_primary_repo='owner/repo',
+        model_fallback_repo='fallback/repo',
+        hf_endpoint='http://127.0.0.1:1',
+        hf_mirror='http://127.0.0.1:2',
+        modelscope_endpoint='http://127.0.0.1:3',
+        log_file_path=str(tmp_path / 'l.log'),
     )
     return LlamaCppDetector(settings, None)
 
-
 class _FakeModel:
     metadata: dict[str, str] = {}  # noqa: RUF012
-
     def __init__(self, reply: str) -> None:
         self._reply = reply
-
     def __call__(self, prompt: str, **kwargs: object) -> dict[str, object]:
-        return {"choices": [{"text": self._reply}]}
-
+        return {'choices': [{'text': self._reply}]}
     def close(self) -> None:
         return None
 
-
 def _side_effect_factory(results: list[object]) -> Any:
     index: list[int] = [0]
-
     def _side_effect(*args: object, **kwargs: object) -> str:
         current: object = results[min(index[0], len(results) - 1)]
         index[0] += 1
         if isinstance(current, Exception):
             raise current
         return str(current)
-
     return _side_effect
 
+_PROMPT_BUILD_CASES: tuple[tuple[str, int], ...] = (
+    ('ordinary input message 0', 5213,),
+    ('ordinary input message 1', 5214,),
+    ('ordinary input message 2', 5215,),
+    ('ordinary input message 3', 5216,),
+    ('ordinary input message 4', 5217,),
+    ('ordinary input message 5', 5218,),
+    ('ordinary input message 6', 5219,),
+    ('ordinary input message 7', 5220,),
+    ('ordinary input message 8', 5221,),
+    ('ordinary input message 9', 5222,),
+    ('ordinary input message 10', 5223,),
+    ('ordinary input message 11', 5224,),
+    ('ordinary input message 12', 5225,),
+    ('ordinary input message 13', 5226,),
+    ('ordinary input message 14', 5227,),
+    ('ordinary input message 15', 5228,),
+    ('ordinary input message 16', 5229,),
+    ('ordinary input message 17', 5230,),
+    ('ordinary input message 18', 5231,),
+    ('ordinary input message 19', 5232,),
+    ('ordinary input message 20', 5233,),
+    ('ordinary input message 21', 5234,),
+    ('ordinary input message 22', 5235,),
+    ('ordinary input message 23', 5236,),
+    ('ordinary input message 24', 5237,),
+    ('ordinary input message 25', 5238,),
+    ('ordinary input message 26', 5239,),
+    ('ordinary input message 27', 5240,),
+    ('ordinary input message 28', 5241,),
+    ('ordinary input message 29', 5242,),
+    ('ordinary input message 30', 5243,),
+    ('ordinary input message 31', 5244,),
+    ('ordinary input message 32', 5245,),
+    ('ordinary input message 33', 5246,),
+    ('ordinary input message 34', 5247,),
+    ('ordinary input message 35', 5248,),
+    ('ordinary input message 36', 5249,),
+    ('ordinary input message 37', 5250,),
+    ('ordinary input message 38', 5251,),
+    ('ordinary input message 39', 5252,),
+    ('ordinary input message 40', 5253,),
+    ('ordinary input message 41', 5254,),
+    ('ordinary input message 42', 5255,),
+    ('ordinary input message 43', 5256,),
+    ('ordinary input message 44', 5257,),
+    ('ordinary input message 45', 5258,),
+    ('ordinary input message 46', 5259,),
+    ('ordinary input message 47', 5260,),
+    ('ordinary input message 48', 5261,),
+    ('ordinary input message 49', 5262,),
+    ('ordinary input message 50', 5263,),
+    ('ordinary input message 51', 5264,),
+    ('ordinary input message 52', 5265,),
+    ('ordinary input message 53', 5266,),
+    ('ordinary input message 54', 5267,),
+    ('ordinary input message 55', 5268,),
+    ('ordinary input message 56', 5269,),
+    ('ordinary input message 57', 5270,),
+    ('ordinary input message 58', 5271,),
+    ('ordinary input message 59', 5272,),
+    ('ordinary input message 60', 5273,),
+    ('ordinary input message 61', 5274,),
+    ('ordinary input message 62', 5275,),
+    ('ordinary input message 63', 5276,),
+    ('ordinary input message 64', 5277,),
+    ('ordinary input message 65', 5278,),
+    ('ordinary input message 66', 5279,),
+    ('ordinary input message 67', 5280,),
+    ('ordinary input message 68', 5281,),
+    ('ordinary input message 69', 5282,),
+    ('ordinary input message 70', 5283,),
+    ('ordinary input message 71', 5284,),
+    ('ordinary input message 72', 5285,),
+    ('ordinary input message 73', 5286,),
+    ('ordinary input message 74', 5287,),
+    ('ordinary input message 75', 5288,),
+    ('ordinary input message 76', 5289,),
+    ('ordinary input message 77', 5290,),
+    ('ordinary input message 78', 5291,),
+    ('ordinary input message 79', 5292,),
+    ('ordinary input message 80', 5293,),
+    ('ordinary input message 81', 5294,),
+    ('ordinary input message 82', 5295,),
+    ('ordinary input message 83', 5296,),
+    ('ordinary input message 84', 5297,),
+    ('ordinary input message 85', 5298,),
+    ('ordinary input message 86', 5299,),
+    ('ordinary input message 87', 5300,),
+    ('ordinary input message 88', 5301,),
+    ('ordinary input message 89', 5302,),
+    ('ordinary input message 90', 5303,),
+    ('ordinary input message 91', 5304,),
+    ('ordinary input message 92', 5305,),
+    ('ordinary input message 93', 5306,),
+    ('ordinary input message 94', 5307,),
+    ('ordinary input message 95', 5308,),
+    ('ordinary input message 96', 5309,),
+    ('ordinary input message 97', 5310,),
+    ('ordinary input message 98', 5311,),
+    ('ordinary input message 99', 5312,),
+)
 
-class TestPromptBuilding(BaseTest):
-    """PromptBuilding scenarios."""
+class TestPromptBuild(BaseTest):
+    """Fallback prompts carry the system role and sanitized payload."""
 
-    def test_prompt_build_0_5213(self, tmp_path: Path) -> None:
+    @pytest.mark.parametrize(('text', 'uid',), _PROMPT_BUILD_CASES)
+    def test_prompt_build(self, tmp_path: Path, text: str, uid: int) -> None:
         """Fallback prompts carry the system role and sanitized payload."""
         detector: LlamaCppDetector = _detector(tmp_path)
         detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_1_5214(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_2_5215(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_3_5216(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_4_5217(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_5_5218(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_6_5219(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_7_5220(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_8_5221(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_9_5222(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_10_5223(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_11_5224(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_12_5225(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_13_5226(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_14_5227(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_15_5228(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_16_5229(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_17_5230(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_18_5231(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_19_5232(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_20_5233(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_21_5234(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_22_5235(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_23_5236(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_24_5237(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_25_5238(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_26_5239(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_27_5240(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_28_5241(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_29_5242(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_30_5243(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_31_5244(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_32_5245(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_33_5246(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_34_5247(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_35_5248(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_36_5249(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_37_5250(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_38_5251(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_39_5252(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_40_5253(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_41_5254(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_42_5255(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_43_5256(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_44_5257(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_45_5258(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_46_5259(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_47_5260(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_48_5261(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_49_5262(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_50_5263(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_51_5264(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_52_5265(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_53_5266(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_54_5267(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_55_5268(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_56_5269(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_57_5270(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_58_5271(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_59_5272(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_60_5273(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_61_5274(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_62_5275(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_63_5276(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_64_5277(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_65_5278(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_66_5279(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_67_5280(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_68_5281(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_69_5282(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_70_5283(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_71_5284(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_72_5285(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_73_5286(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_74_5287(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_75_5288(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_76_5289(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_77_5290(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_78_5291(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_79_5292(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_80_5293(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_81_5294(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_82_5295(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_83_5296(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_84_5297(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_85_5298(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_86_5299(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_87_5300(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_88_5301(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_89_5302(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_90_5303(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_91_5304(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_92_5305(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_93_5306(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_94_5307(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_95_5308(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_96_5309(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_97_5310(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_98_5311(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
-        detector.shutdown()
-
-    def test_prompt_build_99_5312(self, tmp_path: Path) -> None:
-        """Fallback prompts carry the system role and sanitized payload."""
-        detector: LlamaCppDetector = _detector(tmp_path)
-        detector._chat_template = None
-        prompt = detector._build_prompt("ordinary input")
-        assert "ordinary input" in prompt
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
+        prompt = detector._build_prompt(text)
+        assert text in prompt
+        assert 'system' in prompt.lower()
         detector.shutdown()
