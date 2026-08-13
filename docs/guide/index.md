@@ -10,6 +10,7 @@ security, and deployment.
 | [Configuration](/guide/configuration) | Every environment variable |
 | [Word Banks](/guide/wordbanks) | Custom word management and the submodule dictionaries |
 | [Admin Settings](/guide/admin-settings) | Editing runtime parameters from the console |
+| [Test Workbench](/guide/test-workbench) | Interactive pipeline testing, load tests, and tuning |
 | [Data Export](/guide/data-export) | Downloading the complete data archive |
 | [Security](/guide/security) | Authentication, rate limiting, and hardening |
 | [Deployment](/guide/deployment) | systemd, Docker, nginx, and FRP recipes |
