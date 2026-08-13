@@ -895,336 +895,336 @@
 | TC-DET-1068 | P2 | gangajal nl obfuscated | nl obfuscated | matched=True | test_detectors_phase2_part_9.py |
 | TC-DET-1069 | P2 | gangajal pl obfuscated | pl obfuscated | matched=True | test_detectors_phase2_part_9.py |
 | TC-DET-1070 | P2 | gangajal uk obfuscated | uk obfuscated | matched=False | test_detectors_phase2_part_9.py |
-| TC-DET-1071 | P2 | safetext guard scenario 0 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1072 | P2 | safetext guard scenario 0 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1073 | P2 | safetext guard scenario 0 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1074 | P2 | safetext guard scenario 0 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1075 | P2 | safetext guard scenario 0 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1076 | P2 | safetext guard scenario 0 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1077 | P2 | safetext guard scenario 0 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1078 | P2 | safetext guard scenario 0 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1079 | P2 | safetext guard scenario 0 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1080 | P2 | safetext guard scenario 0 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1081 | P2 | safetext guard scenario 1 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1082 | P2 | safetext guard scenario 1 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1083 | P2 | safetext guard scenario 1 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1084 | P2 | safetext guard scenario 1 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1085 | P2 | safetext guard scenario 1 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1086 | P2 | safetext guard scenario 1 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1087 | P2 | safetext guard scenario 1 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1088 | P2 | safetext guard scenario 1 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1089 | P2 | safetext guard scenario 1 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1090 | P2 | safetext guard scenario 1 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1091 | P2 | safetext guard scenario 2 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1092 | P2 | safetext guard scenario 2 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1093 | P2 | safetext guard scenario 2 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1094 | P2 | safetext guard scenario 2 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1095 | P2 | safetext guard scenario 2 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1096 | P2 | safetext guard scenario 2 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1097 | P2 | safetext guard scenario 2 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1098 | P2 | safetext guard scenario 2 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1099 | P2 | safetext guard scenario 2 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1100 | P2 | safetext guard scenario 2 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_9.py |
-| TC-DET-1101 | P2 | safetext guard scenario 3 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1102 | P2 | safetext guard scenario 3 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1103 | P2 | safetext guard scenario 3 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1104 | P2 | safetext guard scenario 3 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1105 | P2 | safetext guard scenario 3 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1106 | P2 | safetext guard scenario 3 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1107 | P2 | safetext guard scenario 3 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1108 | P2 | safetext guard scenario 3 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1109 | P2 | safetext guard scenario 3 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1110 | P2 | safetext guard scenario 3 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1111 | P2 | safetext guard scenario 4 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1112 | P2 | safetext guard scenario 4 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1113 | P2 | safetext guard scenario 4 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1114 | P2 | safetext guard scenario 4 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1115 | P2 | safetext guard scenario 4 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1116 | P2 | safetext guard scenario 4 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1117 | P2 | safetext guard scenario 4 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1118 | P2 | safetext guard scenario 4 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1119 | P2 | safetext guard scenario 4 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1120 | P2 | safetext guard scenario 4 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1121 | P2 | safetext guard scenario 5 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1122 | P2 | safetext guard scenario 5 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1123 | P2 | safetext guard scenario 5 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1124 | P2 | safetext guard scenario 5 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1125 | P2 | safetext guard scenario 5 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1126 | P2 | safetext guard scenario 5 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1127 | P2 | safetext guard scenario 5 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1128 | P2 | safetext guard scenario 5 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1129 | P2 | safetext guard scenario 5 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1130 | P2 | safetext guard scenario 5 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1131 | P2 | safetext guard scenario 6 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1132 | P2 | safetext guard scenario 6 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1133 | P2 | safetext guard scenario 6 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1134 | P2 | safetext guard scenario 6 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1135 | P2 | safetext guard scenario 6 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1136 | P2 | safetext guard scenario 6 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1137 | P2 | safetext guard scenario 6 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1138 | P2 | safetext guard scenario 6 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1139 | P2 | safetext guard scenario 6 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1140 | P2 | safetext guard scenario 6 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1141 | P2 | safetext guard scenario 7 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1142 | P2 | safetext guard scenario 7 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1143 | P2 | safetext guard scenario 7 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1144 | P2 | safetext guard scenario 7 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1145 | P2 | safetext guard scenario 7 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1146 | P2 | safetext guard scenario 7 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1147 | P2 | safetext guard scenario 7 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1148 | P2 | safetext guard scenario 7 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1149 | P2 | safetext guard scenario 7 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1150 | P2 | safetext guard scenario 7 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1151 | P2 | safetext guard scenario 8 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1152 | P2 | safetext guard scenario 8 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1153 | P2 | safetext guard scenario 8 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1154 | P2 | safetext guard scenario 8 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1155 | P2 | safetext guard scenario 8 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1156 | P2 | safetext guard scenario 8 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1157 | P2 | safetext guard scenario 8 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1158 | P2 | safetext guard scenario 8 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1159 | P2 | safetext guard scenario 8 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1160 | P2 | safetext guard scenario 8 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1161 | P2 | safetext guard scenario 9 over en | package=safetext, lang=en | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1162 | P2 | safetext guard scenario 9 over ja | package=safetext, lang=ja | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1163 | P2 | safetext guard scenario 9 over ar | package=safetext, lang=ar | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1164 | P2 | safetext guard scenario 9 over ru | package=safetext, lang=ru | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1165 | P2 | safetext guard scenario 9 over ko | package=safetext, lang=ko | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1166 | P2 | safetext guard scenario 9 over de | package=safetext, lang=de | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1167 | P2 | safetext guard scenario 9 over fr | package=safetext, lang=fr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1168 | P2 | safetext guard scenario 9 over it | package=safetext, lang=it | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1169 | P2 | safetext guard scenario 9 over hi | package=safetext, lang=hi | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1170 | P2 | safetext guard scenario 9 over tr | package=safetext, lang=tr | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1171 | P2 | sensitive-word-filter-cn guard scenario 0 | scenario=0 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1172 | P2 | sensitive-word-filter-cn guard scenario 1 | scenario=1 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1173 | P2 | sensitive-word-filter-cn guard scenario 2 | scenario=2 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1174 | P2 | sensitive-word-filter-cn guard scenario 3 | scenario=3 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1175 | P2 | sensitive-word-filter-cn guard scenario 4 | scenario=4 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1176 | P2 | sensitive-word-filter-cn guard scenario 5 | scenario=5 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1177 | P2 | sensitive-word-filter-cn guard scenario 6 | scenario=6 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1178 | P2 | sensitive-word-filter-cn guard scenario 7 | scenario=7 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1179 | P2 | sensitive-word-filter-cn guard scenario 8 | scenario=8 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1180 | P2 | sensitive-word-filter-cn guard scenario 9 | scenario=9 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1181 | P2 | sensitive-word-filter-cn guard scenario 10 | scenario=10 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1182 | P2 | sensitive-word-filter-cn guard scenario 11 | scenario=11 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1183 | P2 | sensitive-word-filter-cn guard scenario 12 | scenario=12 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1184 | P2 | sensitive-word-filter-cn guard scenario 13 | scenario=13 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1185 | P2 | sensitive-word-filter-cn guard scenario 14 | scenario=14 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1186 | P2 | sensitive-word-filter-cn guard scenario 15 | scenario=15 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1187 | P2 | sensitive-word-filter-cn guard scenario 16 | scenario=16 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1188 | P2 | sensitive-word-filter-cn guard scenario 17 | scenario=17 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1189 | P2 | sensitive-word-filter-cn guard scenario 18 | scenario=18 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1190 | P2 | sensitive-word-filter-cn guard scenario 19 | scenario=19 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1191 | P2 | sensitive-word-filter-cn guard scenario 20 | scenario=20 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1192 | P2 | sensitive-word-filter-cn guard scenario 21 | scenario=21 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1193 | P2 | sensitive-word-filter-cn guard scenario 22 | scenario=22 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1194 | P2 | sensitive-word-filter-cn guard scenario 23 | scenario=23 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1195 | P2 | sensitive-word-filter-cn guard scenario 24 | scenario=24 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1196 | P2 | sensitive-word-filter-cn guard scenario 25 | scenario=25 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1197 | P2 | sensitive-word-filter-cn guard scenario 26 | scenario=26 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1198 | P2 | sensitive-word-filter-cn guard scenario 27 | scenario=27 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1199 | P2 | sensitive-word-filter-cn guard scenario 28 | scenario=28 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1200 | P2 | sensitive-word-filter-cn guard scenario 29 | scenario=29 | no-match | test_detectors_phase2_part_10.py |
-| TC-DET-1201 | P2 | sensitive-word-filter-cn guard scenario 30 | scenario=30 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1202 | P2 | sensitive-word-filter-cn guard scenario 31 | scenario=31 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1203 | P2 | sensitive-word-filter-cn guard scenario 32 | scenario=32 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1204 | P2 | sensitive-word-filter-cn guard scenario 33 | scenario=33 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1205 | P2 | sensitive-word-filter-cn guard scenario 34 | scenario=34 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1206 | P2 | sensitive-word-filter-cn guard scenario 35 | scenario=35 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1207 | P2 | sensitive-word-filter-cn guard scenario 36 | scenario=36 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1208 | P2 | sensitive-word-filter-cn guard scenario 37 | scenario=37 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1209 | P2 | sensitive-word-filter-cn guard scenario 38 | scenario=38 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1210 | P2 | sensitive-word-filter-cn guard scenario 39 | scenario=39 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1211 | P2 | sensitive-word-filter-cn guard scenario 40 | scenario=40 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1212 | P2 | sensitive-word-filter-cn guard scenario 41 | scenario=41 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1213 | P2 | sensitive-word-filter-cn guard scenario 42 | scenario=42 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1214 | P2 | sensitive-word-filter-cn guard scenario 43 | scenario=43 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1215 | P2 | sensitive-word-filter-cn guard scenario 44 | scenario=44 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1216 | P2 | sensitive-word-filter-cn guard scenario 45 | scenario=45 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1217 | P2 | sensitive-word-filter-cn guard scenario 46 | scenario=46 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1218 | P2 | sensitive-word-filter-cn guard scenario 47 | scenario=47 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1219 | P2 | sensitive-word-filter-cn guard scenario 48 | scenario=48 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1220 | P2 | sensitive-word-filter-cn guard scenario 49 | scenario=49 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1221 | P2 | sensitive-word-filter-cn guard scenario 50 | scenario=50 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1222 | P2 | sensitive-word-filter-cn guard scenario 51 | scenario=51 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1223 | P2 | sensitive-word-filter-cn guard scenario 52 | scenario=52 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1224 | P2 | sensitive-word-filter-cn guard scenario 53 | scenario=53 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1225 | P2 | sensitive-word-filter-cn guard scenario 54 | scenario=54 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1226 | P2 | sensitive-word-filter-cn guard scenario 55 | scenario=55 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1227 | P2 | sensitive-word-filter-cn guard scenario 56 | scenario=56 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1228 | P2 | sensitive-word-filter-cn guard scenario 57 | scenario=57 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1229 | P2 | sensitive-word-filter-cn guard scenario 58 | scenario=58 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1230 | P2 | sensitive-word-filter-cn guard scenario 59 | scenario=59 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1231 | P2 | sensitive-word-filter-cn guard scenario 60 | scenario=60 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1232 | P2 | sensitive-word-filter-cn guard scenario 61 | scenario=61 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1233 | P2 | sensitive-word-filter-cn guard scenario 62 | scenario=62 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1234 | P2 | sensitive-word-filter-cn guard scenario 63 | scenario=63 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1235 | P2 | sensitive-word-filter-cn guard scenario 64 | scenario=64 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1236 | P2 | sensitive-word-filter-cn guard scenario 65 | scenario=65 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1237 | P2 | sensitive-word-filter-cn guard scenario 66 | scenario=66 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1238 | P2 | sensitive-word-filter-cn guard scenario 67 | scenario=67 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1239 | P2 | sensitive-word-filter-cn guard scenario 68 | scenario=68 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1240 | P2 | sensitive-word-filter-cn guard scenario 69 | scenario=69 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1241 | P2 | sensitive-word-filter-cn guard scenario 70 | scenario=70 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1242 | P2 | sensitive-word-filter-cn guard scenario 71 | scenario=71 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1243 | P2 | sensitive-word-filter-cn guard scenario 72 | scenario=72 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1244 | P2 | sensitive-word-filter-cn guard scenario 73 | scenario=73 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1245 | P2 | sensitive-word-filter-cn guard scenario 74 | scenario=74 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1246 | P2 | sensitive-word-filter-cn guard scenario 75 | scenario=75 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1247 | P2 | sensitive-word-filter-cn guard scenario 76 | scenario=76 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1248 | P2 | sensitive-word-filter-cn guard scenario 77 | scenario=77 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1249 | P2 | sensitive-word-filter-cn guard scenario 78 | scenario=78 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1250 | P2 | sensitive-word-filter-cn guard scenario 79 | scenario=79 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1251 | P2 | profanity-filter2 guard scenario 0 | scenario=0 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1252 | P2 | profanity-filter2 guard scenario 1 | scenario=1 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1253 | P2 | profanity-filter2 guard scenario 2 | scenario=2 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1254 | P2 | profanity-filter2 guard scenario 3 | scenario=3 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1255 | P2 | profanity-filter2 guard scenario 4 | scenario=4 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1256 | P2 | profanity-filter2 guard scenario 5 | scenario=5 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1257 | P2 | profanity-filter2 guard scenario 6 | scenario=6 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1258 | P2 | profanity-filter2 guard scenario 7 | scenario=7 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1259 | P2 | profanity-filter2 guard scenario 8 | scenario=8 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1260 | P2 | profanity-filter2 guard scenario 9 | scenario=9 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1261 | P2 | profanity-filter2 guard scenario 10 | scenario=10 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1262 | P2 | profanity-filter2 guard scenario 11 | scenario=11 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1263 | P2 | profanity-filter2 guard scenario 12 | scenario=12 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1264 | P2 | profanity-filter2 guard scenario 13 | scenario=13 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1265 | P2 | profanity-filter2 guard scenario 14 | scenario=14 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1266 | P2 | profanity-filter2 guard scenario 15 | scenario=15 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1267 | P2 | profanity-filter2 guard scenario 16 | scenario=16 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1268 | P2 | profanity-filter2 guard scenario 17 | scenario=17 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1269 | P2 | profanity-filter2 guard scenario 18 | scenario=18 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1270 | P2 | profanity-filter2 guard scenario 19 | scenario=19 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1271 | P2 | profanity-filter2 guard scenario 20 | scenario=20 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1272 | P2 | profanity-filter2 guard scenario 21 | scenario=21 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1273 | P2 | profanity-filter2 guard scenario 22 | scenario=22 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1274 | P2 | profanity-filter2 guard scenario 23 | scenario=23 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1275 | P2 | profanity-filter2 guard scenario 24 | scenario=24 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1276 | P2 | profanity-filter2 guard scenario 25 | scenario=25 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1277 | P2 | profanity-filter2 guard scenario 26 | scenario=26 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1278 | P2 | profanity-filter2 guard scenario 27 | scenario=27 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1279 | P2 | profanity-filter2 guard scenario 28 | scenario=28 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1280 | P2 | profanity-filter2 guard scenario 29 | scenario=29 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1281 | P2 | profanity-filter2 guard scenario 30 | scenario=30 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1282 | P2 | profanity-filter2 guard scenario 31 | scenario=31 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1283 | P2 | profanity-filter2 guard scenario 32 | scenario=32 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1284 | P2 | profanity-filter2 guard scenario 33 | scenario=33 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1285 | P2 | profanity-filter2 guard scenario 34 | scenario=34 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1286 | P2 | profanity-filter2 guard scenario 35 | scenario=35 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1287 | P2 | profanity-filter2 guard scenario 36 | scenario=36 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1288 | P2 | profanity-filter2 guard scenario 37 | scenario=37 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1289 | P2 | profanity-filter2 guard scenario 38 | scenario=38 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1290 | P2 | profanity-filter2 guard scenario 39 | scenario=39 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1291 | P2 | profanity-filter2 guard scenario 40 | scenario=40 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1292 | P2 | profanity-filter2 guard scenario 41 | scenario=41 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1293 | P2 | profanity-filter2 guard scenario 42 | scenario=42 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1294 | P2 | profanity-filter2 guard scenario 43 | scenario=43 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1295 | P2 | profanity-filter2 guard scenario 44 | scenario=44 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1296 | P2 | profanity-filter2 guard scenario 45 | scenario=45 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1297 | P2 | profanity-filter2 guard scenario 46 | scenario=46 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1298 | P2 | profanity-filter2 guard scenario 47 | scenario=47 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1299 | P2 | profanity-filter2 guard scenario 48 | scenario=48 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1300 | P2 | profanity-filter2 guard scenario 49 | scenario=49 | no-match | test_detectors_phase2_part_11.py |
-| TC-DET-1301 | P2 | profanity-filter2 guard scenario 50 | scenario=50 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1302 | P2 | profanity-filter2 guard scenario 51 | scenario=51 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1303 | P2 | profanity-filter2 guard scenario 52 | scenario=52 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1304 | P2 | profanity-filter2 guard scenario 53 | scenario=53 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1305 | P2 | profanity-filter2 guard scenario 54 | scenario=54 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1306 | P2 | profanity-filter2 guard scenario 55 | scenario=55 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1307 | P2 | profanity-filter2 guard scenario 56 | scenario=56 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1308 | P2 | profanity-filter2 guard scenario 57 | scenario=57 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1309 | P2 | profanity-filter2 guard scenario 58 | scenario=58 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1310 | P2 | profanity-filter2 guard scenario 59 | scenario=59 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1311 | P2 | profanity-filter2 guard scenario 60 | scenario=60 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1312 | P2 | profanity-filter2 guard scenario 61 | scenario=61 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1313 | P2 | profanity-filter2 guard scenario 62 | scenario=62 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1314 | P2 | profanity-filter2 guard scenario 63 | scenario=63 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1315 | P2 | profanity-filter2 guard scenario 64 | scenario=64 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1316 | P2 | profanity-filter2 guard scenario 65 | scenario=65 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1317 | P2 | profanity-filter2 guard scenario 66 | scenario=66 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1318 | P2 | profanity-filter2 guard scenario 67 | scenario=67 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1319 | P2 | profanity-filter2 guard scenario 68 | scenario=68 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1320 | P2 | profanity-filter2 guard scenario 69 | scenario=69 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1321 | P2 | profanity-filter2 guard scenario 70 | scenario=70 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1322 | P2 | profanity-filter2 guard scenario 71 | scenario=71 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1323 | P2 | profanity-filter2 guard scenario 72 | scenario=72 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1324 | P2 | profanity-filter2 guard scenario 73 | scenario=73 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1325 | P2 | profanity-filter2 guard scenario 74 | scenario=74 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1326 | P2 | profanity-filter2 guard scenario 75 | scenario=75 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1327 | P2 | profanity-filter2 guard scenario 76 | scenario=76 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1328 | P2 | profanity-filter2 guard scenario 77 | scenario=77 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1329 | P2 | profanity-filter2 guard scenario 78 | scenario=78 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1330 | P2 | profanity-filter2 guard scenario 79 | scenario=79 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1331 | P2 | PyProfane guard scenario 0 | scenario=0 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1332 | P2 | PyProfane guard scenario 1 | scenario=1 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1333 | P2 | PyProfane guard scenario 2 | scenario=2 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1334 | P2 | PyProfane guard scenario 3 | scenario=3 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1335 | P2 | PyProfane guard scenario 4 | scenario=4 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1336 | P2 | PyProfane guard scenario 5 | scenario=5 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1337 | P2 | PyProfane guard scenario 6 | scenario=6 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1338 | P2 | PyProfane guard scenario 7 | scenario=7 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1339 | P2 | PyProfane guard scenario 8 | scenario=8 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1340 | P2 | PyProfane guard scenario 9 | scenario=9 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1341 | P2 | PyProfane guard scenario 10 | scenario=10 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1342 | P2 | PyProfane guard scenario 11 | scenario=11 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1343 | P2 | PyProfane guard scenario 12 | scenario=12 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1344 | P2 | PyProfane guard scenario 13 | scenario=13 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1345 | P2 | PyProfane guard scenario 14 | scenario=14 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1346 | P2 | PyProfane guard scenario 15 | scenario=15 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1347 | P2 | PyProfane guard scenario 16 | scenario=16 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1348 | P2 | PyProfane guard scenario 17 | scenario=17 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1349 | P2 | PyProfane guard scenario 18 | scenario=18 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1350 | P2 | PyProfane guard scenario 19 | scenario=19 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1351 | P2 | PyProfane guard scenario 20 | scenario=20 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1352 | P2 | PyProfane guard scenario 21 | scenario=21 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1353 | P2 | PyProfane guard scenario 22 | scenario=22 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1354 | P2 | PyProfane guard scenario 23 | scenario=23 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1355 | P2 | PyProfane guard scenario 24 | scenario=24 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1356 | P2 | PyProfane guard scenario 25 | scenario=25 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1357 | P2 | PyProfane guard scenario 26 | scenario=26 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1358 | P2 | PyProfane guard scenario 27 | scenario=27 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1359 | P2 | PyProfane guard scenario 28 | scenario=28 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1360 | P2 | PyProfane guard scenario 29 | scenario=29 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1361 | P2 | PyProfane guard scenario 30 | scenario=30 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1362 | P2 | PyProfane guard scenario 31 | scenario=31 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1363 | P2 | PyProfane guard scenario 32 | scenario=32 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1364 | P2 | PyProfane guard scenario 33 | scenario=33 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1365 | P2 | PyProfane guard scenario 34 | scenario=34 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1366 | P2 | PyProfane guard scenario 35 | scenario=35 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1367 | P2 | PyProfane guard scenario 36 | scenario=36 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1368 | P2 | PyProfane guard scenario 37 | scenario=37 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1369 | P2 | PyProfane guard scenario 38 | scenario=38 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1370 | P2 | PyProfane guard scenario 39 | scenario=39 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1371 | P2 | PyProfane guard scenario 40 | scenario=40 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1372 | P2 | PyProfane guard scenario 41 | scenario=41 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1373 | P2 | PyProfane guard scenario 42 | scenario=42 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1374 | P2 | PyProfane guard scenario 43 | scenario=43 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1375 | P2 | PyProfane guard scenario 44 | scenario=44 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1376 | P2 | PyProfane guard scenario 45 | scenario=45 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1377 | P2 | PyProfane guard scenario 46 | scenario=46 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1378 | P2 | PyProfane guard scenario 47 | scenario=47 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1379 | P2 | PyProfane guard scenario 48 | scenario=48 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1380 | P2 | PyProfane guard scenario 49 | scenario=49 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1381 | P2 | PyProfane guard scenario 50 | scenario=50 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1382 | P2 | PyProfane guard scenario 51 | scenario=51 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1383 | P2 | PyProfane guard scenario 52 | scenario=52 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1384 | P2 | PyProfane guard scenario 53 | scenario=53 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1385 | P2 | PyProfane guard scenario 54 | scenario=54 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1386 | P2 | PyProfane guard scenario 55 | scenario=55 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1387 | P2 | PyProfane guard scenario 56 | scenario=56 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1388 | P2 | PyProfane guard scenario 57 | scenario=57 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1389 | P2 | PyProfane guard scenario 58 | scenario=58 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1390 | P2 | PyProfane guard scenario 59 | scenario=59 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1391 | P2 | PyProfane guard scenario 60 | scenario=60 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1392 | P2 | PyProfane guard scenario 61 | scenario=61 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1393 | P2 | PyProfane guard scenario 62 | scenario=62 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1394 | P2 | PyProfane guard scenario 63 | scenario=63 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1395 | P2 | PyProfane guard scenario 64 | scenario=64 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1396 | P2 | PyProfane guard scenario 65 | scenario=65 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1397 | P2 | PyProfane guard scenario 66 | scenario=66 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1398 | P2 | PyProfane guard scenario 67 | scenario=67 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1399 | P2 | PyProfane guard scenario 68 | scenario=68 | no-match | test_detectors_phase2_part_12.py |
-| TC-DET-1400 | P2 | PyProfane guard scenario 69 | scenario=69 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1071 | P2 | safetext guard over en variant=0 | package=safetext, lang=en variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1072 | P2 | safetext guard over ja variant=0 | package=safetext, lang=ja variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1073 | P2 | safetext guard over ar variant=0 | package=safetext, lang=ar variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1074 | P2 | safetext guard over ru variant=0 | package=safetext, lang=ru variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1075 | P2 | safetext guard over ko variant=0 | package=safetext, lang=ko variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1076 | P2 | safetext guard over de variant=0 | package=safetext, lang=de variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1077 | P2 | safetext guard over fr variant=0 | package=safetext, lang=fr variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1078 | P2 | safetext guard over it variant=0 | package=safetext, lang=it variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1079 | P2 | safetext guard over hi variant=0 | package=safetext, lang=hi variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1080 | P2 | safetext guard over tr variant=0 | package=safetext, lang=tr variant=0 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1081 | P2 | safetext guard over en variant=1 | package=safetext, lang=en variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1082 | P2 | safetext guard over ja variant=1 | package=safetext, lang=ja variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1083 | P2 | safetext guard over ar variant=1 | package=safetext, lang=ar variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1084 | P2 | safetext guard over ru variant=1 | package=safetext, lang=ru variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1085 | P2 | safetext guard over ko variant=1 | package=safetext, lang=ko variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1086 | P2 | safetext guard over de variant=1 | package=safetext, lang=de variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1087 | P2 | safetext guard over fr variant=1 | package=safetext, lang=fr variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1088 | P2 | safetext guard over it variant=1 | package=safetext, lang=it variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1089 | P2 | safetext guard over hi variant=1 | package=safetext, lang=hi variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1090 | P2 | safetext guard over tr variant=1 | package=safetext, lang=tr variant=1 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1091 | P2 | safetext guard over en variant=2 | package=safetext, lang=en variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1092 | P2 | safetext guard over ja variant=2 | package=safetext, lang=ja variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1093 | P2 | safetext guard over ar variant=2 | package=safetext, lang=ar variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1094 | P2 | safetext guard over ru variant=2 | package=safetext, lang=ru variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1095 | P2 | safetext guard over ko variant=2 | package=safetext, lang=ko variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1096 | P2 | safetext guard over de variant=2 | package=safetext, lang=de variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1097 | P2 | safetext guard over fr variant=2 | package=safetext, lang=fr variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1098 | P2 | safetext guard over it variant=2 | package=safetext, lang=it variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1099 | P2 | safetext guard over hi variant=2 | package=safetext, lang=hi variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1100 | P2 | safetext guard over tr variant=2 | package=safetext, lang=tr variant=2 | no-match | test_detectors_phase2_part_9.py |
+| TC-DET-1101 | P2 | safetext guard over en variant=3 | package=safetext, lang=en variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1102 | P2 | safetext guard over ja variant=3 | package=safetext, lang=ja variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1103 | P2 | safetext guard over ar variant=3 | package=safetext, lang=ar variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1104 | P2 | safetext guard over ru variant=3 | package=safetext, lang=ru variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1105 | P2 | safetext guard over ko variant=3 | package=safetext, lang=ko variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1106 | P2 | safetext guard over de variant=3 | package=safetext, lang=de variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1107 | P2 | safetext guard over fr variant=3 | package=safetext, lang=fr variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1108 | P2 | safetext guard over it variant=3 | package=safetext, lang=it variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1109 | P2 | safetext guard over hi variant=3 | package=safetext, lang=hi variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1110 | P2 | safetext guard over tr variant=3 | package=safetext, lang=tr variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1111 | P2 | safetext guard over en variant=4 | package=safetext, lang=en variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1112 | P2 | safetext guard over ja variant=4 | package=safetext, lang=ja variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1113 | P2 | safetext guard over ar variant=4 | package=safetext, lang=ar variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1114 | P2 | safetext guard over ru variant=4 | package=safetext, lang=ru variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1115 | P2 | safetext guard over ko variant=4 | package=safetext, lang=ko variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1116 | P2 | safetext guard over de variant=4 | package=safetext, lang=de variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1117 | P2 | safetext guard over fr variant=4 | package=safetext, lang=fr variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1118 | P2 | safetext guard over it variant=4 | package=safetext, lang=it variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1119 | P2 | safetext guard over hi variant=4 | package=safetext, lang=hi variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1120 | P2 | safetext guard over tr variant=4 | package=safetext, lang=tr variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1121 | P2 | safetext guard over en variant=5 | package=safetext, lang=en variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1122 | P2 | safetext guard over ja variant=5 | package=safetext, lang=ja variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1123 | P2 | safetext guard over ar variant=5 | package=safetext, lang=ar variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1124 | P2 | safetext guard over ru variant=5 | package=safetext, lang=ru variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1125 | P2 | safetext guard over ko variant=5 | package=safetext, lang=ko variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1126 | P2 | safetext guard over de variant=5 | package=safetext, lang=de variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1127 | P2 | safetext guard over fr variant=5 | package=safetext, lang=fr variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1128 | P2 | safetext guard over it variant=5 | package=safetext, lang=it variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1129 | P2 | safetext guard over hi variant=5 | package=safetext, lang=hi variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1130 | P2 | safetext guard over tr variant=5 | package=safetext, lang=tr variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1131 | P2 | safetext guard over en variant=6 | package=safetext, lang=en variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1132 | P2 | safetext guard over ja variant=6 | package=safetext, lang=ja variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1133 | P2 | safetext guard over ar variant=6 | package=safetext, lang=ar variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1134 | P2 | safetext guard over ru variant=6 | package=safetext, lang=ru variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1135 | P2 | safetext guard over ko variant=6 | package=safetext, lang=ko variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1136 | P2 | safetext guard over de variant=6 | package=safetext, lang=de variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1137 | P2 | safetext guard over fr variant=6 | package=safetext, lang=fr variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1138 | P2 | safetext guard over it variant=6 | package=safetext, lang=it variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1139 | P2 | safetext guard over hi variant=6 | package=safetext, lang=hi variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1140 | P2 | safetext guard over tr variant=6 | package=safetext, lang=tr variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1141 | P2 | safetext guard over en variant=7 | package=safetext, lang=en variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1142 | P2 | safetext guard over ja variant=7 | package=safetext, lang=ja variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1143 | P2 | safetext guard over ar variant=7 | package=safetext, lang=ar variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1144 | P2 | safetext guard over ru variant=7 | package=safetext, lang=ru variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1145 | P2 | safetext guard over ko variant=7 | package=safetext, lang=ko variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1146 | P2 | safetext guard over de variant=7 | package=safetext, lang=de variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1147 | P2 | safetext guard over fr variant=7 | package=safetext, lang=fr variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1148 | P2 | safetext guard over it variant=7 | package=safetext, lang=it variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1149 | P2 | safetext guard over hi variant=7 | package=safetext, lang=hi variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1150 | P2 | safetext guard over tr variant=7 | package=safetext, lang=tr variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1151 | P2 | safetext guard over en variant=8 | package=safetext, lang=en variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1152 | P2 | safetext guard over ja variant=8 | package=safetext, lang=ja variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1153 | P2 | safetext guard over ar variant=8 | package=safetext, lang=ar variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1154 | P2 | safetext guard over ru variant=8 | package=safetext, lang=ru variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1155 | P2 | safetext guard over ko variant=8 | package=safetext, lang=ko variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1156 | P2 | safetext guard over de variant=8 | package=safetext, lang=de variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1157 | P2 | safetext guard over fr variant=8 | package=safetext, lang=fr variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1158 | P2 | safetext guard over it variant=8 | package=safetext, lang=it variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1159 | P2 | safetext guard over hi variant=8 | package=safetext, lang=hi variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1160 | P2 | safetext guard over tr variant=8 | package=safetext, lang=tr variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1161 | P2 | safetext guard over en variant=9 | package=safetext, lang=en variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1162 | P2 | safetext guard over ja variant=9 | package=safetext, lang=ja variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1163 | P2 | safetext guard over ar variant=9 | package=safetext, lang=ar variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1164 | P2 | safetext guard over ru variant=9 | package=safetext, lang=ru variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1165 | P2 | safetext guard over ko variant=9 | package=safetext, lang=ko variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1166 | P2 | safetext guard over de variant=9 | package=safetext, lang=de variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1167 | P2 | safetext guard over fr variant=9 | package=safetext, lang=fr variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1168 | P2 | safetext guard over it variant=9 | package=safetext, lang=it variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1169 | P2 | safetext guard over hi variant=9 | package=safetext, lang=hi variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1170 | P2 | safetext guard over tr variant=9 | package=safetext, lang=tr variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1171 | P2 | sensitive-word-filter-cn guard over zh variant=0 | package=sensitive-word-filter-cn, lang=zh variant=0 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1172 | P2 | sensitive-word-filter-cn guard over zh variant=1 | package=sensitive-word-filter-cn, lang=zh variant=1 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1173 | P2 | sensitive-word-filter-cn guard over zh variant=2 | package=sensitive-word-filter-cn, lang=zh variant=2 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1174 | P2 | sensitive-word-filter-cn guard over zh variant=3 | package=sensitive-word-filter-cn, lang=zh variant=3 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1175 | P2 | sensitive-word-filter-cn guard over zh variant=4 | package=sensitive-word-filter-cn, lang=zh variant=4 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1176 | P2 | sensitive-word-filter-cn guard over zh variant=5 | package=sensitive-word-filter-cn, lang=zh variant=5 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1177 | P2 | sensitive-word-filter-cn guard over zh variant=6 | package=sensitive-word-filter-cn, lang=zh variant=6 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1178 | P2 | sensitive-word-filter-cn guard over zh variant=7 | package=sensitive-word-filter-cn, lang=zh variant=7 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1179 | P2 | sensitive-word-filter-cn guard over zh variant=8 | package=sensitive-word-filter-cn, lang=zh variant=8 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1180 | P2 | sensitive-word-filter-cn guard over zh variant=9 | package=sensitive-word-filter-cn, lang=zh variant=9 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1181 | P2 | sensitive-word-filter-cn guard over zh variant=10 | package=sensitive-word-filter-cn, lang=zh variant=10 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1182 | P2 | sensitive-word-filter-cn guard over zh variant=11 | package=sensitive-word-filter-cn, lang=zh variant=11 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1183 | P2 | sensitive-word-filter-cn guard over zh variant=12 | package=sensitive-word-filter-cn, lang=zh variant=12 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1184 | P2 | sensitive-word-filter-cn guard over zh variant=13 | package=sensitive-word-filter-cn, lang=zh variant=13 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1185 | P2 | sensitive-word-filter-cn guard over zh variant=14 | package=sensitive-word-filter-cn, lang=zh variant=14 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1186 | P2 | sensitive-word-filter-cn guard over zh variant=15 | package=sensitive-word-filter-cn, lang=zh variant=15 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1187 | P2 | sensitive-word-filter-cn guard over zh variant=16 | package=sensitive-word-filter-cn, lang=zh variant=16 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1188 | P2 | sensitive-word-filter-cn guard over zh variant=17 | package=sensitive-word-filter-cn, lang=zh variant=17 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1189 | P2 | sensitive-word-filter-cn guard over zh variant=18 | package=sensitive-word-filter-cn, lang=zh variant=18 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1190 | P2 | sensitive-word-filter-cn guard over zh variant=19 | package=sensitive-word-filter-cn, lang=zh variant=19 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1191 | P2 | sensitive-word-filter-cn guard over zh variant=20 | package=sensitive-word-filter-cn, lang=zh variant=20 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1192 | P2 | sensitive-word-filter-cn guard over zh variant=21 | package=sensitive-word-filter-cn, lang=zh variant=21 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1193 | P2 | sensitive-word-filter-cn guard over zh variant=22 | package=sensitive-word-filter-cn, lang=zh variant=22 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1194 | P2 | sensitive-word-filter-cn guard over zh variant=23 | package=sensitive-word-filter-cn, lang=zh variant=23 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1195 | P2 | sensitive-word-filter-cn guard over zh variant=24 | package=sensitive-word-filter-cn, lang=zh variant=24 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1196 | P2 | sensitive-word-filter-cn guard over zh variant=25 | package=sensitive-word-filter-cn, lang=zh variant=25 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1197 | P2 | sensitive-word-filter-cn guard over zh variant=26 | package=sensitive-word-filter-cn, lang=zh variant=26 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1198 | P2 | sensitive-word-filter-cn guard over zh variant=27 | package=sensitive-word-filter-cn, lang=zh variant=27 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1199 | P2 | sensitive-word-filter-cn guard over zh variant=28 | package=sensitive-word-filter-cn, lang=zh variant=28 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1200 | P2 | sensitive-word-filter-cn guard over zh variant=29 | package=sensitive-word-filter-cn, lang=zh variant=29 | no-match | test_detectors_phase2_part_10.py |
+| TC-DET-1201 | P2 | sensitive-word-filter-cn guard over zh variant=30 | package=sensitive-word-filter-cn, lang=zh variant=30 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1202 | P2 | sensitive-word-filter-cn guard over zh variant=31 | package=sensitive-word-filter-cn, lang=zh variant=31 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1203 | P2 | sensitive-word-filter-cn guard over zh variant=32 | package=sensitive-word-filter-cn, lang=zh variant=32 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1204 | P2 | sensitive-word-filter-cn guard over zh variant=33 | package=sensitive-word-filter-cn, lang=zh variant=33 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1205 | P2 | sensitive-word-filter-cn guard over zh variant=34 | package=sensitive-word-filter-cn, lang=zh variant=34 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1206 | P2 | sensitive-word-filter-cn guard over zh variant=35 | package=sensitive-word-filter-cn, lang=zh variant=35 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1207 | P2 | sensitive-word-filter-cn guard over zh variant=36 | package=sensitive-word-filter-cn, lang=zh variant=36 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1208 | P2 | sensitive-word-filter-cn guard over zh variant=37 | package=sensitive-word-filter-cn, lang=zh variant=37 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1209 | P2 | sensitive-word-filter-cn guard over zh variant=38 | package=sensitive-word-filter-cn, lang=zh variant=38 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1210 | P2 | sensitive-word-filter-cn guard over zh variant=39 | package=sensitive-word-filter-cn, lang=zh variant=39 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1211 | P2 | sensitive-word-filter-cn guard over zh variant=40 | package=sensitive-word-filter-cn, lang=zh variant=40 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1212 | P2 | sensitive-word-filter-cn guard over zh variant=41 | package=sensitive-word-filter-cn, lang=zh variant=41 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1213 | P2 | sensitive-word-filter-cn guard over zh variant=42 | package=sensitive-word-filter-cn, lang=zh variant=42 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1214 | P2 | sensitive-word-filter-cn guard over zh variant=43 | package=sensitive-word-filter-cn, lang=zh variant=43 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1215 | P2 | sensitive-word-filter-cn guard over zh variant=44 | package=sensitive-word-filter-cn, lang=zh variant=44 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1216 | P2 | sensitive-word-filter-cn guard over zh variant=45 | package=sensitive-word-filter-cn, lang=zh variant=45 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1217 | P2 | sensitive-word-filter-cn guard over zh variant=46 | package=sensitive-word-filter-cn, lang=zh variant=46 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1218 | P2 | sensitive-word-filter-cn guard over zh variant=47 | package=sensitive-word-filter-cn, lang=zh variant=47 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1219 | P2 | sensitive-word-filter-cn guard over zh variant=48 | package=sensitive-word-filter-cn, lang=zh variant=48 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1220 | P2 | sensitive-word-filter-cn guard over zh variant=49 | package=sensitive-word-filter-cn, lang=zh variant=49 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1221 | P2 | sensitive-word-filter-cn guard over zh variant=50 | package=sensitive-word-filter-cn, lang=zh variant=50 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1222 | P2 | sensitive-word-filter-cn guard over zh variant=51 | package=sensitive-word-filter-cn, lang=zh variant=51 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1223 | P2 | sensitive-word-filter-cn guard over zh variant=52 | package=sensitive-word-filter-cn, lang=zh variant=52 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1224 | P2 | sensitive-word-filter-cn guard over zh variant=53 | package=sensitive-word-filter-cn, lang=zh variant=53 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1225 | P2 | sensitive-word-filter-cn guard over zh variant=54 | package=sensitive-word-filter-cn, lang=zh variant=54 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1226 | P2 | sensitive-word-filter-cn guard over zh variant=55 | package=sensitive-word-filter-cn, lang=zh variant=55 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1227 | P2 | sensitive-word-filter-cn guard over zh variant=56 | package=sensitive-word-filter-cn, lang=zh variant=56 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1228 | P2 | sensitive-word-filter-cn guard over zh variant=57 | package=sensitive-word-filter-cn, lang=zh variant=57 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1229 | P2 | sensitive-word-filter-cn guard over zh variant=58 | package=sensitive-word-filter-cn, lang=zh variant=58 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1230 | P2 | sensitive-word-filter-cn guard over zh variant=59 | package=sensitive-word-filter-cn, lang=zh variant=59 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1231 | P2 | sensitive-word-filter-cn guard over zh variant=60 | package=sensitive-word-filter-cn, lang=zh variant=60 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1232 | P2 | sensitive-word-filter-cn guard over zh variant=61 | package=sensitive-word-filter-cn, lang=zh variant=61 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1233 | P2 | sensitive-word-filter-cn guard over zh variant=62 | package=sensitive-word-filter-cn, lang=zh variant=62 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1234 | P2 | sensitive-word-filter-cn guard over zh variant=63 | package=sensitive-word-filter-cn, lang=zh variant=63 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1235 | P2 | sensitive-word-filter-cn guard over zh variant=64 | package=sensitive-word-filter-cn, lang=zh variant=64 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1236 | P2 | sensitive-word-filter-cn guard over zh variant=65 | package=sensitive-word-filter-cn, lang=zh variant=65 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1237 | P2 | sensitive-word-filter-cn guard over zh variant=66 | package=sensitive-word-filter-cn, lang=zh variant=66 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1238 | P2 | sensitive-word-filter-cn guard over zh variant=67 | package=sensitive-word-filter-cn, lang=zh variant=67 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1239 | P2 | sensitive-word-filter-cn guard over zh variant=68 | package=sensitive-word-filter-cn, lang=zh variant=68 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1240 | P2 | sensitive-word-filter-cn guard over zh variant=69 | package=sensitive-word-filter-cn, lang=zh variant=69 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1241 | P2 | sensitive-word-filter-cn guard over zh variant=70 | package=sensitive-word-filter-cn, lang=zh variant=70 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1242 | P2 | sensitive-word-filter-cn guard over zh variant=71 | package=sensitive-word-filter-cn, lang=zh variant=71 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1243 | P2 | sensitive-word-filter-cn guard over zh variant=72 | package=sensitive-word-filter-cn, lang=zh variant=72 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1244 | P2 | sensitive-word-filter-cn guard over zh variant=73 | package=sensitive-word-filter-cn, lang=zh variant=73 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1245 | P2 | sensitive-word-filter-cn guard over zh variant=74 | package=sensitive-word-filter-cn, lang=zh variant=74 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1246 | P2 | sensitive-word-filter-cn guard over zh variant=75 | package=sensitive-word-filter-cn, lang=zh variant=75 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1247 | P2 | sensitive-word-filter-cn guard over zh variant=76 | package=sensitive-word-filter-cn, lang=zh variant=76 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1248 | P2 | sensitive-word-filter-cn guard over zh variant=77 | package=sensitive-word-filter-cn, lang=zh variant=77 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1249 | P2 | sensitive-word-filter-cn guard over zh variant=78 | package=sensitive-word-filter-cn, lang=zh variant=78 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1250 | P2 | sensitive-word-filter-cn guard over zh variant=79 | package=sensitive-word-filter-cn, lang=zh variant=79 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1251 | P2 | profanity-filter2 guard over en variant=0 | package=profanity-filter2, lang=en variant=0 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1252 | P2 | profanity-filter2 guard over en variant=1 | package=profanity-filter2, lang=en variant=1 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1253 | P2 | profanity-filter2 guard over en variant=2 | package=profanity-filter2, lang=en variant=2 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1254 | P2 | profanity-filter2 guard over en variant=3 | package=profanity-filter2, lang=en variant=3 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1255 | P2 | profanity-filter2 guard over en variant=4 | package=profanity-filter2, lang=en variant=4 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1256 | P2 | profanity-filter2 guard over en variant=5 | package=profanity-filter2, lang=en variant=5 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1257 | P2 | profanity-filter2 guard over en variant=6 | package=profanity-filter2, lang=en variant=6 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1258 | P2 | profanity-filter2 guard over en variant=7 | package=profanity-filter2, lang=en variant=7 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1259 | P2 | profanity-filter2 guard over en variant=8 | package=profanity-filter2, lang=en variant=8 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1260 | P2 | profanity-filter2 guard over en variant=9 | package=profanity-filter2, lang=en variant=9 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1261 | P2 | profanity-filter2 guard over en variant=10 | package=profanity-filter2, lang=en variant=10 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1262 | P2 | profanity-filter2 guard over en variant=11 | package=profanity-filter2, lang=en variant=11 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1263 | P2 | profanity-filter2 guard over en variant=12 | package=profanity-filter2, lang=en variant=12 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1264 | P2 | profanity-filter2 guard over en variant=13 | package=profanity-filter2, lang=en variant=13 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1265 | P2 | profanity-filter2 guard over en variant=14 | package=profanity-filter2, lang=en variant=14 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1266 | P2 | profanity-filter2 guard over en variant=15 | package=profanity-filter2, lang=en variant=15 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1267 | P2 | profanity-filter2 guard over en variant=16 | package=profanity-filter2, lang=en variant=16 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1268 | P2 | profanity-filter2 guard over en variant=17 | package=profanity-filter2, lang=en variant=17 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1269 | P2 | profanity-filter2 guard over en variant=18 | package=profanity-filter2, lang=en variant=18 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1270 | P2 | profanity-filter2 guard over en variant=19 | package=profanity-filter2, lang=en variant=19 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1271 | P2 | profanity-filter2 guard over en variant=20 | package=profanity-filter2, lang=en variant=20 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1272 | P2 | profanity-filter2 guard over en variant=21 | package=profanity-filter2, lang=en variant=21 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1273 | P2 | profanity-filter2 guard over en variant=22 | package=profanity-filter2, lang=en variant=22 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1274 | P2 | profanity-filter2 guard over en variant=23 | package=profanity-filter2, lang=en variant=23 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1275 | P2 | profanity-filter2 guard over en variant=24 | package=profanity-filter2, lang=en variant=24 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1276 | P2 | profanity-filter2 guard over en variant=25 | package=profanity-filter2, lang=en variant=25 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1277 | P2 | profanity-filter2 guard over en variant=26 | package=profanity-filter2, lang=en variant=26 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1278 | P2 | profanity-filter2 guard over en variant=27 | package=profanity-filter2, lang=en variant=27 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1279 | P2 | profanity-filter2 guard over en variant=28 | package=profanity-filter2, lang=en variant=28 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1280 | P2 | profanity-filter2 guard over en variant=29 | package=profanity-filter2, lang=en variant=29 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1281 | P2 | profanity-filter2 guard over en variant=30 | package=profanity-filter2, lang=en variant=30 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1282 | P2 | profanity-filter2 guard over en variant=31 | package=profanity-filter2, lang=en variant=31 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1283 | P2 | profanity-filter2 guard over en variant=32 | package=profanity-filter2, lang=en variant=32 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1284 | P2 | profanity-filter2 guard over en variant=33 | package=profanity-filter2, lang=en variant=33 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1285 | P2 | profanity-filter2 guard over en variant=34 | package=profanity-filter2, lang=en variant=34 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1286 | P2 | profanity-filter2 guard over en variant=35 | package=profanity-filter2, lang=en variant=35 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1287 | P2 | profanity-filter2 guard over en variant=36 | package=profanity-filter2, lang=en variant=36 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1288 | P2 | profanity-filter2 guard over en variant=37 | package=profanity-filter2, lang=en variant=37 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1289 | P2 | profanity-filter2 guard over en variant=38 | package=profanity-filter2, lang=en variant=38 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1290 | P2 | profanity-filter2 guard over en variant=39 | package=profanity-filter2, lang=en variant=39 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1291 | P2 | profanity-filter2 guard over en variant=40 | package=profanity-filter2, lang=en variant=40 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1292 | P2 | profanity-filter2 guard over en variant=41 | package=profanity-filter2, lang=en variant=41 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1293 | P2 | profanity-filter2 guard over en variant=42 | package=profanity-filter2, lang=en variant=42 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1294 | P2 | profanity-filter2 guard over en variant=43 | package=profanity-filter2, lang=en variant=43 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1295 | P2 | profanity-filter2 guard over en variant=44 | package=profanity-filter2, lang=en variant=44 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1296 | P2 | profanity-filter2 guard over en variant=45 | package=profanity-filter2, lang=en variant=45 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1297 | P2 | profanity-filter2 guard over en variant=46 | package=profanity-filter2, lang=en variant=46 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1298 | P2 | profanity-filter2 guard over en variant=47 | package=profanity-filter2, lang=en variant=47 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1299 | P2 | profanity-filter2 guard over en variant=48 | package=profanity-filter2, lang=en variant=48 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1300 | P2 | profanity-filter2 guard over en variant=49 | package=profanity-filter2, lang=en variant=49 | no-match | test_detectors_phase2_part_11.py |
+| TC-DET-1301 | P2 | profanity-filter2 guard over en variant=50 | package=profanity-filter2, lang=en variant=50 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1302 | P2 | profanity-filter2 guard over en variant=51 | package=profanity-filter2, lang=en variant=51 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1303 | P2 | profanity-filter2 guard over en variant=52 | package=profanity-filter2, lang=en variant=52 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1304 | P2 | profanity-filter2 guard over en variant=53 | package=profanity-filter2, lang=en variant=53 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1305 | P2 | profanity-filter2 guard over en variant=54 | package=profanity-filter2, lang=en variant=54 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1306 | P2 | profanity-filter2 guard over en variant=55 | package=profanity-filter2, lang=en variant=55 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1307 | P2 | profanity-filter2 guard over en variant=56 | package=profanity-filter2, lang=en variant=56 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1308 | P2 | profanity-filter2 guard over en variant=57 | package=profanity-filter2, lang=en variant=57 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1309 | P2 | profanity-filter2 guard over en variant=58 | package=profanity-filter2, lang=en variant=58 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1310 | P2 | profanity-filter2 guard over en variant=59 | package=profanity-filter2, lang=en variant=59 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1311 | P2 | profanity-filter2 guard over en variant=60 | package=profanity-filter2, lang=en variant=60 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1312 | P2 | profanity-filter2 guard over en variant=61 | package=profanity-filter2, lang=en variant=61 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1313 | P2 | profanity-filter2 guard over en variant=62 | package=profanity-filter2, lang=en variant=62 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1314 | P2 | profanity-filter2 guard over en variant=63 | package=profanity-filter2, lang=en variant=63 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1315 | P2 | profanity-filter2 guard over en variant=64 | package=profanity-filter2, lang=en variant=64 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1316 | P2 | profanity-filter2 guard over en variant=65 | package=profanity-filter2, lang=en variant=65 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1317 | P2 | profanity-filter2 guard over en variant=66 | package=profanity-filter2, lang=en variant=66 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1318 | P2 | profanity-filter2 guard over en variant=67 | package=profanity-filter2, lang=en variant=67 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1319 | P2 | profanity-filter2 guard over en variant=68 | package=profanity-filter2, lang=en variant=68 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1320 | P2 | profanity-filter2 guard over en variant=69 | package=profanity-filter2, lang=en variant=69 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1321 | P2 | profanity-filter2 guard over en variant=70 | package=profanity-filter2, lang=en variant=70 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1322 | P2 | profanity-filter2 guard over en variant=71 | package=profanity-filter2, lang=en variant=71 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1323 | P2 | profanity-filter2 guard over en variant=72 | package=profanity-filter2, lang=en variant=72 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1324 | P2 | profanity-filter2 guard over en variant=73 | package=profanity-filter2, lang=en variant=73 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1325 | P2 | profanity-filter2 guard over en variant=74 | package=profanity-filter2, lang=en variant=74 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1326 | P2 | profanity-filter2 guard over en variant=75 | package=profanity-filter2, lang=en variant=75 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1327 | P2 | profanity-filter2 guard over en variant=76 | package=profanity-filter2, lang=en variant=76 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1328 | P2 | profanity-filter2 guard over en variant=77 | package=profanity-filter2, lang=en variant=77 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1329 | P2 | profanity-filter2 guard over en variant=78 | package=profanity-filter2, lang=en variant=78 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1330 | P2 | profanity-filter2 guard over en variant=79 | package=profanity-filter2, lang=en variant=79 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1331 | P2 | pyprofane guard over en variant=0 | package=pyprofane, lang=en variant=0 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1332 | P2 | pyprofane guard over en variant=1 | package=pyprofane, lang=en variant=1 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1333 | P2 | pyprofane guard over en variant=2 | package=pyprofane, lang=en variant=2 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1334 | P2 | pyprofane guard over en variant=3 | package=pyprofane, lang=en variant=3 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1335 | P2 | pyprofane guard over en variant=4 | package=pyprofane, lang=en variant=4 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1336 | P2 | pyprofane guard over en variant=5 | package=pyprofane, lang=en variant=5 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1337 | P2 | pyprofane guard over en variant=6 | package=pyprofane, lang=en variant=6 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1338 | P2 | pyprofane guard over en variant=7 | package=pyprofane, lang=en variant=7 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1339 | P2 | pyprofane guard over en variant=8 | package=pyprofane, lang=en variant=8 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1340 | P2 | pyprofane guard over en variant=9 | package=pyprofane, lang=en variant=9 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1341 | P2 | pyprofane guard over en variant=10 | package=pyprofane, lang=en variant=10 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1342 | P2 | pyprofane guard over en variant=11 | package=pyprofane, lang=en variant=11 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1343 | P2 | pyprofane guard over en variant=12 | package=pyprofane, lang=en variant=12 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1344 | P2 | pyprofane guard over en variant=13 | package=pyprofane, lang=en variant=13 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1345 | P2 | pyprofane guard over en variant=14 | package=pyprofane, lang=en variant=14 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1346 | P2 | pyprofane guard over en variant=15 | package=pyprofane, lang=en variant=15 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1347 | P2 | pyprofane guard over en variant=16 | package=pyprofane, lang=en variant=16 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1348 | P2 | pyprofane guard over en variant=17 | package=pyprofane, lang=en variant=17 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1349 | P2 | pyprofane guard over en variant=18 | package=pyprofane, lang=en variant=18 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1350 | P2 | pyprofane guard over en variant=19 | package=pyprofane, lang=en variant=19 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1351 | P2 | pyprofane guard over en variant=20 | package=pyprofane, lang=en variant=20 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1352 | P2 | pyprofane guard over en variant=21 | package=pyprofane, lang=en variant=21 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1353 | P2 | pyprofane guard over en variant=22 | package=pyprofane, lang=en variant=22 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1354 | P2 | pyprofane guard over en variant=23 | package=pyprofane, lang=en variant=23 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1355 | P2 | pyprofane guard over en variant=24 | package=pyprofane, lang=en variant=24 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1356 | P2 | pyprofane guard over en variant=25 | package=pyprofane, lang=en variant=25 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1357 | P2 | pyprofane guard over en variant=26 | package=pyprofane, lang=en variant=26 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1358 | P2 | pyprofane guard over en variant=27 | package=pyprofane, lang=en variant=27 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1359 | P2 | pyprofane guard over en variant=28 | package=pyprofane, lang=en variant=28 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1360 | P2 | pyprofane guard over en variant=29 | package=pyprofane, lang=en variant=29 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1361 | P2 | pyprofane guard over en variant=30 | package=pyprofane, lang=en variant=30 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1362 | P2 | pyprofane guard over en variant=31 | package=pyprofane, lang=en variant=31 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1363 | P2 | pyprofane guard over en variant=32 | package=pyprofane, lang=en variant=32 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1364 | P2 | pyprofane guard over en variant=33 | package=pyprofane, lang=en variant=33 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1365 | P2 | pyprofane guard over en variant=34 | package=pyprofane, lang=en variant=34 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1366 | P2 | pyprofane guard over en variant=35 | package=pyprofane, lang=en variant=35 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1367 | P2 | pyprofane guard over en variant=36 | package=pyprofane, lang=en variant=36 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1368 | P2 | pyprofane guard over en variant=37 | package=pyprofane, lang=en variant=37 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1369 | P2 | pyprofane guard over en variant=38 | package=pyprofane, lang=en variant=38 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1370 | P2 | pyprofane guard over en variant=39 | package=pyprofane, lang=en variant=39 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1371 | P2 | pyprofane guard over en variant=40 | package=pyprofane, lang=en variant=40 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1372 | P2 | pyprofane guard over en variant=41 | package=pyprofane, lang=en variant=41 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1373 | P2 | pyprofane guard over en variant=42 | package=pyprofane, lang=en variant=42 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1374 | P2 | pyprofane guard over en variant=43 | package=pyprofane, lang=en variant=43 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1375 | P2 | pyprofane guard over en variant=44 | package=pyprofane, lang=en variant=44 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1376 | P2 | pyprofane guard over en variant=45 | package=pyprofane, lang=en variant=45 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1377 | P2 | pyprofane guard over en variant=46 | package=pyprofane, lang=en variant=46 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1378 | P2 | pyprofane guard over en variant=47 | package=pyprofane, lang=en variant=47 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1379 | P2 | pyprofane guard over en variant=48 | package=pyprofane, lang=en variant=48 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1380 | P2 | pyprofane guard over en variant=49 | package=pyprofane, lang=en variant=49 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1381 | P2 | pyprofane guard over en variant=50 | package=pyprofane, lang=en variant=50 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1382 | P2 | pyprofane guard over en variant=51 | package=pyprofane, lang=en variant=51 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1383 | P2 | pyprofane guard over en variant=52 | package=pyprofane, lang=en variant=52 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1384 | P2 | pyprofane guard over en variant=53 | package=pyprofane, lang=en variant=53 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1385 | P2 | pyprofane guard over en variant=54 | package=pyprofane, lang=en variant=54 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1386 | P2 | pyprofane guard over en variant=55 | package=pyprofane, lang=en variant=55 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1387 | P2 | pyprofane guard over en variant=56 | package=pyprofane, lang=en variant=56 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1388 | P2 | pyprofane guard over en variant=57 | package=pyprofane, lang=en variant=57 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1389 | P2 | pyprofane guard over en variant=58 | package=pyprofane, lang=en variant=58 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1390 | P2 | pyprofane guard over en variant=59 | package=pyprofane, lang=en variant=59 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1391 | P2 | pyprofane guard over en variant=60 | package=pyprofane, lang=en variant=60 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1392 | P2 | pyprofane guard over en variant=61 | package=pyprofane, lang=en variant=61 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1393 | P2 | pyprofane guard over en variant=62 | package=pyprofane, lang=en variant=62 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1394 | P2 | pyprofane guard over en variant=63 | package=pyprofane, lang=en variant=63 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1395 | P2 | pyprofane guard over en variant=64 | package=pyprofane, lang=en variant=64 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1396 | P2 | pyprofane guard over en variant=65 | package=pyprofane, lang=en variant=65 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1397 | P2 | pyprofane guard over en variant=66 | package=pyprofane, lang=en variant=66 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1398 | P2 | pyprofane guard over en variant=67 | package=pyprofane, lang=en variant=67 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1399 | P2 | pyprofane guard over en variant=68 | package=pyprofane, lang=en variant=68 | no-match | test_detectors_phase2_part_12.py |
+| TC-DET-1400 | P2 | pyprofane guard over en variant=69 | package=pyprofane, lang=en variant=69 | no-match | test_detectors_phase2_part_12.py |
 
 ### Phase 3 - 20,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-DET-1326 onward.
