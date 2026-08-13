@@ -6,909 +6,123 @@ recovery and API bursts."""
 # multilingual fixtures use non-ASCII on purpose
 from __future__ import annotations
 
+import pytest
+
 from app.detectors.rolling_hash_detector import RollingHashDetector
 from tests.base_test import BaseTest
 
-
-class TestHashStorms(BaseTest):
-    """HashStorms scenarios."""
-
-    def test_hash_storm_0_9342(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9343(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9344(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9345(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9346(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9347(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9348(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9349(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9350(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9351(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9352(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9353(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9354(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9355(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9356(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9357(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9358(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9359(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9360(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9361(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=1, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 1
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9362(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9363(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9364(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9365(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9366(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9367(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9368(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9369(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9370(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9371(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9372(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9373(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9374(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9375(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9376(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9377(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9378(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9379(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9380(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9381(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=5, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 5
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9382(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9383(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9384(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9385(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9386(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9387(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9388(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9389(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9390(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9391(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9392(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9393(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9394(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9395(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9396(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9397(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9398(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9399(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9400(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9401(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 10
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9402(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9403(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9404(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9405(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9406(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9407(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9408(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9409(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9410(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9411(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9412(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9413(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9414(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9415(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9416(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9417(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9418(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9419(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9420(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9421(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=50, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 50
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9422(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9423(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9424(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9425(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9426(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=0)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9427(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9428(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9429(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9430(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9431(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=1)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9432(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9433(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9434(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9435(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9436(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=30)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_0_9437(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_1_9438(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_2_9439(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_3_9440(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
-
-    def test_hash_storm_4_9441(self) -> None:
-        """Hash storms never crash the LRU cache."""
-        detector: RollingHashDetector = RollingHashDetector(cache_size=100, ttl_seconds=60)
-        for index in range(2000):
-            detector.detect(f"unique message number {index}")
-        assert len(detector._cache) <= 100
-        detector.record_hit("spam")
-        assert isinstance(detector.detect("spam").matched, bool)
+_HASH_STORM_CASES: tuple[tuple[int, int, int, int], ...] = (
+    (1, 0, 2000, 9302,),
+    (1, 0, 2100, 9303,),
+    (1, 0, 2200, 9304,),
+    (1, 0, 2300, 9305,),
+    (1, 0, 2400, 9306,),
+    (1, 1, 2000, 9307,),
+    (1, 1, 2100, 9308,),
+    (1, 1, 2200, 9309,),
+    (1, 1, 2300, 9310,),
+    (1, 1, 2400, 9311,),
+    (1, 30, 2000, 9312,),
+    (1, 30, 2100, 9313,),
+    (1, 30, 2200, 9314,),
+    (1, 30, 2300, 9315,),
+    (1, 30, 2400, 9316,),
+    (1, 60, 2000, 9317,),
+    (1, 60, 2100, 9318,),
+    (1, 60, 2200, 9319,),
+    (1, 60, 2300, 9320,),
+    (1, 60, 2400, 9321,),
+    (5, 0, 2000, 9322,),
+    (5, 0, 2100, 9323,),
+    (5, 0, 2200, 9324,),
+    (5, 0, 2300, 9325,),
+    (5, 0, 2400, 9326,),
+    (5, 1, 2000, 9327,),
+    (5, 1, 2100, 9328,),
+    (5, 1, 2200, 9329,),
+    (5, 1, 2300, 9330,),
+    (5, 1, 2400, 9331,),
+    (5, 30, 2000, 9332,),
+    (5, 30, 2100, 9333,),
+    (5, 30, 2200, 9334,),
+    (5, 30, 2300, 9335,),
+    (5, 30, 2400, 9336,),
+    (5, 60, 2000, 9337,),
+    (5, 60, 2100, 9338,),
+    (5, 60, 2200, 9339,),
+    (5, 60, 2300, 9340,),
+    (5, 60, 2400, 9341,),
+    (10, 0, 2000, 9342,),
+    (10, 0, 2100, 9343,),
+    (10, 0, 2200, 9344,),
+    (10, 0, 2300, 9345,),
+    (10, 0, 2400, 9346,),
+    (10, 1, 2000, 9347,),
+    (10, 1, 2100, 9348,),
+    (10, 1, 2200, 9349,),
+    (10, 1, 2300, 9350,),
+    (10, 1, 2400, 9351,),
+    (10, 30, 2000, 9352,),
+    (10, 30, 2100, 9353,),
+    (10, 30, 2200, 9354,),
+    (10, 30, 2300, 9355,),
+    (10, 30, 2400, 9356,),
+    (10, 60, 2000, 9357,),
+    (10, 60, 2100, 9358,),
+    (10, 60, 2200, 9359,),
+    (10, 60, 2300, 9360,),
+    (10, 60, 2400, 9361,),
+    (50, 0, 2000, 9362,),
+    (50, 0, 2100, 9363,),
+    (50, 0, 2200, 9364,),
+    (50, 0, 2300, 9365,),
+    (50, 0, 2400, 9366,),
+    (50, 1, 2000, 9367,),
+    (50, 1, 2100, 9368,),
+    (50, 1, 2200, 9369,),
+    (50, 1, 2300, 9370,),
+    (50, 1, 2400, 9371,),
+    (50, 30, 2000, 9372,),
+    (50, 30, 2100, 9373,),
+    (50, 30, 2200, 9374,),
+    (50, 30, 2300, 9375,),
+    (50, 30, 2400, 9376,),
+    (50, 60, 2000, 9377,),
+    (50, 60, 2100, 9378,),
+    (50, 60, 2200, 9379,),
+    (50, 60, 2300, 9380,),
+    (50, 60, 2400, 9381,),
+    (100, 0, 2000, 9382,),
+    (100, 0, 2100, 9383,),
+    (100, 0, 2200, 9384,),
+    (100, 0, 2300, 9385,),
+    (100, 0, 2400, 9386,),
+    (100, 1, 2000, 9387,),
+    (100, 1, 2100, 9388,),
+    (100, 1, 2200, 9389,),
+    (100, 1, 2300, 9390,),
+    (100, 1, 2400, 9391,),
+    (100, 30, 2000, 9392,),
+    (100, 30, 2100, 9393,),
+    (100, 30, 2200, 9394,),
+    (100, 30, 2300, 9395,),
+    (100, 30, 2400, 9396,),
+    (100, 60, 2000, 9397,),
+    (100, 60, 2100, 9398,),
+    (100, 60, 2200, 9399,),
+    (100, 60, 2300, 9400,),
+    (100, 60, 2400, 9401,),
+)
+
+class TestHashStorm(BaseTest):
+    """Hash storms never crash the LRU cache."""
+
+    @pytest.mark.parametrize(('cache_size', 'ttl', 'message_count', 'uid',), _HASH_STORM_CASES)
+    def test_hash_storm(self, cache_size: int, ttl: int, message_count: int, uid: int) -> None:
+        """Hash storms never crash the LRU cache."""
+        detector: RollingHashDetector = RollingHashDetector(cache_size=cache_size, ttl_seconds=ttl)
+        for index in range(message_count):
+            detector.detect(f'unique message number {index}')
+        assert len(detector._cache) <= cache_size
+        detector.record_hit('spam')
+        assert isinstance(detector.detect('spam').matched, bool)
