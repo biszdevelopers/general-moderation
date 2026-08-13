@@ -222,21 +222,21 @@
 | TC-ENG-1594 | P2 | Typo zorp @ 70 | word=zorp,typo,threshold=70 | verdict=PASS | test_engine_phase2_part_2.py |
 | TC-ENG-1595 | P1 | Exact zorp @ 100 | word=zorp,threshold=100 | verdict=BLOCK | test_engine_phase2_part_2.py |
 | TC-ENG-1596 | P2 | Typo zorp @ 100 | word=zorp,typo,threshold=100 | verdict=PASS | test_engine_phase2_part_2.py |
-| TC-ENG-1597 | P2 | Cache bounded at 0 TTL 1 | size=0,ttl=1 | bounded | test_engine_phase2_part_2.py |
-| TC-ENG-1598 | P2 | Cache bounded at 0 TTL 60 | size=0,ttl=60 | bounded | test_engine_phase2_part_2.py |
-| TC-ENG-1599 | P2 | Cache bounded at 0 TTL 300 | size=0,ttl=300 | bounded | test_engine_phase2_part_2.py |
-| TC-ENG-1600 | P2 | Cache bounded at 1 TTL 1 | size=1,ttl=1 | bounded | test_engine_phase2_part_2.py |
-| TC-ENG-1601 | P2 | Cache bounded at 1 TTL 60 | size=1,ttl=60 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1602 | P2 | Cache bounded at 1 TTL 300 | size=1,ttl=300 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1603 | P2 | Cache bounded at 5 TTL 1 | size=5,ttl=1 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1604 | P2 | Cache bounded at 5 TTL 60 | size=5,ttl=60 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1605 | P2 | Cache bounded at 5 TTL 300 | size=5,ttl=300 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1606 | P2 | Cache bounded at 10 TTL 1 | size=10,ttl=1 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1607 | P2 | Cache bounded at 10 TTL 60 | size=10,ttl=60 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1608 | P2 | Cache bounded at 10 TTL 300 | size=10,ttl=300 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1609 | P2 | Cache bounded at 50 TTL 1 | size=50,ttl=1 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1610 | P2 | Cache bounded at 50 TTL 60 | size=50,ttl=60 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1611 | P2 | Cache bounded at 50 TTL 300 | size=50,ttl=300 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1597 | P2 | Cache bounded after 1 moderations | n=1 | bounded | test_engine_phase2_part_2.py |
+| TC-ENG-1598 | P2 | Cache bounded after 2 moderations | n=2 | bounded | test_engine_phase2_part_2.py |
+| TC-ENG-1599 | P2 | Cache bounded after 3 moderations | n=3 | bounded | test_engine_phase2_part_2.py |
+| TC-ENG-1600 | P2 | Cache bounded after 5 moderations | n=5 | bounded | test_engine_phase2_part_2.py |
+| TC-ENG-1601 | P2 | Cache bounded after 10 moderations | n=10 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1602 | P2 | Cache bounded after 15 moderations | n=15 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1603 | P2 | Cache bounded after 20 moderations | n=20 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1604 | P2 | Cache bounded after 25 moderations | n=25 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1605 | P2 | Cache bounded after 30 moderations | n=30 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1606 | P2 | Cache bounded after 40 moderations | n=40 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1607 | P2 | Cache bounded after 50 moderations | n=50 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1608 | P2 | Cache bounded after 60 moderations | n=60 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1609 | P2 | Cache bounded after 75 moderations | n=75 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1610 | P2 | Cache bounded after 100 moderations | n=100 | bounded | test_engine_phase2_part_3.py |
+| TC-ENG-1611 | P2 | Cache bounded after 150 moderations | n=150 | bounded | test_engine_phase2_part_3.py |
 | TC-ENG-1612 | P1 | Batch of 2 returns all results | size=2 | len == size | test_engine_phase2_part_3.py |
 | TC-ENG-1613 | P1 | Batch of 5 returns all results | size=5 | len == size | test_engine_phase2_part_3.py |
 | TC-ENG-1614 | P1 | Batch of 10 returns all results | size=10 | len == size | test_engine_phase2_part_3.py |
@@ -289,30 +289,30 @@
 | TC-ENG-1661 | P1 | SafeWordFilter detects bg | lang=bg | detected | test_engine_phase2_part_3.py |
 | TC-ENG-1662 | P1 | SafeWordFilter detects he | lang=he | detected | test_engine_phase2_part_3.py |
 | TC-ENG-1663 | P1 | SafeWordFilter detects th | lang=th | detected | test_engine_phase2_part_3.py |
-| TC-ENG-1664 | P2 | Safe word filter scenario 0 | scenario=0 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1665 | P2 | Safe word filter scenario 1 | scenario=1 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1666 | P2 | Safe word filter scenario 2 | scenario=2 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1667 | P2 | Safe word filter scenario 3 | scenario=3 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1668 | P2 | Safe word filter scenario 4 | scenario=4 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1669 | P2 | Safe word filter scenario 5 | scenario=5 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1670 | P2 | Safe word filter scenario 6 | scenario=6 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1671 | P2 | Safe word filter scenario 7 | scenario=7 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1672 | P2 | Safe word filter scenario 8 | scenario=8 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1673 | P2 | Safe word filter scenario 9 | scenario=9 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1674 | P2 | Safe word filter scenario 10 | scenario=10 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1675 | P2 | Safe word filter scenario 11 | scenario=11 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1676 | P2 | Safe word filter scenario 12 | scenario=12 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1677 | P2 | Safe word filter scenario 13 | scenario=13 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1678 | P2 | Safe word filter scenario 14 | scenario=14 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1679 | P2 | Safe word filter scenario 15 | scenario=15 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1680 | P2 | Safe word filter scenario 16 | scenario=16 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1681 | P2 | Safe word filter scenario 17 | scenario=17 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1682 | P2 | Safe word filter scenario 18 | scenario=18 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1683 | P2 | Safe word filter scenario 19 | scenario=19 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1684 | P2 | Safe word filter scenario 20 | scenario=20 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1685 | P2 | Safe word filter scenario 21 | scenario=21 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1686 | P2 | Safe word filter scenario 22 | scenario=22 | safe toggle | test_engine_phase2_part_3.py |
-| TC-ENG-1687 | P2 | Safe word filter scenario 23 | scenario=23 | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1664 | P2 | Safe filter 'alpha' after adds 1 removes 0 | adds=('alpha',),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1665 | P2 | Safe filter 'alpha' after adds 1 removes 1 | adds=('alpha',),removes=('alpha',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1666 | P2 | Safe filter 'alpha beta' after adds 2 removes 0 | adds=('alpha', 'beta'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1667 | P2 | Safe filter 'beta' after adds 2 removes 1 | adds=('alpha', 'beta'),removes=('alpha',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1668 | P2 | Safe filter 'car dog fish' after adds 3 removes 0 | adds=('car', 'dog', 'fish'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1669 | P2 | Safe filter 'dog' after adds 2 removes 1 | adds=('car', 'dog'),removes=('car',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1670 | P2 | Safe filter 'safe list' after adds 3 removes 1 | adds=('safe', 'word', 'list'),removes=('word',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1671 | P2 | Safe filter 'hello world' after adds 2 removes 2 | adds=('hello', 'world'),removes=('hello', 'world') | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1672 | P2 | Safe filter 'one two' after adds 1 removes 1 | adds=('one',),removes=('one',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1673 | P2 | Safe filter 'two three' after adds 2 removes 0 | adds=('two', 'three'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1674 | P2 | Safe filter 'ALPHA' after adds 1 removes 0 | adds=('alpha',),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1675 | P2 | Safe filter 'alpha!' after adds 1 removes 0 | adds=('alpha',),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1676 | P2 | Safe filter 'multi token' after adds 2 removes 0 | adds=('multi', 'token'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1677 | P2 | Safe filter 'a c' after adds 3 removes 1 | adds=('a', 'b', 'c'),removes=('b',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1678 | P2 | Safe filter 'y' after adds 2 removes 1 | adds=('x', 'y'),removes=('x',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1679 | P2 | Safe filter 'kitten puppy' after adds 2 removes 0 | adds=('kitten', 'puppy'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1680 | P2 | Safe filter 'alpha' after adds 1 removes 1 | adds=('alpha',),removes=('beta',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1681 | P2 | Safe filter 'red' after adds 2 removes 2 | adds=('red', 'green'),removes=('red', 'green') | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1682 | P2 | Safe filter 'yellow' after adds 2 removes 1 | adds=('blue', 'yellow'),removes=('blue',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1683 | P2 | Safe filter 'eins zwei' after adds 2 removes 0 | adds=('eins', 'zwei'),removes=() | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1684 | P2 | Safe filter 'dos' after adds 2 removes 1 | adds=('uno', 'dos'),removes=('uno',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1685 | P2 | Safe filter 'ichi san' after adds 3 removes 1 | adds=('ichi', 'ni', 'san'),removes=('ni',) | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1686 | P2 | Safe filter 'alpha' after adds 3 removes 2 | adds=('alpha', 'beta', 'gamma'),removes=('beta', 'gamma') | safe toggle | test_engine_phase2_part_3.py |
+| TC-ENG-1687 | P2 | Safe filter 'only' after adds 1 removes 1 | adds=('only',),removes=('only',) | safe toggle | test_engine_phase2_part_3.py |
 | TC-ENG-1688 | P2 | Rolling hash cache 1 TTL 0 | size=1,ttl=0 | bounded | test_engine_phase2_part_3.py |
 | TC-ENG-1689 | P2 | Rolling hash cache 1 TTL 1 | size=1,ttl=1 | bounded | test_engine_phase2_part_3.py |
 | TC-ENG-1690 | P2 | Rolling hash cache 1 TTL 60 | size=1,ttl=60 | bounded | test_engine_phase2_part_3.py |
@@ -325,66 +325,66 @@
 | TC-ENG-1697 | P2 | Rolling hash cache 100 TTL 0 | size=100,ttl=0 | bounded | test_engine_phase2_part_3.py |
 | TC-ENG-1698 | P2 | Rolling hash cache 100 TTL 1 | size=100,ttl=1 | bounded | test_engine_phase2_part_3.py |
 | TC-ENG-1699 | P2 | Rolling hash cache 100 TTL 60 | size=100,ttl=60 | bounded | test_engine_phase2_part_3.py |
-| TC-ENG-1700 | P3 | Rolling hash repeat scenario 0 | scenario=0 | repeat caught | test_engine_phase2_part_3.py |
-| TC-ENG-1701 | P3 | Rolling hash repeat scenario 1 | scenario=1 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1702 | P3 | Rolling hash repeat scenario 2 | scenario=2 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1703 | P3 | Rolling hash repeat scenario 3 | scenario=3 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1704 | P3 | Rolling hash repeat scenario 4 | scenario=4 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1705 | P3 | Rolling hash repeat scenario 5 | scenario=5 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1706 | P3 | Rolling hash repeat scenario 6 | scenario=6 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1707 | P3 | Rolling hash repeat scenario 7 | scenario=7 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1708 | P3 | Rolling hash repeat scenario 8 | scenario=8 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1709 | P3 | Rolling hash repeat scenario 9 | scenario=9 | repeat caught | test_engine_phase2_part_4.py |
-| TC-ENG-1710 | P2 | Metrics counter scenario 0 | scenario=0 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1711 | P2 | Metrics counter scenario 1 | scenario=1 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1712 | P2 | Metrics counter scenario 2 | scenario=2 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1713 | P2 | Metrics counter scenario 3 | scenario=3 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1714 | P2 | Metrics counter scenario 4 | scenario=4 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1715 | P2 | Metrics counter scenario 5 | scenario=5 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1716 | P2 | Metrics counter scenario 6 | scenario=6 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1717 | P2 | Metrics counter scenario 7 | scenario=7 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1718 | P2 | Metrics counter scenario 8 | scenario=8 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1719 | P2 | Metrics counter scenario 9 | scenario=9 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1720 | P2 | Metrics counter scenario 10 | scenario=10 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1721 | P2 | Metrics counter scenario 11 | scenario=11 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1722 | P2 | Metrics counter scenario 12 | scenario=12 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1723 | P2 | Metrics counter scenario 13 | scenario=13 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1724 | P2 | Metrics counter scenario 14 | scenario=14 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1725 | P2 | Metrics counter scenario 15 | scenario=15 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1726 | P2 | Metrics counter scenario 16 | scenario=16 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1727 | P2 | Metrics counter scenario 17 | scenario=17 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1728 | P2 | Metrics counter scenario 18 | scenario=18 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1729 | P2 | Metrics counter scenario 19 | scenario=19 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1730 | P2 | Metrics counter scenario 20 | scenario=20 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1731 | P2 | Metrics counter scenario 21 | scenario=21 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1732 | P2 | Metrics counter scenario 22 | scenario=22 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1733 | P2 | Metrics counter scenario 23 | scenario=23 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1734 | P2 | Metrics counter scenario 24 | scenario=24 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1735 | P2 | Metrics counter scenario 25 | scenario=25 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1736 | P2 | Metrics counter scenario 26 | scenario=26 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1737 | P2 | Metrics counter scenario 27 | scenario=27 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1738 | P2 | Metrics counter scenario 28 | scenario=28 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1739 | P2 | Metrics counter scenario 29 | scenario=29 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1740 | P2 | Metrics counter scenario 30 | scenario=30 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1741 | P2 | Metrics counter scenario 31 | scenario=31 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1742 | P2 | Metrics counter scenario 32 | scenario=32 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1743 | P2 | Metrics counter scenario 33 | scenario=33 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1744 | P2 | Metrics counter scenario 34 | scenario=34 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1745 | P2 | Metrics counter scenario 35 | scenario=35 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1746 | P2 | Metrics counter scenario 36 | scenario=36 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1747 | P2 | Metrics counter scenario 37 | scenario=37 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1748 | P2 | Metrics counter scenario 38 | scenario=38 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1749 | P2 | Metrics counter scenario 39 | scenario=39 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1750 | P2 | Metrics counter scenario 40 | scenario=40 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1751 | P2 | Metrics counter scenario 41 | scenario=41 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1752 | P2 | Metrics counter scenario 42 | scenario=42 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1753 | P2 | Metrics counter scenario 43 | scenario=43 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1754 | P2 | Metrics counter scenario 44 | scenario=44 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1755 | P2 | Metrics counter scenario 45 | scenario=45 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1756 | P2 | Metrics counter scenario 46 | scenario=46 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1757 | P2 | Metrics counter scenario 47 | scenario=47 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1758 | P2 | Metrics counter scenario 48 | scenario=48 | monotonic | test_engine_phase2_part_4.py |
-| TC-ENG-1759 | P2 | Metrics counter scenario 49 | scenario=49 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1700 | P3 | Rolling hash repeat scenario 0 | text=repeat spam 0 | repeat caught | test_engine_phase2_part_3.py |
+| TC-ENG-1701 | P3 | Rolling hash repeat scenario 1 | text=repeat spam 1 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1702 | P3 | Rolling hash repeat scenario 2 | text=repeat spam 2 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1703 | P3 | Rolling hash repeat scenario 3 | text=repeat spam 3 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1704 | P3 | Rolling hash repeat scenario 4 | text=repeat spam 4 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1705 | P3 | Rolling hash repeat scenario 5 | text=repeat spam 5 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1706 | P3 | Rolling hash repeat scenario 6 | text=repeat spam 6 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1707 | P3 | Rolling hash repeat scenario 7 | text=repeat spam 7 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1708 | P3 | Rolling hash repeat scenario 8 | text=repeat spam 8 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1709 | P3 | Rolling hash repeat scenario 9 | text=repeat spam 9 | repeat caught | test_engine_phase2_part_4.py |
+| TC-ENG-1710 | P2 | Metrics counter after 1 requests | n=1 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1711 | P2 | Metrics counter after 2 requests | n=2 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1712 | P2 | Metrics counter after 3 requests | n=3 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1713 | P2 | Metrics counter after 4 requests | n=4 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1714 | P2 | Metrics counter after 5 requests | n=5 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1715 | P2 | Metrics counter after 6 requests | n=6 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1716 | P2 | Metrics counter after 7 requests | n=7 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1717 | P2 | Metrics counter after 8 requests | n=8 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1718 | P2 | Metrics counter after 9 requests | n=9 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1719 | P2 | Metrics counter after 10 requests | n=10 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1720 | P2 | Metrics counter after 11 requests | n=11 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1721 | P2 | Metrics counter after 12 requests | n=12 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1722 | P2 | Metrics counter after 13 requests | n=13 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1723 | P2 | Metrics counter after 14 requests | n=14 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1724 | P2 | Metrics counter after 15 requests | n=15 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1725 | P2 | Metrics counter after 16 requests | n=16 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1726 | P2 | Metrics counter after 17 requests | n=17 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1727 | P2 | Metrics counter after 18 requests | n=18 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1728 | P2 | Metrics counter after 19 requests | n=19 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1729 | P2 | Metrics counter after 20 requests | n=20 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1730 | P2 | Metrics counter after 21 requests | n=21 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1731 | P2 | Metrics counter after 22 requests | n=22 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1732 | P2 | Metrics counter after 23 requests | n=23 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1733 | P2 | Metrics counter after 24 requests | n=24 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1734 | P2 | Metrics counter after 25 requests | n=25 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1735 | P2 | Metrics counter after 26 requests | n=26 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1736 | P2 | Metrics counter after 27 requests | n=27 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1737 | P2 | Metrics counter after 28 requests | n=28 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1738 | P2 | Metrics counter after 29 requests | n=29 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1739 | P2 | Metrics counter after 30 requests | n=30 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1740 | P2 | Metrics counter after 31 requests | n=31 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1741 | P2 | Metrics counter after 32 requests | n=32 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1742 | P2 | Metrics counter after 33 requests | n=33 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1743 | P2 | Metrics counter after 34 requests | n=34 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1744 | P2 | Metrics counter after 35 requests | n=35 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1745 | P2 | Metrics counter after 36 requests | n=36 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1746 | P2 | Metrics counter after 37 requests | n=37 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1747 | P2 | Metrics counter after 38 requests | n=38 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1748 | P2 | Metrics counter after 39 requests | n=39 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1749 | P2 | Metrics counter after 40 requests | n=40 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1750 | P2 | Metrics counter after 41 requests | n=41 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1751 | P2 | Metrics counter after 42 requests | n=42 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1752 | P2 | Metrics counter after 43 requests | n=43 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1753 | P2 | Metrics counter after 44 requests | n=44 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1754 | P2 | Metrics counter after 45 requests | n=45 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1755 | P2 | Metrics counter after 46 requests | n=46 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1756 | P2 | Metrics counter after 47 requests | n=47 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1757 | P2 | Metrics counter after 48 requests | n=48 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1758 | P2 | Metrics counter after 49 requests | n=49 | monotonic | test_engine_phase2_part_4.py |
+| TC-ENG-1759 | P2 | Metrics counter after 50 requests | n=50 | monotonic | test_engine_phase2_part_4.py |
 | TC-ENG-1760 | P2 | Varied content at length 5 | type=you,len=5 | verdict=PASS | test_engine_phase2_part_4.py |
 | TC-ENG-1761 | P2 | Varied content at length 25 | type=you,len=25 | verdict=PASS | test_engine_phase2_part_4.py |
 | TC-ENG-1762 | P2 | Varied content at length 100 | type=you,len=100 | verdict=BLOCK | test_engine_phase2_part_4.py |
@@ -605,36 +605,36 @@
 | TC-ENG-1977 | P2 | Policy for kappa @ 60 | app=kappa,threshold=60 | verdict=BLOCK | test_engine_phase2_part_6.py |
 | TC-ENG-1978 | P2 | Policy for kappa @ 80 | app=kappa,threshold=80 | verdict=BLOCK | test_engine_phase2_part_6.py |
 | TC-ENG-1979 | P2 | Policy for kappa @ 100 | app=kappa,threshold=100 | verdict=BLOCK | test_engine_phase2_part_6.py |
-| TC-ENG-1980 | P2 | Cache TTL clock scenario 0 | scenario=0 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1981 | P2 | Cache TTL clock scenario 1 | scenario=1 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1982 | P2 | Cache TTL clock scenario 2 | scenario=2 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1983 | P2 | Cache TTL clock scenario 3 | scenario=3 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1984 | P2 | Cache TTL clock scenario 4 | scenario=4 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1985 | P2 | Cache TTL clock scenario 5 | scenario=5 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1986 | P2 | Cache TTL clock scenario 6 | scenario=6 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1987 | P2 | Cache TTL clock scenario 7 | scenario=7 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1988 | P2 | Cache TTL clock scenario 8 | scenario=8 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1989 | P2 | Cache TTL clock scenario 9 | scenario=9 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1990 | P2 | Cache TTL clock scenario 10 | scenario=10 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1991 | P2 | Cache TTL clock scenario 11 | scenario=11 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1992 | P2 | Cache TTL clock scenario 12 | scenario=12 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1993 | P2 | Cache TTL clock scenario 13 | scenario=13 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1994 | P2 | Cache TTL clock scenario 14 | scenario=14 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1995 | P2 | Cache TTL clock scenario 15 | scenario=15 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1996 | P2 | Cache TTL clock scenario 16 | scenario=16 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1997 | P2 | Cache TTL clock scenario 17 | scenario=17 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1998 | P2 | Cache TTL clock scenario 18 | scenario=18 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-1999 | P2 | Cache TTL clock scenario 19 | scenario=19 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-2000 | P2 | Cache TTL clock scenario 20 | scenario=20 | bounded | test_engine_phase2_part_6.py |
-| TC-ENG-2001 | P2 | Cache TTL clock scenario 21 | scenario=21 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2002 | P2 | Cache TTL clock scenario 22 | scenario=22 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2003 | P2 | Cache TTL clock scenario 23 | scenario=23 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2004 | P2 | Cache TTL clock scenario 24 | scenario=24 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2005 | P2 | Cache TTL clock scenario 25 | scenario=25 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2006 | P2 | Cache TTL clock scenario 26 | scenario=26 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2007 | P2 | Cache TTL clock scenario 27 | scenario=27 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2008 | P2 | Cache TTL clock scenario 28 | scenario=28 | bounded | test_engine_phase2_part_7.py |
-| TC-ENG-2009 | P2 | Cache TTL clock scenario 29 | scenario=29 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-1980 | P2 | Cache TTL expiry offset -172800 | offset=-172800 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1981 | P2 | Cache TTL expiry offset -86400 | offset=-86400 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1982 | P2 | Cache TTL expiry offset -7200 | offset=-7200 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1983 | P2 | Cache TTL expiry offset -3600 | offset=-3600 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1984 | P2 | Cache TTL expiry offset -1800 | offset=-1800 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1985 | P2 | Cache TTL expiry offset -900 | offset=-900 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1986 | P2 | Cache TTL expiry offset -600 | offset=-600 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1987 | P2 | Cache TTL expiry offset -300 | offset=-300 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1988 | P2 | Cache TTL expiry offset -120 | offset=-120 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1989 | P2 | Cache TTL expiry offset -60 | offset=-60 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1990 | P2 | Cache TTL expiry offset -30 | offset=-30 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1991 | P2 | Cache TTL expiry offset -10 | offset=-10 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1992 | P2 | Cache TTL expiry offset -5 | offset=-5 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1993 | P2 | Cache TTL expiry offset -2 | offset=-2 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1994 | P2 | Cache TTL expiry offset -1 | offset=-1 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1995 | P2 | Cache TTL expiry offset 1 | offset=1 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1996 | P2 | Cache TTL expiry offset 2 | offset=2 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1997 | P2 | Cache TTL expiry offset 5 | offset=5 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1998 | P2 | Cache TTL expiry offset 10 | offset=10 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-1999 | P2 | Cache TTL expiry offset 30 | offset=30 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-2000 | P2 | Cache TTL expiry offset 60 | offset=60 | bounded | test_engine_phase2_part_6.py |
+| TC-ENG-2001 | P2 | Cache TTL expiry offset 120 | offset=120 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2002 | P2 | Cache TTL expiry offset 300 | offset=300 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2003 | P2 | Cache TTL expiry offset 600 | offset=600 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2004 | P2 | Cache TTL expiry offset 900 | offset=900 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2005 | P2 | Cache TTL expiry offset 1800 | offset=1800 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2006 | P2 | Cache TTL expiry offset 3600 | offset=3600 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2007 | P2 | Cache TTL expiry offset 7200 | offset=7200 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2008 | P2 | Cache TTL expiry offset 86400 | offset=86400 | bounded | test_engine_phase2_part_7.py |
+| TC-ENG-2009 | P2 | Cache TTL expiry offset 172800 | offset=172800 | bounded | test_engine_phase2_part_7.py |
 | TC-ENG-2010 | P2 | Mixed batch of 2 | size=2 | verdicts valid | test_engine_phase2_part_7.py |
 | TC-ENG-2011 | P2 | Mixed batch of 3 | size=3 | verdicts valid | test_engine_phase2_part_7.py |
 | TC-ENG-2012 | P2 | Mixed batch of 4 | size=4 | verdicts valid | test_engine_phase2_part_7.py |
@@ -642,36 +642,36 @@
 | TC-ENG-2014 | P2 | Mixed batch of 6 | size=6 | verdicts valid | test_engine_phase2_part_7.py |
 | TC-ENG-2015 | P2 | Mixed batch of 7 | size=7 | verdicts valid | test_engine_phase2_part_7.py |
 | TC-ENG-2016 | P2 | Mixed batch of 8 | size=8 | verdicts valid | test_engine_phase2_part_7.py |
-| TC-ENG-2017 | P2 | Refresh scenario 0 | scenario=0 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2018 | P2 | Refresh scenario 1 | scenario=1 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2019 | P2 | Refresh scenario 2 | scenario=2 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2020 | P2 | Refresh scenario 3 | scenario=3 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2021 | P2 | Refresh scenario 4 | scenario=4 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2022 | P2 | Refresh scenario 5 | scenario=5 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2023 | P2 | Refresh scenario 6 | scenario=6 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2024 | P2 | Refresh scenario 7 | scenario=7 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2025 | P2 | Refresh scenario 8 | scenario=8 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2026 | P2 | Refresh scenario 9 | scenario=9 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2027 | P2 | Refresh scenario 10 | scenario=10 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2028 | P2 | Refresh scenario 11 | scenario=11 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2029 | P2 | Refresh scenario 12 | scenario=12 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2030 | P2 | Refresh scenario 13 | scenario=13 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2031 | P2 | Refresh scenario 14 | scenario=14 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2032 | P2 | Refresh scenario 15 | scenario=15 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2033 | P2 | Refresh scenario 16 | scenario=16 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2034 | P2 | Refresh scenario 17 | scenario=17 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2035 | P2 | Refresh scenario 18 | scenario=18 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2036 | P2 | Refresh scenario 19 | scenario=19 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2037 | P2 | Refresh scenario 20 | scenario=20 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2038 | P2 | Refresh scenario 21 | scenario=21 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2039 | P2 | Refresh scenario 22 | scenario=22 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2040 | P2 | Refresh scenario 23 | scenario=23 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2041 | P2 | Refresh scenario 24 | scenario=24 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2042 | P2 | Refresh scenario 25 | scenario=25 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2043 | P2 | Refresh scenario 26 | scenario=26 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2044 | P2 | Refresh scenario 27 | scenario=27 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2045 | P2 | Refresh scenario 28 | scenario=28 | consistent | test_engine_phase2_part_7.py |
-| TC-ENG-2046 | P2 | Refresh scenario 29 | scenario=29 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2017 | P2 | Refresh after 1 cached results | n=1 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2018 | P2 | Refresh after 2 cached results | n=2 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2019 | P2 | Refresh after 3 cached results | n=3 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2020 | P2 | Refresh after 4 cached results | n=4 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2021 | P2 | Refresh after 5 cached results | n=5 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2022 | P2 | Refresh after 6 cached results | n=6 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2023 | P2 | Refresh after 7 cached results | n=7 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2024 | P2 | Refresh after 8 cached results | n=8 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2025 | P2 | Refresh after 9 cached results | n=9 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2026 | P2 | Refresh after 10 cached results | n=10 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2027 | P2 | Refresh after 11 cached results | n=11 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2028 | P2 | Refresh after 12 cached results | n=12 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2029 | P2 | Refresh after 13 cached results | n=13 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2030 | P2 | Refresh after 14 cached results | n=14 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2031 | P2 | Refresh after 15 cached results | n=15 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2032 | P2 | Refresh after 16 cached results | n=16 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2033 | P2 | Refresh after 17 cached results | n=17 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2034 | P2 | Refresh after 18 cached results | n=18 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2035 | P2 | Refresh after 19 cached results | n=19 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2036 | P2 | Refresh after 20 cached results | n=20 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2037 | P2 | Refresh after 21 cached results | n=21 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2038 | P2 | Refresh after 22 cached results | n=22 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2039 | P2 | Refresh after 23 cached results | n=23 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2040 | P2 | Refresh after 24 cached results | n=24 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2041 | P2 | Refresh after 25 cached results | n=25 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2042 | P2 | Refresh after 26 cached results | n=26 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2043 | P2 | Refresh after 27 cached results | n=27 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2044 | P2 | Refresh after 28 cached results | n=28 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2045 | P2 | Refresh after 29 cached results | n=29 | consistent | test_engine_phase2_part_7.py |
+| TC-ENG-2046 | P2 | Refresh after 30 cached results | n=30 | consistent | test_engine_phase2_part_7.py |
 | TC-ENG-2047 | P3 | Profiler integration scenario 0 | user=p2user0 | rows recorded | test_engine_phase2_part_7.py |
 | TC-ENG-2048 | P3 | Profiler integration scenario 1 | user=p2user1 | rows recorded | test_engine_phase2_part_7.py |
 | TC-ENG-2049 | P3 | Profiler integration scenario 2 | user=p2user2 | rows recorded | test_engine_phase2_part_7.py |
@@ -712,20 +712,20 @@
 | TC-ENG-2084 | P3 | Profiler integration scenario 37 | user=p2user37 | rows recorded | test_engine_phase2_part_7.py |
 | TC-ENG-2085 | P3 | Profiler integration scenario 38 | user=p2user38 | rows recorded | test_engine_phase2_part_7.py |
 | TC-ENG-2086 | P3 | Profiler integration scenario 39 | user=p2user39 | rows recorded | test_engine_phase2_part_7.py |
-| TC-ENG-2087 | P2 | Response invariant scenario 0 | scenario=0 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2088 | P2 | Response invariant scenario 1 | scenario=1 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2089 | P2 | Response invariant scenario 2 | scenario=2 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2090 | P2 | Response invariant scenario 3 | scenario=3 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2091 | P2 | Response invariant scenario 4 | scenario=4 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2092 | P2 | Response invariant scenario 5 | scenario=5 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2093 | P2 | Response invariant scenario 6 | scenario=6 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2094 | P2 | Response invariant scenario 7 | scenario=7 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2095 | P2 | Response invariant scenario 8 | scenario=8 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2096 | P2 | Response invariant scenario 9 | scenario=9 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2097 | P2 | Response invariant scenario 10 | scenario=10 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2098 | P2 | Response invariant scenario 11 | scenario=11 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2099 | P2 | Response invariant scenario 12 | scenario=12 | invariants hold | test_engine_phase2_part_7.py |
-| TC-ENG-2100 | P2 | Response invariant scenario 13 | scenario=13 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2087 | P2 | Response invariant scenario 0 | id=resp-0 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2088 | P2 | Response invariant scenario 1 | id=resp-1 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2089 | P2 | Response invariant scenario 2 | id=resp-2 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2090 | P2 | Response invariant scenario 3 | id=resp-3 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2091 | P2 | Response invariant scenario 4 | id=resp-4 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2092 | P2 | Response invariant scenario 5 | id=resp-5 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2093 | P2 | Response invariant scenario 6 | id=resp-6 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2094 | P2 | Response invariant scenario 7 | id=resp-7 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2095 | P2 | Response invariant scenario 8 | id=resp-8 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2096 | P2 | Response invariant scenario 9 | id=resp-9 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2097 | P2 | Response invariant scenario 10 | id=resp-10 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2098 | P2 | Response invariant scenario 11 | id=resp-11 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2099 | P2 | Response invariant scenario 12 | id=resp-12 | invariants hold | test_engine_phase2_part_7.py |
+| TC-ENG-2100 | P2 | Response invariant scenario 13 | id=resp-13 | invariants hold | test_engine_phase2_part_7.py |
 
 ### Phase 3 - 10,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-ENG-0781 onward.
