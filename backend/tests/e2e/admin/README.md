@@ -375,256 +375,256 @@
 | TC-ADM-7871 | P2 | App config default lookup 7 | app=ghost7 | defaults | test_admin_api_phase2_part_4.py |
 | TC-ADM-7872 | P2 | App config default lookup 8 | app=ghost8 | defaults | test_admin_api_phase2_part_4.py |
 | TC-ADM-7873 | P2 | App config default lookup 9 | app=ghost9 | defaults | test_admin_api_phase2_part_4.py |
-| TC-ADM-7874 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #0 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7875 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #1 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7876 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #2 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7877 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #3 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7878 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #4 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7879 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #5 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7880 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #6 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7881 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #7 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7882 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #8 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7883 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #9 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7884 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #10 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7885 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #11 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7886 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #12 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7887 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #13 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7888 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #14 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7889 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #15 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7890 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #16 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7891 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #17 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7892 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #18 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7893 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO #19 | key=WEIGHT_DETECTOR_AHO | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7894 | P2 | Settings endpoint WEIGHT_USER #0 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7895 | P2 | Settings endpoint WEIGHT_USER #1 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7896 | P2 | Settings endpoint WEIGHT_USER #2 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7897 | P2 | Settings endpoint WEIGHT_USER #3 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7898 | P2 | Settings endpoint WEIGHT_USER #4 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7899 | P2 | Settings endpoint WEIGHT_USER #5 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7900 | P2 | Settings endpoint WEIGHT_USER #6 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7901 | P2 | Settings endpoint WEIGHT_USER #7 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7902 | P2 | Settings endpoint WEIGHT_USER #8 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7903 | P2 | Settings endpoint WEIGHT_USER #9 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7904 | P2 | Settings endpoint WEIGHT_USER #10 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7905 | P2 | Settings endpoint WEIGHT_USER #11 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7906 | P2 | Settings endpoint WEIGHT_USER #12 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7907 | P2 | Settings endpoint WEIGHT_USER #13 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7908 | P2 | Settings endpoint WEIGHT_USER #14 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7909 | P2 | Settings endpoint WEIGHT_USER #15 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7910 | P2 | Settings endpoint WEIGHT_USER #16 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7911 | P2 | Settings endpoint WEIGHT_USER #17 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7912 | P2 | Settings endpoint WEIGHT_USER #18 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7913 | P2 | Settings endpoint WEIGHT_USER #19 | key=WEIGHT_USER | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7914 | P2 | Settings endpoint CACHE_MAX_SIZE #0 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7915 | P2 | Settings endpoint CACHE_MAX_SIZE #1 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7916 | P2 | Settings endpoint CACHE_MAX_SIZE #2 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7917 | P2 | Settings endpoint CACHE_MAX_SIZE #3 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7918 | P2 | Settings endpoint CACHE_MAX_SIZE #4 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7919 | P2 | Settings endpoint CACHE_MAX_SIZE #5 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7920 | P2 | Settings endpoint CACHE_MAX_SIZE #6 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7921 | P2 | Settings endpoint CACHE_MAX_SIZE #7 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7922 | P2 | Settings endpoint CACHE_MAX_SIZE #8 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7923 | P2 | Settings endpoint CACHE_MAX_SIZE #9 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_4.py |
-| TC-ADM-7924 | P2 | Settings endpoint CACHE_MAX_SIZE #10 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7925 | P2 | Settings endpoint CACHE_MAX_SIZE #11 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7926 | P2 | Settings endpoint CACHE_MAX_SIZE #12 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7927 | P2 | Settings endpoint CACHE_MAX_SIZE #13 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7928 | P2 | Settings endpoint CACHE_MAX_SIZE #14 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7929 | P2 | Settings endpoint CACHE_MAX_SIZE #15 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7930 | P2 | Settings endpoint CACHE_MAX_SIZE #16 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7931 | P2 | Settings endpoint CACHE_MAX_SIZE #17 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7932 | P2 | Settings endpoint CACHE_MAX_SIZE #18 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7933 | P2 | Settings endpoint CACHE_MAX_SIZE #19 | key=CACHE_MAX_SIZE | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7934 | P2 | Settings endpoint SAFE_WORD_ENABLED #0 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7935 | P2 | Settings endpoint SAFE_WORD_ENABLED #1 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7936 | P2 | Settings endpoint SAFE_WORD_ENABLED #2 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7937 | P2 | Settings endpoint SAFE_WORD_ENABLED #3 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7938 | P2 | Settings endpoint SAFE_WORD_ENABLED #4 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7939 | P2 | Settings endpoint SAFE_WORD_ENABLED #5 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7940 | P2 | Settings endpoint SAFE_WORD_ENABLED #6 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7941 | P2 | Settings endpoint SAFE_WORD_ENABLED #7 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7942 | P2 | Settings endpoint SAFE_WORD_ENABLED #8 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7943 | P2 | Settings endpoint SAFE_WORD_ENABLED #9 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7944 | P2 | Settings endpoint SAFE_WORD_ENABLED #10 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7945 | P2 | Settings endpoint SAFE_WORD_ENABLED #11 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7946 | P2 | Settings endpoint SAFE_WORD_ENABLED #12 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7947 | P2 | Settings endpoint SAFE_WORD_ENABLED #13 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7948 | P2 | Settings endpoint SAFE_WORD_ENABLED #14 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7949 | P2 | Settings endpoint SAFE_WORD_ENABLED #15 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7950 | P2 | Settings endpoint SAFE_WORD_ENABLED #16 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7951 | P2 | Settings endpoint SAFE_WORD_ENABLED #17 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7952 | P2 | Settings endpoint SAFE_WORD_ENABLED #18 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7953 | P2 | Settings endpoint SAFE_WORD_ENABLED #19 | key=SAFE_WORD_ENABLED | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7954 | P2 | Settings endpoint SEMANTIC_TOP_K #0 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7955 | P2 | Settings endpoint SEMANTIC_TOP_K #1 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7956 | P2 | Settings endpoint SEMANTIC_TOP_K #2 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7957 | P2 | Settings endpoint SEMANTIC_TOP_K #3 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7958 | P2 | Settings endpoint SEMANTIC_TOP_K #4 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7959 | P2 | Settings endpoint SEMANTIC_TOP_K #5 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7960 | P2 | Settings endpoint SEMANTIC_TOP_K #6 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7961 | P2 | Settings endpoint SEMANTIC_TOP_K #7 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7962 | P2 | Settings endpoint SEMANTIC_TOP_K #8 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7963 | P2 | Settings endpoint SEMANTIC_TOP_K #9 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7964 | P2 | Settings endpoint SEMANTIC_TOP_K #10 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7965 | P2 | Settings endpoint SEMANTIC_TOP_K #11 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7966 | P2 | Settings endpoint SEMANTIC_TOP_K #12 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7967 | P2 | Settings endpoint SEMANTIC_TOP_K #13 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7968 | P2 | Settings endpoint SEMANTIC_TOP_K #14 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7969 | P2 | Settings endpoint SEMANTIC_TOP_K #15 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7970 | P2 | Settings endpoint SEMANTIC_TOP_K #16 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7971 | P2 | Settings endpoint SEMANTIC_TOP_K #17 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7972 | P2 | Settings endpoint SEMANTIC_TOP_K #18 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7973 | P2 | Settings endpoint SEMANTIC_TOP_K #19 | key=SEMANTIC_TOP_K | updated | test_admin_api_phase2_part_5.py |
-| TC-ADM-7974 | P2 | Logs scenario 0 | scenario=0 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7975 | P2 | Logs scenario 1 | scenario=1 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7976 | P2 | Logs scenario 2 | scenario=2 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7977 | P2 | Logs scenario 3 | scenario=3 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7978 | P2 | Logs scenario 4 | scenario=4 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7979 | P2 | Logs scenario 5 | scenario=5 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7980 | P2 | Logs scenario 6 | scenario=6 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7981 | P2 | Logs scenario 7 | scenario=7 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7982 | P2 | Logs scenario 8 | scenario=8 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7983 | P2 | Logs scenario 9 | scenario=9 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7984 | P2 | Logs scenario 10 | scenario=10 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7985 | P2 | Logs scenario 11 | scenario=11 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7986 | P2 | Logs scenario 12 | scenario=12 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7987 | P2 | Logs scenario 13 | scenario=13 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7988 | P2 | Logs scenario 14 | scenario=14 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7989 | P2 | Logs scenario 15 | scenario=15 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7990 | P2 | Logs scenario 16 | scenario=16 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7991 | P2 | Logs scenario 17 | scenario=17 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7992 | P2 | Logs scenario 18 | scenario=18 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7993 | P2 | Logs scenario 19 | scenario=19 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7994 | P2 | Logs scenario 20 | scenario=20 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7995 | P2 | Logs scenario 21 | scenario=21 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7996 | P2 | Logs scenario 22 | scenario=22 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7997 | P2 | Logs scenario 23 | scenario=23 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7998 | P2 | Logs scenario 24 | scenario=24 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-7999 | P2 | Logs scenario 25 | scenario=25 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8000 | P2 | Logs scenario 26 | scenario=26 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8001 | P2 | Logs scenario 27 | scenario=27 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8002 | P2 | Logs scenario 28 | scenario=28 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8003 | P2 | Logs scenario 29 | scenario=29 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8004 | P2 | Logs scenario 30 | scenario=30 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8005 | P2 | Logs scenario 31 | scenario=31 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8006 | P2 | Logs scenario 32 | scenario=32 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8007 | P2 | Logs scenario 33 | scenario=33 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8008 | P2 | Logs scenario 34 | scenario=34 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8009 | P2 | Logs scenario 35 | scenario=35 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8010 | P2 | Logs scenario 36 | scenario=36 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8011 | P2 | Logs scenario 37 | scenario=37 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8012 | P2 | Logs scenario 38 | scenario=38 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8013 | P2 | Logs scenario 39 | scenario=39 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8014 | P2 | Logs scenario 40 | scenario=40 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8015 | P2 | Logs scenario 41 | scenario=41 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8016 | P2 | Logs scenario 42 | scenario=42 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8017 | P2 | Logs scenario 43 | scenario=43 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8018 | P2 | Logs scenario 44 | scenario=44 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8019 | P2 | Logs scenario 45 | scenario=45 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8020 | P2 | Logs scenario 46 | scenario=46 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8021 | P2 | Logs scenario 47 | scenario=47 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8022 | P2 | Logs scenario 48 | scenario=48 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8023 | P2 | Logs scenario 49 | scenario=49 | list ok | test_admin_api_phase2_part_5.py |
-| TC-ADM-8024 | P2 | Stats scenario 0 | scenario=0 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8025 | P2 | Stats scenario 1 | scenario=1 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8026 | P2 | Stats scenario 2 | scenario=2 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8027 | P2 | Stats scenario 3 | scenario=3 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8028 | P2 | Stats scenario 4 | scenario=4 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8029 | P2 | Stats scenario 5 | scenario=5 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8030 | P2 | Stats scenario 6 | scenario=6 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8031 | P2 | Stats scenario 7 | scenario=7 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8032 | P2 | Stats scenario 8 | scenario=8 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8033 | P2 | Stats scenario 9 | scenario=9 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8034 | P2 | Stats scenario 10 | scenario=10 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8035 | P2 | Stats scenario 11 | scenario=11 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8036 | P2 | Stats scenario 12 | scenario=12 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8037 | P2 | Stats scenario 13 | scenario=13 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8038 | P2 | Stats scenario 14 | scenario=14 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8039 | P2 | Stats scenario 15 | scenario=15 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8040 | P2 | Stats scenario 16 | scenario=16 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8041 | P2 | Stats scenario 17 | scenario=17 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8042 | P2 | Stats scenario 18 | scenario=18 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8043 | P2 | Stats scenario 19 | scenario=19 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8044 | P2 | Stats scenario 20 | scenario=20 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8045 | P2 | Stats scenario 21 | scenario=21 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8046 | P2 | Stats scenario 22 | scenario=22 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8047 | P2 | Stats scenario 23 | scenario=23 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8048 | P2 | Stats scenario 24 | scenario=24 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8049 | P2 | Stats scenario 25 | scenario=25 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8050 | P2 | Stats scenario 26 | scenario=26 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8051 | P2 | Stats scenario 27 | scenario=27 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8052 | P2 | Stats scenario 28 | scenario=28 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8053 | P2 | Stats scenario 29 | scenario=29 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8054 | P2 | Stats scenario 30 | scenario=30 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8055 | P2 | Stats scenario 31 | scenario=31 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8056 | P2 | Stats scenario 32 | scenario=32 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8057 | P2 | Stats scenario 33 | scenario=33 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8058 | P2 | Stats scenario 34 | scenario=34 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8059 | P2 | Stats scenario 35 | scenario=35 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8060 | P2 | Stats scenario 36 | scenario=36 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8061 | P2 | Stats scenario 37 | scenario=37 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8062 | P2 | Stats scenario 38 | scenario=38 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8063 | P2 | Stats scenario 39 | scenario=39 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8064 | P2 | Stats scenario 40 | scenario=40 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8065 | P2 | Stats scenario 41 | scenario=41 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8066 | P2 | Stats scenario 42 | scenario=42 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8067 | P2 | Stats scenario 43 | scenario=43 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8068 | P2 | Stats scenario 44 | scenario=44 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8069 | P2 | Stats scenario 45 | scenario=45 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8070 | P2 | Stats scenario 46 | scenario=46 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8071 | P2 | Stats scenario 47 | scenario=47 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8072 | P2 | Stats scenario 48 | scenario=48 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8073 | P2 | Stats scenario 49 | scenario=49 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8074 | P2 | Stats scenario 50 | scenario=50 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8075 | P2 | Stats scenario 51 | scenario=51 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8076 | P2 | Stats scenario 52 | scenario=52 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8077 | P2 | Stats scenario 53 | scenario=53 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8078 | P2 | Stats scenario 54 | scenario=54 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8079 | P2 | Stats scenario 55 | scenario=55 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8080 | P2 | Stats scenario 56 | scenario=56 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8081 | P2 | Stats scenario 57 | scenario=57 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8082 | P2 | Stats scenario 58 | scenario=58 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8083 | P2 | Stats scenario 59 | scenario=59 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8084 | P2 | Stats scenario 60 | scenario=60 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8085 | P2 | Stats scenario 61 | scenario=61 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8086 | P2 | Stats scenario 62 | scenario=62 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8087 | P2 | Stats scenario 63 | scenario=63 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8088 | P2 | Stats scenario 64 | scenario=64 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8089 | P2 | Stats scenario 65 | scenario=65 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8090 | P2 | Stats scenario 66 | scenario=66 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8091 | P2 | Stats scenario 67 | scenario=67 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8092 | P2 | Stats scenario 68 | scenario=68 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8093 | P2 | Stats scenario 69 | scenario=69 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8094 | P2 | Stats scenario 70 | scenario=70 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8095 | P2 | Stats scenario 71 | scenario=71 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8096 | P2 | Stats scenario 72 | scenario=72 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8097 | P2 | Stats scenario 73 | scenario=73 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8098 | P2 | Stats scenario 74 | scenario=74 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8099 | P2 | Stats scenario 75 | scenario=75 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8100 | P2 | Stats scenario 76 | scenario=76 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8101 | P2 | Stats scenario 77 | scenario=77 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8102 | P2 | Stats scenario 78 | scenario=78 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8103 | P2 | Stats scenario 79 | scenario=79 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8104 | P2 | Stats scenario 80 | scenario=80 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8105 | P2 | Stats scenario 81 | scenario=81 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8106 | P2 | Stats scenario 82 | scenario=82 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8107 | P2 | Stats scenario 83 | scenario=83 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8108 | P2 | Stats scenario 84 | scenario=84 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8109 | P2 | Stats scenario 85 | scenario=85 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8110 | P2 | Stats scenario 86 | scenario=86 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8111 | P2 | Stats scenario 87 | scenario=87 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8112 | P2 | Stats scenario 88 | scenario=88 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8113 | P2 | Stats scenario 89 | scenario=89 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8114 | P2 | Stats scenario 90 | scenario=90 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8115 | P2 | Stats scenario 91 | scenario=91 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8116 | P2 | Stats scenario 92 | scenario=92 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8117 | P2 | Stats scenario 93 | scenario=93 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8118 | P2 | Stats scenario 94 | scenario=94 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8119 | P2 | Stats scenario 95 | scenario=95 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8120 | P2 | Stats scenario 96 | scenario=96 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8121 | P2 | Stats scenario 97 | scenario=97 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8122 | P2 | Stats scenario 98 | scenario=98 | stats valid | test_admin_api_phase2_part_6.py |
-| TC-ADM-8123 | P2 | Stats scenario 99 | scenario=99 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-7874 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 5 | key=WEIGHT_DETECTOR_AHO,value=5 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7875 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 8 | key=WEIGHT_DETECTOR_AHO,value=8 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7876 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 10 | key=WEIGHT_DETECTOR_AHO,value=10 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7877 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 12 | key=WEIGHT_DETECTOR_AHO,value=12 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7878 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 15 | key=WEIGHT_DETECTOR_AHO,value=15 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7879 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 18 | key=WEIGHT_DETECTOR_AHO,value=18 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7880 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 20 | key=WEIGHT_DETECTOR_AHO,value=20 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7881 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 22 | key=WEIGHT_DETECTOR_AHO,value=22 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7882 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 25 | key=WEIGHT_DETECTOR_AHO,value=25 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7883 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 28 | key=WEIGHT_DETECTOR_AHO,value=28 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7884 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 30 | key=WEIGHT_DETECTOR_AHO,value=30 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7885 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 32 | key=WEIGHT_DETECTOR_AHO,value=32 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7886 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 35 | key=WEIGHT_DETECTOR_AHO,value=35 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7887 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 38 | key=WEIGHT_DETECTOR_AHO,value=38 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7888 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 40 | key=WEIGHT_DETECTOR_AHO,value=40 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7889 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 42 | key=WEIGHT_DETECTOR_AHO,value=42 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7890 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 45 | key=WEIGHT_DETECTOR_AHO,value=45 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7891 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 47 | key=WEIGHT_DETECTOR_AHO,value=47 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7892 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 49 | key=WEIGHT_DETECTOR_AHO,value=49 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7893 | P2 | Settings endpoint WEIGHT_DETECTOR_AHO = 50 | key=WEIGHT_DETECTOR_AHO,value=50 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7894 | P2 | Settings endpoint WEIGHT_USER = 5 | key=WEIGHT_USER,value=5 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7895 | P2 | Settings endpoint WEIGHT_USER = 7 | key=WEIGHT_USER,value=7 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7896 | P2 | Settings endpoint WEIGHT_USER = 9 | key=WEIGHT_USER,value=9 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7897 | P2 | Settings endpoint WEIGHT_USER = 11 | key=WEIGHT_USER,value=11 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7898 | P2 | Settings endpoint WEIGHT_USER = 13 | key=WEIGHT_USER,value=13 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7899 | P2 | Settings endpoint WEIGHT_USER = 16 | key=WEIGHT_USER,value=16 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7900 | P2 | Settings endpoint WEIGHT_USER = 19 | key=WEIGHT_USER,value=19 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7901 | P2 | Settings endpoint WEIGHT_USER = 21 | key=WEIGHT_USER,value=21 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7902 | P2 | Settings endpoint WEIGHT_USER = 24 | key=WEIGHT_USER,value=24 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7903 | P2 | Settings endpoint WEIGHT_USER = 26 | key=WEIGHT_USER,value=26 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7904 | P2 | Settings endpoint WEIGHT_USER = 29 | key=WEIGHT_USER,value=29 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7905 | P2 | Settings endpoint WEIGHT_USER = 31 | key=WEIGHT_USER,value=31 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7906 | P2 | Settings endpoint WEIGHT_USER = 34 | key=WEIGHT_USER,value=34 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7907 | P2 | Settings endpoint WEIGHT_USER = 36 | key=WEIGHT_USER,value=36 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7908 | P2 | Settings endpoint WEIGHT_USER = 39 | key=WEIGHT_USER,value=39 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7909 | P2 | Settings endpoint WEIGHT_USER = 41 | key=WEIGHT_USER,value=41 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7910 | P2 | Settings endpoint WEIGHT_USER = 44 | key=WEIGHT_USER,value=44 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7911 | P2 | Settings endpoint WEIGHT_USER = 46 | key=WEIGHT_USER,value=46 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7912 | P2 | Settings endpoint WEIGHT_USER = 48 | key=WEIGHT_USER,value=48 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7913 | P2 | Settings endpoint WEIGHT_USER = 50 | key=WEIGHT_USER,value=50 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7914 | P2 | Settings endpoint SEMANTIC_TOP_K = 1 | key=SEMANTIC_TOP_K,value=1 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7915 | P2 | Settings endpoint SEMANTIC_TOP_K = 2 | key=SEMANTIC_TOP_K,value=2 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7916 | P2 | Settings endpoint SEMANTIC_TOP_K = 3 | key=SEMANTIC_TOP_K,value=3 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7917 | P2 | Settings endpoint SEMANTIC_TOP_K = 5 | key=SEMANTIC_TOP_K,value=5 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7918 | P2 | Settings endpoint SEMANTIC_TOP_K = 8 | key=SEMANTIC_TOP_K,value=8 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7919 | P2 | Settings endpoint SEMANTIC_TOP_K = 10 | key=SEMANTIC_TOP_K,value=10 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7920 | P2 | Settings endpoint SEMANTIC_TOP_K = 12 | key=SEMANTIC_TOP_K,value=12 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7921 | P2 | Settings endpoint SEMANTIC_TOP_K = 16 | key=SEMANTIC_TOP_K,value=16 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7922 | P2 | Settings endpoint SEMANTIC_TOP_K = 20 | key=SEMANTIC_TOP_K,value=20 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7923 | P2 | Settings endpoint SEMANTIC_TOP_K = 25 | key=SEMANTIC_TOP_K,value=25 | updated | test_admin_api_phase2_part_4.py |
+| TC-ADM-7924 | P2 | Settings endpoint SEMANTIC_TOP_K = 32 | key=SEMANTIC_TOP_K,value=32 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7925 | P2 | Settings endpoint SEMANTIC_TOP_K = 40 | key=SEMANTIC_TOP_K,value=40 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7926 | P2 | Settings endpoint SEMANTIC_TOP_K = 50 | key=SEMANTIC_TOP_K,value=50 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7927 | P2 | Settings endpoint SEMANTIC_TOP_K = 60 | key=SEMANTIC_TOP_K,value=60 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7928 | P2 | Settings endpoint SEMANTIC_TOP_K = 70 | key=SEMANTIC_TOP_K,value=70 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7929 | P2 | Settings endpoint SEMANTIC_TOP_K = 80 | key=SEMANTIC_TOP_K,value=80 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7930 | P2 | Settings endpoint SEMANTIC_TOP_K = 88 | key=SEMANTIC_TOP_K,value=88 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7931 | P2 | Settings endpoint SEMANTIC_TOP_K = 92 | key=SEMANTIC_TOP_K,value=92 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7932 | P2 | Settings endpoint SEMANTIC_TOP_K = 96 | key=SEMANTIC_TOP_K,value=96 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7933 | P2 | Settings endpoint SEMANTIC_TOP_K = 100 | key=SEMANTIC_TOP_K,value=100 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7934 | P2 | Settings endpoint CACHE_MAX_SIZE = 1 | key=CACHE_MAX_SIZE,value=1 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7935 | P2 | Settings endpoint CACHE_MAX_SIZE = 5 | key=CACHE_MAX_SIZE,value=5 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7936 | P2 | Settings endpoint CACHE_MAX_SIZE = 10 | key=CACHE_MAX_SIZE,value=10 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7937 | P2 | Settings endpoint CACHE_MAX_SIZE = 50 | key=CACHE_MAX_SIZE,value=50 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7938 | P2 | Settings endpoint CACHE_MAX_SIZE = 100 | key=CACHE_MAX_SIZE,value=100 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7939 | P2 | Settings endpoint CACHE_MAX_SIZE = 500 | key=CACHE_MAX_SIZE,value=500 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7940 | P2 | Settings endpoint CACHE_MAX_SIZE = 1000 | key=CACHE_MAX_SIZE,value=1000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7941 | P2 | Settings endpoint CACHE_MAX_SIZE = 2500 | key=CACHE_MAX_SIZE,value=2500 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7942 | P2 | Settings endpoint CACHE_MAX_SIZE = 5000 | key=CACHE_MAX_SIZE,value=5000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7943 | P2 | Settings endpoint CACHE_MAX_SIZE = 10000 | key=CACHE_MAX_SIZE,value=10000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7944 | P2 | Settings endpoint CACHE_MAX_SIZE = 20000 | key=CACHE_MAX_SIZE,value=20000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7945 | P2 | Settings endpoint CACHE_MAX_SIZE = 30000 | key=CACHE_MAX_SIZE,value=30000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7946 | P2 | Settings endpoint CACHE_MAX_SIZE = 40000 | key=CACHE_MAX_SIZE,value=40000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7947 | P2 | Settings endpoint CACHE_MAX_SIZE = 50000 | key=CACHE_MAX_SIZE,value=50000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7948 | P2 | Settings endpoint CACHE_MAX_SIZE = 60000 | key=CACHE_MAX_SIZE,value=60000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7949 | P2 | Settings endpoint CACHE_MAX_SIZE = 70000 | key=CACHE_MAX_SIZE,value=70000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7950 | P2 | Settings endpoint CACHE_MAX_SIZE = 80000 | key=CACHE_MAX_SIZE,value=80000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7951 | P2 | Settings endpoint CACHE_MAX_SIZE = 90000 | key=CACHE_MAX_SIZE,value=90000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7952 | P2 | Settings endpoint CACHE_MAX_SIZE = 95000 | key=CACHE_MAX_SIZE,value=95000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7953 | P2 | Settings endpoint CACHE_MAX_SIZE = 100000 | key=CACHE_MAX_SIZE,value=100000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7954 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 1 | key=RATE_LIMIT_PERIOD,value=1 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7955 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 5 | key=RATE_LIMIT_PERIOD,value=5 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7956 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 10 | key=RATE_LIMIT_PERIOD,value=10 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7957 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 30 | key=RATE_LIMIT_PERIOD,value=30 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7958 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 60 | key=RATE_LIMIT_PERIOD,value=60 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7959 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 120 | key=RATE_LIMIT_PERIOD,value=120 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7960 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 300 | key=RATE_LIMIT_PERIOD,value=300 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7961 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 600 | key=RATE_LIMIT_PERIOD,value=600 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7962 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 900 | key=RATE_LIMIT_PERIOD,value=900 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7963 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 1800 | key=RATE_LIMIT_PERIOD,value=1800 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7964 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 3600 | key=RATE_LIMIT_PERIOD,value=3600 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7965 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 7200 | key=RATE_LIMIT_PERIOD,value=7200 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7966 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 10800 | key=RATE_LIMIT_PERIOD,value=10800 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7967 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 14400 | key=RATE_LIMIT_PERIOD,value=14400 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7968 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 21600 | key=RATE_LIMIT_PERIOD,value=21600 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7969 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 28800 | key=RATE_LIMIT_PERIOD,value=28800 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7970 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 43200 | key=RATE_LIMIT_PERIOD,value=43200 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7971 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 57600 | key=RATE_LIMIT_PERIOD,value=57600 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7972 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 72000 | key=RATE_LIMIT_PERIOD,value=72000 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7973 | P2 | Settings endpoint RATE_LIMIT_PERIOD = 86400 | key=RATE_LIMIT_PERIOD,value=86400 | updated | test_admin_api_phase2_part_5.py |
+| TC-ADM-7974 | P2 | Logs traversal variant 0 | target=..%2F..%2Fetc%2Fpasswd.0 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7975 | P2 | Logs traversal variant 1 | target=..%2F..%2Fetc%2Fpasswd.1 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7976 | P2 | Logs traversal variant 2 | target=..%2F..%2Fetc%2Fpasswd.2 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7977 | P2 | Logs traversal variant 3 | target=..%2F..%2Fetc%2Fpasswd.3 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7978 | P2 | Logs traversal variant 4 | target=..%2F..%2Fetc%2Fpasswd.4 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7979 | P2 | Logs traversal variant 5 | target=..%2F..%2Fetc%2Fpasswd.5 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7980 | P2 | Logs traversal variant 6 | target=..%2F..%2Fetc%2Fpasswd.6 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7981 | P2 | Logs traversal variant 7 | target=..%2F..%2Fetc%2Fpasswd.7 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7982 | P2 | Logs traversal variant 8 | target=..%2F..%2Fetc%2Fpasswd.8 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7983 | P2 | Logs traversal variant 9 | target=..%2F..%2Fetc%2Fpasswd.9 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7984 | P2 | Logs traversal variant 10 | target=..%2F..%2Fetc%2Fpasswd.10 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7985 | P2 | Logs traversal variant 11 | target=..%2F..%2Fetc%2Fpasswd.11 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7986 | P2 | Logs traversal variant 12 | target=..%2F..%2Fetc%2Fpasswd.12 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7987 | P2 | Logs traversal variant 13 | target=..%2F..%2Fetc%2Fpasswd.13 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7988 | P2 | Logs traversal variant 14 | target=..%2F..%2Fetc%2Fpasswd.14 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7989 | P2 | Logs traversal variant 15 | target=..%2F..%2Fetc%2Fpasswd.15 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7990 | P2 | Logs traversal variant 16 | target=..%2F..%2Fetc%2Fpasswd.16 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7991 | P2 | Logs traversal variant 17 | target=..%2F..%2Fetc%2Fpasswd.17 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7992 | P2 | Logs traversal variant 18 | target=..%2F..%2Fetc%2Fpasswd.18 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7993 | P2 | Logs traversal variant 19 | target=..%2F..%2Fetc%2Fpasswd.19 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7994 | P2 | Logs traversal variant 20 | target=..%2F..%2Fetc%2Fpasswd.20 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7995 | P2 | Logs traversal variant 21 | target=..%2F..%2Fetc%2Fpasswd.21 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7996 | P2 | Logs traversal variant 22 | target=..%2F..%2Fetc%2Fpasswd.22 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7997 | P2 | Logs traversal variant 23 | target=..%2F..%2Fetc%2Fpasswd.23 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7998 | P2 | Logs traversal variant 24 | target=..%2F..%2Fetc%2Fpasswd.24 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-7999 | P2 | Logs traversal variant 25 | target=..%2F..%2Fetc%2Fpasswd.25 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8000 | P2 | Logs traversal variant 26 | target=..%2F..%2Fetc%2Fpasswd.26 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8001 | P2 | Logs traversal variant 27 | target=..%2F..%2Fetc%2Fpasswd.27 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8002 | P2 | Logs traversal variant 28 | target=..%2F..%2Fetc%2Fpasswd.28 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8003 | P2 | Logs traversal variant 29 | target=..%2F..%2Fetc%2Fpasswd.29 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8004 | P2 | Logs traversal variant 30 | target=..%2F..%2Fetc%2Fpasswd.30 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8005 | P2 | Logs traversal variant 31 | target=..%2F..%2Fetc%2Fpasswd.31 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8006 | P2 | Logs traversal variant 32 | target=..%2F..%2Fetc%2Fpasswd.32 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8007 | P2 | Logs traversal variant 33 | target=..%2F..%2Fetc%2Fpasswd.33 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8008 | P2 | Logs traversal variant 34 | target=..%2F..%2Fetc%2Fpasswd.34 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8009 | P2 | Logs traversal variant 35 | target=..%2F..%2Fetc%2Fpasswd.35 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8010 | P2 | Logs traversal variant 36 | target=..%2F..%2Fetc%2Fpasswd.36 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8011 | P2 | Logs traversal variant 37 | target=..%2F..%2Fetc%2Fpasswd.37 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8012 | P2 | Logs traversal variant 38 | target=..%2F..%2Fetc%2Fpasswd.38 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8013 | P2 | Logs traversal variant 39 | target=..%2F..%2Fetc%2Fpasswd.39 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8014 | P2 | Logs traversal variant 40 | target=..%2F..%2Fetc%2Fpasswd.40 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8015 | P2 | Logs traversal variant 41 | target=..%2F..%2Fetc%2Fpasswd.41 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8016 | P2 | Logs traversal variant 42 | target=..%2F..%2Fetc%2Fpasswd.42 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8017 | P2 | Logs traversal variant 43 | target=..%2F..%2Fetc%2Fpasswd.43 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8018 | P2 | Logs traversal variant 44 | target=..%2F..%2Fetc%2Fpasswd.44 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8019 | P2 | Logs traversal variant 45 | target=..%2F..%2Fetc%2Fpasswd.45 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8020 | P2 | Logs traversal variant 46 | target=..%2F..%2Fetc%2Fpasswd.46 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8021 | P2 | Logs traversal variant 47 | target=..%2F..%2Fetc%2Fpasswd.47 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8022 | P2 | Logs traversal variant 48 | target=..%2F..%2Fetc%2Fpasswd.48 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8023 | P2 | Logs traversal variant 49 | target=..%2F..%2Fetc%2Fpasswd.49 | list ok | test_admin_api_phase2_part_5.py |
+| TC-ADM-8024 | P2 | Stats after 1 moderations | n=1 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8025 | P2 | Stats after 2 moderations | n=2 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8026 | P2 | Stats after 3 moderations | n=3 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8027 | P2 | Stats after 4 moderations | n=4 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8028 | P2 | Stats after 5 moderations | n=5 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8029 | P2 | Stats after 6 moderations | n=6 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8030 | P2 | Stats after 7 moderations | n=7 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8031 | P2 | Stats after 8 moderations | n=8 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8032 | P2 | Stats after 9 moderations | n=9 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8033 | P2 | Stats after 10 moderations | n=10 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8034 | P2 | Stats after 11 moderations | n=11 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8035 | P2 | Stats after 12 moderations | n=12 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8036 | P2 | Stats after 13 moderations | n=13 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8037 | P2 | Stats after 14 moderations | n=14 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8038 | P2 | Stats after 15 moderations | n=15 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8039 | P2 | Stats after 16 moderations | n=16 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8040 | P2 | Stats after 17 moderations | n=17 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8041 | P2 | Stats after 18 moderations | n=18 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8042 | P2 | Stats after 19 moderations | n=19 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8043 | P2 | Stats after 20 moderations | n=20 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8044 | P2 | Stats after 21 moderations | n=21 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8045 | P2 | Stats after 22 moderations | n=22 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8046 | P2 | Stats after 23 moderations | n=23 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8047 | P2 | Stats after 24 moderations | n=24 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8048 | P2 | Stats after 25 moderations | n=25 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8049 | P2 | Stats after 26 moderations | n=26 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8050 | P2 | Stats after 27 moderations | n=27 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8051 | P2 | Stats after 28 moderations | n=28 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8052 | P2 | Stats after 29 moderations | n=29 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8053 | P2 | Stats after 30 moderations | n=30 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8054 | P2 | Stats after 31 moderations | n=31 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8055 | P2 | Stats after 32 moderations | n=32 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8056 | P2 | Stats after 33 moderations | n=33 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8057 | P2 | Stats after 34 moderations | n=34 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8058 | P2 | Stats after 35 moderations | n=35 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8059 | P2 | Stats after 36 moderations | n=36 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8060 | P2 | Stats after 37 moderations | n=37 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8061 | P2 | Stats after 38 moderations | n=38 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8062 | P2 | Stats after 39 moderations | n=39 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8063 | P2 | Stats after 40 moderations | n=40 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8064 | P2 | Stats after 41 moderations | n=41 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8065 | P2 | Stats after 42 moderations | n=42 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8066 | P2 | Stats after 43 moderations | n=43 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8067 | P2 | Stats after 44 moderations | n=44 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8068 | P2 | Stats after 45 moderations | n=45 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8069 | P2 | Stats after 46 moderations | n=46 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8070 | P2 | Stats after 47 moderations | n=47 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8071 | P2 | Stats after 48 moderations | n=48 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8072 | P2 | Stats after 49 moderations | n=49 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8073 | P2 | Stats after 50 moderations | n=50 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8074 | P2 | Stats after 51 moderations | n=51 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8075 | P2 | Stats after 52 moderations | n=52 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8076 | P2 | Stats after 53 moderations | n=53 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8077 | P2 | Stats after 54 moderations | n=54 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8078 | P2 | Stats after 55 moderations | n=55 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8079 | P2 | Stats after 56 moderations | n=56 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8080 | P2 | Stats after 57 moderations | n=57 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8081 | P2 | Stats after 58 moderations | n=58 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8082 | P2 | Stats after 59 moderations | n=59 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8083 | P2 | Stats after 60 moderations | n=60 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8084 | P2 | Stats after 61 moderations | n=61 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8085 | P2 | Stats after 62 moderations | n=62 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8086 | P2 | Stats after 63 moderations | n=63 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8087 | P2 | Stats after 64 moderations | n=64 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8088 | P2 | Stats after 65 moderations | n=65 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8089 | P2 | Stats after 66 moderations | n=66 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8090 | P2 | Stats after 67 moderations | n=67 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8091 | P2 | Stats after 68 moderations | n=68 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8092 | P2 | Stats after 69 moderations | n=69 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8093 | P2 | Stats after 70 moderations | n=70 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8094 | P2 | Stats after 71 moderations | n=71 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8095 | P2 | Stats after 72 moderations | n=72 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8096 | P2 | Stats after 73 moderations | n=73 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8097 | P2 | Stats after 74 moderations | n=74 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8098 | P2 | Stats after 75 moderations | n=75 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8099 | P2 | Stats after 76 moderations | n=76 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8100 | P2 | Stats after 77 moderations | n=77 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8101 | P2 | Stats after 78 moderations | n=78 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8102 | P2 | Stats after 79 moderations | n=79 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8103 | P2 | Stats after 80 moderations | n=80 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8104 | P2 | Stats after 81 moderations | n=81 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8105 | P2 | Stats after 82 moderations | n=82 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8106 | P2 | Stats after 83 moderations | n=83 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8107 | P2 | Stats after 84 moderations | n=84 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8108 | P2 | Stats after 85 moderations | n=85 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8109 | P2 | Stats after 86 moderations | n=86 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8110 | P2 | Stats after 87 moderations | n=87 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8111 | P2 | Stats after 88 moderations | n=88 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8112 | P2 | Stats after 89 moderations | n=89 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8113 | P2 | Stats after 90 moderations | n=90 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8114 | P2 | Stats after 91 moderations | n=91 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8115 | P2 | Stats after 92 moderations | n=92 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8116 | P2 | Stats after 93 moderations | n=93 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8117 | P2 | Stats after 94 moderations | n=94 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8118 | P2 | Stats after 95 moderations | n=95 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8119 | P2 | Stats after 96 moderations | n=96 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8120 | P2 | Stats after 97 moderations | n=97 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8121 | P2 | Stats after 98 moderations | n=98 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8122 | P2 | Stats after 99 moderations | n=99 | stats valid | test_admin_api_phase2_part_6.py |
+| TC-ADM-8123 | P2 | Stats after 100 moderations | n=100 | stats valid | test_admin_api_phase2_part_6.py |
 
 ### Phase 3 - 10,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-ADM-0651 onward.
