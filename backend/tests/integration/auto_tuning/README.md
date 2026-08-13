@@ -450,56 +450,56 @@
 | TC-TUNE-4882 | P3 | Feedback count 1000 | count=1000 | persisted | test_auto_tuning_phase2_part_5.py |
 | TC-TUNE-4883 | P3 | Feedback count 2000 | count=2000 | persisted | test_auto_tuning_phase2_part_5.py |
 | TC-TUNE-4884 | P3 | Feedback count 5000 | count=5000 | persisted | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4885 | P3 | Report shape scenario 0 | scenario=0 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4886 | P3 | Report shape scenario 1 | scenario=1 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4887 | P3 | Report shape scenario 2 | scenario=2 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4888 | P3 | Report shape scenario 3 | scenario=3 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4889 | P3 | Report shape scenario 4 | scenario=4 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4890 | P3 | Report shape scenario 5 | scenario=5 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4891 | P3 | Report shape scenario 6 | scenario=6 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4892 | P3 | Report shape scenario 7 | scenario=7 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4893 | P3 | Report shape scenario 8 | scenario=8 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4894 | P3 | Report shape scenario 9 | scenario=9 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4895 | P3 | Report shape scenario 10 | scenario=10 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4896 | P3 | Report shape scenario 11 | scenario=11 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4897 | P3 | Report shape scenario 12 | scenario=12 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4898 | P3 | Report shape scenario 13 | scenario=13 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4899 | P3 | Report shape scenario 14 | scenario=14 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4900 | P3 | Report shape scenario 15 | scenario=15 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4901 | P3 | Report shape scenario 16 | scenario=16 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4902 | P3 | Report shape scenario 17 | scenario=17 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4903 | P3 | Report shape scenario 18 | scenario=18 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4904 | P3 | Report shape scenario 19 | scenario=19 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4905 | P3 | Report shape scenario 20 | scenario=20 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4906 | P3 | Report shape scenario 21 | scenario=21 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4907 | P3 | Report shape scenario 22 | scenario=22 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4908 | P3 | Report shape scenario 23 | scenario=23 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4909 | P3 | Report shape scenario 24 | scenario=24 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4910 | P3 | Report shape scenario 25 | scenario=25 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4911 | P3 | Report shape scenario 26 | scenario=26 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4912 | P3 | Report shape scenario 27 | scenario=27 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4913 | P3 | Report shape scenario 28 | scenario=28 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4914 | P3 | Report shape scenario 29 | scenario=29 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4915 | P3 | Report shape scenario 30 | scenario=30 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4916 | P3 | Report shape scenario 31 | scenario=31 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4917 | P3 | Report shape scenario 32 | scenario=32 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4918 | P3 | Report shape scenario 33 | scenario=33 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4919 | P3 | Report shape scenario 34 | scenario=34 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4920 | P3 | Report shape scenario 35 | scenario=35 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4921 | P3 | Report shape scenario 36 | scenario=36 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4922 | P3 | Report shape scenario 37 | scenario=37 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4923 | P3 | Report shape scenario 38 | scenario=38 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4924 | P3 | Report shape scenario 39 | scenario=39 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4925 | P3 | Report shape scenario 40 | scenario=40 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4926 | P3 | Report shape scenario 41 | scenario=41 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4927 | P3 | Report shape scenario 42 | scenario=42 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4928 | P3 | Report shape scenario 43 | scenario=43 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4929 | P3 | Report shape scenario 44 | scenario=44 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4930 | P3 | Report shape scenario 45 | scenario=45 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4931 | P3 | Report shape scenario 46 | scenario=46 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4932 | P3 | Report shape scenario 47 | scenario=47 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4933 | P3 | Report shape scenario 48 | scenario=48 | report valid | test_auto_tuning_phase2_part_5.py |
-| TC-TUNE-4934 | P3 | Report shape scenario 49 | scenario=49 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4885 | P3 | Report with 1 feedback, 1 decisions | feedback=1,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4886 | P3 | Report with 1 feedback, 2 decisions | feedback=1,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4887 | P3 | Report with 1 feedback, 3 decisions | feedback=1,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4888 | P3 | Report with 1 feedback, 4 decisions | feedback=1,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4889 | P3 | Report with 1 feedback, 5 decisions | feedback=1,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4890 | P3 | Report with 2 feedback, 1 decisions | feedback=2,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4891 | P3 | Report with 2 feedback, 2 decisions | feedback=2,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4892 | P3 | Report with 2 feedback, 3 decisions | feedback=2,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4893 | P3 | Report with 2 feedback, 4 decisions | feedback=2,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4894 | P3 | Report with 2 feedback, 5 decisions | feedback=2,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4895 | P3 | Report with 3 feedback, 1 decisions | feedback=3,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4896 | P3 | Report with 3 feedback, 2 decisions | feedback=3,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4897 | P3 | Report with 3 feedback, 3 decisions | feedback=3,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4898 | P3 | Report with 3 feedback, 4 decisions | feedback=3,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4899 | P3 | Report with 3 feedback, 5 decisions | feedback=3,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4900 | P3 | Report with 4 feedback, 1 decisions | feedback=4,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4901 | P3 | Report with 4 feedback, 2 decisions | feedback=4,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4902 | P3 | Report with 4 feedback, 3 decisions | feedback=4,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4903 | P3 | Report with 4 feedback, 4 decisions | feedback=4,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4904 | P3 | Report with 4 feedback, 5 decisions | feedback=4,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4905 | P3 | Report with 5 feedback, 1 decisions | feedback=5,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4906 | P3 | Report with 5 feedback, 2 decisions | feedback=5,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4907 | P3 | Report with 5 feedback, 3 decisions | feedback=5,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4908 | P3 | Report with 5 feedback, 4 decisions | feedback=5,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4909 | P3 | Report with 5 feedback, 5 decisions | feedback=5,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4910 | P3 | Report with 6 feedback, 1 decisions | feedback=6,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4911 | P3 | Report with 6 feedback, 2 decisions | feedback=6,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4912 | P3 | Report with 6 feedback, 3 decisions | feedback=6,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4913 | P3 | Report with 6 feedback, 4 decisions | feedback=6,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4914 | P3 | Report with 6 feedback, 5 decisions | feedback=6,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4915 | P3 | Report with 7 feedback, 1 decisions | feedback=7,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4916 | P3 | Report with 7 feedback, 2 decisions | feedback=7,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4917 | P3 | Report with 7 feedback, 3 decisions | feedback=7,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4918 | P3 | Report with 7 feedback, 4 decisions | feedback=7,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4919 | P3 | Report with 7 feedback, 5 decisions | feedback=7,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4920 | P3 | Report with 8 feedback, 1 decisions | feedback=8,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4921 | P3 | Report with 8 feedback, 2 decisions | feedback=8,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4922 | P3 | Report with 8 feedback, 3 decisions | feedback=8,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4923 | P3 | Report with 8 feedback, 4 decisions | feedback=8,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4924 | P3 | Report with 8 feedback, 5 decisions | feedback=8,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4925 | P3 | Report with 9 feedback, 1 decisions | feedback=9,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4926 | P3 | Report with 9 feedback, 2 decisions | feedback=9,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4927 | P3 | Report with 9 feedback, 3 decisions | feedback=9,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4928 | P3 | Report with 9 feedback, 4 decisions | feedback=9,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4929 | P3 | Report with 9 feedback, 5 decisions | feedback=9,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4930 | P3 | Report with 10 feedback, 1 decisions | feedback=10,decisions=1 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4931 | P3 | Report with 10 feedback, 2 decisions | feedback=10,decisions=2 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4932 | P3 | Report with 10 feedback, 3 decisions | feedback=10,decisions=3 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4933 | P3 | Report with 10 feedback, 4 decisions | feedback=10,decisions=4 | report valid | test_auto_tuning_phase2_part_5.py |
+| TC-TUNE-4934 | P3 | Report with 10 feedback, 5 decisions | feedback=10,decisions=5 | report valid | test_auto_tuning_phase2_part_5.py |
 | TC-TUNE-4935 | P3 | Weight clamp WEIGHT_DETECTOR_BADWORDS=5 | key=WEIGHT_DETECTOR_BADWORDS,value=5 | in range | test_auto_tuning_phase2_part_5.py |
 | TC-TUNE-4936 | P3 | Weight clamp WEIGHT_DETECTOR_BADWORDS=15 | key=WEIGHT_DETECTOR_BADWORDS,value=15 | in range | test_auto_tuning_phase2_part_5.py |
 | TC-TUNE-4937 | P3 | Weight clamp WEIGHT_DETECTOR_BADWORDS=25 | key=WEIGHT_DETECTOR_BADWORDS,value=25 | in range | test_auto_tuning_phase2_part_5.py |
