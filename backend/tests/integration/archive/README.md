@@ -877,106 +877,106 @@
 | TC-ARCH-4356 | P2 | Mixed vol=2500 flag=12% block=8% review=4% | vol=2500,flag=12,block=8,review=4 | summaries=1,ratio=0.2000 | test_archive_phase2_part_9.py |
 | TC-ARCH-4357 | P2 | Mixed vol=5000 flag=12% block=8% review=4% | vol=5000,flag=12,block=8,review=4 | summaries=1,ratio=0.2000 | test_archive_phase2_part_9.py |
 | TC-ARCH-4358 | P2 | Mixed vol=7500 flag=12% block=8% review=4% | vol=7500,flag=12,block=8,review=4 | summaries=1,ratio=0.2000 | test_archive_phase2_part_9.py |
-| TC-ARCH-4359 | P3 | Archive edge scenario 0 | scenario=0 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4360 | P3 | Archive edge scenario 1 | scenario=1 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4361 | P3 | Archive edge scenario 2 | scenario=2 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4362 | P3 | Archive edge scenario 3 | scenario=3 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4363 | P3 | Archive edge scenario 4 | scenario=4 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4364 | P3 | Archive edge scenario 5 | scenario=5 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4365 | P3 | Archive edge scenario 6 | scenario=6 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4366 | P3 | Archive edge scenario 7 | scenario=7 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4367 | P3 | Archive edge scenario 8 | scenario=8 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4368 | P3 | Archive edge scenario 9 | scenario=9 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4369 | P3 | Archive edge scenario 10 | scenario=10 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4370 | P3 | Archive edge scenario 11 | scenario=11 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4371 | P3 | Archive edge scenario 12 | scenario=12 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4372 | P3 | Archive edge scenario 13 | scenario=13 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4373 | P3 | Archive edge scenario 14 | scenario=14 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4374 | P3 | Archive edge scenario 15 | scenario=15 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4375 | P3 | Archive edge scenario 16 | scenario=16 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4376 | P3 | Archive edge scenario 17 | scenario=17 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4377 | P3 | Archive edge scenario 18 | scenario=18 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4378 | P3 | Archive edge scenario 19 | scenario=19 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4379 | P3 | Archive edge scenario 20 | scenario=20 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4380 | P3 | Archive edge scenario 21 | scenario=21 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4381 | P3 | Archive edge scenario 22 | scenario=22 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4382 | P3 | Archive edge scenario 23 | scenario=23 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4383 | P3 | Archive edge scenario 24 | scenario=24 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4384 | P3 | Archive edge scenario 25 | scenario=25 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4385 | P3 | Archive edge scenario 26 | scenario=26 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4386 | P3 | Archive edge scenario 27 | scenario=27 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4387 | P3 | Archive edge scenario 28 | scenario=28 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4388 | P3 | Archive edge scenario 29 | scenario=29 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4389 | P3 | Archive edge scenario 30 | scenario=30 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4390 | P3 | Archive edge scenario 31 | scenario=31 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4391 | P3 | Archive edge scenario 32 | scenario=32 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4392 | P3 | Archive edge scenario 33 | scenario=33 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4393 | P3 | Archive edge scenario 34 | scenario=34 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4394 | P3 | Archive edge scenario 35 | scenario=35 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4395 | P3 | Archive edge scenario 36 | scenario=36 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4396 | P3 | Archive edge scenario 37 | scenario=37 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4397 | P3 | Archive edge scenario 38 | scenario=38 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4398 | P3 | Archive edge scenario 39 | scenario=39 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4399 | P3 | Archive edge scenario 40 | scenario=40 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4400 | P3 | Archive edge scenario 41 | scenario=41 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4401 | P3 | Archive edge scenario 42 | scenario=42 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4402 | P3 | Archive edge scenario 43 | scenario=43 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4403 | P3 | Archive edge scenario 44 | scenario=44 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4404 | P3 | Archive edge scenario 45 | scenario=45 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4405 | P3 | Archive edge scenario 46 | scenario=46 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4406 | P3 | Archive edge scenario 47 | scenario=47 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4407 | P3 | Archive edge scenario 48 | scenario=48 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4408 | P3 | Archive edge scenario 49 | scenario=49 | invariant holds | test_archive_phase2_part_9.py |
-| TC-ARCH-4409 | P3 | Archive edge scenario 50 | scenario=50 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4410 | P3 | Archive edge scenario 51 | scenario=51 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4411 | P3 | Archive edge scenario 52 | scenario=52 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4412 | P3 | Archive edge scenario 53 | scenario=53 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4413 | P3 | Archive edge scenario 54 | scenario=54 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4414 | P3 | Archive edge scenario 55 | scenario=55 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4415 | P3 | Archive edge scenario 56 | scenario=56 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4416 | P3 | Archive edge scenario 57 | scenario=57 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4417 | P3 | Archive edge scenario 58 | scenario=58 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4418 | P3 | Archive edge scenario 59 | scenario=59 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4419 | P3 | Archive edge scenario 60 | scenario=60 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4420 | P3 | Archive edge scenario 61 | scenario=61 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4421 | P3 | Archive edge scenario 62 | scenario=62 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4422 | P3 | Archive edge scenario 63 | scenario=63 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4423 | P3 | Archive edge scenario 64 | scenario=64 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4424 | P3 | Archive edge scenario 65 | scenario=65 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4425 | P3 | Archive edge scenario 66 | scenario=66 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4426 | P3 | Archive edge scenario 67 | scenario=67 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4427 | P3 | Archive edge scenario 68 | scenario=68 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4428 | P3 | Archive edge scenario 69 | scenario=69 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4429 | P3 | Archive edge scenario 70 | scenario=70 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4430 | P3 | Archive edge scenario 71 | scenario=71 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4431 | P3 | Archive edge scenario 72 | scenario=72 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4432 | P3 | Archive edge scenario 73 | scenario=73 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4433 | P3 | Archive edge scenario 74 | scenario=74 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4434 | P3 | Archive edge scenario 75 | scenario=75 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4435 | P3 | Archive edge scenario 76 | scenario=76 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4436 | P3 | Archive edge scenario 77 | scenario=77 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4437 | P3 | Archive edge scenario 78 | scenario=78 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4438 | P3 | Archive edge scenario 79 | scenario=79 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4439 | P3 | Archive edge scenario 80 | scenario=80 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4440 | P3 | Archive edge scenario 81 | scenario=81 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4441 | P3 | Archive edge scenario 82 | scenario=82 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4442 | P3 | Archive edge scenario 83 | scenario=83 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4443 | P3 | Archive edge scenario 84 | scenario=84 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4444 | P3 | Archive edge scenario 85 | scenario=85 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4445 | P3 | Archive edge scenario 86 | scenario=86 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4446 | P3 | Archive edge scenario 87 | scenario=87 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4447 | P3 | Archive edge scenario 88 | scenario=88 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4448 | P3 | Archive edge scenario 89 | scenario=89 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4449 | P3 | Archive edge scenario 90 | scenario=90 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4450 | P3 | Archive edge scenario 91 | scenario=91 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4451 | P3 | Archive edge scenario 92 | scenario=92 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4452 | P3 | Archive edge scenario 93 | scenario=93 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4453 | P3 | Archive edge scenario 94 | scenario=94 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4454 | P3 | Archive edge scenario 95 | scenario=95 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4455 | P3 | Archive edge scenario 96 | scenario=96 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4456 | P3 | Archive edge scenario 97 | scenario=97 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4457 | P3 | Archive edge scenario 98 | scenario=98 | invariant holds | test_archive_phase2_part_10.py |
-| TC-ARCH-4458 | P3 | Archive edge scenario 99 | scenario=99 | invariant holds | test_archive_phase2_part_10.py |
+| TC-ARCH-4359 | P3 | Edge window=1 days=1 vol=1 f=1 b=0 r=0 | window=1,days=1,vol=1,flag=1,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4360 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=0 | window=1,days=1,vol=1,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4361 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=0 | window=1,days=1,vol=1,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4362 | P3 | Edge window=1 days=1 vol=1 f=0 b=1 r=0 | window=1,days=1,vol=1,flag=0,block=1,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4363 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=1 | window=1,days=1,vol=1,flag=0,block=0,review=1 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4364 | P3 | Edge window=1 days=1 vol=2 f=2 b=0 r=0 | window=1,days=1,vol=2,flag=2,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4365 | P3 | Edge window=1 days=1 vol=2 f=0 b=0 r=0 | window=1,days=1,vol=2,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4366 | P3 | Edge window=1 days=1 vol=2 f=1 b=0 r=0 | window=1,days=1,vol=2,flag=1,block=0,review=0 | summaries=1,ratio=0.5000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4367 | P3 | Edge window=1 days=1 vol=2 f=0 b=2 r=0 | window=1,days=1,vol=2,flag=0,block=2,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4368 | P3 | Edge window=1 days=1 vol=2 f=0 b=0 r=2 | window=1,days=1,vol=2,flag=0,block=0,review=2 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4369 | P3 | Edge window=1 days=1 vol=5 f=5 b=0 r=0 | window=1,days=1,vol=5,flag=5,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4370 | P3 | Edge window=1 days=1 vol=5 f=0 b=0 r=0 | window=1,days=1,vol=5,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4371 | P3 | Edge window=1 days=1 vol=5 f=2 b=0 r=0 | window=1,days=1,vol=5,flag=2,block=0,review=0 | summaries=1,ratio=0.4000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4372 | P3 | Edge window=1 days=1 vol=5 f=0 b=5 r=0 | window=1,days=1,vol=5,flag=0,block=5,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4373 | P3 | Edge window=1 days=1 vol=5 f=0 b=0 r=5 | window=1,days=1,vol=5,flag=0,block=0,review=5 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4374 | P3 | Edge window=1 days=1 vol=10 f=10 b=0 r=0 | window=1,days=1,vol=10,flag=10,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4375 | P3 | Edge window=1 days=1 vol=10 f=0 b=0 r=0 | window=1,days=1,vol=10,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4376 | P3 | Edge window=1 days=1 vol=10 f=5 b=0 r=0 | window=1,days=1,vol=10,flag=5,block=0,review=0 | summaries=1,ratio=0.5000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4377 | P3 | Edge window=1 days=1 vol=10 f=0 b=10 r=0 | window=1,days=1,vol=10,flag=0,block=10,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4378 | P3 | Edge window=1 days=1 vol=10 f=0 b=0 r=10 | window=1,days=1,vol=10,flag=0,block=0,review=10 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4379 | P3 | Edge window=1 days=1 vol=1 f=1 b=0 r=0 | window=1,days=1,vol=1,flag=1,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4380 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=0 | window=1,days=1,vol=1,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4381 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=0 | window=1,days=1,vol=1,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4382 | P3 | Edge window=1 days=1 vol=1 f=0 b=1 r=0 | window=1,days=1,vol=1,flag=0,block=1,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4383 | P3 | Edge window=1 days=1 vol=1 f=0 b=0 r=1 | window=1,days=1,vol=1,flag=0,block=0,review=1 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4384 | P3 | Edge window=1 days=1 vol=2 f=2 b=0 r=0 | window=1,days=1,vol=2,flag=2,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4385 | P3 | Edge window=1 days=1 vol=2 f=0 b=0 r=0 | window=1,days=1,vol=2,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4386 | P3 | Edge window=1 days=1 vol=2 f=1 b=0 r=0 | window=1,days=1,vol=2,flag=1,block=0,review=0 | summaries=1,ratio=0.5000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4387 | P3 | Edge window=1 days=1 vol=2 f=0 b=2 r=0 | window=1,days=1,vol=2,flag=0,block=2,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4388 | P3 | Edge window=1 days=1 vol=2 f=0 b=0 r=2 | window=1,days=1,vol=2,flag=0,block=0,review=2 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4389 | P3 | Edge window=1 days=1 vol=5 f=5 b=0 r=0 | window=1,days=1,vol=5,flag=5,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4390 | P3 | Edge window=1 days=1 vol=5 f=0 b=0 r=0 | window=1,days=1,vol=5,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4391 | P3 | Edge window=1 days=1 vol=5 f=2 b=0 r=0 | window=1,days=1,vol=5,flag=2,block=0,review=0 | summaries=1,ratio=0.4000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4392 | P3 | Edge window=1 days=1 vol=5 f=0 b=5 r=0 | window=1,days=1,vol=5,flag=0,block=5,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4393 | P3 | Edge window=1 days=1 vol=5 f=0 b=0 r=5 | window=1,days=1,vol=5,flag=0,block=0,review=5 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4394 | P3 | Edge window=1 days=1 vol=10 f=10 b=0 r=0 | window=1,days=1,vol=10,flag=10,block=0,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4395 | P3 | Edge window=1 days=1 vol=10 f=0 b=0 r=0 | window=1,days=1,vol=10,flag=0,block=0,review=0 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4396 | P3 | Edge window=1 days=1 vol=10 f=5 b=0 r=0 | window=1,days=1,vol=10,flag=5,block=0,review=0 | summaries=1,ratio=0.5000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4397 | P3 | Edge window=1 days=1 vol=10 f=0 b=10 r=0 | window=1,days=1,vol=10,flag=0,block=10,review=0 | summaries=1,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4398 | P3 | Edge window=1 days=1 vol=10 f=0 b=0 r=10 | window=1,days=1,vol=10,flag=0,block=0,review=10 | summaries=1,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4399 | P3 | Edge window=1 days=2 vol=1 f=1 b=0 r=0 | window=1,days=2,vol=1,flag=1,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4400 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=0 | window=1,days=2,vol=1,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4401 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=0 | window=1,days=2,vol=1,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4402 | P3 | Edge window=1 days=2 vol=1 f=0 b=1 r=0 | window=1,days=2,vol=1,flag=0,block=1,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4403 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=1 | window=1,days=2,vol=1,flag=0,block=0,review=1 | summaries=2,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4404 | P3 | Edge window=1 days=2 vol=2 f=2 b=0 r=0 | window=1,days=2,vol=2,flag=2,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4405 | P3 | Edge window=1 days=2 vol=2 f=0 b=0 r=0 | window=1,days=2,vol=2,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4406 | P3 | Edge window=1 days=2 vol=2 f=1 b=0 r=0 | window=1,days=2,vol=2,flag=1,block=0,review=0 | summaries=2,ratio=0.5000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4407 | P3 | Edge window=1 days=2 vol=2 f=0 b=2 r=0 | window=1,days=2,vol=2,flag=0,block=2,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4408 | P3 | Edge window=1 days=2 vol=2 f=0 b=0 r=2 | window=1,days=2,vol=2,flag=0,block=0,review=2 | summaries=2,ratio=0.0000 | test_archive_phase2_part_9.py |
+| TC-ARCH-4409 | P3 | Edge window=1 days=2 vol=5 f=5 b=0 r=0 | window=1,days=2,vol=5,flag=5,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4410 | P3 | Edge window=1 days=2 vol=5 f=0 b=0 r=0 | window=1,days=2,vol=5,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4411 | P3 | Edge window=1 days=2 vol=5 f=2 b=0 r=0 | window=1,days=2,vol=5,flag=2,block=0,review=0 | summaries=2,ratio=0.4000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4412 | P3 | Edge window=1 days=2 vol=5 f=0 b=5 r=0 | window=1,days=2,vol=5,flag=0,block=5,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4413 | P3 | Edge window=1 days=2 vol=5 f=0 b=0 r=5 | window=1,days=2,vol=5,flag=0,block=0,review=5 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4414 | P3 | Edge window=1 days=2 vol=10 f=10 b=0 r=0 | window=1,days=2,vol=10,flag=10,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4415 | P3 | Edge window=1 days=2 vol=10 f=0 b=0 r=0 | window=1,days=2,vol=10,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4416 | P3 | Edge window=1 days=2 vol=10 f=5 b=0 r=0 | window=1,days=2,vol=10,flag=5,block=0,review=0 | summaries=2,ratio=0.5000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4417 | P3 | Edge window=1 days=2 vol=10 f=0 b=10 r=0 | window=1,days=2,vol=10,flag=0,block=10,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4418 | P3 | Edge window=1 days=2 vol=10 f=0 b=0 r=10 | window=1,days=2,vol=10,flag=0,block=0,review=10 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4419 | P3 | Edge window=1 days=2 vol=1 f=1 b=0 r=0 | window=1,days=2,vol=1,flag=1,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4420 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=0 | window=1,days=2,vol=1,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4421 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=0 | window=1,days=2,vol=1,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4422 | P3 | Edge window=1 days=2 vol=1 f=0 b=1 r=0 | window=1,days=2,vol=1,flag=0,block=1,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4423 | P3 | Edge window=1 days=2 vol=1 f=0 b=0 r=1 | window=1,days=2,vol=1,flag=0,block=0,review=1 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4424 | P3 | Edge window=1 days=2 vol=2 f=2 b=0 r=0 | window=1,days=2,vol=2,flag=2,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4425 | P3 | Edge window=1 days=2 vol=2 f=0 b=0 r=0 | window=1,days=2,vol=2,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4426 | P3 | Edge window=1 days=2 vol=2 f=1 b=0 r=0 | window=1,days=2,vol=2,flag=1,block=0,review=0 | summaries=2,ratio=0.5000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4427 | P3 | Edge window=1 days=2 vol=2 f=0 b=2 r=0 | window=1,days=2,vol=2,flag=0,block=2,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4428 | P3 | Edge window=1 days=2 vol=2 f=0 b=0 r=2 | window=1,days=2,vol=2,flag=0,block=0,review=2 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4429 | P3 | Edge window=1 days=2 vol=5 f=5 b=0 r=0 | window=1,days=2,vol=5,flag=5,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4430 | P3 | Edge window=1 days=2 vol=5 f=0 b=0 r=0 | window=1,days=2,vol=5,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4431 | P3 | Edge window=1 days=2 vol=5 f=2 b=0 r=0 | window=1,days=2,vol=5,flag=2,block=0,review=0 | summaries=2,ratio=0.4000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4432 | P3 | Edge window=1 days=2 vol=5 f=0 b=5 r=0 | window=1,days=2,vol=5,flag=0,block=5,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4433 | P3 | Edge window=1 days=2 vol=5 f=0 b=0 r=5 | window=1,days=2,vol=5,flag=0,block=0,review=5 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4434 | P3 | Edge window=1 days=2 vol=10 f=10 b=0 r=0 | window=1,days=2,vol=10,flag=10,block=0,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4435 | P3 | Edge window=1 days=2 vol=10 f=0 b=0 r=0 | window=1,days=2,vol=10,flag=0,block=0,review=0 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4436 | P3 | Edge window=1 days=2 vol=10 f=5 b=0 r=0 | window=1,days=2,vol=10,flag=5,block=0,review=0 | summaries=2,ratio=0.5000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4437 | P3 | Edge window=1 days=2 vol=10 f=0 b=10 r=0 | window=1,days=2,vol=10,flag=0,block=10,review=0 | summaries=2,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4438 | P3 | Edge window=1 days=2 vol=10 f=0 b=0 r=10 | window=1,days=2,vol=10,flag=0,block=0,review=10 | summaries=2,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4439 | P3 | Edge window=2 days=1 vol=1 f=1 b=0 r=0 | window=2,days=1,vol=1,flag=1,block=0,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4440 | P3 | Edge window=2 days=1 vol=1 f=0 b=0 r=0 | window=2,days=1,vol=1,flag=0,block=0,review=0 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4441 | P3 | Edge window=2 days=1 vol=1 f=0 b=0 r=0 | window=2,days=1,vol=1,flag=0,block=0,review=0 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4442 | P3 | Edge window=2 days=1 vol=1 f=0 b=1 r=0 | window=2,days=1,vol=1,flag=0,block=1,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4443 | P3 | Edge window=2 days=1 vol=1 f=0 b=0 r=1 | window=2,days=1,vol=1,flag=0,block=0,review=1 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4444 | P3 | Edge window=2 days=1 vol=2 f=2 b=0 r=0 | window=2,days=1,vol=2,flag=2,block=0,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4445 | P3 | Edge window=2 days=1 vol=2 f=0 b=0 r=0 | window=2,days=1,vol=2,flag=0,block=0,review=0 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4446 | P3 | Edge window=2 days=1 vol=2 f=1 b=0 r=0 | window=2,days=1,vol=2,flag=1,block=0,review=0 | summaries=0,ratio=0.5000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4447 | P3 | Edge window=2 days=1 vol=2 f=0 b=2 r=0 | window=2,days=1,vol=2,flag=0,block=2,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4448 | P3 | Edge window=2 days=1 vol=2 f=0 b=0 r=2 | window=2,days=1,vol=2,flag=0,block=0,review=2 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4449 | P3 | Edge window=2 days=1 vol=5 f=5 b=0 r=0 | window=2,days=1,vol=5,flag=5,block=0,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4450 | P3 | Edge window=2 days=1 vol=5 f=0 b=0 r=0 | window=2,days=1,vol=5,flag=0,block=0,review=0 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4451 | P3 | Edge window=2 days=1 vol=5 f=2 b=0 r=0 | window=2,days=1,vol=5,flag=2,block=0,review=0 | summaries=0,ratio=0.4000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4452 | P3 | Edge window=2 days=1 vol=5 f=0 b=5 r=0 | window=2,days=1,vol=5,flag=0,block=5,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4453 | P3 | Edge window=2 days=1 vol=5 f=0 b=0 r=5 | window=2,days=1,vol=5,flag=0,block=0,review=5 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4454 | P3 | Edge window=2 days=1 vol=10 f=10 b=0 r=0 | window=2,days=1,vol=10,flag=10,block=0,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4455 | P3 | Edge window=2 days=1 vol=10 f=0 b=0 r=0 | window=2,days=1,vol=10,flag=0,block=0,review=0 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4456 | P3 | Edge window=2 days=1 vol=10 f=5 b=0 r=0 | window=2,days=1,vol=10,flag=5,block=0,review=0 | summaries=0,ratio=0.5000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4457 | P3 | Edge window=2 days=1 vol=10 f=0 b=10 r=0 | window=2,days=1,vol=10,flag=0,block=10,review=0 | summaries=0,ratio=1.0000 | test_archive_phase2_part_10.py |
+| TC-ARCH-4458 | P3 | Edge window=2 days=1 vol=10 f=0 b=0 r=10 | window=2,days=1,vol=10,flag=0,block=0,review=10 | summaries=0,ratio=0.0000 | test_archive_phase2_part_10.py |
 
 ### Phase 3 - 5,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-ARCH-1066 onward.
