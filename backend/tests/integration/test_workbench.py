@@ -227,6 +227,15 @@ class TestConfigPlayground(BaseTest):
         )
         assert response.status_code == 400
 
+    def test_config_redacts_secret_values(self, client: Any, admin_headers: dict[str, str]) -> None:
+        """The settings catalog never exposes credential values."""
+        response = client.get("/test/config", headers=admin_headers)
+        settings: list[dict[str, Any]] = response.json()["settings"]
+        for entry in settings:
+            if entry["key"].endswith(("_KEY", "_SECRET")):
+                assert entry["value"] == "********"
+                assert entry["editable"] is False
+
 
 class TestUserProfile(BaseTest):
     """User profile simulation endpoints."""
