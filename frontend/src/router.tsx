@@ -4,6 +4,7 @@ import { AuditLog } from "./pages/AuditLog";
 import { Dashboard } from "./pages/Dashboard";
 import { Export } from "./pages/Export";
 import { Settings } from "./pages/Settings";
+import { TestWorkbench } from "./pages/TestWorkbench";
 import { WordBank } from "./pages/WordBank";
 
 export const router = createBrowserRouter([
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
             { path: "audit-log", element: <AuditLog /> },
             { path: "export", element: <Export /> },
             { path: "settings", element: <Settings /> },
+            { path: "test-workbench", element: <TestWorkbench /> },
         ],
     },
 ]);
