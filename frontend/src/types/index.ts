@@ -47,7 +47,25 @@ export interface HealthReport {
     detectors: DetectorStatus[];
 }
 
-export type AuditEntry = Record<string, unknown>;
+export interface AuditEntry {
+    timestamp?: string;
+    level?: string;
+    message?: string;
+    requestId?: string | null;
+    userId?: string | null;
+    textHash?: string;
+    textPreview?: string;
+    verdict?: string | null;
+    levelUsed?: number;
+    reason?: string | null;
+    matchedWord?: string | null;
+    matchedLanguage?: string | null;
+    confidenceScore?: number | null;
+    latencyMs?: number;
+    detectorChain?: string[];
+    suspicionScore?: number;
+    aiTriggered?: boolean;
+}
 
 export interface LogFileInfo {
     name: string;
@@ -196,6 +214,12 @@ export interface PipelineTrace {
 export interface ModerateDetailResult {
     response: ModerationResponse;
     trace: PipelineTrace;
+}
+
+export interface ModerateDetailRequest {
+    text: string;
+    user_id?: string;
+    app_name?: string;
 }
 
 export interface StreamEvent {
