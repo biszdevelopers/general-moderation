@@ -19,7 +19,7 @@ const theme: ThemeConfig = {
         colorBorderSecondary: "#e8edf3",
         borderRadius: 8,
         fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
+            '"Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
     },
     components: {
         Layout: {
