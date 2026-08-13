@@ -886,12 +886,13 @@ uv sync --extra ai --extra semantic
 
 ### Python 3.14 Concurrency Panic
 
-On Python 3.14, concurrent execution of the compiled profanity packages can
-trigger a stack-alignment assertion in some builds. This is a pre-existing
-runtime issue that also affects the untouched production `moderate()` path
-under a thread pool; it is not caused by the workbench. Single-threaded and
-low-concurrency runs are unaffected. Prefer Python 3.11–3.13 for heavy load
-tests.
+On Python 3.14, concurrent llama.cpp generation used to trigger a
+stack-alignment assertion in some builds. Model inference is now serialized
+behind a per-detector lock, so load tests and parallel requests never drive
+llama.cpp from more than one thread at a time and the crash no longer occurs.
+Heavy load tests may still run more predictably on Python 3.11–3.13, where
+every compiled profanity package is fully optimized for the runtime's worker
+threads.
 
 ### SSE and Multiple Workers
 
