@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from app.semantic.semantic_service import SemanticService
 from tests.base_test import BaseTest
 
@@ -15,809 +17,121 @@ from tests.base_test import BaseTest
 def _service(settings: Any) -> SemanticService:
     """Build a semantic service against the test settings."""
     service: SemanticService = SemanticService(settings, None)
-    service.query("warmup")
+    service.query('warmup')
     return service
 
+_UNAVAILABLE_CASES: tuple[tuple[int, int], ...] = (
+    (1, 1901,),
+    (2, 1902,),
+    (3, 1903,),
+    (4, 1904,),
+    (5, 1905,),
+    (6, 1906,),
+    (7, 1907,),
+    (8, 1908,),
+    (9, 1909,),
+    (10, 1910,),
+    (11, 1911,),
+    (12, 1912,),
+    (13, 1913,),
+    (14, 1914,),
+    (15, 1915,),
+    (16, 1916,),
+    (17, 1917,),
+    (18, 1918,),
+    (19, 1919,),
+    (20, 1920,),
+    (21, 1921,),
+    (22, 1922,),
+    (23, 1923,),
+    (24, 1924,),
+    (25, 1925,),
+    (26, 1926,),
+    (27, 1927,),
+    (28, 1928,),
+    (29, 1929,),
+    (30, 1930,),
+    (31, 1931,),
+    (32, 1932,),
+    (33, 1933,),
+    (34, 1934,),
+    (35, 1935,),
+    (36, 1936,),
+    (37, 1937,),
+    (38, 1938,),
+    (39, 1939,),
+    (40, 1940,),
+    (41, 1941,),
+    (42, 1942,),
+    (43, 1943,),
+    (44, 1944,),
+    (45, 1945,),
+    (46, 1946,),
+    (47, 1947,),
+    (48, 1948,),
+    (49, 1949,),
+    (50, 1950,),
+    (51, 1951,),
+    (52, 1952,),
+    (53, 1953,),
+    (54, 1954,),
+    (55, 1955,),
+    (56, 1956,),
+    (57, 1957,),
+    (58, 1958,),
+    (59, 1959,),
+    (60, 1960,),
+    (61, 1961,),
+    (62, 1962,),
+    (63, 1963,),
+    (64, 1964,),
+    (65, 1965,),
+    (66, 1966,),
+    (67, 1967,),
+    (68, 1968,),
+    (69, 1969,),
+    (70, 1970,),
+    (71, 1971,),
+    (72, 1972,),
+    (73, 1973,),
+    (74, 1974,),
+    (75, 1975,),
+    (76, 1976,),
+    (77, 1977,),
+    (78, 1978,),
+    (79, 1979,),
+    (80, 1980,),
+    (81, 1981,),
+    (82, 1982,),
+    (83, 1983,),
+    (84, 1984,),
+    (85, 1985,),
+    (86, 1986,),
+    (87, 1987,),
+    (88, 1988,),
+    (89, 1989,),
+    (90, 1990,),
+    (91, 1991,),
+    (92, 1992,),
+    (93, 1993,),
+    (94, 1994,),
+    (95, 1995,),
+    (96, 1996,),
+    (97, 1997,),
+    (98, 1998,),
+    (99, 1999,),
+    (100, 2000,),
+)
 
-class TestUnavailablePath(BaseTest):
-    """UnavailablePath scenarios."""
+class TestUnavailable(BaseTest):
+    """Without the heavy dependencies the service reports unavailable."""
 
-    def test_unavailable_0_1901(self, settings: Any) -> None:
+    @pytest.mark.parametrize(('top_k', 'uid',), _UNAVAILABLE_CASES)
+    def test_unavailable(self, settings: Any, top_k: int, uid: int) -> None:
         """Without the heavy dependencies the service reports unavailable."""
+        settings.semantic_top_k = top_k
         service: SemanticService = SemanticService(settings, None)
         assert service.is_available() is False
-        assert service.query("anything") == {}
+        assert service.query('anything') == {}
         stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_1_1902(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_2_1903(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_3_1904(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_4_1905(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_5_1906(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_6_1907(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_7_1908(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_8_1909(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_9_1910(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_10_1911(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_11_1912(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_12_1913(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_13_1914(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_14_1915(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_15_1916(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_16_1917(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_17_1918(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_18_1919(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_19_1920(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_20_1921(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_21_1922(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_22_1923(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_23_1924(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_24_1925(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_25_1926(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_26_1927(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_27_1928(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_28_1929(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_29_1930(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_30_1931(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_31_1932(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_32_1933(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_33_1934(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_34_1935(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_35_1936(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_36_1937(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_37_1938(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_38_1939(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_39_1940(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_40_1941(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_41_1942(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_42_1943(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_43_1944(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_44_1945(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_45_1946(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_46_1947(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_47_1948(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_48_1949(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_49_1950(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_50_1951(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_51_1952(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_52_1953(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_53_1954(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_54_1955(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_55_1956(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_56_1957(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_57_1958(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_58_1959(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_59_1960(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_60_1961(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_61_1962(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_62_1963(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_63_1964(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_64_1965(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_65_1966(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_66_1967(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_67_1968(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_68_1969(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_69_1970(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_70_1971(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_71_1972(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_72_1973(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_73_1974(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_74_1975(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_75_1976(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_76_1977(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_77_1978(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_78_1979(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_79_1980(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_80_1981(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_81_1982(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_82_1983(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_83_1984(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_84_1985(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_85_1986(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_86_1987(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_87_1988(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_88_1989(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_89_1990(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_90_1991(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_91_1992(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_92_1993(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_93_1994(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_94_1995(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_95_1996(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_96_1997(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_97_1998(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_98_1999(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
-
-    def test_unavailable_99_2000(self, settings: Any) -> None:
-        """Without the heavy dependencies the service reports unavailable."""
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        assert service.query("anything") == {}
-        stats = service.stats()
-        assert stats["available"] is False
+        assert stats['available'] is False
