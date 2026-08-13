@@ -1,6 +1,10 @@
 """Rate limiting facade backed by slowapi.
 
-Uses the ``limits`` library under the hood with in-memory storage by default.
+Only endpoints decorated with ``@RateLimiter.limit()`` (the public moderation
+routes) are rate limited. Admin and test routes are intentionally exempt: they
+are already guarded by the admin API key and their auto-refreshing dashboards
+must not consume a shared per-IP budget.
+
 Set ``RATE_LIMIT_STORAGE_URI`` to a ``redis://`` URI to delegate storage to
 the C Redis client (hiredis) for multi-worker enforcement.
 """
@@ -27,7 +31,7 @@ class RateLimiter:
         storage_uri: str | None = os.getenv("RATE_LIMIT_STORAGE_URI") or None
         self._limiter: Limiter = Limiter(
             key_func=get_remote_address,
-            default_limits=[f"{requests}/{period_seconds}second"],
+            default_limits=[],
             storage_uri=storage_uri,
         )
         self._requests: int = requests
