@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Layout as AntdLayout, Menu, Typography } from "antd";
+import { Avatar, Badge, Breadcrumb, Button, Layout as AntdLayout, Menu, Typography } from "antd";
 import {
     BellOutlined,
     DashboardOutlined,
@@ -54,6 +54,7 @@ export function Layout(): ReactElement {
                 collapsed={collapsed}
                 onCollapse={setCollapsed}
                 width={224}
+                breakpoint="lg"
                 theme="light"
             >
                 <div className="app-sider__brand">
@@ -100,6 +101,10 @@ export function Layout(): ReactElement {
                     </div>
                 </Header>
                 <Content className="app-content">
+                    <Breadcrumb
+                        className="app-breadcrumb"
+                        items={[{ title: "General Moderation" }, { title: headerTitle }]}
+                    />
                     <Outlet />
                 </Content>
                 <Footer className="app-footer">
