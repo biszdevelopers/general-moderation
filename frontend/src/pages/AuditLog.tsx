@@ -179,7 +179,18 @@ export function AuditLog(): ReactElement {
             },
         },
         { title: "Text Preview", dataIndex: "textPreview", key: "textPreview", ellipsis: true },
-        { title: "Matched Word", dataIndex: "matchedWord", key: "matchedWord" },
+        {
+            title: "Matched Word",
+            dataIndex: "matchedWord",
+            key: "matchedWord",
+            render: (_: unknown, entry: AuditEntry) => {
+                if (entry.matchedWord !== null && entry.matchedWord !== undefined) {
+                    return <Typography.Text>{entry.matchedWord}</Typography.Text>;
+                }
+                return <Typography.Text type="secondary">-</Typography.Text>;
+            },
+        },
+        { title: "Reason", dataIndex: "reason", key: "reason", ellipsis: true },
         {
             title: "Latency (ms)",
             dataIndex: "latencyMs",
