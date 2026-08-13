@@ -124,7 +124,12 @@ class ModerationLogger:
         )
 
     def close(self) -> None:
-        """Flush and shut down the underlying logger."""
+        """Flush, close, and detach every handler.
+
+        Detaching matters when a fresh logger is constructed later: the guard
+        in ``__init__`` only attaches handlers when none are present.
+        """
         for handler in self._logger.handlers:
             handler.flush()
             handler.close()
+            self._logger.removeHandler(handler)
