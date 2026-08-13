@@ -8,1188 +8,165 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from tests.base_test import BaseTest
 
+_APP_CONFIG_CASES: tuple[tuple[str, int, str, bool, bool, int], ...] = (
+    ('cfgapp', 60, 'or', False, True, 7624,),
+    ('cfgapp', 60, 'or', False, False, 7625,),
+    ('cfgapp', 60, 'and', True, True, 7626,),
+    ('cfgapp', 60, 'and', True, False, 7627,),
+    ('cfgapp', 60, 'and', False, True, 7628,),
+    ('cfgapp', 60, 'and', False, False, 7629,),
+    ('cfgapp', 70, 'or', True, True, 7630,),
+    ('cfgapp', 70, 'or', True, False, 7631,),
+    ('cfgapp', 70, 'or', False, True, 7632,),
+    ('cfgapp', 70, 'or', False, False, 7633,),
+    ('cfgapp', 70, 'and', True, True, 7634,),
+    ('cfgapp', 70, 'and', True, False, 7635,),
+    ('cfgapp', 70, 'and', False, True, 7636,),
+    ('cfgapp', 70, 'and', False, False, 7637,),
+    ('cfgapp', 80, 'or', True, True, 7638,),
+    ('cfgapp', 80, 'or', True, False, 7639,),
+    ('cfgapp', 80, 'or', False, True, 7640,),
+    ('cfgapp', 80, 'or', False, False, 7641,),
+    ('cfgapp', 80, 'and', True, True, 7642,),
+    ('cfgapp', 80, 'and', True, False, 7643,),
+    ('cfgapp', 80, 'and', False, True, 7644,),
+    ('cfgapp', 80, 'and', False, False, 7645,),
+    ('cfgapp', 90, 'or', True, True, 7646,),
+    ('cfgapp', 90, 'or', True, False, 7647,),
+    ('cfgapp', 90, 'or', False, True, 7648,),
+    ('cfgapp', 90, 'or', False, False, 7649,),
+    ('cfgapp', 90, 'and', True, True, 7650,),
+    ('cfgapp', 90, 'and', True, False, 7651,),
+    ('cfgapp', 90, 'and', False, True, 7652,),
+    ('cfgapp', 90, 'and', False, False, 7653,),
+    ('cfgapp', 100, 'or', True, True, 7654,),
+    ('cfgapp', 100, 'or', True, False, 7655,),
+    ('cfgapp', 100, 'or', False, True, 7656,),
+    ('cfgapp', 100, 'or', False, False, 7657,),
+    ('cfgapp', 100, 'and', True, True, 7658,),
+    ('cfgapp', 100, 'and', True, False, 7659,),
+    ('cfgapp', 100, 'and', False, True, 7660,),
+    ('cfgapp', 100, 'and', False, False, 7661,),
+)
 
 class TestAppConfig(BaseTest):
-    """AppConfig scenarios."""
+    """App trigger policies store and return every field."""
 
-    def test_app_config_60_or_False_True_7624(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
+    @pytest.mark.parametrize(('app_name', 'threshold', 'logic', 'sboost', 'uboost', 'uid',), _APP_CONFIG_CASES)
+    def test_app_config(self, client: Any, admin_headers: dict[str, str], app_name: str, threshold: int, logic: str, sboost: bool, uboost: bool, uid: int) -> None:
         """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
+        payload = {'app_name': app_name, 'score_threshold': threshold, 'logic_type': logic, 'semantic_boost': sboost, 'user_ratio_boost': uboost}
+        response = client.post('/admin/app-config', headers=admin_headers, json=payload)
         assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
+        assert response.json()['score_threshold'] == threshold
+        assert response.json()['logic_type'] == logic
+        assert response.json()['semantic_boost'] is sboost
 
-    def test_app_config_60_or_False_False_7625(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
 
-    def test_app_config_60_and_True_True_7626(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_60_and_True_False_7627(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_60_and_False_True_7628(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_60_and_False_False_7629(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 60,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 60
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_70_or_True_True_7630(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_70_or_True_False_7631(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_70_or_False_True_7632(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_70_or_False_False_7633(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_70_and_True_True_7634(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_70_and_True_False_7635(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_70_and_False_True_7636(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_70_and_False_False_7637(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 70,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 70
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_80_or_True_True_7638(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_80_or_True_False_7639(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_80_or_False_True_7640(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_80_or_False_False_7641(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_80_and_True_True_7642(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_80_and_True_False_7643(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_80_and_False_True_7644(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_80_and_False_False_7645(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 80,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 80
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_90_or_True_True_7646(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_90_or_True_False_7647(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_90_or_False_True_7648(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_90_or_False_False_7649(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_90_and_True_True_7650(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_90_and_True_False_7651(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_90_and_False_True_7652(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_90_and_False_False_7653(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 90,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 90
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_100_or_True_True_7654(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_100_or_True_False_7655(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "or",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_100_or_False_True_7656(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_100_or_False_False_7657(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "or",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "or"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_100_and_True_True_7658(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_100_and_True_False_7659(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "and",
-            "semantic_boost": True,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is True
-
-    def test_app_config_100_and_False_True_7660(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": True,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
-    def test_app_config_100_and_False_False_7661(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """App trigger policies store and return every field."""
-        payload = {
-            "app_name": "cfgapp",
-            "score_threshold": 100,
-            "logic_type": "and",
-            "semantic_boost": False,
-            "user_ratio_boost": False,
-        }
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 100
-        assert response.json()["logic_type"] == "and"
-        assert response.json()["semantic_boost"] is False
-
+_APP_CONFIG_INVALID_CASES: tuple[tuple[int, int], ...] = (
+    (-1, 7662,),
+    (101, 7663,),
+)
 
 class TestAppConfigInvalid(BaseTest):
-    """AppConfigInvalid scenarios."""
+    """Out-of-range thresholds are rejected."""
 
-    def test_app_config_invalid__1_7662(self, client: Any, admin_headers: dict[str, str]) -> None:
+    @pytest.mark.parametrize(('threshold', 'uid',), _APP_CONFIG_INVALID_CASES)
+    def test_app_config_invalid(self, client: Any, admin_headers: dict[str, str], threshold: int, uid: int) -> None:
         """Out-of-range thresholds are rejected."""
-        payload = {"app_name": "bad", "score_threshold": -1}
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
+        payload = {'app_name': 'bad', 'score_threshold': threshold}
+        response = client.post('/admin/app-config', headers=admin_headers, json=payload)
         assert response.status_code == 422
 
-    def test_app_config_invalid_101_7663(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Out-of-range thresholds are rejected."""
-        payload = {"app_name": "bad", "score_threshold": 101}
-        response = client.post("/admin/app-config", headers=admin_headers, json=payload)
-        assert response.status_code == 422
 
+_APP_CONFIG_DEFAULT_CASES: tuple[tuple[str, int], ...] = (
+    ('ghost0', 7664,),
+    ('ghost1', 7665,),
+    ('ghost2', 7666,),
+    ('ghost3', 7667,),
+    ('ghost4', 7668,),
+    ('ghost5', 7669,),
+    ('ghost6', 7670,),
+    ('ghost7', 7671,),
+    ('ghost8', 7672,),
+    ('ghost9', 7673,),
+)
 
 class TestAppConfigDefault(BaseTest):
-    """AppConfigDefault scenarios."""
+    """Unknown apps fall back to the default policy."""
 
-    def test_app_config_default_0_7664(self, client: Any, admin_headers: dict[str, str]) -> None:
+    @pytest.mark.parametrize(('app_name', 'uid',), _APP_CONFIG_DEFAULT_CASES)
+    def test_app_config_default(self, client: Any, admin_headers: dict[str, str], app_name: str, uid: int) -> None:
         """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost0", headers=admin_headers)
+        response = client.get(f'/admin/app-config/{app_name}', headers=admin_headers)
         assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
+        assert response.json()['score_threshold'] == 50
 
-    def test_app_config_default_1_7665(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost1", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
 
-    def test_app_config_default_2_7666(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost2", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_3_7667(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost3", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_4_7668(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost4", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_5_7669(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost5", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_6_7670(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost6", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_7_7671(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost7", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_8_7672(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost8", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
-    def test_app_config_default_9_7673(self, client: Any, admin_headers: dict[str, str]) -> None:
-        """Unknown apps fall back to the default policy."""
-        response = client.get("/admin/app-config/ghost9", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json()["score_threshold"] == 50
-
+_SETTINGS_ENDPOINT_CASES: tuple[tuple[str, int, int], ...] = (
+    ('WEIGHT_DETECTOR_AHO', 5, 7674,),
+    ('WEIGHT_DETECTOR_AHO', 8, 7675,),
+    ('WEIGHT_DETECTOR_AHO', 10, 7676,),
+    ('WEIGHT_DETECTOR_AHO', 12, 7677,),
+    ('WEIGHT_DETECTOR_AHO', 15, 7678,),
+    ('WEIGHT_DETECTOR_AHO', 18, 7679,),
+    ('WEIGHT_DETECTOR_AHO', 20, 7680,),
+    ('WEIGHT_DETECTOR_AHO', 22, 7681,),
+    ('WEIGHT_DETECTOR_AHO', 25, 7682,),
+    ('WEIGHT_DETECTOR_AHO', 28, 7683,),
+    ('WEIGHT_DETECTOR_AHO', 30, 7684,),
+    ('WEIGHT_DETECTOR_AHO', 32, 7685,),
+    ('WEIGHT_DETECTOR_AHO', 35, 7686,),
+    ('WEIGHT_DETECTOR_AHO', 38, 7687,),
+    ('WEIGHT_DETECTOR_AHO', 40, 7688,),
+    ('WEIGHT_DETECTOR_AHO', 42, 7689,),
+    ('WEIGHT_DETECTOR_AHO', 45, 7690,),
+    ('WEIGHT_DETECTOR_AHO', 47, 7691,),
+    ('WEIGHT_DETECTOR_AHO', 49, 7692,),
+    ('WEIGHT_DETECTOR_AHO', 50, 7693,),
+    ('WEIGHT_USER', 5, 7694,),
+    ('WEIGHT_USER', 7, 7695,),
+    ('WEIGHT_USER', 9, 7696,),
+    ('WEIGHT_USER', 11, 7697,),
+    ('WEIGHT_USER', 13, 7698,),
+    ('WEIGHT_USER', 16, 7699,),
+    ('WEIGHT_USER', 19, 7700,),
+    ('WEIGHT_USER', 21, 7701,),
+    ('WEIGHT_USER', 24, 7702,),
+    ('WEIGHT_USER', 26, 7703,),
+    ('WEIGHT_USER', 29, 7704,),
+    ('WEIGHT_USER', 31, 7705,),
+    ('WEIGHT_USER', 34, 7706,),
+    ('WEIGHT_USER', 36, 7707,),
+    ('WEIGHT_USER', 39, 7708,),
+    ('WEIGHT_USER', 41, 7709,),
+    ('WEIGHT_USER', 44, 7710,),
+    ('WEIGHT_USER', 46, 7711,),
+    ('WEIGHT_USER', 48, 7712,),
+    ('WEIGHT_USER', 50, 7713,),
+    ('SEMANTIC_TOP_K', 1, 7714,),
+    ('SEMANTIC_TOP_K', 2, 7715,),
+    ('SEMANTIC_TOP_K', 3, 7716,),
+    ('SEMANTIC_TOP_K', 5, 7717,),
+    ('SEMANTIC_TOP_K', 8, 7718,),
+    ('SEMANTIC_TOP_K', 10, 7719,),
+    ('SEMANTIC_TOP_K', 12, 7720,),
+    ('SEMANTIC_TOP_K', 16, 7721,),
+    ('SEMANTIC_TOP_K', 20, 7722,),
+    ('SEMANTIC_TOP_K', 25, 7723,),
+)
 
 class TestSettingsEndpoint(BaseTest):
-    """SettingsEndpoint scenarios."""
+    """The settings endpoint accepts valid values."""
 
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_0_7674(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
+    @pytest.mark.parametrize(('key', 'value', 'uid',), _SETTINGS_ENDPOINT_CASES)
+    def test_settings_endpoint(self, client: Any, admin_headers: dict[str, str], key: str, value: int, uid: int) -> None:
         """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
+        payload = {'settings': {key: value}}
+        response = client.post('/admin/settings', headers=admin_headers, json=payload)
         assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_1_7675(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_2_7676(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_3_7677(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_4_7678(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_5_7679(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_6_7680(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_7_7681(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_8_7682(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_9_7683(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_10_7684(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_11_7685(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_12_7686(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_13_7687(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_14_7688(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_15_7689(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_16_7690(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_17_7691(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_18_7692(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_DETECTOR_AHO_19_7693(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_DETECTOR_AHO": 35}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_DETECTOR_AHO" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_0_7694(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_1_7695(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_2_7696(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_3_7697(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_4_7698(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_5_7699(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_6_7700(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_7_7701(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_8_7702(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_9_7703(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_10_7704(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_11_7705(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_12_7706(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_13_7707(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_14_7708(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_15_7709(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_16_7710(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_17_7711(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_18_7712(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_WEIGHT_USER_19_7713(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"WEIGHT_USER": 25}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "WEIGHT_USER" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_0_7714(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_1_7715(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_2_7716(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_3_7717(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_4_7718(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_5_7719(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_6_7720(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_7_7721(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_8_7722(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
-
-    def test_settings_endpoint_CACHE_MAX_SIZE_9_7723(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
-        """The settings endpoint accepts valid values."""
-        payload = {"settings": {"CACHE_MAX_SIZE": 500}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
-        assert response.status_code == 200
-        assert "CACHE_MAX_SIZE" in response.json()["updated"]
+        assert key in response.json()['updated']
