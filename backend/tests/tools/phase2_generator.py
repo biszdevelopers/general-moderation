@@ -134,10 +134,37 @@ def _param_sig(ident: str, typ: str) -> str:
 # Characters that ruff RUF001 flags as ambiguous in the locked fixtures.
 _CONFUSABLE_CHARS: frozenset[int] = frozenset(
     {
-        0x131, 0x3B1, 0x3B3, 0x3B9, 0x3C1, 0x3C3, 0x430, 0x431, 0x433, 0x435,
-        0x43E, 0x440, 0x441, 0x443, 0x445, 0x456, 0x5D5, 0x5D8, 0x5D9, 0x5DF,
-        0x5E1, 0x627, 0x647, 0xFF44, 0xFF46, 0xFF48, 0xFF49, 0xFF4C, 0xFF54,
-        0xFF55, 0xFF57,
+        0x131,
+        0x3B1,
+        0x3B3,
+        0x3B9,
+        0x3C1,
+        0x3C3,
+        0x430,
+        0x431,
+        0x433,
+        0x435,
+        0x43E,
+        0x440,
+        0x441,
+        0x443,
+        0x445,
+        0x456,
+        0x5D5,
+        0x5D8,
+        0x5D9,
+        0x5DF,
+        0x5E1,
+        0x627,
+        0x647,
+        0xFF44,
+        0xFF46,
+        0xFF48,
+        0xFF49,
+        0xFF4C,
+        0xFF54,
+        0xFF55,
+        0xFF57,
     }
 )
 
@@ -1937,7 +1964,14 @@ def gen_engine() -> list[File]:
         (("only",), ("only",), "only", False, "not", False),
     )
     assert len(safe_scenarios) == 24
-    for add_words, remove_words, present, present_expected, absent, absent_expected in safe_scenarios:
+    for (
+        add_words,
+        remove_words,
+        present,
+        present_expected,
+        absent,
+        absent_expected,
+    ) in safe_scenarios:
         cases.append(
             pcase(
                 _next_id("ENG"),
@@ -1947,7 +1981,14 @@ def gen_engine() -> list[File]:
                 f"adds={add_words},removes={remove_words}",
                 "safe toggle",
                 "Safe word add/remove/is_safe stays consistent.",
-                ("add_words", "remove_words", "present", "present_expected", "absent", "absent_expected"),
+                (
+                    "add_words",
+                    "remove_words",
+                    "present",
+                    "present_expected",
+                    "absent",
+                    "absent_expected",
+                ),
                 {
                     "add_words": "tuple[object, ...]",
                     "remove_words": "tuple[object, ...]",
@@ -3429,7 +3470,14 @@ def gen_archive() -> list[File]:
                     f"vol={volume},flag={flag_pct},block={block_pct},review={review_pct}",
                     f"summaries={golden['summaries']},ratio={golden['ratio']:.4f}",
                     "Mixed-verdict windows archive each counter correctly.",
-                    ("volume", "flagged", "blocked", "reviewed", "expected_summaries", "expected_ratio"),
+                    (
+                        "volume",
+                        "flagged",
+                        "blocked",
+                        "reviewed",
+                        "expected_summaries",
+                        "expected_ratio",
+                    ),
                     {
                         "volume": "int",
                         "flagged": "int",
@@ -4654,7 +4702,10 @@ def gen_public() -> list[File]:
             )
         )
     batch_items_100: str = '{"items": [' + '{"text": "i"},' * 99 + '{"text": "last"}]}'
-    for payload, expected_status in ((batch_items_100, 200), ('{"items": [' + '{"text": "i"},' * 100 + '{"text": "last"}]}', 422)):
+    for payload, expected_status in (
+        (batch_items_100, 200),
+        ('{"items": [' + '{"text": "i"},' * 100 + '{"text": "last"}]}', 422),
+    ):
         validation_cases.append(
             pcase(
                 _next_id("PUB"),
@@ -4984,11 +5035,68 @@ def gen_admin() -> list[File]:
     # Settings endpoint: 100 cases (5 keys x 20 distinct valid values).
     settings_cases: list[Case] = []
     settings_matrix: tuple[tuple[str, tuple[int, ...]], ...] = (
-        ("WEIGHT_DETECTOR_AHO", (5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 47, 49, 50)),
-        ("WEIGHT_USER", (5, 7, 9, 11, 13, 16, 19, 21, 24, 26, 29, 31, 34, 36, 39, 41, 44, 46, 48, 50)),
-        ("SEMANTIC_TOP_K", (1, 2, 3, 5, 8, 10, 12, 16, 20, 25, 32, 40, 50, 60, 70, 80, 88, 92, 96, 100)),
-        ("CACHE_MAX_SIZE", (1, 5, 10, 50, 100, 500, 1000, 2500, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 95000, 100000)),
-        ("RATE_LIMIT_PERIOD", (1, 5, 10, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200, 10800, 14400, 21600, 28800, 43200, 57600, 72000, 86400)),
+        (
+            "WEIGHT_DETECTOR_AHO",
+            (5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 47, 49, 50),
+        ),
+        (
+            "WEIGHT_USER",
+            (5, 7, 9, 11, 13, 16, 19, 21, 24, 26, 29, 31, 34, 36, 39, 41, 44, 46, 48, 50),
+        ),
+        (
+            "SEMANTIC_TOP_K",
+            (1, 2, 3, 5, 8, 10, 12, 16, 20, 25, 32, 40, 50, 60, 70, 80, 88, 92, 96, 100),
+        ),
+        (
+            "CACHE_MAX_SIZE",
+            (
+                1,
+                5,
+                10,
+                50,
+                100,
+                500,
+                1000,
+                2500,
+                5000,
+                10000,
+                20000,
+                30000,
+                40000,
+                50000,
+                60000,
+                70000,
+                80000,
+                90000,
+                95000,
+                100000,
+            ),
+        ),
+        (
+            "RATE_LIMIT_PERIOD",
+            (
+                1,
+                5,
+                10,
+                30,
+                60,
+                120,
+                300,
+                600,
+                900,
+                1800,
+                3600,
+                7200,
+                10800,
+                14400,
+                21600,
+                28800,
+                43200,
+                57600,
+                72000,
+                86400,
+            ),
+        ),
     )
     for key, values in settings_matrix:
         for value in values:
@@ -5125,7 +5233,12 @@ def gen_security() -> list[File]:
                         ("header", "method", "endpoint", "variant"),
                         {"header": "str", "method": "str", "endpoint": "str", "variant": "int"},
                         "client: Any",
-                        {"header": header, "method": method, "endpoint": endpoint, "variant": variant},
+                        {
+                            "header": header,
+                            "method": method,
+                            "endpoint": endpoint,
+                            "variant": variant,
+                        },
                         "payload = {'text': f'hi {variant}', 'app_name': 'a'} if endpoint == '/moderate' else None\n"
                         "if method == 'POST' and payload is not None:\n"
                         "    response = client.post(endpoint, json=payload)\n"
@@ -5329,7 +5442,12 @@ def gen_security() -> list[File]:
     )
     traversal_cases: list[Case] = []
     for payload in traversal_payloads:
-        variants: tuple[str, ...] = (payload, quote(payload), payload + "%00", quote(payload, safe=""))
+        variants: tuple[str, ...] = (
+            payload,
+            quote(payload),
+            payload + "%00",
+            quote(payload, safe=""),
+        )
         for variant in variants:
             traversal_cases.append(
                 pcase(
@@ -5362,14 +5480,50 @@ def gen_security() -> list[File]:
         "/": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
         "/admin/wordbank/stats": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
         "/admin/wordbank/words": {"GET": 200, "POST": 422, "PUT": 405, "DELETE": 422, "PATCH": 405},
-        "/admin/wordbank/export": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
-        "/admin/wordbank/languages": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
-        "/admin/wordbank/categories": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
-        "/admin/wordbank/import": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/export": {
+            "GET": 200,
+            "POST": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
+        "/admin/wordbank/languages": {
+            "GET": 200,
+            "POST": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
+        "/admin/wordbank/categories": {
+            "GET": 200,
+            "POST": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
+        "/admin/wordbank/import": {
+            "POST": 200,
+            "GET": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
         "/admin/reload": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
         "/admin/app-config": {"GET": 200, "POST": 200, "PUT": 405, "DELETE": 405, "PATCH": 405},
-        "/admin/app-config/demo": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
-        "/admin/app-config/other": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/app-config/demo": {
+            "GET": 200,
+            "POST": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
+        "/admin/app-config/other": {
+            "GET": 200,
+            "POST": 405,
+            "PUT": 405,
+            "DELETE": 405,
+            "PATCH": 405,
+        },
         "/admin/settings": {"GET": 200, "POST": 200, "PUT": 405, "DELETE": 405, "PATCH": 405},
         "/admin/logs": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
         "/admin/stats": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
