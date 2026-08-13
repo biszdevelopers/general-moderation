@@ -665,66 +665,66 @@
 | TC-PRF-3440 | P2 | Cycles 7 clean | cycles=7 | chain complete | test_profiling_phase2_part_7.py |
 | TC-PRF-3441 | P2 | Cycles 8 clean | cycles=8 | chain complete | test_profiling_phase2_part_7.py |
 | TC-PRF-3442 | P2 | Cycles 9 clean | cycles=9 | chain complete | test_profiling_phase2_part_7.py |
-| TC-PRF-3443 | P3 | Isolation scenario 0 | scenario=0 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3444 | P3 | Isolation scenario 1 | scenario=1 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3445 | P3 | Isolation scenario 2 | scenario=2 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3446 | P3 | Isolation scenario 3 | scenario=3 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3447 | P3 | Isolation scenario 4 | scenario=4 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3448 | P3 | Isolation scenario 5 | scenario=5 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3449 | P3 | Isolation scenario 6 | scenario=6 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3450 | P3 | Isolation scenario 7 | scenario=7 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3451 | P3 | Isolation scenario 8 | scenario=8 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3452 | P3 | Isolation scenario 9 | scenario=9 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3453 | P3 | Isolation scenario 10 | scenario=10 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3454 | P3 | Isolation scenario 11 | scenario=11 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3455 | P3 | Isolation scenario 12 | scenario=12 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3456 | P3 | Isolation scenario 13 | scenario=13 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3457 | P3 | Isolation scenario 14 | scenario=14 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3458 | P3 | Isolation scenario 15 | scenario=15 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3459 | P3 | Isolation scenario 16 | scenario=16 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3460 | P3 | Isolation scenario 17 | scenario=17 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3461 | P3 | Isolation scenario 18 | scenario=18 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3462 | P3 | Isolation scenario 19 | scenario=19 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3463 | P3 | Isolation scenario 20 | scenario=20 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3464 | P3 | Isolation scenario 21 | scenario=21 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3465 | P3 | Isolation scenario 22 | scenario=22 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3466 | P3 | Isolation scenario 23 | scenario=23 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3467 | P3 | Isolation scenario 24 | scenario=24 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3468 | P3 | Isolation scenario 25 | scenario=25 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3469 | P3 | Isolation scenario 26 | scenario=26 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3470 | P3 | Isolation scenario 27 | scenario=27 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3471 | P3 | Isolation scenario 28 | scenario=28 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3472 | P3 | Isolation scenario 29 | scenario=29 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3473 | P3 | Isolation scenario 30 | scenario=30 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3474 | P3 | Isolation scenario 31 | scenario=31 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3475 | P3 | Isolation scenario 32 | scenario=32 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3476 | P3 | Isolation scenario 33 | scenario=33 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3477 | P3 | Isolation scenario 34 | scenario=34 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3478 | P3 | Isolation scenario 35 | scenario=35 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3479 | P3 | Isolation scenario 36 | scenario=36 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3480 | P3 | Isolation scenario 37 | scenario=37 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3481 | P3 | Isolation scenario 38 | scenario=38 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3482 | P3 | Isolation scenario 39 | scenario=39 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3483 | P3 | Isolation scenario 40 | scenario=40 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3484 | P3 | Isolation scenario 41 | scenario=41 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3485 | P3 | Isolation scenario 42 | scenario=42 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3486 | P3 | Isolation scenario 43 | scenario=43 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3487 | P3 | Isolation scenario 44 | scenario=44 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3488 | P3 | Isolation scenario 45 | scenario=45 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3489 | P3 | Isolation scenario 46 | scenario=46 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3490 | P3 | Isolation scenario 47 | scenario=47 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3491 | P3 | Isolation scenario 48 | scenario=48 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3492 | P3 | Isolation scenario 49 | scenario=49 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3493 | P3 | Isolation scenario 50 | scenario=50 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3494 | P3 | Isolation scenario 51 | scenario=51 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3495 | P3 | Isolation scenario 52 | scenario=52 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3496 | P3 | Isolation scenario 53 | scenario=53 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3497 | P3 | Isolation scenario 54 | scenario=54 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3498 | P3 | Isolation scenario 55 | scenario=55 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3499 | P3 | Isolation scenario 56 | scenario=56 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3500 | P3 | Isolation scenario 57 | scenario=57 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3501 | P3 | Isolation scenario 58 | scenario=58 | isolated | test_profiling_phase2_part_7.py |
-| TC-PRF-3502 | P3 | Isolation scenario 59 | scenario=59 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3443 | P3 | Isolation apps=2 bad=1 good=1 | apps=2,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3444 | P3 | Isolation apps=2 bad=1 good=2 | apps=2,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3445 | P3 | Isolation apps=2 bad=1 good=3 | apps=2,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3446 | P3 | Isolation apps=2 bad=2 good=1 | apps=2,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3447 | P3 | Isolation apps=2 bad=2 good=2 | apps=2,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3448 | P3 | Isolation apps=2 bad=2 good=3 | apps=2,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3449 | P3 | Isolation apps=2 bad=3 good=1 | apps=2,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3450 | P3 | Isolation apps=2 bad=3 good=2 | apps=2,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3451 | P3 | Isolation apps=2 bad=3 good=3 | apps=2,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3452 | P3 | Isolation apps=3 bad=1 good=1 | apps=3,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3453 | P3 | Isolation apps=3 bad=1 good=2 | apps=3,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3454 | P3 | Isolation apps=3 bad=1 good=3 | apps=3,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3455 | P3 | Isolation apps=3 bad=2 good=1 | apps=3,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3456 | P3 | Isolation apps=3 bad=2 good=2 | apps=3,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3457 | P3 | Isolation apps=3 bad=2 good=3 | apps=3,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3458 | P3 | Isolation apps=3 bad=3 good=1 | apps=3,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3459 | P3 | Isolation apps=3 bad=3 good=2 | apps=3,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3460 | P3 | Isolation apps=3 bad=3 good=3 | apps=3,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3461 | P3 | Isolation apps=4 bad=1 good=1 | apps=4,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3462 | P3 | Isolation apps=4 bad=1 good=2 | apps=4,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3463 | P3 | Isolation apps=4 bad=1 good=3 | apps=4,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3464 | P3 | Isolation apps=4 bad=2 good=1 | apps=4,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3465 | P3 | Isolation apps=4 bad=2 good=2 | apps=4,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3466 | P3 | Isolation apps=4 bad=2 good=3 | apps=4,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3467 | P3 | Isolation apps=4 bad=3 good=1 | apps=4,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3468 | P3 | Isolation apps=4 bad=3 good=2 | apps=4,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3469 | P3 | Isolation apps=4 bad=3 good=3 | apps=4,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3470 | P3 | Isolation apps=5 bad=1 good=1 | apps=5,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3471 | P3 | Isolation apps=5 bad=1 good=2 | apps=5,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3472 | P3 | Isolation apps=5 bad=1 good=3 | apps=5,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3473 | P3 | Isolation apps=5 bad=2 good=1 | apps=5,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3474 | P3 | Isolation apps=5 bad=2 good=2 | apps=5,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3475 | P3 | Isolation apps=5 bad=2 good=3 | apps=5,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3476 | P3 | Isolation apps=5 bad=3 good=1 | apps=5,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3477 | P3 | Isolation apps=5 bad=3 good=2 | apps=5,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3478 | P3 | Isolation apps=5 bad=3 good=3 | apps=5,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3479 | P3 | Isolation apps=6 bad=1 good=1 | apps=6,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3480 | P3 | Isolation apps=6 bad=1 good=2 | apps=6,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3481 | P3 | Isolation apps=6 bad=1 good=3 | apps=6,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3482 | P3 | Isolation apps=6 bad=2 good=1 | apps=6,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3483 | P3 | Isolation apps=6 bad=2 good=2 | apps=6,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3484 | P3 | Isolation apps=6 bad=2 good=3 | apps=6,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3485 | P3 | Isolation apps=6 bad=3 good=1 | apps=6,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3486 | P3 | Isolation apps=6 bad=3 good=2 | apps=6,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3487 | P3 | Isolation apps=6 bad=3 good=3 | apps=6,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3488 | P3 | Isolation apps=8 bad=1 good=1 | apps=8,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3489 | P3 | Isolation apps=8 bad=1 good=2 | apps=8,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3490 | P3 | Isolation apps=8 bad=1 good=3 | apps=8,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3491 | P3 | Isolation apps=8 bad=2 good=1 | apps=8,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3492 | P3 | Isolation apps=8 bad=2 good=2 | apps=8,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3493 | P3 | Isolation apps=8 bad=2 good=3 | apps=8,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3494 | P3 | Isolation apps=8 bad=3 good=1 | apps=8,bad=3,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3495 | P3 | Isolation apps=8 bad=3 good=2 | apps=8,bad=3,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3496 | P3 | Isolation apps=8 bad=3 good=3 | apps=8,bad=3,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3497 | P3 | Isolation apps=10 bad=1 good=1 | apps=10,bad=1,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3498 | P3 | Isolation apps=10 bad=1 good=2 | apps=10,bad=1,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3499 | P3 | Isolation apps=10 bad=1 good=3 | apps=10,bad=1,good=3 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3500 | P3 | Isolation apps=10 bad=2 good=1 | apps=10,bad=2,good=1 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3501 | P3 | Isolation apps=10 bad=2 good=2 | apps=10,bad=2,good=2 | isolated | test_profiling_phase2_part_7.py |
+| TC-PRF-3502 | P3 | Isolation apps=10 bad=2 good=3 | apps=10,bad=2,good=3 | isolated | test_profiling_phase2_part_7.py |
 
 ### Phase 3 - 12,000 cases
 - Planned sweeps over the full dimension matrix, IDs TC-PRF-0781 onward.
