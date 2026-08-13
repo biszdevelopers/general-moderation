@@ -6,6 +6,8 @@ report structure under the frozen clock."""
 # multilingual fixtures use non-ASCII on purpose
 from __future__ import annotations
 
+import pytest
+
 from app.appconfig.app_config_service import AppConfigService
 from app.config import Settings
 from app.feedback.feedback_service import FeedbackService
@@ -17,15 +19,14 @@ from tests.base_test import BaseTest
 def _feedback_service(enabled: bool = True) -> FeedbackService:
     import tempfile
     from pathlib import Path
-
     root: Path = Path(tempfile.mkdtemp())
-    (root / "logs").mkdir(parents=True, exist_ok=True)
+    (root / 'logs').mkdir(parents=True, exist_ok=True)
     settings = Settings(
         app_port=0,
-        log_file_path=str(root / "logs" / "l.log"),
-        feedback_db_path=str(root / "f.db"),
-        settings_db_path=str(root / "s.db"),
-        app_config_db_path=str(root / "c.db"),
+        log_file_path=str(root / 'logs' / 'l.log'),
+        feedback_db_path=str(root / 'f.db'),
+        settings_db_path=str(root / 's.db'),
+        app_config_db_path=str(root / 'c.db'),
         auto_tuning_enabled=enabled,
     )
     logger: ModerationLogger = ModerationLogger(settings.log_file_path, max_bytes=100_000)
@@ -33,1164 +34,182 @@ def _feedback_service(enabled: bool = True) -> FeedbackService:
     app_config: AppConfigService = AppConfigService(settings.app_config_db_path)
     return FeedbackService(settings, settings_service, app_config, logger)
 
+_FEEDBACK_FIELD_CASES: tuple[tuple[str, str, bool, int], ...] = (
+    ('BLOCK', 'BLOCK', True, 4659,),
+    ('BLOCK', 'BLOCK', False, 4660,),
+    ('BLOCK', 'PASS', True, 4661,),
+    ('BLOCK', 'PASS', False, 4662,),
+    ('PASS', 'BLOCK', True, 4663,),
+    ('PASS', 'BLOCK', False, 4664,),
+    ('PASS', 'PASS', True, 4665,),
+    ('PASS', 'PASS', False, 4666,),
+    ('REVIEW', 'BLOCK', True, 4667,),
+    ('REVIEW', 'BLOCK', False, 4668,),
+    ('REVIEW', 'PASS', True, 4669,),
+    ('REVIEW', 'PASS', False, 4670,),
+)
 
-class TestFeedbackFields(BaseTest):
-    """FeedbackFields scenarios."""
+class TestFeedbackField(BaseTest):
+    """Stored feedback preserves every field."""
 
-    def test_feedback_field_BLOCK_BLOCK_True_4659(self) -> None:
+    @pytest.mark.parametrize(('verdict', 'actual', 'correct', 'uid',), _FEEDBACK_FIELD_CASES)
+    def test_feedback_field(self, verdict: str, actual: str, correct: bool, uid: int) -> None:
         """Stored feedback preserves every field."""
         feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "BLOCK", True, "BLOCK")
+        feedback.record_feedback('req', verdict, correct, actual)
         row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
+            'SELECT request_id, verdict, is_correct, actual_action FROM feedback'
         ).fetchone()
         assert row is not None
-        assert row[1] == "BLOCK"
-        assert row[2] == int(True)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_BLOCK_BLOCK_False_4660(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "BLOCK", False, "BLOCK")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "BLOCK"
-        assert row[2] == int(False)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_BLOCK_PASS_True_4661(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "BLOCK", True, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "BLOCK"
-        assert row[2] == int(True)
-        assert row[3] == "PASS"
-        feedback.close()
-
-    def test_feedback_field_BLOCK_PASS_False_4662(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "BLOCK", False, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "BLOCK"
-        assert row[2] == int(False)
-        assert row[3] == "PASS"
-        feedback.close()
-
-    def test_feedback_field_PASS_BLOCK_True_4663(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "PASS", True, "BLOCK")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "PASS"
-        assert row[2] == int(True)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_PASS_BLOCK_False_4664(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "PASS", False, "BLOCK")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "PASS"
-        assert row[2] == int(False)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_PASS_PASS_True_4665(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "PASS", True, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "PASS"
-        assert row[2] == int(True)
-        assert row[3] == "PASS"
-        feedback.close()
-
-    def test_feedback_field_PASS_PASS_False_4666(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "PASS", False, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "PASS"
-        assert row[2] == int(False)
-        assert row[3] == "PASS"
-        feedback.close()
-
-    def test_feedback_field_REVIEW_BLOCK_True_4667(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "REVIEW", True, "BLOCK")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "REVIEW"
-        assert row[2] == int(True)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_REVIEW_BLOCK_False_4668(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "REVIEW", False, "BLOCK")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "REVIEW"
-        assert row[2] == int(False)
-        assert row[3] == "BLOCK"
-        feedback.close()
-
-    def test_feedback_field_REVIEW_PASS_True_4669(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "REVIEW", True, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "REVIEW"
-        assert row[2] == int(True)
-        assert row[3] == "PASS"
-        feedback.close()
-
-    def test_feedback_field_REVIEW_PASS_False_4670(self) -> None:
-        """Stored feedback preserves every field."""
-        feedback: FeedbackService = _feedback_service()
-        feedback.record_feedback("req", "REVIEW", False, "PASS")
-        row = feedback._connection.execute(
-            "SELECT request_id, verdict, is_correct, actual_action FROM feedback"
-        ).fetchone()
-        assert row is not None
-        assert row[1] == "REVIEW"
-        assert row[2] == int(False)
-        assert row[3] == "PASS"
+        assert row[1] == verdict
+        assert row[2] == int(correct)
+        assert row[3] == actual
         feedback.close()
 
 
-class TestFeedbackCounts(BaseTest):
-    """FeedbackCounts scenarios."""
+_FEEDBACK_COUNT_CASES: tuple[tuple[int, int], ...] = (
+    (1, 4671,),
+    (3, 4672,),
+    (7, 4673,),
+    (12, 4674,),
+    (16, 4675,),
+    (24, 4676,),
+    (25, 4677,),
+    (32, 4678,),
+    (48, 4679,),
+    (100, 4680,),
+    (500, 4681,),
+    (1000, 4682,),
+    (2000, 4683,),
+    (5000, 4684,),
+)
 
-    def test_feedback_count_1_4671(self) -> None:
+class TestFeedbackCount(BaseTest):
+    """Feedback rows persist in the database."""
+
+    @pytest.mark.parametrize(('count', 'uid',), _FEEDBACK_COUNT_CASES)
+    def test_feedback_count(self, count: int, uid: int) -> None:
         """Feedback rows persist in the database."""
         feedback: FeedbackService = _feedback_service()
-        for index in range(1):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 1
+        for index in range(count):
+            feedback.record_feedback(f'r{index}', 'BLOCK', True, 'BLOCK')
+        rows = feedback._connection.execute('SELECT COUNT(*) FROM feedback').fetchone()
+        assert rows is not None and rows[0] == count
         feedback.close()
 
-    def test_feedback_count_3_4672(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(3):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 3
-        feedback.close()
 
-    def test_feedback_count_7_4673(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(7):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 7
-        feedback.close()
-
-    def test_feedback_count_12_4674(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(12):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 12
-        feedback.close()
-
-    def test_feedback_count_16_4675(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(16):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 16
-        feedback.close()
-
-    def test_feedback_count_24_4676(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(24):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 24
-        feedback.close()
-
-    def test_feedback_count_25_4677(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(25):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 25
-        feedback.close()
-
-    def test_feedback_count_32_4678(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(32):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 32
-        feedback.close()
-
-    def test_feedback_count_48_4679(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(48):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 48
-        feedback.close()
-
-    def test_feedback_count_100_4680(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(100):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 100
-        feedback.close()
-
-    def test_feedback_count_500_4681(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(500):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 500
-        feedback.close()
-
-    def test_feedback_count_1000_4682(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(1000):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 1000
-        feedback.close()
-
-    def test_feedback_count_2000_4683(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(2000):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 2000
-        feedback.close()
-
-    def test_feedback_count_5000_4684(self) -> None:
-        """Feedback rows persist in the database."""
-        feedback: FeedbackService = _feedback_service()
-        for index in range(5000):
-            feedback.record_feedback(f"r{index}", "BLOCK", True, "BLOCK")
-        rows = feedback._connection.execute("SELECT COUNT(*) FROM feedback").fetchone()
-        assert rows is not None and rows[0] == 5000
-        feedback.close()
-
+_REPORT_SHAPE_CASES: tuple[tuple[int, int, int], ...] = (
+    (1, 1, 4685,),
+    (1, 2, 4686,),
+    (1, 3, 4687,),
+    (1, 4, 4688,),
+    (1, 5, 4689,),
+    (2, 1, 4690,),
+    (2, 2, 4691,),
+    (2, 3, 4692,),
+    (2, 4, 4693,),
+    (2, 5, 4694,),
+    (3, 1, 4695,),
+    (3, 2, 4696,),
+    (3, 3, 4697,),
+    (3, 4, 4698,),
+    (3, 5, 4699,),
+    (4, 1, 4700,),
+    (4, 2, 4701,),
+    (4, 3, 4702,),
+    (4, 4, 4703,),
+    (4, 5, 4704,),
+    (5, 1, 4705,),
+    (5, 2, 4706,),
+    (5, 3, 4707,),
+    (5, 4, 4708,),
+    (5, 5, 4709,),
+    (6, 1, 4710,),
+    (6, 2, 4711,),
+    (6, 3, 4712,),
+    (6, 4, 4713,),
+    (6, 5, 4714,),
+    (7, 1, 4715,),
+    (7, 2, 4716,),
+    (7, 3, 4717,),
+    (7, 4, 4718,),
+    (7, 5, 4719,),
+    (8, 1, 4720,),
+    (8, 2, 4721,),
+    (8, 3, 4722,),
+    (8, 4, 4723,),
+    (8, 5, 4724,),
+    (9, 1, 4725,),
+    (9, 2, 4726,),
+    (9, 3, 4727,),
+    (9, 4, 4728,),
+    (9, 5, 4729,),
+    (10, 1, 4730,),
+    (10, 2, 4731,),
+    (10, 3, 4732,),
+    (10, 4, 4733,),
+    (10, 5, 4734,),
+)
 
 class TestReportShape(BaseTest):
-    """ReportShape scenarios."""
+    """Tuning reports expose the documented structure."""
 
-    def test_report_shape_0_4685(self) -> None:
+    @pytest.mark.parametrize(('n_feedback', 'n_decisions', 'uid',), _REPORT_SHAPE_CASES)
+    def test_report_shape(self, n_feedback: int, n_decisions: int, uid: int) -> None:
         """Tuning reports expose the documented structure."""
         feedback: FeedbackService = _feedback_service()
+        for index in range(n_feedback):
+            feedback.record_feedback(f'r{index}', 'BLOCK', True, 'BLOCK')
+        for _ in range(n_decisions):
+            feedback.record_decision('PASS', True)
         report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_1_4686(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_2_4687(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_3_4688(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_4_4689(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_5_4690(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_6_4691(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_7_4692(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_8_4693(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_9_4694(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_10_4695(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_11_4696(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_12_4697(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_13_4698(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_14_4699(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_15_4700(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_16_4701(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_17_4702(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_18_4703(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_19_4704(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_20_4705(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_21_4706(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_22_4707(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_23_4708(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_24_4709(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_25_4710(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_26_4711(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_27_4712(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_28_4713(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_29_4714(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_30_4715(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_31_4716(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_32_4717(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_33_4718(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_34_4719(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_35_4720(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_36_4721(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_37_4722(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_38_4723(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_39_4724(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_40_4725(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_41_4726(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_42_4727(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_43_4728(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_44_4729(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_45_4730(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_46_4731(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_47_4732(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_48_4733(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
-        feedback.close()
-
-    def test_report_shape_49_4734(self) -> None:
-        """Tuning reports expose the documented structure."""
-        feedback: FeedbackService = _feedback_service()
-        report = feedback.run_batch()
-        assert report["status"] == "ok"
-        assert 0 <= report["score_threshold"] <= 100
-        assert report["feedback_window"] >= 0
-        assert report["decision_window"] >= 0
-        assert 0.0 <= report["precision"] <= 1.0
-        assert "weights" in report
+        assert report['status'] == 'ok'
+        assert report['feedback_window'] == n_feedback
+        assert report['decision_window'] == n_decisions
+        assert 0 <= report['score_threshold'] <= 100
+        assert 0.0 <= report['precision'] <= 1.0
+        assert 'weights' in report
         feedback.close()
 
 
-class TestWeightClamps(BaseTest):
-    """WeightClamps scenarios."""
+_WEIGHT_CLAMP_CASES: tuple[tuple[str, int, int], ...] = (
+    ('WEIGHT_DETECTOR_BADWORDS', 5, 4735,),
+    ('WEIGHT_DETECTOR_BADWORDS', 15, 4736,),
+    ('WEIGHT_DETECTOR_BADWORDS', 25, 4737,),
+    ('WEIGHT_DETECTOR_BADWORDS', 35, 4738,),
+    ('WEIGHT_DETECTOR_BADWORDS', 45, 4739,),
+    ('WEIGHT_DETECTOR_BADWORDS', 50, 4740,),
+    ('WEIGHT_DETECTOR_PROFANITE', 5, 4741,),
+    ('WEIGHT_DETECTOR_PROFANITE', 15, 4742,),
+    ('WEIGHT_DETECTOR_PROFANITE', 25, 4743,),
+    ('WEIGHT_DETECTOR_PROFANITE', 35, 4744,),
+    ('WEIGHT_DETECTOR_PROFANITE', 45, 4745,),
+    ('WEIGHT_DETECTOR_PROFANITE', 50, 4746,),
+    ('WEIGHT_DETECTOR_GLIN', 5, 4747,),
+    ('WEIGHT_DETECTOR_GLIN', 15, 4748,),
+    ('WEIGHT_DETECTOR_GLIN', 25, 4749,),
+    ('WEIGHT_DETECTOR_GLIN', 35, 4750,),
+    ('WEIGHT_DETECTOR_GLIN', 45, 4751,),
+    ('WEIGHT_DETECTOR_GLIN', 50, 4752,),
+    ('WEIGHT_DETECTOR_AHO', 5, 4753,),
+    ('WEIGHT_DETECTOR_AHO', 15, 4754,),
+    ('WEIGHT_DETECTOR_AHO', 25, 4755,),
+    ('WEIGHT_DETECTOR_AHO', 35, 4756,),
+    ('WEIGHT_DETECTOR_AHO', 45, 4757,),
+    ('WEIGHT_DETECTOR_AHO', 50, 4758,),
+)
 
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_5_4735(self) -> None:
+class TestWeightClamp(BaseTest):
+    """Tuned weights stay clamped between 5 and 50."""
+
+    @pytest.mark.parametrize(('key', 'value', 'uid',), _WEIGHT_CLAMP_CASES)
+    def test_weight_clamp(self, key: str, value: int, uid: int) -> None:
         """Tuned weights stay clamped between 5 and 50."""
         feedback: FeedbackService = _feedback_service()
         service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 5})
+        service.get(key)
+        service.update({key: value})
         feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_15_4736(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 15})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_25_4737(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 25})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_35_4738(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 35})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_45_4739(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 45})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_BADWORDS_50_4740(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_BADWORDS")
-        service.update({"WEIGHT_DETECTOR_BADWORDS": 50})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_BADWORDS", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_5_4741(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 5})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_15_4742(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 15})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_25_4743(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 25})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_35_4744(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 35})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_45_4745(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 45})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_PROFANITE_50_4746(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_PROFANITE")
-        service.update({"WEIGHT_DETECTOR_PROFANITE": 50})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_PROFANITE", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_5_4747(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 5})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_15_4748(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 15})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_25_4749(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 25})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_35_4750(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 35})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_45_4751(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 45})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_GLIN_50_4752(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_GLIN")
-        service.update({"WEIGHT_DETECTOR_GLIN": 50})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_GLIN", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_5_4753(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 5})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_15_4754(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 15})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_25_4755(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 25})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_35_4756(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 35})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_45_4757(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 45})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
-        assert 5 <= stored <= 50
-        feedback.close()
-
-    def test_weight_clamp_WEIGHT_DETECTOR_AHO_50_4758(self) -> None:
-        """Tuned weights stay clamped between 5 and 50."""
-        feedback: FeedbackService = _feedback_service()
-        service: SettingsService = feedback._settings_service
-        service.get("WEIGHT_DETECTOR_AHO")
-        service.update({"WEIGHT_DETECTOR_AHO": 50})
-        feedback.run_batch()
-        stored = int(service.get("WEIGHT_DETECTOR_AHO", 0))
+        stored = int(service.get(key, 0))
         assert 5 <= stored <= 50
         feedback.close()
