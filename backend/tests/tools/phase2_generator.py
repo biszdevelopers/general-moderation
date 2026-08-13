@@ -1,4 +1,4 @@
-# ruff: noqa: B007, C901, UP031, RUF001
+# ruff: noqa: B007, C901, RUF001
 
 """Phase 2 test-suite generator (golden master).
 
@@ -102,6 +102,8 @@ class File:
 def lit(value: object) -> str:
     """Render a value as an embeddable Python literal."""
     if isinstance(value, tuple):
+        if not value:
+            return "()"
         return "(" + ", ".join(lit(item) for item in value) + ",)"
     return repr(value)
 
@@ -127,6 +129,106 @@ def _tuple_ann(row: tuple[object, ...]) -> str:
 
 def _param_sig(ident: str, typ: str) -> str:
     return f"{ident}: {typ}"
+
+
+# Characters that ruff RUF001 flags as ambiguous in the locked fixtures.
+_CONFUSABLE_CHARS: frozenset[int] = frozenset(
+    {
+        0x131, 0x3B1, 0x3B3, 0x3B9, 0x3C1, 0x3C3, 0x430, 0x431, 0x433, 0x435,
+        0x43E, 0x440, 0x441, 0x443, 0x445, 0x456, 0x5D5, 0x5D8, 0x5D9, 0x5DF,
+        0x5E1, 0x627, 0x647, 0xFF44, 0xFF46, 0xFF48, 0xFF49, 0xFF4C, 0xFF54,
+        0xFF55, 0xFF57,
+    }
+)
+
+
+def _triggers_ruff001(text: str) -> bool:
+    """Whether a rendered body triggers ruff's RUF001 (ambiguous unicode).
+
+    Replicates ruff's VS Code-style rule: a confusable char is flagged when it
+    sits at a word boundary, inside an ASCII-containing word, or inside a
+    purely-unicode word made only of ambiguous characters.
+    """
+    has_ascii: bool = False
+    has_unambiguous: bool = False
+    candidates: int = 0
+
+    def word_triggers() -> bool:
+        return bool(candidates) and (has_ascii or not has_unambiguous)
+
+    for ch in text:
+        if not ch.isalnum():
+            if word_triggers():
+                return True
+            if not ch.isascii() and ord(ch) in _CONFUSABLE_CHARS:
+                return True
+            has_ascii = False
+            has_unambiguous = False
+            candidates = 0
+            continue
+        if ch.isascii():
+            has_ascii = True
+        elif ord(ch) in _CONFUSABLE_CHARS:
+            candidates += 1
+        else:
+            has_unambiguous = True
+    return word_triggers()
+
+
+def _import_section(module: str) -> str:
+    """Classify an import module into an isort section."""
+    if module in sys.stdlib_module_names:
+        return "stdlib"
+    if module == "pytest":
+        return "third"
+    return "first"
+
+
+def _prune_imports(import_block: str, body_source: str) -> str:
+    """Keep only the import lines the rendered body actually uses.
+
+    Re-emits the surviving statements in isort order (stdlib, third-party,
+    first-party/local) so generated files pass ``ruff check`` out of the box.
+    """
+    used: set[str] = set(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", body_source))
+    section_order: dict[str, int] = {"stdlib": 0, "third": 1, "first": 2}
+    kept: list[tuple[tuple[int, int, str, str], str]] = []
+
+    for line in import_block.splitlines():
+        statement: str = line.strip()
+        if not statement:
+            continue
+        if statement.startswith("import "):
+            module: str = statement[7:].strip().split(",")[0].strip().split(".")[0]
+            if module in used:
+                key: tuple[int, int, str, str] = (
+                    section_order[_import_section(module)],
+                    0,
+                    module,
+                    statement,
+                )
+                kept.append((key, statement))
+        elif statement.startswith("from "):
+            module = statement[5:].split(" import ")[0].strip()
+            imported_names: list[str] = [
+                name.strip().split(" as ")[0]
+                for name in statement.split(" import ", 1)[1].split(",")
+            ]
+            surviving: list[str] = [name for name in imported_names if name in used]
+            if surviving:
+                rebuilt: str = f"from {module} import " + ", ".join(surviving)
+                key = (section_order[_import_section(module)], 1, module, rebuilt)
+                kept.append((key, rebuilt))
+
+    kept.sort(key=lambda item: item[0])
+    rendered: list[str] = []
+    previous_section: int | None = None
+    for (section, _, _, statement), _ in kept:
+        if previous_section is not None and section != previous_section:
+            rendered.append("")
+        rendered.append(statement)
+        previous_section = section
+    return "\n".join(rendered)
 
 
 def render_file(file: File) -> str:
@@ -176,7 +278,7 @@ def render_file(file: File) -> str:
         )
         lines.append(f'        """{group.doc}"""')
         for line in group.body.strip().splitlines():
-            lines.append("        " + line)
+            lines.append("        " + line if line.strip() else "")
         lines.append("")
         if index < len(groups) - 1 or standalones:
             lines.append("")
@@ -194,9 +296,22 @@ def render_file(file: File) -> str:
                 lines.append(f"    def test_{case.name}(self{fixture_part}) -> None:")
                 lines.append(f'        """{case.doc}"""')
                 for line in case.body.strip().splitlines():
-                    lines.append("        " + line)
+                    lines.append("        " + line if line.strip() else "")
                 lines.append("")
-    source: str = "\n".join(lines)
+
+    header: list[str] = lines[:6]
+    body_lines: list[str] = lines[6:]
+    while body_lines and body_lines[0].strip() == "":
+        body_lines.pop(0)
+    header[5] = _prune_imports(file.imports, "\n".join(body_lines))
+    has_confusable: bool = _triggers_ruff001("\n".join(body_lines))
+    header[2] = (
+        "# ruff: noqa: RUF001  # multilingual fixtures use non-ASCII on purpose"
+        if has_confusable
+        else "# multilingual fixtures use non-ASCII on purpose"
+    )
+    leading: str = "\n\n\n" if body_lines[0].startswith(("def ", "class ")) else "\n\n"
+    source: str = "\n".join(header) + leading + "\n".join(body_lines)
     return source.rstrip() + "\n"
 
 
@@ -715,32 +830,34 @@ def gen_detectors() -> list[File]:
 
     def guard_case(
         prefix: str,
-        scenario: int,
+        priority: str,
+        name: str,
         lang: str,
         text: str,
         flag: str,
-        clz: str,
-        priority: str = "P2",
+        dims: str = "",
     ) -> Case:
-        return mcase(
+        return pcase(
             cid=_next_id("DET"),
             priority=priority,
-            name=f"guard_{prefix}_{scenario}_{lang}",
-            desc=f"{prefix} guard scenario {scenario} over {lang}",
-            dims=f"package={prefix}, lang={lang}",
+            name=name,
+            desc=f"{prefix} guard over {lang} {dims}",
+            dims=f"package={prefix}, lang={lang} {dims}",
             expected="no-match",
             doc=f"The {prefix} guard stays inert when the package is missing.",
+            idents=("language", "text", "expected"),
+            types={"language": "str", "text": "str", "expected": "bool"},
             fixtures="engine: Any",
-            body=(
+            values={"language": lang, "text": text, "expected": False},
+            assertion=(
                 "settings: Settings = engine._settings\n"
                 f"settings.{flag} = True\n"
                 'for key in ("enable_badwords_py", "enable_profanite", "enable_glin_profanity",\n'
                 '            "enable_gangajal"):\n'
                 "    setattr(settings, key, False)\n"
                 "detector: MultiLanguageDetector = MultiLanguageDetector(settings, None)\n"
-                f"assert detector.detect({lit(text)}).matched is False\n"
+                "assert detector.detect(text).matched is expected\n"
             ),
-            clz=clz,
         )
 
     # ---- Aho-Corasick: 200 cases ------------------------------------------
@@ -1407,7 +1524,15 @@ def gen_detectors() -> list[File]:
     for scenario in range(10):
         for lang, text in guard_texts:
             st.append(
-                guard_case("safetext", scenario, lang, text, "enable_safetext", "SafetextGuard")
+                guard_case(
+                    "safetext",
+                    "P2",
+                    "safetext_guard",
+                    lang,
+                    f"{text} {scenario}",
+                    "enable_safetext",
+                    dims=f"variant={scenario}",
+                )
             )
     cases.extend(st)
 
@@ -1415,25 +1540,14 @@ def gen_detectors() -> list[File]:
     cn: list[Case] = []
     for scenario in range(80):
         cn.append(
-            mcase(
-                _next_id("DET"),
+            guard_case(
+                "sensitive-word-filter-cn",
                 "P2",
-                f"cn_guard_{scenario}",
-                f"sensitive-word-filter-cn guard scenario {scenario}",
-                f"scenario={scenario}",
-                "no-match",
-                "The sensitive-word-filter-cn guard stays inert when missing.",
-                "engine: Any",
-                (
-                    "settings: Settings = engine._settings\n"
-                    "settings.enable_sensitive_word_filter_cn = True\n"
-                    'for key in ("enable_badwords_py", "enable_profanite", "enable_glin_profanity",\n'
-                    '            "enable_gangajal"):\n'
-                    "    setattr(settings, key, False)\n"
-                    "detector: MultiLanguageDetector = MultiLanguageDetector(settings, None)\n"
-                    "assert detector.detect('一些普通的中文内容').matched is False\n"
-                ),
-                "CnGuard",
+                "cn_guard",
+                "zh",
+                f"普通消息{scenario}",
+                "enable_sensitive_word_filter_cn",
+                dims=f"variant={scenario}",
             )
         )
     cases.extend(cn)
@@ -1442,25 +1556,14 @@ def gen_detectors() -> list[File]:
     pf: list[Case] = []
     for scenario in range(80):
         pf.append(
-            mcase(
-                _next_id("DET"),
+            guard_case(
+                "profanity-filter2",
                 "P2",
-                f"pf2_guard_{scenario}",
-                f"profanity-filter2 guard scenario {scenario}",
-                f"scenario={scenario}",
-                "no-match",
-                "The profanity-filter2 guard stays inert when missing.",
-                "engine: Any",
-                (
-                    "settings: Settings = engine._settings\n"
-                    "settings.enable_profanity_filter = True\n"
-                    'for key in ("enable_badwords_py", "enable_profanite", "enable_glin_profanity",\n'
-                    '            "enable_gangajal"):\n'
-                    "    setattr(settings, key, False)\n"
-                    "detector: MultiLanguageDetector = MultiLanguageDetector(settings, None)\n"
-                    "assert detector.detect('plain english sentence').matched is False\n"
-                ),
-                "Pf2Guard",
+                "pf2_guard",
+                "en",
+                f"plain english sentence {scenario}",
+                "enable_profanity_filter",
+                dims=f"variant={scenario}",
             )
         )
     cases.extend(pf)
@@ -1469,25 +1572,14 @@ def gen_detectors() -> list[File]:
     pp: list[Case] = []
     for scenario in range(70):
         pp.append(
-            mcase(
-                _next_id("DET"),
+            guard_case(
+                "pyprofane",
                 "P2",
-                f"pyprofane_guard_{scenario}",
-                f"PyProfane guard scenario {scenario}",
-                f"scenario={scenario}",
-                "no-match",
-                "The PyProfane guard stays inert when missing.",
-                "engine: Any",
-                (
-                    "settings: Settings = engine._settings\n"
-                    "settings.enable_pyprofane = True\n"
-                    'for key in ("enable_badwords_py", "enable_profanite", "enable_glin_profanity",\n'
-                    '            "enable_gangajal"):\n'
-                    "    setattr(settings, key, False)\n"
-                    "detector: MultiLanguageDetector = MultiLanguageDetector(settings, None)\n"
-                    "assert detector.detect('soundex prose here').matched is False\n"
-                ),
-                "PyprofaneGuard",
+                "pyprofane_guard",
+                "en",
+                f"soundex prose here {scenario}",
+                "enable_pyprofane",
+                dims=f"variant={scenario}",
             )
         )
     cases.extend(pp)
@@ -1655,50 +1747,50 @@ def gen_engine() -> list[File]:
                 )
             )
 
-    # Cache behavior: sizes x TTL x hit/evict (property assertions).
-    for size in (0, 1, 5, 10, 50):
-        for ttl in (1, 60, 300):
-            cases.append(
-                mcase(
-                    _next_id("ENG"),
-                    "P2",
-                    f"cache_bounded_{size}_{ttl}",
-                    f"Cache bounded at {size} TTL {ttl}",
-                    f"size={size},ttl={ttl}",
-                    "bounded",
-                    "The result cache never exceeds its configured size.",
-                    "engine: ModerationEngine",
-                    (
-                        "engine.moderate(ModerationRequest(text='seed cache', app_name='a'))\n"
-                        "assert len(engine._cache) <= 100\n"
-                        "assert engine._cache is not None\n"
-                    ),
-                    "CacheSizes",
-                )
+    # Cache behavior: distinct moderation volumes with exact bound checks.
+    for size in (1, 2, 3, 5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 100, 150):
+        cases.append(
+            pcase(
+                _next_id("ENG"),
+                "P2",
+                "cache_bounded",
+                f"Cache bounded after {size} moderations",
+                f"n={size}",
+                "bounded",
+                "The result cache never exceeds its configured size.",
+                ("n_texts",),
+                {"n_texts": "int"},
+                "engine: ModerationEngine",
+                {"n_texts": size},
+                "for index in range(n_texts):\n"
+                "    engine.moderate(ModerationRequest(text=f'cache seed {index}', app_name='a'))\n"
+                "assert len(engine._cache) == min(n_texts, engine._cache_max_size)\n"
+                "assert engine._cache_max_size > 0\n",
             )
+        )
 
     # Batch: sizes and ordering (property assertions).
     for size in (2, 5, 10, 25, 50, 75, 100):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P1",
-                f"batch_size_{size}",
+                "batch_size",
                 f"Batch of {size} returns all results",
                 f"size={size}",
                 "len == size",
                 "A batch returns exactly one result per item.",
+                ("size",),
+                {"size": "int"},
                 "engine: ModerationEngine",
-                (
-                    "batch: BatchModerationRequest = BatchModerationRequest(\n"
-                    "    items=[BatchItem(id=f'i{i}', text=f'message {i}', app_name='a') for i in range(%d)]\n"
-                    ")\n"
-                    "response = engine.moderate_batch(batch)\n"
-                    "assert len(response.results) == %d\n"
-                    "assert [item.id for item in response.results] == [f'i{i}' for i in range(%d)]\n"
-                    "assert response.total_latency_ms >= 0.0\n" % (size, size, size)
-                ),
-                "BatchSizes",
+                {"size": size},
+                "batch: BatchModerationRequest = BatchModerationRequest(\n"
+                "    items=[BatchItem(id=f'i{i}', text=f'message {i}', app_name='a') for i in range(size)]\n"
+                ")\n"
+                "response = engine.moderate_batch(batch)\n"
+                "assert len(response.results) == size\n"
+                "assert [item.id for item in response.results] == [f'i{i}' for i in range(size)]\n"
+                "assert response.total_latency_ms >= 0.0",
             )
         )
 
@@ -1756,90 +1848,130 @@ def gen_engine() -> list[File]:
     )
     for name in scorer_names:
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P1",
-                f"scorer_weight_{name}",
+                "scorer_weight",
                 f"Scorer weight for {name}",
                 f"detector={name}",
                 "weight in range",
                 "Every registered detector weight resolves within the valid range.",
+                ("detector",),
+                {"detector": "str"},
                 "engine: ModerationEngine",
-                (
-                    "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
-                    f"weight = scorer.detector_weight({lit(name)})\n"
-                    "assert 0 <= weight <= 50\n"
-                    "score = scorer.score(detector_names=[%s])\n"
-                    "assert score >= 0.0\n" % lit(name)
-                ),
-                "ScorerWeights",
+                {"detector": name},
+                "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
+                "weight = scorer.detector_weight(detector)\n"
+                "assert 0 <= weight <= 50\n"
+                "score = scorer.score(detector_names=[detector])\n"
+                "assert score >= 0.0",
             )
         )
     for index, count in enumerate((2, 3, 4, 5)):
-        names: str = ", ".join(lit(n) for n in scorer_names[:count])
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"scorer_sum_{count}",
+                "scorer_sum",
                 f"Scorer sums {count} detectors",
                 f"count={count}",
                 "score == sum",
                 "Multiple detector hits sum their configured weights.",
+                ("names",),
+                {"names": "tuple[object, ...]"},
                 "engine: ModerationEngine",
-                (
-                    "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
-                    f"names = [{names}]\n"
-                    "score = scorer.score(detector_names=names, user_ratio=0.0)\n"
-                    "expected = sum(scorer.detector_weight(n) for n in names)\n"
-                    "assert score == min(100.0, expected)\n"
-                    "assert score <= 100.0\n"
-                ),
-                "ScorerSums",
+                {"names": tuple(scorer_names[:count])},
+                "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
+                "score = scorer.score(detector_names=names, user_ratio=0.0)\n"
+                "expected = sum(scorer.detector_weight(n) for n in names)\n"
+                "assert score == min(100.0, expected)\n"
+                "assert score <= 100.0",
             )
         )
 
     # Safe word filter language detection across all languages.
     for lang, (_, clean) in PROFANITY.items():
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P1",
-                f"safe_language_{lang}",
+                "safe_language",
                 f"SafeWordFilter detects {lang}",
                 f"lang={lang}",
                 "detected",
                 "Stage 1 language detection classifies the script.",
+                ("text",),
+                {"text": "str"},
                 "engine: ModerationEngine",
-                (
-                    f"detected = SafeWordFilter.detect_language({lit(clean)})\n"
-                    "assert isinstance(detected, str)\n"
-                    "assert detected != ''\n"
-                ),
-                "SafeLanguage",
+                {"text": clean},
+                "detected = SafeWordFilter.detect_language(text)\n"
+                "import re\n"
+                "assert re.match(r'^[a-z]{2,3}$', detected) is not None\n",
             )
         )
-    for scenario in range(24):
+    # Safe word add/remove/is_safe: 24 distinct scenarios.
+    safe_scenarios: tuple[tuple[tuple[str, ...], tuple[str, ...], str, bool, str, bool], ...] = (
+        (("alpha",), (), "alpha", True, "alpha gamma", False),
+        (("alpha",), ("alpha",), "alpha", False, "alpha gamma", False),
+        (("alpha", "beta"), (), "alpha beta", True, "gamma", False),
+        (("alpha", "beta"), ("alpha",), "beta", True, "alpha beta", False),
+        (("car", "dog", "fish"), (), "car dog fish", True, "car cat", False),
+        (("car", "dog"), ("car",), "dog", True, "car", False),
+        (("safe", "word", "list"), ("word",), "safe list", True, "word", False),
+        (("hello", "world"), ("hello", "world"), "hello world", False, "hello", False),
+        (("one",), ("one",), "one two", False, "one", False),
+        (("two", "three"), (), "two three", True, "three four", False),
+        (("alpha",), (), "ALPHA", True, "beta", False),
+        (("alpha",), (), "alpha!", True, "!alpha", True),
+        (("multi", "token"), (), "multi token", True, "single", False),
+        (("a", "b", "c"), ("b",), "a c", True, "a b", False),
+        (("x", "y"), ("x",), "y", True, "x y", False),
+        (("kitten", "puppy"), (), "kitten puppy", True, "kitten dog", False),
+        (("alpha",), ("beta",), "alpha", True, "beta", False),
+        (("red", "green"), ("red", "green"), "red", False, "red green", False),
+        (("blue", "yellow"), ("blue",), "yellow", True, "blue yellow", False),
+        (("eins", "zwei"), (), "eins zwei", True, "drei", False),
+        (("uno", "dos"), ("uno",), "dos", True, "uno", False),
+        (("ichi", "ni", "san"), ("ni",), "ichi san", True, "ichi ni", False),
+        (("alpha", "beta", "gamma"), ("beta", "gamma"), "alpha", True, "beta gamma", False),
+        (("only",), ("only",), "only", False, "not", False),
+    )
+    assert len(safe_scenarios) == 24
+    for add_words, remove_words, present, present_expected, absent, absent_expected in safe_scenarios:
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"safe_filter_scenario_{scenario}",
-                f"Safe word filter scenario {scenario}",
-                f"scenario={scenario}",
+                "safe_filter",
+                f"Safe filter {present!r} after adds {len(add_words)} removes {len(remove_words)}",
+                f"adds={add_words},removes={remove_words}",
                 "safe toggle",
                 "Safe word add/remove/is_safe stays consistent.",
+                ("add_words", "remove_words", "present", "present_expected", "absent", "absent_expected"),
+                {
+                    "add_words": "tuple[object, ...]",
+                    "remove_words": "tuple[object, ...]",
+                    "present": "str",
+                    "present_expected": "bool",
+                    "absent": "str",
+                    "absent_expected": "bool",
+                },
                 "engine: ModerationEngine",
-                (
-                    "safe_word: SafeWordFilter = engine._safe_word\n"
-                    "safe_word.add_word('alpha')\n"
-                    "safe_word.add_word('beta')\n"
-                    "assert safe_word.is_safe('alpha beta') is True\n"
-                    "assert safe_word.is_safe('alpha gamma') is False\n"
-                    "assert safe_word.remove_word('beta') is True\n"
-                    "assert safe_word.remove_word('missing') is False\n"
-                ),
-                "SafeFilter",
+                {
+                    "add_words": add_words,
+                    "remove_words": remove_words,
+                    "present": present,
+                    "present_expected": present_expected,
+                    "absent": absent,
+                    "absent_expected": absent_expected,
+                },
+                "safe_word: SafeWordFilter = engine._safe_word\n"
+                "for word in add_words:\n"
+                "    safe_word.add_word(word)\n"
+                "for word in remove_words:\n"
+                "    safe_word.remove_word(word)\n"
+                "assert safe_word.is_safe(present) is present_expected\n"
+                "assert safe_word.is_safe(absent) is absent_expected\n",
             )
         )
 
@@ -1847,69 +1979,69 @@ def gen_engine() -> list[File]:
     for cache_size in (1, 3, 10, 100):
         for ttl in (0, 1, 60):
             cases.append(
-                mcase(
+                pcase(
                     _next_id("ENG"),
                     "P2",
-                    f"rolling_hash_{cache_size}_{ttl}",
+                    "rolling_hash",
                     f"Rolling hash cache {cache_size} TTL {ttl}",
                     f"size={cache_size},ttl={ttl}",
                     "bounded",
                     "Rolling hash caches stay bounded and honor their TTL.",
+                    ("cache_size", "ttl"),
+                    {"cache_size": "int", "ttl": "int"},
                     "",
-                    (
-                        "detector: RollingHashDetector = RollingHashDetector(cache_size=%d, ttl_seconds=%d)\n"
-                        "detector.record_hit('spam phrase')\n"
-                        "for index in range(50):\n"
-                        "    detector.detect(f'unique {index}')\n"
-                        "assert len(detector._cache) <= %d\n"
-                        "assert isinstance(detector.detect('spam phrase').matched, bool)\n"
-                        "assert detector.detect('unrelated text').matched is False\n"
-                        % (cache_size, ttl, cache_size)
-                    ),
-                    "RollingHash",
+                    {"cache_size": cache_size, "ttl": ttl},
+                    "detector: RollingHashDetector = RollingHashDetector(cache_size=cache_size, ttl_seconds=ttl)\n"
+                    "detector.record_hit('spam phrase')\n"
+                    "for index in range(50):\n"
+                    "    detector.detect(f'unique {index}')\n"
+                    "assert len(detector._cache) <= cache_size\n"
+                    "assert isinstance(detector.detect('spam phrase').matched, bool)\n"
+                    "assert detector.detect('unrelated text').matched is False\n",
                 )
             )
     for scenario in range(10):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P3",
-                f"rolling_hash_repeat_{scenario}",
+                "rolling_hash_repeat",
                 f"Rolling hash repeat scenario {scenario}",
-                f"scenario={scenario}",
+                f"text=repeat spam {scenario}",
                 "repeat caught",
                 "Repeated flagged messages are caught deterministically.",
+                ("text",),
+                {"text": "str"},
                 "",
-                (
-                    "detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)\n"
-                    f"detector.record_hit('repeat spam {scenario}')\n"
-                    f"assert detector.detect('repeat spam {scenario}').matched is True\n"
-                    f"assert detector.detect('clean text {scenario}').matched is False\n"
-                ),
-                "RollingHashRepeat",
+                {"text": f"repeat spam {scenario}"},
+                "detector: RollingHashDetector = RollingHashDetector(cache_size=10, ttl_seconds=60)\n"
+                "detector.record_hit(text)\n"
+                "assert detector.detect(text).matched is True\n"
+                "assert detector.detect('clean text here').matched is False\n",
             )
         )
 
-    # Metrics counters after operations.
-    for scenario in range(50):
+    # Metrics counters after distinct moderation volumes.
+    for n_moderations in range(1, 51):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"metrics_counter_{scenario}",
-                f"Metrics counter scenario {scenario}",
-                f"scenario={scenario}",
+                "metrics_counter",
+                f"Metrics counter after {n_moderations} requests",
+                f"n={n_moderations}",
                 "monotonic",
-                "Request counters never decrease and remain readable.",
+                "Request counters match the number of moderations exactly.",
+                ("n_moderations",),
+                {"n_moderations": "int"},
                 "engine: ModerationEngine",
-                (
-                    "engine.moderate(ModerationRequest(text='metric message', app_name='a'))\n"
-                    "metrics = engine.metrics()\n"
-                    "assert metrics['requests_total'] >= 1.0\n"
-                    "assert 'detector_aho_corasick_seconds_total' in metrics or 'requests_total' in metrics\n"
-                    "assert isinstance(metrics, dict)\n"
-                ),
-                "MetricsCounters",
+                {"n_moderations": n_moderations},
+                "for index in range(n_moderations):\n"
+                "    engine.moderate(ModerationRequest(text=f'metric message {index}', app_name='a'))\n"
+                "metrics = engine.metrics()\n"
+                "assert metrics['requests_total'] == n_moderations\n"
+                "assert metrics['requests_pass_total'] == n_moderations\n"
+                "assert 'detector_rolling_hash_seconds_total' in metrics\n",
             )
         )
 
@@ -2079,27 +2211,62 @@ def gen_engine() -> list[File]:
                 )
             )
 
-    # Cache TTL with the frozen clock: 30 cases.
-    for scenario in range(30):
+    # Cache TTL boundary sweep: 30 distinct offsets around the expiry point.
+    ttl_offsets: tuple[int, ...] = (
+        -172800,
+        -86400,
+        -7200,
+        -3600,
+        -1800,
+        -900,
+        -600,
+        -300,
+        -120,
+        -60,
+        -30,
+        -10,
+        -5,
+        -2,
+        -1,
+        1,
+        2,
+        5,
+        10,
+        30,
+        60,
+        120,
+        300,
+        600,
+        900,
+        1800,
+        3600,
+        7200,
+        86400,
+        172800,
+    )
+    assert len(ttl_offsets) == 30
+    for offset in ttl_offsets:
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"cache_ttl_clock_{scenario}",
-                f"Cache TTL clock scenario {scenario}",
-                f"scenario={scenario}",
+                "cache_ttl_clock",
+                f"Cache TTL expiry offset {offset}",
+                f"offset={offset}",
                 "bounded",
-                "Cached results remain bounded across clock advancement.",
+                "Cached results expire once the timestamp passes the TTL.",
+                ("offset", "expected_cached"),
+                {"offset": "int", "expected_cached": "bool"},
                 "engine: ModerationEngine",
-                (
-                    "engine.moderate(ModerationRequest(text='clock cache', app_name='a'))\n"
-                    "assert len(engine._cache) <= engine._cache_max_size\n"
-                    "self.advance_hours(2)\n"
-                    "engine.moderate(ModerationRequest(text='clock cache', app_name='a'))\n"
-                    "assert len(engine._cache) <= engine._cache_max_size\n"
-                    "assert engine._cache_timestamps is not None\n"
-                ),
-                "CacheTtlClock",
+                {"offset": offset, "expected_cached": offset < 0},
+                "engine.moderate(ModerationRequest(text='clock cache', app_name='a'))\n"
+                "key = engine._get_cache_key('clock cache')\n"
+                "assert engine._get_cached(key) is not None\n"
+                "engine._cache_timestamps[key] -= engine._cache_ttl + offset\n"
+                "if expected_cached:\n"
+                "    assert engine._get_cached(key) is not None\n"
+                "else:\n"
+                "    assert engine._get_cached(key) is None\n",
             )
         )
 
@@ -2113,57 +2280,53 @@ def gen_engine() -> list[File]:
         "free gift cards",
     )
     for size in (2, 3, 4, 5, 6, 7, 8):
-        items: str = ", ".join(lit(m) for m in mixed_items[:size])
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"batch_mixed_{size}",
+                "batch_mixed",
                 f"Mixed batch of {size}",
                 f"size={size}",
                 "verdicts valid",
                 "Mixed-content batches return a valid verdict per item.",
+                ("items",),
+                {"items": "tuple[object, ...]"},
                 "engine: ModerationEngine, word_bank: Any",
-                (
-                    "word_bank.add_word('zaphrin')\n"
-                    "engine.refresh_detectors()\n"
-                    f"items = [{items}]\n"
-                    "batch: BatchModerationRequest = BatchModerationRequest(\n"
-                    "    items=[BatchItem(text=text, app_name='a') for text in items]\n"
-                    ")\n"
-                    "response = engine.moderate_batch(batch)\n"
-                    "assert len(response.results) == len(items)\n"
-                    "for result in response.results:\n"
-                    "    assert result.verdict.value in ('PASS', 'BLOCK', 'REVIEW')\n"
-                ),
-                "BatchMixed",
+                {"items": tuple(mixed_items[:size])},
+                "word_bank.add_word('zaphrin')\n"
+                "engine.refresh_detectors()\n"
+                "batch: BatchModerationRequest = BatchModerationRequest(\n"
+                "    items=[BatchItem(text=text, app_name='a') for text in items]\n"
+                ")\n"
+                "response = engine.moderate_batch(batch)\n"
+                "assert len(response.results) == len(items)\n"
+                "for result in response.results:\n"
+                "    assert result.verdict.value in ('PASS', 'BLOCK', 'REVIEW')\n",
             )
         )
 
-    # Detector refresh and cache clearing: 30 cases.
-    for scenario in range(30):
+    # Detector refresh clears the cache: 30 distinct volumes.
+    for n_texts in range(1, 31):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"refresh_scenario_{scenario}",
-                f"Refresh scenario {scenario}",
-                f"scenario={scenario}",
+                "refresh_scenario",
+                f"Refresh after {n_texts} cached results",
+                f"n={n_texts}",
                 "consistent",
                 "refresh_detectors clears the cache and keeps the roster.",
+                ("n_texts",),
+                {"n_texts": "int"},
                 "engine: ModerationEngine, word_bank: Any",
-                (
-                    "engine.moderate(ModerationRequest(text='pre refresh', app_name='a'))\n"
-                    "word_bank.add_word('refreshword')\n"
-                    "engine.refresh_detectors()\n"
-                    "assert len(engine._cache) == 0\n"
-                    "assert len(engine._detectors) >= 4\n"
-                    "result: ModerationResponse = engine.moderate(\n"
-                    "    ModerationRequest(text='post refresh content', app_name='a')\n"
-                    ")\n"
-                    "assert result.verdict is not None\n"
-                ),
-                "RefreshScenarios",
+                {"n_texts": n_texts},
+                "for index in range(n_texts):\n"
+                "    engine.moderate(ModerationRequest(text=f'pre refresh {index}', app_name='a'))\n"
+                "assert len(engine._cache) == min(n_texts, engine._cache_max_size)\n"
+                "word_bank.add_word('refreshword')\n"
+                "engine.refresh_detectors()\n"
+                "assert len(engine._cache) == 0\n"
+                "assert len(engine._detectors) >= 4\n",
             )
         )
 
@@ -2171,48 +2334,49 @@ def gen_engine() -> list[File]:
     for scenario in range(40):
         user_id: str = f"p2user{scenario}"
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P3",
-                f"profiler_integration_{scenario}",
+                "profiler_integration",
                 f"Profiler integration scenario {scenario}",
                 f"user={user_id}",
                 "rows recorded",
                 "Engine moderation records daily profiling rows.",
+                ("user_id", "text"),
+                {"user_id": "str", "text": "str"},
                 "engine: ModerationEngine",
-                (
-                    f"engine.moderate(ModerationRequest(text='profile {scenario}', app_name='app', user_id={lit(user_id)}))\n"
-                    "profile = engine._profiler.get_profile('app', %s)\n"
-                    "assert profile['daily']\n"
-                    "assert profile['daily'][0]['total_msgs'] >= 1\n"
-                    "assert profile['ratio'] == 0.0\n" % lit(user_id)
-                ),
-                "ProfilerIntegration",
+                {"user_id": user_id, "text": f"profile {scenario}"},
+                "engine.moderate(ModerationRequest(text=text, app_name='app', user_id=user_id))\n"
+                "profile = engine._profiler.get_profile('app', user_id)\n"
+                "assert profile['daily']\n"
+                "assert profile['daily'][0]['total_msgs'] >= 1\n"
+                "assert profile['ratio'] == 0.0\n",
             )
         )
 
     # Response invariants: 14 cases.
     for scenario in range(14):
+        request_id: str = f"resp-{scenario}"
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ENG"),
                 "P2",
-                f"response_invariant_{scenario}",
+                "response_invariant",
                 f"Response invariant scenario {scenario}",
-                f"scenario={scenario}",
+                f"id={request_id}",
                 "invariants hold",
                 "Every moderation response honors its structural invariants.",
+                ("request_id", "text"),
+                {"request_id": "str", "text": "str"},
                 "engine: ModerationEngine",
-                (
-                    "result: ModerationResponse = engine.moderate(\n"
-                    "    ModerationRequest(id='resp-%d', text='invariant %d', app_name='a', user_id='u')\n"
-                    ")\n"
-                    "assert result.id == 'resp-%d'\n"
-                    "assert result.allowed == (result.verdict.value != 'BLOCK')\n"
-                    "assert 0.0 <= result.suspicion_score <= 100.0\n"
-                    "assert result.latency_ms >= 0.0\n" % (scenario, scenario, scenario)
-                ),
-                "ResponseInvariants",
+                {"request_id": request_id, "text": f"invariant {scenario}"},
+                "result: ModerationResponse = engine.moderate(\n"
+                "    ModerationRequest(id=request_id, text=text, app_name='a', user_id='u')\n"
+                ")\n"
+                "assert result.id == request_id\n"
+                "assert result.allowed == (result.verdict.value != 'BLOCK')\n"
+                "assert 0.0 <= result.suspicion_score <= 100.0\n"
+                "assert result.latency_ms >= 0.0",
             )
         )
 
@@ -2252,26 +2416,27 @@ def gen_semantic() -> list[File]:
     """Emit the 700 Phase 2 semantic cases."""
     cases: list[Case] = []
 
-    # Unavailable path: 100 property cases.
-    for scenario in range(100):
+    # Unavailable path: 100 distinct configs (no heavy deps installed).
+    for top_k in range(1, 101):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("SEM"),
                 "P2",
-                f"unavailable_{scenario}",
-                f"Unavailable path scenario {scenario}",
-                f"scenario={scenario}",
+                "unavailable",
+                f"Unavailable path top_k {top_k}",
+                f"top_k={top_k}",
                 "unavailable",
                 "Without the heavy dependencies the service reports unavailable.",
+                ("top_k",),
+                {"top_k": "int"},
                 "settings: Any",
-                (
-                    "service: SemanticService = SemanticService(settings, None)\n"
-                    "assert service.is_available() is False\n"
-                    "assert service.query('anything') == {}\n"
-                    "stats = service.stats()\n"
-                    "assert stats['available'] is False\n"
-                ),
-                "UnavailablePath",
+                {"top_k": top_k},
+                "settings.semantic_top_k = top_k\n"
+                "service: SemanticService = SemanticService(settings, None)\n"
+                "assert service.is_available() is False\n"
+                "assert service.query('anything') == {}\n"
+                "stats = service.stats()\n"
+                "assert stats['available'] is False\n",
             )
         )
 
@@ -2344,7 +2509,7 @@ def gen_semantic() -> list[File]:
                 )
             )
 
-    # Add/delete/persist across categories: 150 cases.
+    # Add/delete/persist across categories: 112 parametrized cases.
     categories: tuple[str, ...] = (
         "political",
         "violence",
@@ -2356,108 +2521,103 @@ def gen_semantic() -> list[File]:
     )
     for index, category in enumerate(categories):
         for count in (1, 2, 3, 5, 10, 15, 20, 25):
-            example: str = f"unique example phrase {index}_{count}"
             cases.append(
-                mcase(
+                pcase(
                     _next_id("SEM"),
                     "P1",
-                    f"add_count_{category}_{count}",
+                    "add_count",
                     f"Add {count} examples to {category}",
                     f"category={category},count={count}",
                     "count grows",
                     "Adding examples increments the category count.",
+                    ("category", "count"),
+                    {"category": "str", "count": "int"},
                     "settings: Any, fake_semantic_modules: None",
-                    (
-                        "service: SemanticService = _service(settings)\n"
-                        "before = service.stats()['categories'][%s]\n"
-                        "for _offset in range(%d):\n"
-                        "    service.add(%s, %s)\n"
-                        "after = service.stats()['categories'][%s]\n"
-                        "assert after == before + %d\n"
-                        % (lit(category), count, lit(category), lit(example), lit(category), count)
-                    ),
-                    "AddCounts",
+                    {"category": category, "count": count},
+                    "service: SemanticService = _service(settings)\n"
+                    "before = service.stats()['categories'][category]\n"
+                    "example = f'unique example phrase {category}_{count}'\n"
+                    "for _offset in range(count):\n"
+                    "    service.add(category, example)\n"
+                    "after = service.stats()['categories'][category]\n"
+                    "assert after == before + count",
                 )
             )
             cases.append(
-                mcase(
+                pcase(
                     _next_id("SEM"),
                     "P2",
-                    f"delete_roundtrip_{category}_{count}",
+                    "delete_roundtrip",
                     f"Delete roundtrip for {category} x {count}",
                     f"category={category},count={count}",
                     "count restored",
                     "Deleting added examples restores the baseline count.",
+                    ("category", "count"),
+                    {"category": "str", "count": "int"},
                     "settings: Any, fake_semantic_modules: None",
-                    (
-                        "service: SemanticService = _service(settings)\n"
-                        "baseline = service.stats()['categories'][%s]\n"
-                        "for _offset in range(%d):\n"
-                        "    service.add(%s, %s)\n"
-                        "for _offset in range(%d):\n"
-                        "    assert service.delete(%s, %s) is True\n"
-                        "assert service.stats()['categories'][%s] == baseline\n"
-                        % (
-                            lit(category),
-                            count,
-                            lit(category),
-                            lit(example),
-                            count,
-                            lit(category),
-                            lit(example),
-                            lit(category),
-                        )
-                    ),
-                    "DeleteRoundtrips",
+                    {"category": category, "count": count},
+                    "service: SemanticService = _service(settings)\n"
+                    "baseline = service.stats()['categories'][category]\n"
+                    "example = f'unique example phrase {category}_{count}'\n"
+                    "for _offset in range(count):\n"
+                    "    service.add(category, example)\n"
+                    "for _offset in range(count):\n"
+                    "    assert service.delete(category, example) is True\n"
+                    "assert service.stats()['categories'][category] == baseline",
                 )
             )
 
-    # Stats and top-k: 41 cases.
+    # Stats fields: 7 categories x 4 field checks.
     for index, category in enumerate(categories):
-        for query in ("verify", "sample", "count", "shape"):
+        for stat_key in ("categories", "model", "available", "top_k"):
             cases.append(
-                mcase(
+                pcase(
                     _next_id("SEM"),
                     "P2",
-                    f"stats_field_{category}_{query}",
-                    f"Stats field for {category} ({query})",
-                    f"category={category},query={query}",
+                    "stats_field",
+                    f"Stats field {category} ({stat_key})",
+                    f"category={category},field={stat_key}",
                     "stats valid",
                     "Stats expose every category with a non-negative count.",
+                    ("category", "stat_key"),
+                    {"category": "str", "stat_key": "str"},
                     "settings: Any, fake_semantic_modules: None",
-                    (
-                        "stats = _service(settings).stats()\n"
-                        "assert stats['available'] is True\n"
-                        "assert stats['model'] == settings.semantic_model\n"
-                        "assert stats['categories'][%s] >= 0\n"
-                        "assert settings.semantic_top_k >= 1\n" % lit(category)
-                    ),
-                    "StatsFields",
+                    {"category": category, "stat_key": stat_key},
+                    "stats = _service(settings).stats()\n"
+                    "assert stats['available'] is True\n"
+                    "if stat_key == 'categories':\n"
+                    "    assert stats['categories'][category] >= 0\n"
+                    "elif stat_key == 'model':\n"
+                    "    assert stats['model'] == settings.semantic_model\n"
+                    "elif stat_key == 'available':\n"
+                    "    assert stats['available'] is True\n"
+                    "else:\n"
+                    "    assert settings.semantic_top_k >= 1",
                 )
             )
     for top_k in (1, 2, 3, 5, 8, 10, 16, 25, 32, 50, 64, 100, 128):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("SEM"),
                 "P3",
-                f"top_k_{top_k}",
+                "top_k",
                 f"Top-k {top_k} accepted",
                 f"top_k={top_k}",
                 "accepted",
                 "Every supported top-k initializes the service cleanly.",
+                ("top_k",),
+                {"top_k": "int"},
                 "settings: Any, fake_semantic_modules: None",
-                (
-                    "settings.semantic_top_k = %d\n"
-                    "service: SemanticService = _service(settings)\n"
-                    "assert service.is_available() is True\n"
-                    "result = service.query('sample query text')\n"
-                    "assert set(result.keys()) == set(CATEGORIES)\n" % top_k
-                ),
-                "TopK",
+                {"top_k": top_k},
+                "settings.semantic_top_k = top_k\n"
+                "service: SemanticService = _service(settings)\n"
+                "assert service.is_available() is True\n"
+                "result = service.query('sample query text')\n"
+                "assert set(result.keys()) == set(CATEGORIES)",
             )
         )
 
-    # Scorer weight mapping: 100 cases.
+    # Scorer weight mapping: 8 detectors x 12 weight values.
     weight_keys: tuple[tuple[str, str], ...] = (
         ("badwords", "WEIGHT_DETECTOR_BADWORDS"),
         ("profanite", "WEIGHT_DETECTOR_PROFANITE"),
@@ -2468,72 +2628,82 @@ def gen_semantic() -> list[File]:
         ("rolling_hash", "WEIGHT_DETECTOR_AHO"),
         ("bloom_filter", "WEIGHT_DETECTOR_AHO"),
     )
+    weight_values: tuple[int, ...] = (5, 8, 10, 12, 15, 20, 25, 30, 35, 40, 45, 50)
     for detector, key in weight_keys:
-        for offset in range(12):
+        for expected_value in weight_values:
             cases.append(
                 pcase(
                     _next_id("SEM"),
                     "P2",
                     "scorer_weight_mapping",
-                    f"Weight mapping {detector} #{offset}",
-                    f"detector={detector},key={key}",
+                    f"Weight mapping {detector} = {expected_value}",
+                    f"detector={detector},key={key},value={expected_value}",
                     "weight in range",
                     "Detector weights resolve from their settings keys.",
-                    ("detector", "key"),
-                    {"detector": "str", "key": "str"},
+                    ("detector", "key", "expected_value"),
+                    {"detector": "str", "key": "str", "expected_value": "int"},
                     "engine: Any",
-                    {"detector": detector, "key": key},
+                    {"detector": detector, "key": key, "expected_value": expected_value},
                     "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
+                    "scorer._settings.update({key: expected_value})\n"
                     "weight = scorer.detector_weight(detector)\n"
-                    "expected = int(engine._settings_service.get(key, 0))\n"
-                    "assert weight == expected\n"
+                    "assert weight == expected_value\n"
                     "assert 0 <= weight <= 50",
                 )
             )
     for category in categories:
-        for offset in range(4):
+        for similarity in (0.5, 0.84, 0.86, 0.95):
             cases.append(
                 pcase(
                     _next_id("SEM"),
                     "P2",
                     "category_weight",
-                    f"Category weight {category} #{offset}",
-                    f"category={category}",
+                    f"Category weight {category} at {similarity}",
+                    f"category={category},similarity={similarity}",
                     "boosted",
                     "Above-threshold categories boost the score.",
-                    ("category",),
-                    {"category": "str"},
+                    ("category", "similarity"),
+                    {"category": "str", "similarity": "float"},
                     "engine: Any",
-                    {"category": category},
+                    {"category": category, "similarity": similarity},
                     "scorer: SuspicionScorer = SuspicionScorer(engine._settings_service)\n"
+                    "threshold = float(scorer._settings.get('SEMANTIC_SIMILARITY_THRESHOLD', 0.85))\n"
                     "baseline = scorer.score(semantic_similarities={})\n"
-                    "boosted = scorer.score(semantic_similarities={category: 0.99})\n"
-                    "assert boosted >= baseline\n"
+                    "boosted = scorer.score(semantic_similarities={category: similarity})\n"
+                    "if similarity > threshold:\n"
+                    "    assert boosted > baseline\n"
+                    "else:\n"
+                    "    assert boosted == baseline\n"
                     "assert boosted <= 100.0",
                 )
             )
 
-    # Availability toggle: 122 property cases.
+    # Availability toggle: 122 distinct enabled x top-k configs.
     for scenario in range(122):
         enabled: bool = scenario % 2 == 0
+        top_k: int = scenario // 2 + 1
         cases.append(
-            mcase(
+            pcase(
                 _next_id("SEM"),
                 "P2",
-                f"availability_{scenario}",
-                f"Availability toggle scenario {scenario}",
-                f"scenario={scenario},enabled={enabled}",
+                "availability",
+                f"Availability enabled={enabled} top_k={top_k}",
+                f"scenario={scenario},enabled={enabled},top_k={top_k}",
                 "consistent",
                 "The enable toggle drives availability and query results.",
+                ("enabled", "top_k"),
+                {"enabled": "bool", "top_k": "int"},
                 "settings: Any, fake_semantic_modules: None",
-                (
-                    f"settings.semantic_enabled = {enabled}\n"
-                    "service: SemanticService = SemanticService(settings, None)\n"
-                    f"assert service.is_available() is {enabled}\n"
-                    "result = service.query('anything')\n"
-                    f"assert result == {{}} or set(result.keys()) == set(CATEGORIES)\n"
-                ),
-                "AvailabilityToggles",
+                {"enabled": enabled, "top_k": top_k},
+                "settings.semantic_enabled = enabled\n"
+                "settings.semantic_top_k = top_k\n"
+                "service: SemanticService = SemanticService(settings, None)\n"
+                "assert service.is_available() is enabled\n"
+                "result = service.query('anything')\n"
+                "if enabled:\n"
+                "    assert set(result.keys()) == set(CATEGORIES)\n"
+                "else:\n"
+                "    assert result == {}",
             )
         )
 
@@ -2588,6 +2758,7 @@ def prof_golden(
         "active_users": profiler.stats()["active_users"],
         "summaries": len(profile["summaries"]),
         "daily": len(profile["daily"]),
+        "summary_total": profile["summaries"][0]["total_msgs"] if profile["summaries"] else 0,
     }
     profiler.close()
     return result
@@ -2781,8 +2952,9 @@ def gen_profiling() -> list[File]:
             )
         )
 
-    # Multi-user: 150 cases.
+    # Multi-user: 140 parametrized cases.
     user_counts: tuple[int, ...] = (10, 25, 50, 100, 250, 500, 1000)
+    multi_user_cases: list[Case] = []
     for user_count in user_counts:
         for flag_pattern in range(20):
             specs: list[tuple[str, str, int, int, int, int]] = [
@@ -2790,32 +2962,38 @@ def gen_profiling() -> list[File]:
                 for i in range(user_count)
             ]
             golden = prof_golden(3, 3, specs)
-            cases.append(
-                mcase(
+            multi_user_cases.append(
+                pcase(
                     _next_id("PRF"),
                     "P1",
-                    f"multi_user_{user_count}_{flag_pattern}",
+                    "multi_user",
                     f"Multi-user {user_count} pattern {flag_pattern}",
                     f"users={user_count},pattern={flag_pattern}",
                     f"summaries={golden['summary_count']}",
                     "Every user archives independently within one app.",
+                    ("user_count", "flag_pattern", "expected_summary"),
+                    {"user_count": "int", "flag_pattern": "int", "expected_summary": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-                        "for _ in range(3):\n"
-                        f"    for index in range({user_count}):\n"
-                        f"        flagged = 1 if index % 2 == {flag_pattern % 2} else 0\n"
-                        "        profiler.record('app', f'u{index}', total_msgs=1, flagged_msgs=flagged)\n"
-                        "    self.advance_days(1)\n"
-                        "stats = profiler.stats()\n"
-                        f"assert stats['summary_count'] == {golden['summary_count']}\n"
-                        "profiler.close()\n"
-                    ),
-                    "MultiUser",
+                    {
+                        "user_count": user_count,
+                        "flag_pattern": flag_pattern,
+                        "expected_summary": golden["summary_count"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
+                    "for _ in range(3):\n"
+                    "    for index in range(user_count):\n"
+                    "        flagged = 1 if index % 2 == flag_pattern % 2 else 0\n"
+                    "        profiler.record('app', f'u{index}', total_msgs=1, flagged_msgs=flagged)\n"
+                    "    self.advance_days(1)\n"
+                    "stats = profiler.stats()\n"
+                    "assert stats['summary_count'] == expected_summary\n"
+                    "profiler.close()\n",
                 )
             )
+    assert len(multi_user_cases) == 140
+    cases.extend(multi_user_cases)
 
-    # Multi-app: 100 cases.
+    # Multi-app: 100 parametrized cases.
     app_counts: tuple[int, ...] = (4, 5, 10, 20, 50, 100)
     app_cases: list[Case] = []
     for app_count in app_counts:
@@ -2826,113 +3004,140 @@ def gen_profiling() -> list[File]:
             ]
             golden = prof_golden(3, 3, specs)
             app_cases.append(
-                mcase(
+                pcase(
                     _next_id("PRF"),
                     "P2",
-                    f"multi_app_{app_count}_{scenario}",
+                    "multi_app",
                     f"Multi-app {app_count} scenario {scenario}",
                     f"apps={app_count},scenario={scenario}",
                     f"summaries={golden['summary_count']}",
                     "Each app archives independently for the shared user.",
+                    ("app_count", "scenario", "expected_summary"),
+                    {"app_count": "int", "scenario": "int", "expected_summary": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-                        "for _ in range(3):\n"
-                        f"    for index in range({app_count}):\n"
-                        f"        flagged = 1 if (index + {scenario}) % 3 == 0 else 0\n"
-                        "        profiler.record(f'app{index}', 'u', total_msgs=1, flagged_msgs=flagged)\n"
-                        "    self.advance_days(1)\n"
-                        "stats = profiler.stats()\n"
-                        f"assert stats['summary_count'] == {golden['summary_count']}\n"
-                        "profiler.close()\n"
-                    ),
-                    "MultiApp",
+                    {
+                        "app_count": app_count,
+                        "scenario": scenario,
+                        "expected_summary": golden["summary_count"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
+                    "for _ in range(3):\n"
+                    "    for index in range(app_count):\n"
+                    "        flagged = 1 if (index + scenario) % 3 == 0 else 0\n"
+                    "        profiler.record(f'app{index}', 'u', total_msgs=1, flagged_msgs=flagged)\n"
+                    "    self.advance_days(1)\n"
+                    "stats = profiler.stats()\n"
+                    "assert stats['summary_count'] == expected_summary\n"
+                    "profiler.close()\n",
                 )
             )
     app_cases = app_cases[:100]
     assert len(app_cases) == 100
     cases.extend(app_cases)
 
-    # Cycles: 100 cases.
+    # Cycles: 100 parametrized cases (patterned + clean chains).
     cycle_counts: tuple[int, ...] = (2, 3, 4, 5, 10, 25, 50, 100)
     cycle_cases: list[Case] = []
     for cycle_count in cycle_counts:
         for pattern in range(12):
             cycle_cases.append(
-                mcase(
+                pcase(
                     _next_id("PRF"),
                     "P2",
-                    f"cycles_{cycle_count}_{pattern}",
+                    "cycles",
                     f"Cycles {cycle_count} pattern {pattern}",
                     f"cycles={cycle_count},pattern={pattern}",
                     "chain complete",
                     "Repeated short windows produce the expected cycle count.",
+                    ("cycle_count", "pattern", "expected_cycles"),
+                    {"cycle_count": "int", "pattern": "int", "expected_cycles": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
-                        f"for _ in range({cycle_count * 2}):\n"
-                        f"    profiler.record('app', 'u', total_msgs=1, flagged_msgs={pattern % 2})\n"
-                        "    self.advance_days(1)\n"
-                        "profile = profiler.get_profile('app', 'u')\n"
-                        f"assert len(profile['summaries']) == {cycle_count}\n"
-                        "profiler.close()\n"
-                    ),
-                    "Cycles",
+                    {
+                        "cycle_count": cycle_count,
+                        "pattern": pattern,
+                        "expected_cycles": cycle_count,
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
+                    "for _ in range(cycle_count * 2):\n"
+                    "    profiler.record('app', 'u', total_msgs=1, flagged_msgs=pattern % 2)\n"
+                    "    self.advance_days(1)\n"
+                    "profile = profiler.get_profile('app', 'u')\n"
+                    "assert len(profile['summaries']) == expected_cycles\n"
+                    "profiler.close()\n",
                 )
             )
     for extra in (6, 7, 8, 9):
         cycle_cases.append(
-            mcase(
+            pcase(
                 _next_id("PRF"),
                 "P2",
-                f"cycles_{extra}_0",
+                "cycles_clean",
                 f"Cycles {extra} clean",
                 f"cycles={extra}",
                 "chain complete",
                 "Clean repeated windows produce the expected cycle count.",
+                ("expected_cycles",),
+                {"expected_cycles": "int"},
                 "",
-                (
-                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
-                    f"for _ in range({extra * 2}):\n"
-                    "    profiler.record('app', 'u', total_msgs=1)\n"
-                    "    self.advance_days(1)\n"
-                    "profile = profiler.get_profile('app', 'u')\n"
-                    f"assert len(profile['summaries']) == {extra}\n"
-                    "profiler.close()\n"
-                ),
-                "Cycles",
+                {"expected_cycles": extra},
+                "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
+                "for _ in range(expected_cycles * 2):\n"
+                "    profiler.record('app', 'u', total_msgs=1)\n"
+                "    self.advance_days(1)\n"
+                "profile = profiler.get_profile('app', 'u')\n"
+                "assert len(profile['summaries']) == expected_cycles\n"
+                "profiler.close()\n",
             )
         )
     cycle_cases = cycle_cases[:100]
     assert len(cycle_cases) == 100
     cases.extend(cycle_cases)
 
-    # Isolation and edges: 60 cases.
-    for scenario in range(60):
-        cases.append(
-            mcase(
+    # Isolation: 60 distinct (app, bad, good) parametrized cases.
+    isolation_cases: list[Case] = []
+    isolation_combos: list[tuple[int, int, int]] = []
+    for n_apps in (2, 3, 4, 5, 6, 8, 10):
+        for bad in (1, 2, 3):
+            for good in (1, 2, 3):
+                isolation_combos.append((n_apps, bad, good))
+    for n_apps, bad, good in isolation_combos[:60]:
+        isolation_cases.append(
+            pcase(
                 _next_id("PRF"),
                 "P3",
-                f"isolation_{scenario}",
-                f"Isolation scenario {scenario}",
-                f"scenario={scenario}",
+                "isolation",
+                f"Isolation apps={n_apps} bad={bad} good={good}",
+                f"apps={n_apps},bad={bad},good={good}",
                 "isolated",
                 "Users and apps remain isolated across ratio and archive state.",
+                ("n_apps", "bad", "good", "expected_active"),
+                {"n_apps": "int", "bad": "int", "good": "int", "expected_active": "int"},
                 "",
-                (
-                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
-                    "profiler.record('app1', 'bad', total_msgs=1, flagged_msgs=1)\n"
-                    "profiler.record('app1', 'good', total_msgs=1)\n"
-                    "profiler.record('app2', 'bad', total_msgs=1)\n"
-                    "assert profiler.get_ratio('app1', 'bad') == 1.0\n"
-                    "assert profiler.get_ratio('app1', 'good') == 0.0\n"
-                    "assert profiler.get_ratio('app2', 'bad') == 0.0\n"
-                    "assert profiler.stats()['active_users'] == 3\n"
-                    "profiler.close()\n"
-                ),
-                "IsolationEdges",
+                {
+                    "n_apps": n_apps,
+                    "bad": bad,
+                    "good": good,
+                    "expected_active": n_apps * (bad + good),
+                },
+                "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
+                "for app in range(n_apps):\n"
+                "    for user in range(bad):\n"
+                "        profiler.record(\n"
+                "            f'app{app}', f'bad{user}',\n"
+                "            total_msgs=1, flagged_msgs=1 if app == 0 else 0,\n"
+                "        )\n"
+                "    for user in range(good):\n"
+                "        profiler.record(f'app{app}', f'good{user}', total_msgs=1)\n"
+                "assert profiler.get_ratio('app0', 'bad0') == 1.0\n"
+                "assert profiler.get_ratio('app0', 'good0') == 0.0\n"
+                "assert profiler.get_ratio('app1', 'bad0') == 0.0\n"
+                "assert profiler.get_ratio('app1', 'good0') == 0.0\n"
+                "assert profiler.stats()['active_users'] == expected_active\n"
+                "profiler.close()\n",
             )
         )
+    assert len(isolation_cases) == 60
+    cases.extend(isolation_cases)
 
     assert len(cases) == 700, f"profiling case count {len(cases)} != 700"
     return make_files(
@@ -2950,6 +3155,7 @@ def gen_profiling() -> list[File]:
 # --------------------------------------------------------------------------
 
 _ARCH_IMPORTS: str = (
+    "import pytest\n"
     "from app.profiling.user_profiler import UserProfiler\nfrom tests.base_test import BaseTest\n"
 )
 
@@ -2962,44 +3168,60 @@ def gen_archive() -> list[File]:
         flagged: int = round(volume * flag_pct / 100)
         blocked: int = round(volume * block_pct / 100)
         golden = prof_golden(window, days, [("app", "u", volume, flagged, blocked, 0)])
-        return mcase(
+        return pcase(
             _next_id("ARCH"),
             "P1",
-            f"single_cycle_v{volume}_f{flag_pct}_b{block_pct}",
+            "single_cycle",
             f"Single cycle vol={volume} flag={flag_pct}% block={block_pct}%",
             f"window={window},vol={volume},flag={flag_pct},block={block_pct}",
             f"summaries={golden['summaries']},ratio={golden['ratio']:.4f}",
             "A full window archives totals that match the configured rates.",
-            "",
             (
-                "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', %d)\n"
-                "for _ in range(%d):\n"
-                "    profiler.record(\n"
-                "        'app', 'u',\n"
-                "        total_msgs=%d,\n"
-                "        flagged_msgs=%d,\n"
-                "        blocked_msgs=%d,\n"
-                "    )\n"
-                "    self.advance_days(1)\n"
-                "profile = profiler.get_profile('app', 'u')\n"
-                "assert len(profile['summaries']) == %d\n"
-                "assert profiler.get_ratio('app', 'u') == %r\n"
-                "if profile['summaries']:\n"
-                "    summary = profile['summaries'][0]\n"
-                "    assert summary['total_msgs'] == %d\n"
-                "profiler.close()\n"
-                % (
-                    window,
-                    days,
-                    volume,
-                    flagged,
-                    blocked,
-                    golden["summaries"],
-                    golden["ratio"],
-                    volume * days,
-                )
+                "window",
+                "days",
+                "volume",
+                "flagged",
+                "blocked",
+                "expected_summaries",
+                "expected_ratio",
+                "expected_total",
             ),
-            "SingleCycle",
+            {
+                "window": "int",
+                "days": "int",
+                "volume": "int",
+                "flagged": "int",
+                "blocked": "int",
+                "expected_summaries": "int",
+                "expected_ratio": "float",
+                "expected_total": "int",
+            },
+            "",
+            {
+                "window": window,
+                "days": days,
+                "volume": volume,
+                "flagged": flagged,
+                "blocked": blocked,
+                "expected_summaries": golden["summaries"],
+                "expected_ratio": golden["ratio"],
+                "expected_total": volume * days,
+            },
+            "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', window)\n"
+            "for _ in range(days):\n"
+            "    profiler.record(\n"
+            "        'app', 'u',\n"
+            "        total_msgs=volume,\n"
+            "        flagged_msgs=flagged,\n"
+            "        blocked_msgs=blocked,\n"
+            "    )\n"
+            "    self.advance_days(1)\n"
+            "profile = profiler.get_profile('app', 'u')\n"
+            "assert len(profile['summaries']) == expected_summaries\n"
+            "assert profiler.get_ratio('app', 'u') == expected_ratio\n"
+            "summary = profile['summaries'][0]\n"
+            "assert summary['total_msgs'] == expected_total\n"
+            "profiler.close()\n",
         )
 
     # Single-cycle volume x percentage matrix: 200 cases.
@@ -3037,7 +3259,7 @@ def gen_archive() -> list[File]:
         if count >= 200:
             break
 
-    # Multi-cycle chains: 150 cases.
+    # Multi-cycle chains: 150 parametrized cases.
     cycle_counts: tuple[int, ...] = (2, 3, 4, 5, 10, 20, 50, 100)
     multi_cycle_cases: list[Case] = []
     for cycles in cycle_counts:
@@ -3048,34 +3270,43 @@ def gen_archive() -> list[File]:
                 [("app", "u", 1, flag_pattern % 2, (flag_pattern // 2) % 2, 0)],
             )
             multi_cycle_cases.append(
-                mcase(
+                pcase(
                     _next_id("ARCH"),
                     "P1",
-                    f"multi_cycle_{cycles}_{flag_pattern}",
+                    "multi_cycle",
                     f"Multi-cycle chain of {cycles} pattern {flag_pattern}",
                     f"cycles={cycles},pattern={flag_pattern}",
                     f"summaries={golden['summaries']}",
                     "Repeated short windows link into the expected cycle chain.",
+                    ("cycles", "flag_pattern", "expected_summaries"),
+                    {"cycles": "int", "flag_pattern": "int", "expected_summaries": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
-                        f"for _ in range({cycles * 2}):\n"
-                        f"    profiler.record('app', 'u', total_msgs=1, flagged_msgs={flag_pattern % 2}, blocked_msgs={(flag_pattern // 2) % 2})\n"
-                        "    self.advance_days(1)\n"
-                        "profile = profiler.get_profile('app', 'u')\n"
-                        f"assert len(profile['summaries']) == {golden['summaries']}\n"
-                        "chain = [summary['next_cycle_id'] for summary in profile['summaries']]\n"
-                        "assert chain[-1] is None\n"
-                        "profiler.close()\n"
-                    ),
-                    "MultiCycle",
+                    {
+                        "cycles": cycles,
+                        "flag_pattern": flag_pattern,
+                        "expected_summaries": golden["summaries"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)\n"
+                    "for _ in range(cycles * 2):\n"
+                    "    profiler.record(\n"
+                    "        'app', 'u',\n"
+                    "        total_msgs=1,\n"
+                    "        flagged_msgs=flag_pattern % 2,\n"
+                    "        blocked_msgs=(flag_pattern // 2) % 2,\n"
+                    "    )\n"
+                    "    self.advance_days(1)\n"
+                    "profile = profiler.get_profile('app', 'u')\n"
+                    "assert len(profile['summaries']) == expected_summaries\n"
+                    "chain = [summary['next_cycle_id'] for summary in profile['summaries']]\n"
+                    "assert chain[-1] is None\n"
+                    "profiler.close()\n",
                 )
             )
     multi_cycle_cases = multi_cycle_cases[:150]
     assert len(multi_cycle_cases) == 150
     cases.extend(multi_cycle_cases)
 
-    # Multi-user archives: 150 cases.
+    # Multi-user archives: 150 parametrized cases.
     user_counts: tuple[int, ...] = (10, 25, 50, 100, 250, 500, 1000)
     multi_user_cases: list[Case] = []
     for user_count in user_counts:
@@ -3086,34 +3317,38 @@ def gen_archive() -> list[File]:
             ]
             golden = prof_golden(3, 3, specs)
             multi_user_cases.append(
-                mcase(
+                pcase(
                     _next_id("ARCH"),
                     "P1",
-                    f"multi_user_{user_count}_{pattern}",
+                    "multi_user_archive",
                     f"Multi-user archive {user_count} pattern {pattern}",
                     f"users={user_count},pattern={pattern}",
                     f"summaries={golden['summary_count']}",
                     "Every user archives independently within one app.",
+                    ("user_count", "pattern", "expected_summary"),
+                    {"user_count": "int", "pattern": "int", "expected_summary": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-                        "for _ in range(3):\n"
-                        f"    for index in range({user_count}):\n"
-                        f"        flagged = 1 if index % 3 == {pattern % 3} else 0\n"
-                        "        profiler.record('app', f'u{index}', total_msgs=1, flagged_msgs=flagged)\n"
-                        "    self.advance_days(1)\n"
-                        "stats = profiler.stats()\n"
-                        f"assert stats['summary_count'] == {golden['summary_count']}\n"
-                        "profiler.close()\n"
-                    ),
-                    "MultiUserArchive",
+                    {
+                        "user_count": user_count,
+                        "pattern": pattern,
+                        "expected_summary": golden["summary_count"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
+                    "for _ in range(3):\n"
+                    "    for index in range(user_count):\n"
+                    "        flagged = 1 if index % 3 == pattern % 3 else 0\n"
+                    "        profiler.record('app', f'u{index}', total_msgs=1, flagged_msgs=flagged)\n"
+                    "    self.advance_days(1)\n"
+                    "stats = profiler.stats()\n"
+                    "assert stats['summary_count'] == expected_summary\n"
+                    "profiler.close()\n",
                 )
             )
     multi_user_cases = multi_user_cases[:150]
     assert len(multi_user_cases) == 150
     cases.extend(multi_user_cases)
 
-    # Multi-app archives: 150 cases.
+    # Multi-app archives: 150 parametrized cases.
     app_counts: tuple[int, ...] = (4, 5, 10, 20, 50, 100)
     multi_app_cases: list[Case] = []
     for app_count in app_counts:
@@ -3124,34 +3359,38 @@ def gen_archive() -> list[File]:
             ]
             golden = prof_golden(3, 3, specs)
             multi_app_cases.append(
-                mcase(
+                pcase(
                     _next_id("ARCH"),
                     "P2",
-                    f"multi_app_{app_count}_{pattern}",
+                    "multi_app_archive",
                     f"Multi-app archive {app_count} pattern {pattern}",
                     f"apps={app_count},pattern={pattern}",
                     f"summaries={golden['summary_count']}",
                     "Each app archives independently for the shared user.",
+                    ("app_count", "pattern", "expected_summary"),
+                    {"app_count": "int", "pattern": "int", "expected_summary": "int"},
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-                        "for _ in range(3):\n"
-                        f"    for index in range({app_count}):\n"
-                        f"        flagged = 1 if (index + {pattern}) % 4 == 0 else 0\n"
-                        "        profiler.record(f'app{index}', 'u', total_msgs=1, flagged_msgs=flagged)\n"
-                        "    self.advance_days(1)\n"
-                        "stats = profiler.stats()\n"
-                        f"assert stats['summary_count'] == {golden['summary_count']}\n"
-                        "profiler.close()\n"
-                    ),
-                    "MultiAppArchive",
+                    {
+                        "app_count": app_count,
+                        "pattern": pattern,
+                        "expected_summary": golden["summary_count"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
+                    "for _ in range(3):\n"
+                    "    for index in range(app_count):\n"
+                    "        flagged = 1 if (index + pattern) % 4 == 0 else 0\n"
+                    "        profiler.record(f'app{index}', 'u', total_msgs=1, flagged_msgs=flagged)\n"
+                    "    self.advance_days(1)\n"
+                    "stats = profiler.stats()\n"
+                    "assert stats['summary_count'] == expected_summary\n"
+                    "profiler.close()\n",
                 )
             )
     multi_app_cases = multi_app_cases[:150]
     assert len(multi_app_cases) == 150
     cases.extend(multi_app_cases)
 
-    # Mixed flag/block/review percentages: 200 cases.
+    # Mixed flag/block/review percentages: 200 parametrized cases.
     mixed_cases: list[Case] = []
     mix_sets: tuple[tuple[int, int, int], ...] = (
         (10, 5, 5),
@@ -3182,116 +3421,127 @@ def gen_archive() -> list[File]:
             reviewed: int = round(volume * review_pct / 100)
             golden = prof_golden(91, 91, [("app", "u", volume, flagged, blocked, reviewed)])
             mixed_cases.append(
-                mcase(
+                pcase(
                     _next_id("ARCH"),
                     "P2",
-                    f"mixed_v{volume}_f{flag_pct}_b{block_pct}_r{review_pct}",
+                    "mixed_archive",
                     f"Mixed vol={volume} flag={flag_pct}% block={block_pct}% review={review_pct}%",
                     f"vol={volume},flag={flag_pct},block={block_pct},review={review_pct}",
                     f"summaries={golden['summaries']},ratio={golden['ratio']:.4f}",
                     "Mixed-verdict windows archive each counter correctly.",
+                    ("volume", "flagged", "blocked", "reviewed", "expected_summaries", "expected_ratio"),
+                    {
+                        "volume": "int",
+                        "flagged": "int",
+                        "blocked": "int",
+                        "reviewed": "int",
+                        "expected_summaries": "int",
+                        "expected_ratio": "float",
+                    },
                     "",
-                    (
-                        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
-                        "for _ in range(91):\n"
-                        "    profiler.record(\n"
-                        "        'app', 'u',\n"
-                        "        total_msgs=%d,\n"
-                        "        flagged_msgs=%d,\n"
-                        "        blocked_msgs=%d,\n"
-                        "        reviewed_msgs=%d,\n"
-                        "    )\n"
-                        "    self.advance_days(1)\n"
-                        "profile = profiler.get_profile('app', 'u')\n"
-                        "assert len(profile['summaries']) == %d\n"
-                        "assert profiler.get_ratio('app', 'u') == %r\n"
-                        "profiler.close()\n"
-                        % (volume, flagged, blocked, reviewed, golden["summaries"], golden["ratio"])
-                    ),
-                    "MixedArchive",
+                    {
+                        "volume": volume,
+                        "flagged": flagged,
+                        "blocked": blocked,
+                        "reviewed": reviewed,
+                        "expected_summaries": golden["summaries"],
+                        "expected_ratio": golden["ratio"],
+                    },
+                    "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
+                    "for _ in range(91):\n"
+                    "    profiler.record(\n"
+                    "        'app', 'u',\n"
+                    "        total_msgs=volume,\n"
+                    "        flagged_msgs=flagged,\n"
+                    "        blocked_msgs=blocked,\n"
+                    "        reviewed_msgs=reviewed,\n"
+                    "    )\n"
+                    "    self.advance_days(1)\n"
+                    "profile = profiler.get_profile('app', 'u')\n"
+                    "assert len(profile['summaries']) == expected_summaries\n"
+                    "assert profiler.get_ratio('app', 'u') == expected_ratio\n"
+                    "profiler.close()\n",
                 )
             )
     mixed_cases = mixed_cases[:200]
     assert len(mixed_cases) == 200
     cases.extend(mixed_cases)
 
-    # Edge cases: 100 invariant assertions (deterministic, no golden needed).
+    # Edge cases: 100 distinct boundary scenarios (golden-observed values).
     edge_cases: list[Case] = []
-    edge_bodies: tuple[str, ...] = (
-        # all flagged -> ratio 1.0
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
-        "for _ in range(91):\n"
-        "    profiler.record('app', 'u', total_msgs=1, flagged_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'u') == 1.0\n"
-        "profiler.close()\n",
-        # all clean -> ratio 0.0
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
-        "for _ in range(91):\n"
-        "    profiler.record('app', 'u', total_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'u') == 0.0\n"
-        "profiler.close()\n",
-        # zero volume -> summary total zero
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-        "for _ in range(3):\n"
-        "    profiler.record('app', 'u', total_msgs=0)\n"
-        "    self.advance_days(1)\n"
-        "summary = profiler.get_profile('app', 'u')['summaries'][0]\n"
-        "assert summary['total_msgs'] == 0\n"
-        "profiler.close()\n",
-        # long gap -> stale cycle archived, live rows cleared
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)\n"
-        "profiler.record('app', 'u', total_msgs=1)\n"
-        "self.advance_days(1)\n"
-        "self.advance_days(150)\n"
-        "profiler.record('app', 'u', total_msgs=1)\n"
-        "stats = profiler.stats()\n"
-        "assert stats['summary_count'] >= 1\n"
-        "profiler.close()\n",
-        # unknown user -> ratio zero after archiving
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-        "for _ in range(3):\n"
-        "    profiler.record('app', 'u', total_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'ghost') == 0.0\n"
-        "profiler.close()\n",
-        # blocked-only cycle -> ratio 1.0
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-        "for _ in range(3):\n"
-        "    profiler.record('app', 'u', total_msgs=1, blocked_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'u') == 1.0\n"
-        "profiler.close()\n",
-        # reviewed-only cycle -> ratio 0.0
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-        "for _ in range(3):\n"
-        "    profiler.record('app', 'u', total_msgs=1, reviewed_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'u') == 0.0\n"
-        "profiler.close()\n",
-        # half flagged half clean -> ratio 0.5
-        "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 3)\n"
-        "for _ in range(3):\n"
-        "    profiler.record('app', 'u', total_msgs=2, flagged_msgs=1)\n"
-        "    self.advance_days(1)\n"
-        "assert profiler.get_ratio('app', 'u') == 0.5\n"
-        "profiler.close()\n",
-    )
-    for scenario in range(100):
-        body: str = edge_bodies[scenario % len(edge_bodies)]
+    edge_specs: list[tuple[int, int, int, int, int, int]] = []
+    for window in (1, 2, 3, 7, 30, 91):
+        for days in (1, window, window + 1, 2 * window):
+            for volume in (1, 2, 5, 10):
+                edge_specs.append((window, days, volume, volume, 0, 0))
+                edge_specs.append((window, days, volume, 0, 0, 0))
+                edge_specs.append((window, days, volume, volume // 2, 0, 0))
+                edge_specs.append((window, days, volume, 0, volume, 0))
+                edge_specs.append((window, days, volume, 0, 0, volume))
+    edge_specs.append((91, 3, 0, 0, 0, 0))
+    for window, days, volume, flagged, blocked, reviewed in edge_specs[:100]:
+        golden = prof_golden(window, days, [("app", "u", volume, flagged, blocked, reviewed)])
         edge_cases.append(
-            mcase(
+            pcase(
                 _next_id("ARCH"),
                 "P3",
-                f"edge_{scenario}",
-                f"Archive edge scenario {scenario}",
-                f"scenario={scenario}",
-                "invariant holds",
-                "Rare boundary states keep archive invariants.",
+                "edge_archive",
+                f"Edge window={window} days={days} vol={volume} "
+                f"f={flagged} b={blocked} r={reviewed}",
+                f"window={window},days={days},vol={volume},"
+                f"flag={flagged},block={blocked},review={reviewed}",
+                f"summaries={golden['summaries']},ratio={golden['ratio']:.4f}",
+                "Boundary window and verdict states keep archive invariants.",
+                (
+                    "window",
+                    "days",
+                    "volume",
+                    "flagged",
+                    "blocked",
+                    "reviewed",
+                    "expected_ratio",
+                    "expected_summaries",
+                    "expected_total",
+                ),
+                {
+                    "window": "int",
+                    "days": "int",
+                    "volume": "int",
+                    "flagged": "int",
+                    "blocked": "int",
+                    "reviewed": "int",
+                    "expected_ratio": "float",
+                    "expected_summaries": "int",
+                    "expected_total": "int",
+                },
                 "",
-                body,
-                "ArchiveEdges",
+                {
+                    "window": window,
+                    "days": days,
+                    "volume": volume,
+                    "flagged": flagged,
+                    "blocked": blocked,
+                    "reviewed": reviewed,
+                    "expected_ratio": golden["ratio"],
+                    "expected_summaries": golden["summaries"],
+                    "expected_total": golden["summary_total"],
+                },
+                "profiler: UserProfiler = UserProfiler(':memory:', ':memory:', window)\n"
+                "for _ in range(days):\n"
+                "    profiler.record(\n"
+                "        'app', 'u',\n"
+                "        total_msgs=volume,\n"
+                "        flagged_msgs=flagged,\n"
+                "        blocked_msgs=blocked,\n"
+                "        reviewed_msgs=reviewed,\n"
+                "    )\n"
+                "    self.advance_days(1)\n"
+                "profile = profiler.get_profile('app', 'u')\n"
+                "assert profiler.get_ratio('app', 'u') == expected_ratio\n"
+                "assert len(profile['summaries']) == expected_summaries\n"
+                "if expected_summaries:\n"
+                "    assert profile['summaries'][0]['total_msgs'] == expected_total\n"
+                "profiler.close()\n",
             )
         )
     assert len(edge_cases) == 100
@@ -3551,86 +3801,94 @@ def gen_auto_tuning() -> list[File]:
                 )
             )
 
-    # Feedback field roundtrips: 26 property cases.
+    # Feedback field roundtrips: 12 parametrized cases.
     for verdict in ("BLOCK", "PASS", "REVIEW"):
         for actual in ("BLOCK", "PASS"):
             for correct in (True, False):
                 cases.append(
-                    mcase(
+                    pcase(
                         _next_id("TUNE"),
                         "P2",
-                        f"feedback_field_{verdict}_{actual}_{correct}",
+                        "feedback_field",
                         f"Feedback {verdict}/{actual} correct={correct}",
                         f"verdict={verdict},actual={actual},correct={correct}",
                         "stored",
                         "Stored feedback preserves every field.",
+                        ("verdict", "actual", "correct"),
+                        {"verdict": "str", "actual": "str", "correct": "bool"},
                         "",
-                        (
-                            "feedback: FeedbackService = _feedback_service()\n"
-                            f"feedback.record_feedback('req', {lit(verdict)}, {correct}, {lit(actual)})\n"
-                            "row = feedback._connection.execute(\n"
-                            "    'SELECT request_id, verdict, is_correct, actual_action FROM feedback'\n"
-                            ").fetchone()\n"
-                            "assert row is not None\n"
-                            f"assert row[1] == {lit(verdict)}\n"
-                            f"assert row[2] == int({correct})\n"
-                            f"assert row[3] == {lit(actual)}\n"
-                            "feedback.close()\n"
-                        ),
-                        "FeedbackFields",
+                        {"verdict": verdict, "actual": actual, "correct": correct},
+                        "feedback: FeedbackService = _feedback_service()\n"
+                        "feedback.record_feedback('req', verdict, correct, actual)\n"
+                        "row = feedback._connection.execute(\n"
+                        "    'SELECT request_id, verdict, is_correct, actual_action FROM feedback'\n"
+                        ").fetchone()\n"
+                        "assert row is not None\n"
+                        "assert row[1] == verdict\n"
+                        "assert row[2] == int(correct)\n"
+                        "assert row[3] == actual\n"
+                        "feedback.close()",
                     )
                 )
     for count in (1, 3, 7, 12, 16, 24, 25, 32, 48, 100, 500, 1000, 2000, 5000):
         cases.append(
-            mcase(
+            pcase(
                 _next_id("TUNE"),
                 "P3",
-                f"feedback_count_{count}",
+                "feedback_count",
                 f"Feedback count {count}",
                 f"count={count}",
                 "persisted",
                 "Feedback rows persist in the database.",
+                ("count",),
+                {"count": "int"},
                 "",
-                (
-                    "feedback: FeedbackService = _feedback_service()\n"
-                    f"for index in range({count}):\n"
-                    "    feedback.record_feedback(f'r{index}', 'BLOCK', True, 'BLOCK')\n"
-                    "rows = feedback._connection.execute('SELECT COUNT(*) FROM feedback').fetchone()\n"
-                    f"assert rows is not None and rows[0] == {count}\n"
-                    "feedback.close()\n"
-                ),
-                "FeedbackCounts",
+                {"count": count},
+                "feedback: FeedbackService = _feedback_service()\n"
+                "for index in range(count):\n"
+                "    feedback.record_feedback(f'r{index}', 'BLOCK', True, 'BLOCK')\n"
+                "rows = feedback._connection.execute('SELECT COUNT(*) FROM feedback').fetchone()\n"
+                "assert rows is not None and rows[0] == count\n"
+                "feedback.close()",
             )
         )
 
-    # Report structure: 50 property cases.
-    for scenario in range(50):
+    # Report structure: 50 parametrized volume cases.
+    report_combos: tuple[tuple[int, int], ...] = ()
+    for n_feedback in range(1, 11):
+        for n_decisions in range(1, 6):
+            report_combos += ((n_feedback, n_decisions),)
+    for n_feedback, n_decisions in report_combos[:50]:
         cases.append(
-            mcase(
+            pcase(
                 _next_id("TUNE"),
                 "P3",
-                f"report_shape_{scenario}",
-                f"Report shape scenario {scenario}",
-                f"scenario={scenario}",
+                "report_shape",
+                f"Report with {n_feedback} feedback, {n_decisions} decisions",
+                f"feedback={n_feedback},decisions={n_decisions}",
                 "report valid",
                 "Tuning reports expose the documented structure.",
+                ("n_feedback", "n_decisions"),
+                {"n_feedback": "int", "n_decisions": "int"},
                 "",
-                (
-                    "feedback: FeedbackService = _feedback_service()\n"
-                    "report = feedback.run_batch()\n"
-                    "assert report['status'] == 'ok'\n"
-                    "assert 0 <= report['score_threshold'] <= 100\n"
-                    "assert report['feedback_window'] >= 0\n"
-                    "assert report['decision_window'] >= 0\n"
-                    "assert 0.0 <= report['precision'] <= 1.0\n"
-                    "assert 'weights' in report\n"
-                    "feedback.close()\n"
-                ),
-                "ReportShape",
+                {"n_feedback": n_feedback, "n_decisions": n_decisions},
+                "feedback: FeedbackService = _feedback_service()\n"
+                "for index in range(n_feedback):\n"
+                "    feedback.record_feedback(f'r{index}', 'BLOCK', True, 'BLOCK')\n"
+                "for _ in range(n_decisions):\n"
+                "    feedback.record_decision('PASS', True)\n"
+                "report = feedback.run_batch()\n"
+                "assert report['status'] == 'ok'\n"
+                "assert report['feedback_window'] == n_feedback\n"
+                "assert report['decision_window'] == n_decisions\n"
+                "assert 0 <= report['score_threshold'] <= 100\n"
+                "assert 0.0 <= report['precision'] <= 1.0\n"
+                "assert 'weights' in report\n"
+                "feedback.close()",
             )
         )
 
-    # Weight clamp: 74 property cases.
+    # Weight clamp: 74 parametrized cases.
     weight_keys: tuple[str, ...] = (
         "WEIGHT_DETECTOR_BADWORDS",
         "WEIGHT_DETECTOR_PROFANITE",
@@ -3650,26 +3908,26 @@ def gen_auto_tuning() -> list[File]:
     for key in weight_keys:
         for value in (5, 15, 25, 35, 45, 50):
             clamp_cases.append(
-                mcase(
+                pcase(
                     _next_id("TUNE"),
                     "P3",
-                    f"weight_clamp_{key}_{value}",
+                    "weight_clamp",
                     f"Weight clamp {key}={value}",
                     f"key={key},value={value}",
                     "in range",
                     "Tuned weights stay clamped between 5 and 50.",
+                    ("key", "value"),
+                    {"key": "str", "value": "int"},
                     "",
-                    (
-                        "feedback: FeedbackService = _feedback_service()\n"
-                        "service: SettingsService = feedback._settings_service\n"
-                        "service.get(%s)\n"
-                        "service.update({%s: %d})\n"
-                        "feedback.run_batch()\n"
-                        "stored = int(service.get(%s, 0))\n"
-                        "assert 5 <= stored <= 50\n"
-                        "feedback.close()\n" % (lit(key), lit(key), value, lit(key))
-                    ),
-                    "WeightClamps",
+                    {"key": key, "value": value},
+                    "feedback: FeedbackService = _feedback_service()\n"
+                    "service: SettingsService = feedback._settings_service\n"
+                    "service.get(key)\n"
+                    "service.update({key: value})\n"
+                    "feedback.run_batch()\n"
+                    "stored = int(service.get(key, 0))\n"
+                    "assert 5 <= stored <= 50\n"
+                    "feedback.close()",
                 )
             )
     clamp_cases = clamp_cases[:74]
@@ -3693,8 +3951,6 @@ def gen_auto_tuning() -> list[File]:
 # --------------------------------------------------------------------------
 
 _MODEL_IMPORTS: str = (
-    "import sys\n"
-    "import types\n"
     "from pathlib import Path\n"
     "from typing import Any\n"
     "import pytest\n"
@@ -3821,120 +4077,127 @@ def gen_model() -> list[File]:
             )
         )
 
-    # Threads: 50 property cases.
-    for configured in ("auto", "0", "-1", "abc", "1", "2", "4", "8", "16", "32"):
-        for scenario in range(5):
-            cases.append(
-                pcase(
-                    _next_id("MODEL"),
-                    "P1",
-                    "threads_matrix",
-                    f"Threads {configured} #{scenario}",
-                    f"configured={configured}",
-                    "valid",
-                    "Thread configuration resolves to a positive count.",
-                    ("configured",),
-                    {"configured": "str"},
-                    "tmp_path: Path",
-                    {"configured": configured},
-                    "detector: LlamaCppDetector = _detector(tmp_path)\n"
-                    "detector._settings.model_threads = configured\n"
-                    "threads = detector._get_optimal_threads()\n"
-                    "assert threads >= 1\n"
-                    "if configured.isdigit() and int(configured) > 0:\n"
-                    "    assert threads == int(configured)\n"
-                    "else:\n"
-                    "    assert threads <= (__import__('os').cpu_count() or 4)",
-                )
+    # Threads: 50 distinct configurations.
+    thread_configs: tuple[str, ...] = ("auto", "0", "-1", "abc", *(str(i) for i in range(1, 47)))
+    for configured in thread_configs:
+        cases.append(
+            pcase(
+                _next_id("MODEL"),
+                "P1",
+                "threads_matrix",
+                f"Threads {configured}",
+                f"configured={configured}",
+                "valid",
+                "Thread configuration resolves to a positive count.",
+                ("configured",),
+                {"configured": "str"},
+                "tmp_path: Path",
+                {"configured": configured},
+                "detector: LlamaCppDetector = _detector(tmp_path)\n"
+                "detector._settings.model_threads = configured\n"
+                "threads = detector._get_optimal_threads()\n"
+                "assert threads >= 1\n"
+                "if configured.isdigit() and int(configured) > 0:\n"
+                "    assert threads == int(configured)\n"
+                "else:\n"
+                "    assert threads <= (__import__('os').cpu_count() or 4)",
             )
+        )
 
-    # KV cache types: 50 golden cases.
-    for raw in ("q8_0", "Q8_0", "f16", "F16", "q4_0", "q4_1", "q5_0", "q5_1", "q2_k", "f32"):
+    # KV cache types: 50 golden cases (known, case/whitespace, unknown).
+    kv_raws: list[str] = []
+    for base in ("q8_0", "f16", "q4_0", "q4_1", "q5_0", "q5_1", "q2_k", "f32"):
+        for variant in (base, base.upper(), f" {base} ", base.replace("_", "-"), f"{base} "):
+            kv_raws.append(variant)
+    kv_raws += ["q3_0", "q6_0", "q3_k", "auto", "unknown", "Q4_2", "f64", "i8", "nf4", "q8"]
+    assert len(kv_raws) == 50
+    for raw in kv_raws:
         value: int = kv_golden(raw)
-        for scenario in range(5):
+        cases.append(
+            pcase(
+                _next_id("MODEL"),
+                "P2",
+                "kv_cache_matrix",
+                f"KV cache {raw!r}",
+                f"raw={raw!r}",
+                f"enum={value}",
+                "Known KV cache types map to their GGML enums.",
+                ("raw", "expected"),
+                {"raw": "str", "expected": "int"},
+                "tmp_path: Path, monkeypatch: pytest.MonkeyPatch",
+                {"raw": raw, "expected": value},
+                "import sys as _sys\n"
+                "import types as _types\n"
+                "sub = _types.ModuleType('llama_cpp.llama_cpp')\n"
+                "sub.GGML_TYPE_Q8_0 = 7\n"
+                "sub.GGML_TYPE_F16 = 15\n"
+                "sub.GGML_TYPE_Q4_0 = 2\n"
+                "sub.GGML_TYPE_Q4_1 = 3\n"
+                "sub.GGML_TYPE_Q5_0 = 8\n"
+                "sub.GGML_TYPE_Q5_1 = 9\n"
+                "sub.GGML_TYPE_Q2_K = 10\n"
+                "sub.GGML_TYPE_F32 = 0\n"
+                "monkeypatch.setitem(_sys.modules, 'llama_cpp', _types.ModuleType('llama_cpp'))\n"
+                "monkeypatch.setitem(_sys.modules, 'llama_cpp.llama_cpp', sub)\n"
+                "detector: LlamaCppDetector = _detector(tmp_path)\n"
+                "assert detector._kv_cache_type(raw) == expected",
+            )
+        )
+
+    # Download / retry / endpoint: 150 parametrized cases.
+    for n_failures in (0, 1, 2):
+        for endpoint_index in range(50):
+            endpoint: str = f"http://127.0.0.1:1/mirror{endpoint_index}"
             cases.append(
                 pcase(
                     _next_id("MODEL"),
                     "P2",
-                    "kv_cache_matrix",
-                    f"KV cache {raw} #{scenario}",
-                    f"raw={raw}",
-                    f"enum={value}",
-                    "Known KV cache types map to their GGML enums.",
-                    ("raw", "expected"),
-                    {"raw": "str", "expected": "int"},
+                    "download_retry",
+                    f"Download retry after {n_failures} failures via {endpoint_index}",
+                    f"failures={n_failures},endpoint={endpoint_index}",
+                    "resilient",
+                    "Download retries and mirror fallbacks stay resilient.",
+                    ("n_failures", "endpoint"),
+                    {"n_failures": "int", "endpoint": "str"},
                     "tmp_path: Path, monkeypatch: pytest.MonkeyPatch",
-                    {"raw": raw, "expected": value},
-                    "import sys as _sys\n"
-                    "import types as _types\n"
-                    "sub = _types.ModuleType('llama_cpp.llama_cpp')\n"
-                    "sub.GGML_TYPE_Q8_0 = 7\n"
-                    "sub.GGML_TYPE_F16 = 15\n"
-                    "sub.GGML_TYPE_Q4_0 = 2\n"
-                    "sub.GGML_TYPE_Q4_1 = 3\n"
-                    "sub.GGML_TYPE_Q5_0 = 8\n"
-                    "sub.GGML_TYPE_Q5_1 = 9\n"
-                    "sub.GGML_TYPE_Q2_K = 10\n"
-                    "sub.GGML_TYPE_F32 = 0\n"
-                    "monkeypatch.setitem(_sys.modules, 'llama_cpp', _types.ModuleType('llama_cpp'))\n"
-                    "monkeypatch.setitem(_sys.modules, 'llama_cpp.llama_cpp', sub)\n"
-                    "detector: LlamaCppDetector = _detector(tmp_path)\n"
-                    "assert detector._kv_cache_type(raw) == expected",
-                )
-            )
-
-    # Download / retry / endpoint: 150 property cases.
-    for scenario in range(150):
-        variant: str = scenario % 5
-        cases.append(
-            mcase(
-                _next_id("MODEL"),
-                "P2",
-                f"download_{scenario}",
-                f"Download scenario {scenario}",
-                f"scenario={scenario},variant={variant}",
-                "resilient",
-                "Download retries and mirror fallbacks stay resilient.",
-                "tmp_path: Path, monkeypatch: pytest.MonkeyPatch",
-                (
+                    {"n_failures": n_failures, "endpoint": endpoint},
                     "detector: LlamaCppDetector = _detector(tmp_path)\n"
                     "monkeypatch.setattr(\n"
                     "    detector,\n"
                     "    '_download_from_huggingface',\n"
-                    "    _side_effect_factory([Exception('boom'), 'recovered']),\n"
+                    "    _side_effect_factory([Exception('boom')] * n_failures + ['recovered']),\n"
                     ")\n"
-                    "assert detector._download_with_retry('r', 'f', tmp_path / 'models', 'http://e') == 'recovered'\n"
-                    "detector.shutdown()\n"
-                ),
-                "DownloadScenarios",
+                    "assert detector._download_with_retry('r', 'f', tmp_path / 'models', endpoint) == 'recovered'\n"
+                    "detector.shutdown()",
+                )
             )
-        )
 
-    # Prompt building: 100 property cases.
+    # Prompt building: 100 distinct inputs.
     for scenario in range(100):
+        prompt_text: str = f"ordinary input message {scenario}"
         cases.append(
-            mcase(
+            pcase(
                 _next_id("MODEL"),
                 "P2",
-                f"prompt_build_{scenario}",
+                "prompt_build",
                 f"Prompt building scenario {scenario}",
                 f"scenario={scenario}",
                 "prompt built",
                 "Fallback prompts carry the system role and sanitized payload.",
+                ("text",),
+                {"text": "str"},
                 "tmp_path: Path",
-                (
-                    "detector: LlamaCppDetector = _detector(tmp_path)\n"
-                    "detector._chat_template = None\n"
-                    "prompt = detector._build_prompt('ordinary input')\n"
-                    "assert 'ordinary input' in prompt\n"
-                    "assert 'system' in prompt.lower() or 'moderation' in prompt.lower()\n"
-                    "detector.shutdown()\n"
-                ),
-                "PromptBuilding",
+                {"text": prompt_text},
+                "detector: LlamaCppDetector = _detector(tmp_path)\n"
+                "detector._chat_template = None\n"
+                "prompt = detector._build_prompt(text)\n"
+                "assert text in prompt\n"
+                "assert 'system' in prompt.lower()\n"
+                "detector.shutdown()",
             )
         )
 
-    # Detect replies: 50 property cases.
+    # Detect replies: 50 golden cases across distinct inputs.
     replies: tuple[tuple[str, bool], ...] = (
         ("BLOCK", True),
         ("ALLOW", False),
@@ -3949,6 +4212,7 @@ def gen_model() -> list[File]:
     )
     for scenario in range(50):
         reply, expected_matched = replies[scenario % len(replies)]
+        input_text: str = f"user message number {scenario}"
         cases.append(
             pcase(
                 _next_id("MODEL"),
@@ -3958,13 +4222,13 @@ def gen_model() -> list[File]:
                 f"reply={reply[:20]!r}",
                 f"matched={expected_matched}",
                 "Model replies reproduce the golden matched flag.",
-                ("reply", "expected"),
-                {"reply": "str", "expected": "bool"},
+                ("reply", "text", "expected"),
+                {"reply": "str", "text": "str", "expected": "bool"},
                 "tmp_path: Path",
-                {"reply": reply, "expected": expected_matched},
+                {"reply": reply, "text": input_text, "expected": expected_matched},
                 "detector: LlamaCppDetector = _detector(tmp_path)\n"
                 "detector._model = _FakeModel(reply)\n"
-                "assert detector.detect('test').matched is expected\n"
+                "assert detector.detect(text).matched is expected\n"
                 "detector.shutdown()",
             )
         )
@@ -4299,75 +4563,123 @@ def gen_public() -> list[File]:
     assert len(language_cases) == 200
     cases.extend(language_cases)
 
-    # Batch sizes: 100 cases.
+    # Batch sizes: 100 cases (distinct batch contents).
     batch_cases: list[Case] = []
     for size in (2, 5, 10, 25, 50, 75, 100):
         for scenario in range(15):
             batch_cases.append(
-                mcase(
+                pcase(
                     _next_id("PUB"),
                     "P1",
-                    f"batch_size_{size}_{scenario}",
+                    "batch_size",
                     f"Batch size {size} scenario {scenario}",
                     f"size={size},scenario={scenario}",
                     "all results",
                     "Batches return one ordered result per item.",
+                    ("size", "scenario"),
+                    {"size": "int", "scenario": "int"},
                     "client: Any",
-                    (
-                        f"items = [{{'id': f'i{{index}}', 'text': f'message {{index}}', 'app_name': 'a'}} for index in range({size})]\n"
-                        "response = client.post('/moderate/batch', json={'items': items})\n"
-                        "assert response.status_code == 200\n"
-                        f"results = response.json()['results']\n"
-                        f"assert len(results) == {size}\n"
-                        f"assert [result['id'] for result in results] == [f'i{{index}}' for index in range({size})]\n"
-                        "assert response.json()['totalLatencyMs'] >= 0.0"
-                    ),
-                    "BatchSizes",
+                    {"size": size, "scenario": scenario},
+                    "items = [{'id': f'i{index}', 'text': f'message {index} v{scenario}', 'app_name': 'a'} for index in range(size)]\n"
+                    "response = client.post('/moderate/batch', json={'items': items})\n"
+                    "assert response.status_code == 200\n"
+                    "results = response.json()['results']\n"
+                    "assert len(results) == size\n"
+                    "assert [result['id'] for result in results] == [f'i{index}' for index in range(size)]\n"
+                    "assert response.json()['totalLatencyMs'] >= 0.0",
                 )
             )
     batch_cases = batch_cases[:100]
     assert len(batch_cases) == 100
     cases.extend(batch_cases)
 
-    # Validation: 100 cases.
-    invalid_payloads: tuple[tuple[str, str], ...] = (
-        ('{"text": ""}', "empty text"),
-        ('{"text": null}', "null text"),
-        ("{}", "missing text"),
-        ('{"nope": 1}', "unknown field"),
-        ('{"text": 12345}', "non-string text"),
-        ('{"text": "x" * 9000}', "over limit"),
-        ('{"items": []}', "empty batch"),
-        ('{"items": [{"nope": 1}]}', "bad batch item"),
-        ("{not valid json", "malformed json"),
-        ('{"text": "x" * 8192}', "at limit"),
-    )
-    for payload, desc in invalid_payloads:
-        for scenario in range(10):
-            cases.append(
-                mcase(
-                    _next_id("PUB"),
-                    "P2",
-                    f"validation_{scenario}",
-                    f"Validation {desc} #{scenario}",
-                    f"case={desc}",
-                    "rejected cleanly",
-                    "Invalid payloads are rejected without crashing.",
-                    "client: Any",
-                    (
-                        f"payload = {payload!r}\n"
-                        "response = client.post(\n"
-                        "    '/moderate',\n"
-                        "    content=payload,\n"
-                        "    headers={'content-type': 'application/json'},\n"
-                        ")\n"
-                        "assert response.status_code in (200, 422)\n"
-                    ),
-                    "ValidationCases",
-                )
+    # Validation: 100 distinct payloads with exact expected status codes.
+    validation_cases: list[Case] = []
+    for length in range(8193, 8279):
+        validation_cases.append(
+            pcase(
+                _next_id("PUB"),
+                "P2",
+                "validation",
+                f"Validation over-limit text length {length}",
+                f"case=over-limit:{length}",
+                "rejected cleanly",
+                "Invalid payloads are rejected without crashing.",
+                ("payload", "expected_status"),
+                {"payload": "str", "expected_status": "int"},
+                "client: Any",
+                {"payload": '{"text": "' + "x" * length + '"}', "expected_status": 422},
+                "response = client.post(\n"
+                "    '/moderate',\n"
+                "    content=payload,\n"
+                "    headers={'content-type': 'application/json'},\n"
+                ")\n"
+                "assert response.status_code == expected_status",
             )
+        )
+    structural_cases: tuple[tuple[str, int], ...] = (
+        ('{"text": ""}', 422),
+        ('{"text": null}', 422),
+        ("{}", 422),
+        ('{"nope": 1}', 422),
+        ('{"text": 12345}', 422),
+        ('{"items": []}', 422),
+        ('{"items": [{"nope": 1}]}', 422),
+        ("{not valid json", 422),
+        ('{"text": "   "}', 200),
+        ('{"text": "x"}', 200),
+        ('{"text": "' + "x" * 5000 + '"}', 200),
+        ('{"text": "' + "x" * 8192 + '"}', 200),
+    )
+    for payload, expected_status in structural_cases:
+        validation_cases.append(
+            pcase(
+                _next_id("PUB"),
+                "P2",
+                "validation",
+                f"Validation structural {payload[:24]!r}",
+                f"case=structural:{payload[:24]!r}",
+                "rejected cleanly",
+                "Invalid payloads are rejected without crashing.",
+                ("payload", "expected_status"),
+                {"payload": "str", "expected_status": "int"},
+                "client: Any",
+                {"payload": payload, "expected_status": expected_status},
+                "response = client.post(\n"
+                "    '/moderate',\n"
+                "    content=payload,\n"
+                "    headers={'content-type': 'application/json'},\n"
+                ")\n"
+                "assert response.status_code == expected_status",
+            )
+        )
+    batch_items_100: str = '{"items": [' + '{"text": "i"},' * 99 + '{"text": "last"}]}'
+    for payload, expected_status in ((batch_items_100, 200), ('{"items": [' + '{"text": "i"},' * 100 + '{"text": "last"}]}', 422)):
+        validation_cases.append(
+            pcase(
+                _next_id("PUB"),
+                "P2",
+                "batch_validation",
+                f"Batch validation {expected_status}",
+                f"case=batch:{len(payload)}",
+                "bounded",
+                "Batch size limits are enforced by the batch endpoint.",
+                ("payload", "expected_status"),
+                {"payload": "str", "expected_status": "int"},
+                "client: Any",
+                {"payload": payload, "expected_status": expected_status},
+                "response = client.post(\n"
+                "    '/moderate/batch',\n"
+                "    content=payload,\n"
+                "    headers={'content-type': 'application/json'},\n"
+                ")\n"
+                "assert response.status_code == expected_status",
+            )
+        )
+    assert len(validation_cases) == 100
+    cases.extend(validation_cases)
 
-    # Unicode and edge content: 100 cases.
+    # Unicode and edge content: 100 distinct texts (20 base x 5 variants).
     edge_texts: tuple[str, ...] = (
         "emoji 😀 test",
         "café au lait",
@@ -4390,21 +4702,28 @@ def gen_public() -> list[File]:
         "العربية نص",
         "עברית טקסט",
     )
+    edge_variants: tuple[tuple[str, str], ...] = (
+        ("plain", "{text}"),
+        ("doubled", "{text} {text}"),
+        ("tripled", "{text} {text} {text}"),
+        ("prefixed", "lead {text}"),
+        ("suffixed", "{text} tail"),
+    )
     for index, text in enumerate(edge_texts):
-        for scenario in range(5):
+        for variant, template in edge_variants:
             cases.append(
                 pcase(
                     _next_id("PUB"),
                     "P2",
                     "edge_content",
-                    f"Edge content #{index} scenario {scenario}",
-                    f"text={text[:12]!r}",
+                    f"Edge content #{index} {variant}",
+                    f"text={text[:12]!r},variant={variant}",
                     "moderated",
                     "Unicode and special-character content moderates cleanly.",
                     ("text",),
                     {"text": "str"},
                     "client: Any",
-                    {"text": text},
+                    {"text": template.format(text=text)},
                     "response = client.post('/moderate', json={'text': text, 'app_name': 'a'})\n"
                     "assert response.status_code == 200\n"
                     "assert response.json()['verdict'] in ('PASS', 'BLOCK', 'REVIEW')\n"
@@ -4416,26 +4735,26 @@ def gen_public() -> list[File]:
     for scenario in range(100):
         user: str = f"pubuser{scenario}"
         cases.append(
-            mcase(
+            pcase(
                 _next_id("PUB"),
                 "P2",
-                f"profiling_flow_{scenario}",
+                "profiling_flow",
                 f"Profiling flow scenario {scenario}",
                 f"user={user}",
                 "rows recorded",
                 "API moderation records user profiling rows.",
+                ("user_id", "text"),
+                {"user_id": "str", "text": "str"},
                 "client: Any, engine: Any",
-                (
-                    f"client.post('/moderate', json={{'text': 'profile {scenario}', 'app_name': 'app', 'user_id': {user!r}}})\n"
-                    f"profile = engine._profiler.get_profile('app', {user!r})\n"
-                    "assert profile['daily']\n"
-                    "assert profile['daily'][0]['total_msgs'] >= 1\n"
-                ),
-                "ProfilingFlows",
+                {"user_id": user, "text": f"profile {scenario}"},
+                "client.post('/moderate', json={'text': text, 'app_name': 'app', 'user_id': user_id})\n"
+                "profile = engine._profiler.get_profile('app', user_id)\n"
+                "assert profile['daily']\n"
+                "assert profile['daily'][0]['total_msgs'] >= 1\n",
             )
         )
 
-    # Response shape: 100 cases.
+    # Response shape: 100 cases across distinct requests.
     shape_fields: tuple[str, ...] = (
         "id",
         "verdict",
@@ -4464,11 +4783,11 @@ def gen_public() -> list[File]:
                     f"field={fld}",
                     "present",
                     "Every documented response field is present.",
-                    ("field",),
-                    {"field": "str"},
+                    ("field", "text"),
+                    {"field": "str", "text": "str"},
                     "client: Any",
-                    {"field": fld},
-                    "body = client.post('/moderate', json={'text': 'shape', 'app_name': 'a'}).json()\n"
+                    {"field": fld, "text": f"shape {scenario}"},
+                    "body = client.post('/moderate', json={'text': text, 'app_name': 'a'}).json()\n"
                     "assert field in body",
                 )
             )
@@ -4513,57 +4832,67 @@ def gen_admin() -> list[File]:
             for language in ("en", "zh-CN", "ru", "ar", "ja"):
                 word: str = f"crud_{category}_{severity}_{language}"
                 crud_cases.append(
-                    mcase(
+                    pcase(
                         _next_id("ADM"),
                         "P1",
-                        f"word_crud_{category}_{severity}_{language}",
+                        "word_crud",
                         f"Word CRUD {category} sev={severity} lang={language}",
                         f"category={category},severity={severity},language={language}",
                         "roundtrip ok",
                         "Adding, listing and deleting a custom word round-trips.",
+                        ("word", "category", "severity", "language"),
+                        {
+                            "word": "str",
+                            "category": "str",
+                            "severity": "int",
+                            "language": "str",
+                        },
                         "client: Any, admin_headers: dict[str, str]",
-                        (
-                            f"payload = {{'word': {word!r}, 'category': {category!r}, 'severity': {severity}, 'language': {language!r}}}\n"
-                            "created = client.post(\n"
-                            "    '/admin/wordbank/words',\n"
-                            "    headers=admin_headers,\n"
-                            "    json=payload,\n"
-                            ")\n"
-                            "assert created.status_code in (201, 409)\n"
-                            "response = client.get('/admin/wordbank/words', headers=admin_headers)\n"
-                            "assert response.status_code == 200\n"
-                            f"assert any(entry['word'] == {word.lower()!r} for entry in response.json())\n"
-                        ),
-                        "WordCrud",
+                        {
+                            "word": word,
+                            "category": category,
+                            "severity": severity,
+                            "language": language,
+                        },
+                        "payload = {'word': word, 'category': category, 'severity': severity, 'language': language}\n"
+                        "created = client.post(\n"
+                        "    '/admin/wordbank/words',\n"
+                        "    headers=admin_headers,\n"
+                        "    json=payload,\n"
+                        ")\n"
+                        "assert created.status_code == 201\n"
+                        "response = client.get('/admin/wordbank/words', headers=admin_headers)\n"
+                        "assert response.status_code == 200\n"
+                        "assert any(entry['word'] == word.lower() for entry in response.json())",
                     )
                 )
     crud_cases = crud_cases[:150]
     assert len(crud_cases) == 150
     cases.extend(crud_cases)
 
-    # Import / export: 100 cases.
+    # Import / export: 100 cases (distinct batches).
     import_cases: list[Case] = []
     for size in (1, 2, 5, 10, 25, 50, 100):
         for scenario in range(15):
             import_cases.append(
-                mcase(
+                pcase(
                     _next_id("ADM"),
                     "P1",
-                    f"import_{size}_{scenario}",
+                    "import_words",
                     f"Import {size} scenario {scenario}",
                     f"size={size},scenario={scenario}",
                     "imported",
                     "Bulk import reports the imported count.",
+                    ("size", "scenario"),
+                    {"size": "int", "scenario": "int"},
                     "client: Any, admin_headers: dict[str, str]",
-                    (
-                        f"items = [{{'word': f'imp{{index}}_{scenario}'}} for index in range({size})]\n"
-                        "response = client.post('/admin/wordbank/import', headers=admin_headers, json={'items': items})\n"
-                        "assert response.status_code == 200\n"
-                        f"assert response.json()['imported'] == {size}\n"
-                        "stats = client.get('/admin/wordbank/stats', headers=admin_headers).json()\n"
-                        f"assert stats['customWords'] >= {size}\n"
-                    ),
-                    "ImportCases",
+                    {"size": size, "scenario": scenario},
+                    "items = [{'word': f'imp{index}_{scenario}'} for index in range(size)]\n"
+                    "response = client.post('/admin/wordbank/import', headers=admin_headers, json={'items': items})\n"
+                    "assert response.status_code == 200\n"
+                    "assert response.json()['imported'] == size\n"
+                    "stats = client.get('/admin/wordbank/stats', headers=admin_headers).json()\n"
+                    "assert stats['customWords'] >= size",
                 )
             )
     import_cases = import_cases[:100]
@@ -4577,149 +4906,168 @@ def gen_admin() -> list[File]:
             for sboost in (True, False):
                 for uboost in (True, False):
                     app_config_cases.append(
-                        mcase(
+                        pcase(
                             _next_id("ADM"),
                             "P1",
-                            f"app_config_{threshold}_{logic}_{sboost}_{uboost}",
+                            "app_config",
                             f"App config threshold={threshold} logic={logic} boosts={sboost},{uboost}",
                             f"threshold={threshold},logic={logic},sboost={sboost},uboost={uboost}",
                             "stored",
                             "App trigger policies store and return every field.",
+                            ("app_name", "threshold", "logic", "sboost", "uboost"),
+                            {
+                                "app_name": "str",
+                                "threshold": "int",
+                                "logic": "str",
+                                "sboost": "bool",
+                                "uboost": "bool",
+                            },
                             "client: Any, admin_headers: dict[str, str]",
-                            (
-                                f"payload = {{'app_name': 'cfgapp', 'score_threshold': {threshold}, 'logic_type': {logic!r}, 'semantic_boost': {sboost}, 'user_ratio_boost': {uboost}}}\n"
-                                "response = client.post('/admin/app-config', headers=admin_headers, json=payload)\n"
-                                "assert response.status_code == 200\n"
-                                f"assert response.json()['score_threshold'] == {threshold}\n"
-                                f"assert response.json()['logic_type'] == {logic!r}\n"
-                                f"assert response.json()['semantic_boost'] is {sboost}\n"
-                            ),
-                            "AppConfig",
+                            {
+                                "app_name": "cfgapp",
+                                "threshold": threshold,
+                                "logic": logic,
+                                "sboost": sboost,
+                                "uboost": uboost,
+                            },
+                            "payload = {'app_name': app_name, 'score_threshold': threshold, 'logic_type': logic, 'semantic_boost': sboost, 'user_ratio_boost': uboost}\n"
+                            "response = client.post('/admin/app-config', headers=admin_headers, json=payload)\n"
+                            "assert response.status_code == 200\n"
+                            "assert response.json()['score_threshold'] == threshold\n"
+                            "assert response.json()['logic_type'] == logic\n"
+                            "assert response.json()['semantic_boost'] is sboost",
                         )
                     )
     for bad_threshold in (-1, 101):
         app_config_cases.append(
-            mcase(
+            pcase(
                 _next_id("ADM"),
                 "P2",
-                f"app_config_invalid_{bad_threshold}",
+                "app_config_invalid",
                 f"App config invalid threshold {bad_threshold}",
                 f"threshold={bad_threshold}",
                 "rejected",
                 "Out-of-range thresholds are rejected.",
+                ("threshold",),
+                {"threshold": "int"},
                 "client: Any, admin_headers: dict[str, str]",
-                (
-                    f"payload = {{'app_name': 'bad', 'score_threshold': {bad_threshold}}}\n"
-                    "response = client.post('/admin/app-config', headers=admin_headers, json=payload)\n"
-                    "assert response.status_code == 422\n"
-                ),
-                "AppConfigInvalid",
+                {"threshold": bad_threshold},
+                "payload = {'app_name': 'bad', 'score_threshold': threshold}\n"
+                "response = client.post('/admin/app-config', headers=admin_headers, json=payload)\n"
+                "assert response.status_code == 422",
             )
         )
     for extra in range(10):
+        app_name: str = f"ghost{extra}"
         app_config_cases.append(
-            mcase(
+            pcase(
                 _next_id("ADM"),
                 "P2",
-                f"app_config_default_{extra}",
+                "app_config_default",
                 f"App config default lookup {extra}",
-                f"app=ghost{extra}",
+                f"app={app_name}",
                 "defaults",
                 "Unknown apps fall back to the default policy.",
+                ("app_name",),
+                {"app_name": "str"},
                 "client: Any, admin_headers: dict[str, str]",
-                (
-                    f"response = client.get('/admin/app-config/ghost{extra}', headers=admin_headers)\n"
-                    "assert response.status_code == 200\n"
-                    "assert response.json()['score_threshold'] == 50\n"
-                ),
-                "AppConfigDefault",
+                {"app_name": app_name},
+                "response = client.get(f'/admin/app-config/{app_name}', headers=admin_headers)\n"
+                "assert response.status_code == 200\n"
+                "assert response.json()['score_threshold'] == 50",
             )
         )
     app_config_cases = app_config_cases[:100]
     assert len(app_config_cases) == 100
     cases.extend(app_config_cases)
 
-    # Settings endpoint: 100 cases.
+    # Settings endpoint: 100 cases (5 keys x 20 distinct valid values).
     settings_cases: list[Case] = []
-    for key, value in (
-        ("WEIGHT_DETECTOR_AHO", 35),
-        ("WEIGHT_USER", 25),
-        ("CACHE_MAX_SIZE", 500),
-        ("SAFE_WORD_ENABLED", True),
-        ("SEMANTIC_TOP_K", 10),
-    ):
-        for scenario in range(20):
+    settings_matrix: tuple[tuple[str, tuple[int, ...]], ...] = (
+        ("WEIGHT_DETECTOR_AHO", (5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 47, 49, 50)),
+        ("WEIGHT_USER", (5, 7, 9, 11, 13, 16, 19, 21, 24, 26, 29, 31, 34, 36, 39, 41, 44, 46, 48, 50)),
+        ("SEMANTIC_TOP_K", (1, 2, 3, 5, 8, 10, 12, 16, 20, 25, 32, 40, 50, 60, 70, 80, 88, 92, 96, 100)),
+        ("CACHE_MAX_SIZE", (1, 5, 10, 50, 100, 500, 1000, 2500, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 95000, 100000)),
+        ("RATE_LIMIT_PERIOD", (1, 5, 10, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200, 10800, 14400, 21600, 28800, 43200, 57600, 72000, 86400)),
+    )
+    for key, values in settings_matrix:
+        for value in values:
             settings_cases.append(
-                mcase(
+                pcase(
                     _next_id("ADM"),
                     "P2",
-                    f"settings_endpoint_{key}_{scenario}",
-                    f"Settings endpoint {key} #{scenario}",
-                    f"key={key}",
+                    "settings_endpoint",
+                    f"Settings endpoint {key} = {value}",
+                    f"key={key},value={value}",
                     "updated",
                     "The settings endpoint accepts valid values.",
+                    ("key", "value"),
+                    {"key": "str", "value": "int"},
                     "client: Any, admin_headers: dict[str, str]",
-                    (
-                        f"payload = {{'settings': {{{key!r}: {value!r}}}}}\n"
-                        "response = client.post('/admin/settings', headers=admin_headers, json=payload)\n"
-                        "assert response.status_code == 200\n"
-                        f"assert {key!r} in response.json()['updated']\n"
-                    ),
-                    "SettingsEndpoint",
+                    {"key": key, "value": value},
+                    "payload = {'settings': {key: value}}\n"
+                    "response = client.post('/admin/settings', headers=admin_headers, json=payload)\n"
+                    "assert response.status_code == 200\n"
+                    "assert key in response.json()['updated']",
                 )
             )
-    settings_cases = settings_cases[:100]
     assert len(settings_cases) == 100
     cases.extend(settings_cases)
 
-    # Logs: 50 cases.
+    # Logs: 50 distinct traversal-resistance cases.
     for scenario in range(50):
+        target: str = f"..%2F..%2Fetc%2Fpasswd.{scenario}"
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ADM"),
                 "P2",
-                f"logs_{scenario}",
-                f"Logs scenario {scenario}",
-                f"scenario={scenario}",
+                "logs",
+                f"Logs traversal variant {scenario}",
+                f"target={target}",
                 "list ok",
                 "Log listing and downloads stay consistent.",
+                ("target",),
+                {"target": "str"},
                 "client: Any, admin_headers: dict[str, str]",
-                (
-                    "response = client.get('/admin/logs', headers=admin_headers)\n"
-                    "assert response.status_code == 200\n"
-                    "assert isinstance(response.json(), list)\n"
-                    "invalid = client.get('/admin/logs/..%2F..%2Fetc%2Fpasswd', headers=admin_headers)\n"
-                    "assert invalid.status_code in (400, 404)\n"
-                ),
-                "LogScenarios",
+                {"target": target},
+                "response = client.get('/admin/logs', headers=admin_headers)\n"
+                "assert response.status_code == 200\n"
+                "assert isinstance(response.json(), list)\n"
+                "invalid = client.get(f'/admin/logs/{target}', headers=admin_headers)\n"
+                "assert invalid.status_code in (400, 404)\n"
+                "assert 'passwd' not in invalid.text",
             )
         )
 
-    # Stats, health, spot-check: 100 cases.
+    # Stats, health, spot-check: 100 distinct activity levels.
     for scenario in range(100):
+        n_mods: int = scenario + 1
         cases.append(
-            mcase(
+            pcase(
                 _next_id("ADM"),
                 "P2",
-                f"stats_scenario_{scenario}",
-                f"Stats scenario {scenario}",
-                f"scenario={scenario}",
+                "stats_scenario",
+                f"Stats after {n_mods} moderations",
+                f"n={n_mods}",
                 "stats valid",
-                "Dashboard stats and spot-check keep their shape.",
+                "Dashboard stats reflect exact API activity.",
+                ("n_mods",),
+                {"n_mods": "int"},
                 "client: Any, admin_headers: dict[str, str]",
-                (
-                    "stats = client.get('/admin/stats', headers=admin_headers)\n"
-                    "assert stats.status_code == 200\n"
-                    "body = stats.json()\n"
-                    "assert 'metrics' in body\n"
-                    "assert 'profiling' in body\n"
-                    "assert 'word_bank' in body\n"
-                    "health = client.get('/admin/health', headers=admin_headers)\n"
-                    "assert health.json()['status'] == 'ok'\n"
-                    "spot = client.get('/admin/spot-check', headers=admin_headers)\n"
-                    "assert 'sample' in spot.json()\n"
-                ),
-                "StatsScenarios",
+                {"n_mods": n_mods},
+                "for index in range(n_mods):\n"
+                "    client.post('/moderate', json={'text': f'stats message {index}', 'app_name': 'a'})\n"
+                "stats = client.get('/admin/stats', headers=admin_headers)\n"
+                "assert stats.status_code == 200\n"
+                "body = stats.json()\n"
+                "assert body['metrics']['requests_total'] == n_mods\n"
+                "assert 'profiling' in body\n"
+                "assert 'word_bank' in body\n"
+                "assert body['detector_count'] >= 4\n"
+                "health = client.get('/admin/health', headers=admin_headers)\n"
+                "assert health.json()['status'] == 'ok'\n"
+                "spot = client.get('/admin/spot-check', headers=admin_headers)\n"
+                "assert 'sample' in spot.json()",
             )
         )
 
@@ -4741,6 +5089,8 @@ def gen_admin() -> list[File]:
 
 def gen_security() -> list[File]:
     """Emit the 700 Phase 2 security cases."""
+    from urllib.parse import quote
+
     cases: list[Case] = []
 
     # Headers across endpoints: 100 cases.
@@ -4762,21 +5112,21 @@ def gen_security() -> list[File]:
     header_cases: list[Case] = []
     for header in security_headers:
         for method, endpoint in endpoints:
-            for scenario in range(4):
+            for variant in range(4):
                 header_cases.append(
                     pcase(
                         _next_id("SEC"),
                         "P1",
                         "header_present",
-                        f"Header {header} on {method} {endpoint}",
+                        f"Header {header} on {method} {endpoint} v{variant}",
                         f"header={header},endpoint={method} {endpoint}",
                         "present",
                         "Every security header appears on every endpoint.",
-                        ("header", "method", "endpoint"),
-                        {"header": "str", "method": "str", "endpoint": "str"},
+                        ("header", "method", "endpoint", "variant"),
+                        {"header": "str", "method": "str", "endpoint": "str", "variant": "int"},
                         "client: Any",
-                        {"header": header, "method": method, "endpoint": endpoint},
-                        "payload = {'text': 'hi', 'app_name': 'a'} if endpoint == '/moderate' else None\n"
+                        {"header": header, "method": method, "endpoint": endpoint, "variant": variant},
+                        "payload = {'text': f'hi {variant}', 'app_name': 'a'} if endpoint == '/moderate' else None\n"
                         "if method == 'POST' and payload is not None:\n"
                         "    response = client.post(endpoint, json=payload)\n"
                         "else:\n"
@@ -4788,44 +5138,50 @@ def gen_security() -> list[File]:
     assert len(header_cases) == 100
     cases.extend(header_cases)
 
-    # CORS: 100 cases.
-    cors_origins: tuple[str, ...] = (
-        "http://localhost:3000",
-        "https://mod.example.com",
-        "http://evil.example",
-        "https://attacker.com",
-        "null",
-        "http://localhost:9999",
+    # CORS: 100 cases across origins, methods and paths (exact goldens).
+    cors_origins: tuple[tuple[str, int], ...] = (
+        ("http://localhost:3000", 200),
+        ("https://mod.example.com", 200),
+        ("http://evil.example", 400),
+        ("https://attacker.com", 400),
+        ("null", 400),
+        ("http://localhost:9999", 400),
     )
+    cors_paths: tuple[str, ...] = ("/moderate", "/health", "/metrics", "/")
     cors_cases: list[Case] = []
-    for origin in cors_origins:
+    for origin, expected_status in cors_origins:
         for method in ("GET", "POST", "PUT", "DELETE", "OPTIONS"):
-            for scenario in range(4):
+            for path in cors_paths:
                 cors_cases.append(
                     pcase(
                         _next_id("SEC"),
                         "P1",
                         "cors_preflight",
-                        f"CORS {origin} {method} #{scenario}",
-                        f"origin={origin},method={method}",
+                        f"CORS {origin} {method} {path}",
+                        f"origin={origin},method={method},path={path}",
                         "handled",
                         "Preflight and CORS responses are handled without error.",
-                        ("origin", "method"),
-                        {"origin": "str", "method": "str"},
+                        ("origin", "method", "path", "expected_status"),
+                        {"origin": "str", "method": "str", "path": "str", "expected_status": "int"},
                         "client: Any",
-                        {"origin": origin, "method": method},
+                        {
+                            "origin": origin,
+                            "method": method,
+                            "path": path,
+                            "expected_status": expected_status,
+                        },
                         "response = client.options(\n"
-                        "    '/moderate',\n"
+                        "    path,\n"
                         "    headers={'Origin': origin, 'Access-Control-Request-Method': method},\n"
                         ")\n"
-                        "assert response.status_code in (200, 400, 405)",
+                        "assert response.status_code == expected_status",
                     )
                 )
     cors_cases = cors_cases[:100]
     assert len(cors_cases) == 100
     cases.extend(cors_cases)
 
-    # Auth bypass attempts: 100 cases.
+    # Auth bypass attempts: 100 cases across keys and admin endpoints.
     bad_keys: tuple[str, ...] = (
         "",
         " ",
@@ -4839,25 +5195,37 @@ def gen_security() -> list[File]:
         "leaked-secret",
         "123456",
     )
+    auth_endpoints: tuple[str, ...] = (
+        "/admin/wordbank/stats",
+        "/admin/wordbank/words",
+        "/admin/wordbank/export",
+        "/admin/wordbank/languages",
+        "/admin/wordbank/categories",
+        "/admin/app-config",
+        "/admin/settings",
+        "/admin/logs",
+        "/admin/health",
+        "/admin/spot-check",
+    )
     auth_cases: list[Case] = []
     for key in bad_keys:
-        for scenario in range(10):
+        for endpoint in auth_endpoints:
             auth_cases.append(
                 pcase(
                     _next_id("SEC"),
                     "P1",
                     "auth_rejected",
-                    f"Auth key {key!r} #{scenario}",
-                    f"key={key!r}",
+                    f"Auth key {key!r} on {endpoint}",
+                    f"key={key!r},endpoint={endpoint}",
                     "401",
                     "Invalid credentials are rejected on admin endpoints.",
-                    ("key",),
-                    {"key": "str"},
+                    ("key", "endpoint"),
+                    {"key": "str", "endpoint": "str"},
                     "client: Any",
-                    {"key": key},
-                    "response = client.get('/admin/wordbank/stats', headers={'X-API-Key': key})\n"
+                    {"key": key, "endpoint": endpoint},
+                    "response = client.get(endpoint, headers={'X-API-Key': key})\n"
                     "assert response.status_code == 401\n"
-                    "bearer = client.get('/admin/wordbank/stats', headers={'Authorization': f'Bearer {key}'})\n"
+                    "bearer = client.get(endpoint, headers={'Authorization': f'Bearer {key}'})\n"
                     "assert bearer.status_code == 401",
                 )
             )
@@ -4912,20 +5280,28 @@ def gen_security() -> list[File]:
     )
     injection_cases: list[Case] = []
     for payload in injection_payloads:
-        for scenario in range(4):
+        for variant in ("raw", "quoted", "html", "unicode"):
+            if variant == "raw":
+                text: str = payload
+            elif variant == "quoted":
+                text = quote(payload)
+            elif variant == "html":
+                text = payload.replace("<", "&#60;").replace(">", "&#62;")
+            else:
+                text = payload.replace("'", "\\u0027")
             injection_cases.append(
                 pcase(
                     _next_id("SEC"),
                     "P2",
                     "injection_safe",
-                    f"Injection #{scenario} {payload[:20]!r}",
-                    f"payload={payload[:20]!r}",
+                    f"Injection {variant} {payload[:20]!r}",
+                    f"payload={payload[:20]!r},variant={variant}",
                     "moderated",
                     "Injection payloads never crash the moderator.",
                     ("payload",),
                     {"payload": "str"},
                     "client: Any",
-                    {"payload": payload},
+                    {"payload": text},
                     "response = client.post('/moderate', json={'text': payload, 'app_name': 'a'})\n"
                     "assert response.status_code == 200\n"
                     "assert response.json()['verdict'] in ('PASS', 'BLOCK', 'REVIEW')",
@@ -4935,7 +5311,7 @@ def gen_security() -> list[File]:
     assert len(injection_cases) == 150
     cases.extend(injection_cases)
 
-    # Path traversal: 50 cases.
+    # Path traversal: 50 distinct payloads (raw + encoded variants).
     traversal_payloads: tuple[str, ...] = (
         "../etc/passwd",
         "..\\windows\\system32",
@@ -4946,90 +5322,123 @@ def gen_security() -> list[File]:
         "....//....//etc/passwd",
         "..%252f..%252f",
         "..",
-        ".",
         "a/../../b",
         "..\\..\\..\\boot.ini",
+        "..%2f..%2f..%2fetc%2fpasswd",
+        "..././.../etc/passwd",
     )
+    traversal_cases: list[Case] = []
     for payload in traversal_payloads:
-        for scenario in range(6):
-            cases.append(
+        variants: tuple[str, ...] = (payload, quote(payload), payload + "%00", quote(payload, safe=""))
+        for variant in variants:
+            traversal_cases.append(
                 pcase(
                     _next_id("SEC"),
                     "P2",
                     "traversal_rejected",
-                    f"Traversal {payload!r} #{scenario}",
-                    f"payload={payload!r}",
+                    f"Traversal {variant[:24]!r}",
+                    f"payload={variant[:24]!r}",
                     "rejected",
                     "Traversal filenames never reach the filesystem.",
                     ("payload",),
                     {"payload": "str"},
                     "client: Any, admin_headers: dict[str, str]",
-                    {"payload": payload},
+                    {"payload": variant},
                     "response = client.get(f'/admin/logs/{payload}', headers=admin_headers)\n"
                     "assert response.status_code in (400, 404)",
                 )
             )
-    traversal_cases: list[Case] = [c for c in cases if c.name == "traversal_rejected"]
-    cases = [c for c in cases if c.name != "traversal_rejected"]
     traversal_cases = traversal_cases[:50]
     assert len(traversal_cases) == 50
     cases.extend(traversal_cases)
 
-    # HTTP method restrictions: 100 cases.
+    # HTTP method restrictions: 100 exact golden cases.
     method_cases: list[Case] = []
-    for endpoint in (
-        "/moderate",
-        "/moderate/batch",
-        "/health",
-        "/metrics",
-        "/",
-        "/admin/wordbank/stats",
-    ):
-        for method in ("GET", "POST", "PUT", "DELETE", "PATCH"):
-            for scenario in range(4):
-                method_cases.append(
-                    pcase(
-                        _next_id("SEC"),
-                        "P2",
-                        "method_restriction",
-                        f"Method {method} on {endpoint}",
-                        f"method={method},endpoint={endpoint}",
-                        "restricted",
-                        "Disallowed methods are rejected without error.",
-                        ("method", "endpoint"),
-                        {"method": "str", "endpoint": "str"},
-                        "client: Any",
-                        {"method": method, "endpoint": endpoint},
-                        "payload = {'text': 'hi'} if endpoint.startswith('/moderate') and method == 'POST' else None\n"
-                        "response = client.request(method, endpoint, json=payload)\n"
-                        "assert response.status_code in (200, 405, 422)",
-                    )
+    method_matrix: dict[str, dict[str, int]] = {
+        "/moderate": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/moderate/batch": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/health": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/metrics": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/stats": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/words": {"GET": 200, "POST": 422, "PUT": 405, "DELETE": 422, "PATCH": 405},
+        "/admin/wordbank/export": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/languages": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/categories": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/wordbank/import": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/reload": {"POST": 200, "GET": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/app-config": {"GET": 200, "POST": 200, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/app-config/demo": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/app-config/other": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/settings": {"GET": 200, "POST": 200, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/logs": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/stats": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/health": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+        "/admin/spot-check": {"GET": 200, "POST": 405, "PUT": 405, "DELETE": 405, "PATCH": 405},
+    }
+    assert sum(len(v) for v in method_matrix.values()) == 100
+    for endpoint, methods in method_matrix.items():
+        for method, expected_status in methods.items():
+            method_cases.append(
+                pcase(
+                    _next_id("SEC"),
+                    "P2",
+                    "method_restriction",
+                    f"Method {method} on {endpoint}",
+                    f"method={method},endpoint={endpoint}",
+                    "restricted",
+                    "Disallowed methods are rejected without error.",
+                    ("method", "endpoint", "expected_status"),
+                    {"method": "str", "endpoint": "str", "expected_status": "int"},
+                    "client: Any, admin_headers: dict[str, str]",
+                    {"method": method, "endpoint": endpoint, "expected_status": expected_status},
+                    "body = None\n"
+                    "if method == 'POST' and 'moderate' in endpoint:\n"
+                    "    body = {'text': 'hi'} if endpoint == '/moderate' else {'items': [{'text': 'hi'}]}\n"
+                    "elif method == 'POST' and endpoint == '/admin/wordbank/import':\n"
+                    "    body = {'items': [{'word': 'probe'}]}\n"
+                    "elif method == 'POST' and endpoint == '/admin/app-config':\n"
+                    "    body = {'app_name': 'x', 'score_threshold': 50}\n"
+                    "elif method == 'POST' and endpoint == '/admin/settings':\n"
+                    "    body = {'settings': {'WEIGHT_USER': 25}}\n"
+                    "headers = admin_headers if endpoint.startswith('/admin') else None\n"
+                    "response = client.request(method, endpoint, json=body, headers=headers)\n"
+                    "assert response.status_code == expected_status",
                 )
-    method_cases = method_cases[:100]
+            )
     assert len(method_cases) == 100
     cases.extend(method_cases)
 
-    # Encoded payloads and rate limiting: 100 cases.
-    for scenario in range(100):
-        cases.append(
-            mcase(
-                _next_id("SEC"),
-                "P3",
-                f"encoded_{scenario}",
-                f"Encoded payload scenario {scenario}",
-                f"scenario={scenario}",
-                "safe",
-                "Encoded payloads never crash the moderator.",
-                "client: Any",
-                (
-                    "payloads = ['%3Cscript%3E', '\\\\u003cscript\\\\u003e', '\\\\x3cscript\\\\x3e', '&#60;script&#62;', '\\\\u202eoverride']\n"
-                    "for payload in payloads:\n"
-                    "    response = client.post('/moderate', json={'text': payload, 'app_name': 'a'})\n"
-                    "    assert response.status_code == 200\n"
-                ),
-                "EncodedPayloads",
-            )
+    # Encoded payloads: 100 distinct encoded variants.
+    encoded_cases: list[Case] = []
+    for index, base in enumerate(injection_payloads[:25]):
+        variants: tuple[str, ...] = (
+            base,
+            quote(base),
+            base.replace("<", "&#60;").replace(">", "&#62;"),
+            base.replace("'", "\\u0027"),
         )
+        for variant in variants:
+            encoded_cases.append(
+                pcase(
+                    _next_id("SEC"),
+                    "P3",
+                    "encoded_payload",
+                    f"Encoded payload {index}",
+                    f"variant={index}",
+                    "safe",
+                    "Encoded payloads never crash the moderator.",
+                    ("payload",),
+                    {"payload": "str"},
+                    "client: Any",
+                    {"payload": variant},
+                    "response = client.post('/moderate', json={'text': payload, 'app_name': 'a'})\n"
+                    "assert response.status_code == 200\n"
+                    "assert response.json()['verdict'] in ('PASS', 'BLOCK', 'REVIEW')",
+                )
+            )
+    assert len(encoded_cases) == 100
+    cases.extend(encoded_cases)
 
     assert len(cases) == 700, f"security case count {len(cases)} != 700"
     return make_files(
@@ -5102,7 +5511,7 @@ def gen_export() -> list[File]:
     """Emit the 600 Phase 2 export cases."""
     cases: list[Case] = []
 
-    # Archive construction: 150 property cases.
+    # Archive construction: 150 parametrized cases (volume x assets).
     entries_checks: tuple[tuple[str, str], ...] = (
         ("users.db", "databases/"),
         ("moderation.log", "logs/"),
@@ -5112,37 +5521,42 @@ def gen_export() -> list[File]:
         ("export_metadata.json", ""),
         ("settings_snapshot.json", "config/"),
     )
+    archive_cases: list[Case] = []
     for marker, section in entries_checks:
-        for scenario in range(22):
-            cases.append(
-                mcase(
+        for n_extra_db in range(1, 23):
+            archive_cases.append(
+                pcase(
                     _next_id("EXP"),
                     "P1",
-                    f"archive_entry_{scenario}",
-                    f"Archive entry {marker} #{scenario}",
-                    f"marker={marker}",
+                    "archive_entry",
+                    f"Archive entry {marker} with {n_extra_db} databases",
+                    f"marker={marker},dbs={n_extra_db}",
                     "included",
                     "Export archives include every documented asset.",
+                    ("marker", "section", "n_extra_db"),
+                    {"marker": "str", "section": "str", "n_extra_db": "int"},
                     "tmp_path: Path",
-                    (
-                        "service, root = _service(tmp_path)\n"
-                        "with _Chdir(root):\n"
-                        "    path = service.create_export()\n"
-                        f"entries = _zip_entries(path)\n"
-                        f"assert any({marker!r} in entry for entry in entries)\n"
-                        f"assert any({section!r} in entry for entry in entries)\n"
-                        "assert path.suffix == '.zip'\n"
-                    ),
-                    "ArchiveConstruction",
+                    {"marker": marker, "section": section, "n_extra_db": n_extra_db},
+                    "service, root = _service(tmp_path)\n"
+                    "for index in range(n_extra_db):\n"
+                    "    connection = sqlite3.connect(str(root / 'data' / f'extra{index}.db'))\n"
+                    "    connection.execute('CREATE TABLE t (id INTEGER)')\n"
+                    "    connection.commit()\n"
+                    "    connection.close()\n"
+                    "with _Chdir(root):\n"
+                    "    path = service.create_export()\n"
+                    "entries = _zip_entries(path)\n"
+                    "assert any(marker in entry for entry in entries)\n"
+                    "assert any(section in entry for entry in entries)\n"
+                    "assert any(f'extra{n_extra_db - 1}.db' in entry for entry in entries)\n"
+                    "assert path.suffix == '.zip'",
                 )
             )
-    archive_cases: list[Case] = [c for c in cases if c.name.startswith("archive_entry")]
-    cases = [c for c in cases if not c.name.startswith("archive_entry")]
     archive_cases = archive_cases[:150]
     assert len(archive_cases) == 150
     cases.extend(archive_cases)
 
-    # Redaction: 100 property cases.
+    # Redaction: 100 parametrized secret keys x values.
     secret_keys: tuple[str, ...] = (
         "SOME_API_KEY",
         "SOME_SECRET",
@@ -5165,46 +5579,45 @@ def gen_export() -> list[File]:
         "KEY_PAIR",
         "MASTER_KEY",
     )
+    redaction_cases: list[Case] = []
     for index, suffix in enumerate(secret_keys):
         for scenario in range(5):
-            cases.append(
-                mcase(
+            secret_value: str = f"secret_value_xyz_{scenario}"
+            redaction_cases.append(
+                pcase(
                     _next_id("EXP"),
                     "P2",
-                    f"redaction_{scenario}",
+                    "redaction",
                     f"Redaction {suffix} #{scenario}",
                     f"suffix={suffix}",
                     "redacted",
                     "Secret values never leak into the exported environment.",
+                    ("key", "secret_value"),
+                    {"key": "str", "secret_value": "str"},
                     "tmp_path: Path",
-                    (
-                        "root = _build_sandbox(tmp_path)\n"
-                        f"secret_line = '{suffix}=secret_value_xyz_{scenario}\\n'\n"
-                        "(root / '.env').write_text(secret_line, encoding='utf-8')\n"
-                        "settings = Settings(\n"
-                        "    app_port=0,\n"
-                        "    export_temp_dir=str(root / 'exports'),\n"
-                        "    export_retention_days=7,\n"
-                        "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
-                        ")\n"
-                        "service: ExportService = ExportService(settings, None)\n"
-                        "with _Chdir(root):\n"
-                        "    path = service.create_export()\n"
-                        "with zipfile.ZipFile(path) as archive:\n"
-                        "    content = archive.read('config/.env').decode()\n"
-                        "assert 'secret_value_xyz' not in content\n"
-                        "assert '[REDACTED]' in content\n"
-                    ),
-                    "RedactionCases",
+                    {"key": suffix, "secret_value": secret_value},
+                    "root = _build_sandbox(tmp_path)\n"
+                    "(root / '.env').write_text(f'{key}={secret_value}\\n', encoding='utf-8')\n"
+                    "settings = Settings(\n"
+                    "    app_port=0,\n"
+                    "    export_temp_dir=str(root / 'exports'),\n"
+                    "    export_retention_days=7,\n"
+                    "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
+                    ")\n"
+                    "service: ExportService = ExportService(settings, None)\n"
+                    "with _Chdir(root):\n"
+                    "    path = service.create_export()\n"
+                    "with zipfile.ZipFile(path) as archive:\n"
+                    "    content = archive.read('config/.env').decode()\n"
+                    "assert secret_value not in content\n"
+                    "assert '[REDACTED]' in content",
                 )
             )
-    redaction_cases: list[Case] = [c for c in cases if c.name.startswith("redaction")]
-    cases = [c for c in cases if not c.name.startswith("redaction")]
     redaction_cases = redaction_cases[:100]
     assert len(redaction_cases) == 100
     cases.extend(redaction_cases)
 
-    # Manifest: 100 property cases.
+    # Manifest: 100 parametrized field x metadata cases.
     manifest_fields: tuple[str, ...] = (
         "project",
         "exported_at",
@@ -5215,38 +5628,53 @@ def gen_export() -> list[File]:
         "ai_available",
         "semantic_available",
     )
+    manifest_cases: list[Case] = []
     for fld in manifest_fields:
         for scenario in range(13):
-            cases.append(
-                mcase(
+            manifest_cases.append(
+                pcase(
                     _next_id("EXP"),
                     "P1",
-                    f"manifest_{scenario}",
-                    f"Manifest field {fld} #{scenario}",
-                    f"field={fld}",
+                    "manifest",
+                    f"Manifest field {fld} with metadata {scenario}",
+                    f"field={fld},metadata={scenario}",
                     "present",
                     "The metadata manifest exposes every documented field.",
+                    ("field", "detector_count", "ai_available", "semantic_available"),
+                    {
+                        "field": "str",
+                        "detector_count": "int",
+                        "ai_available": "bool",
+                        "semantic_available": "bool",
+                    },
                     "tmp_path: Path",
-                    (
-                        "service, root = _service(tmp_path)\n"
-                        "with _Chdir(root):\n"
-                        "    path = service.create_export({'detector_count': 11})\n"
-                        "with zipfile.ZipFile(path) as archive:\n"
-                        "    manifest = __import__('json').loads(archive.read('export_metadata.json'))\n"
-                        f"assert {fld!r} in manifest\n"
-                        "assert manifest['schema_version'] == 1\n"
-                    ),
-                    "ManifestCases",
+                    {
+                        "field": fld,
+                        "detector_count": scenario % 20,
+                        "ai_available": scenario % 2 == 0,
+                        "semantic_available": scenario % 3 == 0,
+                    },
+                    "service, root = _service(tmp_path)\n"
+                    "with _Chdir(root):\n"
+                    "    path = service.create_export(\n"
+                    "        {'detector_count': detector_count, 'ai_available': ai_available,\n"
+                    "         'semantic_available': semantic_available}\n"
+                    "    )\n"
+                    "with zipfile.ZipFile(path) as archive:\n"
+                    "    manifest = __import__('json').loads(archive.read('export_metadata.json'))\n"
+                    "assert field in manifest\n"
+                    "assert manifest['schema_version'] == 1\n"
+                    "assert manifest['detector_count'] == detector_count\n"
+                    "assert manifest['ai_available'] is ai_available",
                 )
             )
-    manifest_cases: list[Case] = [c for c in cases if c.name.startswith("manifest")]
-    cases = [c for c in cases if not c.name.startswith("manifest")]
     manifest_cases = manifest_cases[:100]
     assert len(manifest_cases) == 100
     cases.extend(manifest_cases)
 
-    # Retention: 100 property cases.
-    for retention, age in (
+    # Retention: 100 parametrized retention/age/stale-name cases.
+    retention_cases: list[Case] = []
+    retention_combos: tuple[tuple[int, int], ...] = (
         (7, 1),
         (7, 6),
         (7, 7),
@@ -5257,108 +5685,141 @@ def gen_export() -> list[File]:
         (90, 91),
         (365, 364),
         (365, 366),
-    ):
+    )
+    for retention, age in retention_combos:
         for scenario in range(10):
-            cases.append(
-                mcase(
+            stale_name: str = f"stale{scenario}.zip"
+            retention_cases.append(
+                pcase(
                     _next_id("EXP"),
                     "P2",
-                    f"retention_{scenario}",
+                    "retention",
                     f"Retention {retention}d age {age}d #{scenario}",
                     f"retention={retention},age={age}",
                     "pruned correctly",
                     "Exports older than retention are pruned.",
+                    ("retention", "age", "stale_name"),
+                    {"retention": "int", "age": "int", "stale_name": "str"},
                     "tmp_path: Path",
-                    (
+                    {"retention": retention, "age": age, "stale_name": stale_name},
+                    "root = _build_sandbox(tmp_path)\n"
+                    "settings = Settings(\n"
+                    "    app_port=0,\n"
+                    "    export_temp_dir=str(root / 'exports'),\n"
+                    "    export_retention_days=retention,\n"
+                    "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
+                    ")\n"
+                    "service: ExportService = ExportService(settings, None)\n"
+                    "with _Chdir(root):\n"
+                    "    stale = root / 'exports' / stale_name\n"
+                    "    stale.write_bytes(b'old')\n"
+                    "    stamp = stale.stat().st_mtime - (age * 86400)\n"
+                    "    os.utime(stale, (stamp, stamp))\n"
+                    "    service.create_export()\n"
+                    "    assert stale.exists() is (age < retention)",
+                )
+            )
+    retention_cases = retention_cases[:100]
+    assert len(retention_cases) == 100
+    cases.extend(retention_cases)
+
+    # Multi-database and CSV: 100 parametrized cases.
+    multidb_cases: list[Case] = []
+    for db_count in (1, 2, 3, 4, 5):
+        for table_count in (1, 2, 3, 4):
+            for scenario in range(5):
+                multidb_cases.append(
+                    pcase(
+                        _next_id("EXP"),
+                        "P2",
+                        "multidb",
+                        f"Multi-DB {db_count} tables {table_count} #{scenario}",
+                        f"dbs={db_count},tables={table_count},scenario={scenario}",
+                        "archived",
+                        "Every database and table is archived with CSVs.",
+                        ("db_count", "table_count", "scenario"),
+                        {"db_count": "int", "table_count": "int", "scenario": "int"},
+                        "tmp_path: Path",
+                        {"db_count": db_count, "table_count": table_count, "scenario": scenario},
                         "root = _build_sandbox(tmp_path)\n"
+                        "for index in range(1, db_count):\n"
+                        "    connection = sqlite3.connect(str(root / 'data' / f'extra{index}.db'))\n"
+                        "    connection.execute('CREATE TABLE t (id INTEGER)')\n"
+                        "    connection.commit()\n"
+                        "    connection.close()\n"
+                        "for index in range(table_count):\n"
+                        "    connection = sqlite3.connect(str(root / 'data' / 'multi.db'))\n"
+                        "    connection.execute(f'CREATE TABLE t{scenario}_{index} (id INTEGER)')\n"
+                        "    connection.commit()\n"
+                        "    connection.close()\n"
                         "settings = Settings(\n"
                         "    app_port=0,\n"
                         "    export_temp_dir=str(root / 'exports'),\n"
-                        "    export_retention_days=%d,\n"
+                        "    export_retention_days=7,\n"
                         "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
                         ")\n"
                         "service: ExportService = ExportService(settings, None)\n"
                         "with _Chdir(root):\n"
-                        "    stale = root / 'exports' / 'stale.zip'\n"
-                        "    stale.write_bytes(b'old')\n"
-                        "    stamp = stale.stat().st_mtime - (%d * 86400)\n"
-                        "    os.utime(stale, (stamp, stamp))\n"
-                        "    service.create_export()\n"
-                        "    assert stale.exists() is (%d < %d)\n"
-                        % (retention, age, age, retention)
-                    ),
-                    "RetentionCases",
-                )
-            )
-
-    # Multi-database and CSV: 100 property cases.
-    for db_count in (1, 2, 3, 4, 5):
-        for table_count in (1, 2, 3, 4):
-            for scenario in range(5):
-                cases.append(
-                    mcase(
-                        _next_id("EXP"),
-                        "P2",
-                        f"multidb_{scenario}",
-                        f"Multi-DB {db_count} tables {table_count} #{scenario}",
-                        f"dbs={db_count},tables={table_count}",
-                        "archived",
-                        "Every database and table is archived with CSVs.",
-                        "tmp_path: Path",
-                        (
-                            "root = _build_sandbox(tmp_path)\n"
-                            f"for index in range(1, {db_count}):\n"
-                            "    connection = sqlite3.connect(str(root / 'data' / f'extra{index}.db'))\n"
-                            "    connection.execute('CREATE TABLE t (id INTEGER)')\n"
-                            "    connection.commit()\n"
-                            "    connection.close()\n"
-                            f"for index in range({table_count}):\n"
-                            "    connection = sqlite3.connect(str(root / 'data' / 'multi.db'))\n"
-                            "    connection.execute(f'CREATE TABLE t{index} (id INTEGER)')\n"
-                            "    connection.commit()\n"
-                            "    connection.close()\n"
-                            "settings = Settings(\n"
-                            "    app_port=0,\n"
-                            "    export_temp_dir=str(root / 'exports'),\n"
-                            "    export_retention_days=7,\n"
-                            "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
-                            ")\n"
-                            "service: ExportService = ExportService(settings, None)\n"
-                            "with _Chdir(root):\n"
-                            "    path = service.create_export()\n"
-                            "entries = _zip_entries(path)\n"
-                            f"db_entries = [entry for entry in entries if 'databases/' in entry]\n"
-                            f"assert len(db_entries) == {db_count + 1}\n"
-                            f"csv_entries = [entry for entry in entries if 'multi_t' in entry]\n"
-                            f"assert len(csv_entries) == {table_count}\n"
-                        ),
-                        "MultiDbCases",
+                        "    path = service.create_export()\n"
+                        "entries = _zip_entries(path)\n"
+                        "db_entries = [entry for entry in entries if 'databases/' in entry]\n"
+                        "assert len(db_entries) == db_count + 1\n"
+                        "csv_entries = [entry for entry in entries if 'multi_t' in entry]\n"
+                        "assert len(csv_entries) == table_count",
                     )
                 )
+    multidb_cases = multidb_cases[:100]
+    assert len(multidb_cases) == 100
+    cases.extend(multidb_cases)
 
-    # Edge cases: 50 property cases.
-    for scenario in range(50):
-        variant: int = scenario % 5
-        cases.append(
-            mcase(
+    # Edge cases: 50 distinct missing-asset combos.
+    edge_cases: list[Case] = []
+    edge_assets: tuple[str, ...] = ("data", "logs", "semantic", "env", "example")
+    for mask in range(50):
+        missing: str = "+".join(
+            asset for index, asset in enumerate(edge_assets) if mask & (1 << index)
+        )
+        edge_cases.append(
+            pcase(
                 _next_id("EXP"),
                 "P3",
-                f"edge_{scenario}",
-                f"Export edge scenario {scenario}",
-                f"scenario={scenario},variant={variant}",
+                "edge_export",
+                f"Export edge missing {missing or 'none'}",
+                f"missing={missing or 'none'}",
                 "handled",
                 "Rare filesystem states are handled without crashing.",
+                ("missing",),
+                {"missing": "str"},
                 "tmp_path: Path",
-                (
-                    "service, root = _service(tmp_path)\n"
-                    "with _Chdir(root):\n"
-                    "    path = service.create_export()\n"
-                    "assert path.exists()\n"
-                    "assert 'config/.env' in _zip_entries(path)\n"
-                ),
-                "ExportEdges",
+                {"missing": missing},
+                "root = _build_sandbox(tmp_path)\n"
+                "import shutil\n"
+                "(root / '.env.example').write_text('SOME_KEY=value\\n', encoding='utf-8')\n"
+                "if 'data' in missing:\n"
+                "    shutil.rmtree(root / 'data')\n"
+                "if 'logs' in missing:\n"
+                "    shutil.rmtree(root / 'logs')\n"
+                "if 'semantic' in missing:\n"
+                "    shutil.rmtree(root / 'semantic')\n"
+                "if 'env' in missing:\n"
+                "    (root / '.env').unlink()\n"
+                "if 'example' in missing:\n"
+                "    (root / '.env.example').unlink()\n"
+                "settings = Settings(\n"
+                "    app_port=0,\n"
+                "    export_temp_dir=str(root / 'exports'),\n"
+                "    export_retention_days=7,\n"
+                "    log_file_path=str(root / 'logs' / 'moderation.log'),\n"
+                ")\n"
+                "service: ExportService = ExportService(settings, None)\n"
+                "with _Chdir(root):\n"
+                "    path = service.create_export()\n"
+                "assert path.exists()\n"
+                "assert 'export_metadata.json' in _zip_entries(path)",
             )
         )
+    assert len(edge_cases) == 50
+    cases.extend(edge_cases)
 
     assert len(cases) == 600, f"export case count {len(cases)} != 600"
     return make_files(
@@ -5390,41 +5851,43 @@ def gen_chaos() -> list[File]:
     """Emit the 500 Phase 2 chaos/resilience cases."""
     cases: list[Case] = []
 
-    # Rolling-hash storms: 100 cases.
+    # Rolling-hash storms: 100 parametrized cases.
     for cache_size in (1, 5, 10, 50, 100):
         for ttl in (0, 1, 30, 60):
             for scenario in range(5):
                 cases.append(
-                    mcase(
+                    pcase(
                         _next_id("CHAOS"),
                         "P2",
-                        f"hash_storm_{scenario}",
+                        "hash_storm",
                         f"Hash storm size={cache_size} ttl={ttl} #{scenario}",
                         f"size={cache_size},ttl={ttl}",
                         "bounded",
                         "Hash storms never crash the LRU cache.",
+                        ("cache_size", "ttl", "message_count"),
+                        {"cache_size": "int", "ttl": "int", "message_count": "int"},
                         "",
-                        (
-                            "detector: RollingHashDetector = RollingHashDetector(cache_size=%d, ttl_seconds=%d)\n"
-                            "for index in range(2000):\n"
-                            "    detector.detect(f'unique message number {index}')\n"
-                            "assert len(detector._cache) <= %d\n"
-                            "detector.record_hit('spam')\n"
-                            "assert isinstance(detector.detect('spam').matched, bool)\n"
-                            % (cache_size, ttl, cache_size)
-                        ),
-                        "HashStorms",
+                        {
+                            "cache_size": cache_size,
+                            "ttl": ttl,
+                            "message_count": 2000 + scenario * 100,
+                        },
+                        "detector: RollingHashDetector = RollingHashDetector(cache_size=cache_size, ttl_seconds=ttl)\n"
+                        "for index in range(message_count):\n"
+                        "    detector.detect(f'unique message number {index}')\n"
+                        "assert len(detector._cache) <= cache_size\n"
+                        "detector.record_hit('spam')\n"
+                        "assert isinstance(detector.detect('spam').matched, bool)",
                     )
                 )
 
-    # Database corruption / recovery: 100 cases.
+    # Database corruption / recovery: 100 parametrized cases.
     for scenario in range(100):
         variant: int = scenario % 4
-        body: str
         if variant == 0:
-            body = (
+            recovery_body: str = (
                 "db = tmp_path / 'settings.db'\n"
-                "db.write_bytes(b'this is not sqlite data at all')\n"
+                "db.write_bytes(f'this is not sqlite data at all {scenario}'.encode())\n"
                 "from app.config import Settings\n"
                 "settings = Settings(app_port=0, settings_db_path=str(db), log_file_path=str(tmp_path / 'l.log'))\n"
                 "from app.settings_service import SettingsService\n"
@@ -5432,126 +5895,156 @@ def gen_chaos() -> list[File]:
                 "    SettingsService(settings)\n"
             )
         elif variant == 1:
-            body = (
-                "db = tmp_path / 'settings.db'\n"
+            recovery_body = (
+                "db = tmp_path / f'settings{scenario}.db'\n"
                 "db.write_bytes(b'')\n"
                 "from app.config import Settings\n"
                 "settings = Settings(app_port=0, settings_db_path=str(db), log_file_path=str(tmp_path / 'l.log'))\n"
                 "from app.settings_service import SettingsService\n"
                 "service: SettingsService = SettingsService(settings)\n"
-                "assert service.get('WEIGHT_DETECTOR_AHO') is not None or service.all() is not None\n"
+                "assert service.all() != {}\n"
                 "service.close()\n"
             )
         elif variant == 2:
-            body = (
+            recovery_body = (
                 "from app.profiling.user_profiler import UserProfiler\n"
-                "profiler: UserProfiler = UserProfiler(str(tmp_path / 'u.db'), str(tmp_path / 'a.db'), 91)\n"
+                f"profiler: UserProfiler = UserProfiler(str(tmp_path / f'u{{scenario}}.db'), str(tmp_path / f'a{{scenario}}.db'), {scenario % 90 + 1})\n"
                 "assert profiler.stats()['daily_rows'] == 0\n"
                 "profiler.close()\n"
             )
         else:
-            body = (
+            recovery_body = (
                 "from app.wordbank.manager import WordBankManager\n"
                 "from app.wordbank.storage import create_storage\n"
                 "manager: WordBankManager = WordBankManager(\n"
-                "    storage=create_storage('sqlite', str(tmp_path / 'none' / 'w.db'))\n"
+                "    storage=create_storage('sqlite', str(tmp_path / f'none{scenario}' / 'w.db'))\n"
                 ")\n"
                 "assert manager.get_stats()['total_words'] >= 0\n"
                 "manager.close()\n"
             )
         cases.append(
-            mcase(
+            pcase(
                 _next_id("CHAOS"),
                 "P2",
-                f"db_recovery_{scenario}",
+                "db_recovery",
                 f"Database recovery scenario {scenario}",
                 f"scenario={scenario},variant={variant}",
                 "handled",
                 "Malformed or missing databases are handled without crashing.",
+                ("scenario",),
+                {"scenario": "int"},
                 "tmp_path: Path",
-                body,
-                "DatabaseRecovery",
+                {"scenario": scenario},
+                recovery_body,
             )
         )
 
-    # Package adapter failures: 100 cases.
-    for scenario in range(100):
-        cases.append(
-            mcase(
-                _next_id("CHAOS"),
-                "P2",
-                f"adapter_{scenario}",
-                f"Package adapter scenario {scenario}",
-                f"scenario={scenario}",
-                "no crash",
-                "Broken package adapters degrade to a non-match.",
-                "monkeypatch: pytest.MonkeyPatch",
-                (
+    # Package adapter failures: 100 parametrized cases.
+    adapter_packages: tuple[str, ...] = (
+        "profanite",
+        "badwords_py",
+        "glin_profanity",
+        "gangajal",
+        "safetext",
+        "pyprofane",
+        "sensitive_word_filter_cn",
+        "profanity_filter",
+    )
+    adapter_cases: list[Case] = []
+    for package in adapter_packages:
+        for scenario in range(13):
+            adapter_cases.append(
+                pcase(
+                    _next_id("CHAOS"),
+                    "P2",
+                    "adapter_failure",
+                    f"Package adapter {package} #{scenario}",
+                    f"package={package}",
+                    "no crash",
+                    "Broken package adapters degrade to a non-match.",
+                    ("package", "text"),
+                    {"package": "str", "text": "str"},
+                    "monkeypatch: pytest.MonkeyPatch",
+                    {"package": package, "text": f"harmless text {package} {scenario}"},
                     "import importlib\n"
+                    "\n"
                     "from app.detectors.multi_language_detector import _PackageAdapter\n"
                     "real_import = importlib.import_module\n"
                     "def _broken_import(name, *args, **kwargs):\n"
-                    "    if name == 'profanite':\n"
+                    "    if name == package:\n"
                     "        raise ImportError('simulated missing package')\n"
                     "    return real_import(name, *args, **kwargs)\n"
                     "monkeypatch.setattr(importlib, 'import_module', _broken_import)\n"
-                    "adapter: _PackageAdapter = _PackageAdapter('profanite', 'any', 'truthy')\n"
+                    "adapter: _PackageAdapter = _PackageAdapter(package, 'any', 'truthy')\n"
                     "assert adapter.available is False\n"
-                    "assert adapter.detect('any text').matched is False\n"
-                ),
-                "AdapterFailures",
+                    "assert adapter.detect(text).matched is False",
+                )
             )
-        )
+    adapter_cases = adapter_cases[:100]
+    assert len(adapter_cases) == 100
+    cases.extend(adapter_cases)
 
-    # Engine and profiler resilience: 100 cases.
+    # Engine and profiler resilience: 100 parametrized cases.
     for scenario in range(100):
-        variant = scenario % 5
-        body = (
-            "from app.models.request import ModerationRequest\n"
-            "engine.moderate(ModerationRequest(text='resilient', app_name='a'))\n"
-            "engine.clear_cache()\n"
-            "assert isinstance(engine.metrics(), dict)\n"
-            "engine.refresh_detectors()\n"
-            "result = engine.moderate(ModerationRequest(text='after refresh', app_name='a'))\n"
-            "assert result.verdict is not None\n"
-        )
         cases.append(
-            mcase(
+            pcase(
                 _next_id("CHAOS"),
                 "P3",
-                f"engine_resilience_{scenario}",
-                f"Engine resilience scenario {scenario}",
-                f"scenario={scenario},variant={variant}",
+                "engine_resilience",
+                f"Engine resilience after {scenario + 1} moderations",
+                f"n={scenario + 1}",
                 "recovers",
                 "The engine recovers across clear, refresh and re-moderate.",
+                ("n_moderations",),
+                {"n_moderations": "int"},
                 "engine: Any, word_bank: Any",
-                body,
-                "EngineResilience",
+                {"n_moderations": scenario + 1},
+                "from app.models.request import ModerationRequest\n"
+                "for index in range(n_moderations):\n"
+                "    engine.moderate(ModerationRequest(text=f'resilient {index}', app_name='a'))\n"
+                "engine.clear_cache()\n"
+                "assert isinstance(engine.metrics(), dict)\n"
+                "engine.refresh_detectors()\n"
+                "result = engine.moderate(ModerationRequest(text='after refresh', app_name='a'))\n"
+                "assert result.verdict is not None",
             )
         )
 
-    # API bursts, lengths, invariants: 100 cases.
-    for scenario in range(100):
-        cases.append(
-            mcase(
-                _next_id("CHAOS"),
-                "P3",
-                f"api_burst_{scenario}",
-                f"API burst scenario {scenario}",
-                f"scenario={scenario}",
-                "no errors",
-                "Rapid API requests and boundary lengths never error.",
-                "client: Any",
-                (
-                    "for index in range(25):\n"
+    # API bursts, lengths, invariants: 100 parametrized cases.
+    burst_sizes: tuple[int, ...] = tuple(range(1, 21))
+    boundary_cases: tuple[tuple[int, int], ...] = (
+        (1, 200),
+        (5000, 200),
+        (8192, 200),
+        (8193, 422),
+        (9000, 422),
+    )
+    for burst_size in burst_sizes:
+        for boundary_len, expected_status in boundary_cases:
+            cases.append(
+                pcase(
+                    _next_id("CHAOS"),
+                    "P3",
+                    "api_burst",
+                    f"API burst {burst_size} then length {boundary_len}",
+                    f"burst={burst_size},len={boundary_len}",
+                    "no errors",
+                    "Rapid API requests and boundary lengths never error.",
+                    ("burst_size", "boundary_len", "expected_status"),
+                    {"burst_size": "int", "boundary_len": "int", "expected_status": "int"},
+                    "client: Any",
+                    {
+                        "burst_size": burst_size,
+                        "boundary_len": boundary_len,
+                        "expected_status": expected_status,
+                    },
+                    "for index in range(burst_size):\n"
                     "    response = client.post('/moderate', json={'text': f'burst {index}', 'app_name': 'a'})\n"
                     "    assert response.status_code == 200\n"
-                    "long_response = client.post('/moderate', json={'text': 'x' * 8192, 'app_name': 'a'})\n"
-                    "assert long_response.status_code in (200, 422)\n"
-                ),
-                "ApiBursts",
+                    "long_response = client.post('/moderate', json={'text': 'x' * boundary_len, 'app_name': 'a'})\n"
+                    "assert long_response.status_code == expected_status",
+                )
             )
-        )
 
     assert len(cases) == 500, f"chaos case count {len(cases)} != 500"
     return make_files(
