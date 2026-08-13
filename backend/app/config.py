@@ -73,6 +73,14 @@ class Settings(BaseSettings):
     enable_sensitive_stop_words: bool = True
     sensitive_stop_words_dir: str = "./data/sensitive-stop-words"
 
+    # Stage 2 detector toggles (runtime-editable through the admin API)
+    enable_detector_bloom_filter: bool = True
+    enable_detector_rolling_hash: bool = True
+    enable_detector_aho_corasick: bool = True
+    enable_detector_bk_tree: bool = True
+    enable_detector_double_metaphone: bool = True
+    enable_detector_multi_language: bool = True
+
     # Detector weights (Stage 2 suspicion scoring)
     weight_detector_badwords: int = 25
     weight_detector_profanite: int = 20
