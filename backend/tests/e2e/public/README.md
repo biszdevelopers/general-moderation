@@ -326,206 +326,206 @@
 | TC-PUB-7009 | P1 | Batch size 100 scenario 7 | size=100,scenario=7 | all results | test_public_api_phase2_part_3.py |
 | TC-PUB-7010 | P1 | Batch size 100 scenario 8 | size=100,scenario=8 | all results | test_public_api_phase2_part_3.py |
 | TC-PUB-7011 | P1 | Batch size 100 scenario 9 | size=100,scenario=9 | all results | test_public_api_phase2_part_3.py |
-| TC-PUB-7017 | P2 | Validation empty text #0 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7018 | P2 | Validation empty text #1 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7019 | P2 | Validation empty text #2 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7020 | P2 | Validation empty text #3 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7021 | P2 | Validation empty text #4 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7022 | P2 | Validation empty text #5 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7023 | P2 | Validation empty text #6 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7024 | P2 | Validation empty text #7 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7025 | P2 | Validation empty text #8 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7026 | P2 | Validation empty text #9 | case=empty text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7027 | P2 | Validation null text #0 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7028 | P2 | Validation null text #1 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7029 | P2 | Validation null text #2 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7030 | P2 | Validation null text #3 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7031 | P2 | Validation null text #4 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7032 | P2 | Validation null text #5 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7033 | P2 | Validation null text #6 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7034 | P2 | Validation null text #7 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7035 | P2 | Validation null text #8 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7036 | P2 | Validation null text #9 | case=null text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7037 | P2 | Validation missing text #0 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7038 | P2 | Validation missing text #1 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7039 | P2 | Validation missing text #2 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7040 | P2 | Validation missing text #3 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7041 | P2 | Validation missing text #4 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7042 | P2 | Validation missing text #5 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7043 | P2 | Validation missing text #6 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7044 | P2 | Validation missing text #7 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7045 | P2 | Validation missing text #8 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7046 | P2 | Validation missing text #9 | case=missing text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7047 | P2 | Validation unknown field #0 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7048 | P2 | Validation unknown field #1 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7049 | P2 | Validation unknown field #2 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7050 | P2 | Validation unknown field #3 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7051 | P2 | Validation unknown field #4 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7052 | P2 | Validation unknown field #5 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7053 | P2 | Validation unknown field #6 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7054 | P2 | Validation unknown field #7 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7055 | P2 | Validation unknown field #8 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7056 | P2 | Validation unknown field #9 | case=unknown field | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7057 | P2 | Validation non-string text #0 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7058 | P2 | Validation non-string text #1 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7059 | P2 | Validation non-string text #2 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7060 | P2 | Validation non-string text #3 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7061 | P2 | Validation non-string text #4 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7062 | P2 | Validation non-string text #5 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7063 | P2 | Validation non-string text #6 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7064 | P2 | Validation non-string text #7 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7065 | P2 | Validation non-string text #8 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7066 | P2 | Validation non-string text #9 | case=non-string text | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7067 | P2 | Validation over limit #0 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7068 | P2 | Validation over limit #1 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7069 | P2 | Validation over limit #2 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7070 | P2 | Validation over limit #3 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7071 | P2 | Validation over limit #4 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7072 | P2 | Validation over limit #5 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7073 | P2 | Validation over limit #6 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7074 | P2 | Validation over limit #7 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7075 | P2 | Validation over limit #8 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7076 | P2 | Validation over limit #9 | case=over limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7077 | P2 | Validation empty batch #0 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7078 | P2 | Validation empty batch #1 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7079 | P2 | Validation empty batch #2 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7080 | P2 | Validation empty batch #3 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7081 | P2 | Validation empty batch #4 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7082 | P2 | Validation empty batch #5 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7083 | P2 | Validation empty batch #6 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7084 | P2 | Validation empty batch #7 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7085 | P2 | Validation empty batch #8 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7086 | P2 | Validation empty batch #9 | case=empty batch | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7087 | P2 | Validation bad batch item #0 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7088 | P2 | Validation bad batch item #1 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7089 | P2 | Validation bad batch item #2 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7090 | P2 | Validation bad batch item #3 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7091 | P2 | Validation bad batch item #4 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7092 | P2 | Validation bad batch item #5 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7093 | P2 | Validation bad batch item #6 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7094 | P2 | Validation bad batch item #7 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7095 | P2 | Validation bad batch item #8 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7096 | P2 | Validation bad batch item #9 | case=bad batch item | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7097 | P2 | Validation malformed json #0 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7098 | P2 | Validation malformed json #1 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7099 | P2 | Validation malformed json #2 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7100 | P2 | Validation malformed json #3 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7101 | P2 | Validation malformed json #4 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7102 | P2 | Validation malformed json #5 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7103 | P2 | Validation malformed json #6 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7104 | P2 | Validation malformed json #7 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7105 | P2 | Validation malformed json #8 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7106 | P2 | Validation malformed json #9 | case=malformed json | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7107 | P2 | Validation at limit #0 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7108 | P2 | Validation at limit #1 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7109 | P2 | Validation at limit #2 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7110 | P2 | Validation at limit #3 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7111 | P2 | Validation at limit #4 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7112 | P2 | Validation at limit #5 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7113 | P2 | Validation at limit #6 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7114 | P2 | Validation at limit #7 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7115 | P2 | Validation at limit #8 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7116 | P2 | Validation at limit #9 | case=at limit | rejected cleanly | test_public_api_phase2_part_4.py |
-| TC-PUB-7117 | P2 | Edge content #0 scenario 0 | text='emoji 😀 test' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7118 | P2 | Edge content #0 scenario 1 | text='emoji 😀 test' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7119 | P2 | Edge content #0 scenario 2 | text='emoji 😀 test' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7120 | P2 | Edge content #0 scenario 3 | text='emoji 😀 test' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7121 | P2 | Edge content #0 scenario 4 | text='emoji 😀 test' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7122 | P2 | Edge content #1 scenario 0 | text='café au lait' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7123 | P2 | Edge content #1 scenario 1 | text='café au lait' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7124 | P2 | Edge content #1 scenario 2 | text='café au lait' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7125 | P2 | Edge content #1 scenario 3 | text='café au lait' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7126 | P2 | Edge content #1 scenario 4 | text='café au lait' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7127 | P2 | Edge content #2 scenario 0 | text='ｆｕｌｌｗｉｄｔｈ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7128 | P2 | Edge content #2 scenario 1 | text='ｆｕｌｌｗｉｄｔｈ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7129 | P2 | Edge content #2 scenario 2 | text='ｆｕｌｌｗｉｄｔｈ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7130 | P2 | Edge content #2 scenario 3 | text='ｆｕｌｌｗｉｄｔｈ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7131 | P2 | Edge content #2 scenario 4 | text='ｆｕｌｌｗｉｄｔｈ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7132 | P2 | Edge content #3 scenario 0 | text='mixed 中文 eng' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7133 | P2 | Edge content #3 scenario 1 | text='mixed 中文 eng' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7134 | P2 | Edge content #3 scenario 2 | text='mixed 中文 eng' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7135 | P2 | Edge content #3 scenario 3 | text='mixed 中文 eng' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7136 | P2 | Edge content #3 scenario 4 | text='mixed 中文 eng' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7137 | P2 | Edge content #4 scenario 0 | text='tab\tseparate' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7138 | P2 | Edge content #4 scenario 1 | text='tab\tseparate' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7139 | P2 | Edge content #4 scenario 2 | text='tab\tseparate' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7140 | P2 | Edge content #4 scenario 3 | text='tab\tseparate' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7141 | P2 | Edge content #4 scenario 4 | text='tab\tseparate' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7142 | P2 | Edge content #5 scenario 0 | text='line\nbreak' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7143 | P2 | Edge content #5 scenario 1 | text='line\nbreak' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7144 | P2 | Edge content #5 scenario 2 | text='line\nbreak' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7145 | P2 | Edge content #5 scenario 3 | text='line\nbreak' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7146 | P2 | Edge content #5 scenario 4 | text='line\nbreak' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7147 | P2 | Edge content #6 scenario 0 | text='multiple   s' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7148 | P2 | Edge content #6 scenario 1 | text='multiple   s' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7149 | P2 | Edge content #6 scenario 2 | text='multiple   s' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7150 | P2 | Edge content #6 scenario 3 | text='multiple   s' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7151 | P2 | Edge content #6 scenario 4 | text='multiple   s' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7152 | P2 | Edge content #7 scenario 0 | text='!!! ??? ...' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7153 | P2 | Edge content #7 scenario 1 | text='!!! ??? ...' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7154 | P2 | Edge content #7 scenario 2 | text='!!! ??? ...' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7155 | P2 | Edge content #7 scenario 3 | text='!!! ??? ...' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7156 | P2 | Edge content #7 scenario 4 | text='!!! ??? ...' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7157 | P2 | Edge content #8 scenario 0 | text='12345 67890' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7158 | P2 | Edge content #8 scenario 1 | text='12345 67890' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7159 | P2 | Edge content #8 scenario 2 | text='12345 67890' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7160 | P2 | Edge content #8 scenario 3 | text='12345 67890' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7161 | P2 | Edge content #8 scenario 4 | text='12345 67890' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7162 | P2 | Edge content #9 scenario 0 | text='x' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7163 | P2 | Edge content #9 scenario 1 | text='x' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7164 | P2 | Edge content #9 scenario 2 | text='x' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7165 | P2 | Edge content #9 scenario 3 | text='x' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7166 | P2 | Edge content #9 scenario 4 | text='x' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7167 | P2 | Edge content #10 scenario 0 | text='ßæøåñ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7168 | P2 | Edge content #10 scenario 1 | text='ßæøåñ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7169 | P2 | Edge content #10 scenario 2 | text='ßæøåñ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7170 | P2 | Edge content #10 scenario 3 | text='ßæøåñ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7171 | P2 | Edge content #10 scenario 4 | text='ßæøåñ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7172 | P2 | Edge content #11 scenario 0 | text='\u2028hidden' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7173 | P2 | Edge content #11 scenario 1 | text='\u2028hidden' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7174 | P2 | Edge content #11 scenario 2 | text='\u2028hidden' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7175 | P2 | Edge content #11 scenario 3 | text='\u2028hidden' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7176 | P2 | Edge content #11 scenario 4 | text='\u2028hidden' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7177 | P2 | Edge content #12 scenario 0 | text='zero width \u200b' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7178 | P2 | Edge content #12 scenario 1 | text='zero width \u200b' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7179 | P2 | Edge content #12 scenario 2 | text='zero width \u200b' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7180 | P2 | Edge content #12 scenario 3 | text='zero width \u200b' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7181 | P2 | Edge content #12 scenario 4 | text='zero width \u200b' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7182 | P2 | Edge content #13 scenario 0 | text='directional ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7183 | P2 | Edge content #13 scenario 1 | text='directional ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7184 | P2 | Edge content #13 scenario 2 | text='directional ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7185 | P2 | Edge content #13 scenario 3 | text='directional ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7186 | P2 | Edge content #13 scenario 4 | text='directional ' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7187 | P2 | Edge content #14 scenario 0 | text='combining é' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7188 | P2 | Edge content #14 scenario 1 | text='combining é' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7189 | P2 | Edge content #14 scenario 2 | text='combining é' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7190 | P2 | Edge content #14 scenario 3 | text='combining é' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7191 | P2 | Edge content #14 scenario 4 | text='combining é' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7192 | P2 | Edge content #15 scenario 0 | text='русский текс' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7193 | P2 | Edge content #15 scenario 1 | text='русский текс' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7194 | P2 | Edge content #15 scenario 2 | text='русский текс' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7195 | P2 | Edge content #15 scenario 3 | text='русский текс' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7196 | P2 | Edge content #15 scenario 4 | text='русский текс' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7197 | P2 | Edge content #16 scenario 0 | text='日本語の文章' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7198 | P2 | Edge content #16 scenario 1 | text='日本語の文章' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7199 | P2 | Edge content #16 scenario 2 | text='日本語の文章' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7200 | P2 | Edge content #16 scenario 3 | text='日本語の文章' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7201 | P2 | Edge content #16 scenario 4 | text='日本語の文章' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7202 | P2 | Edge content #17 scenario 0 | text='한국어 문장' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7203 | P2 | Edge content #17 scenario 1 | text='한국어 문장' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7204 | P2 | Edge content #17 scenario 2 | text='한국어 문장' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7205 | P2 | Edge content #17 scenario 3 | text='한국어 문장' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7206 | P2 | Edge content #17 scenario 4 | text='한국어 문장' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7207 | P2 | Edge content #18 scenario 0 | text='العربية نص' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7208 | P2 | Edge content #18 scenario 1 | text='العربية نص' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7209 | P2 | Edge content #18 scenario 2 | text='العربية نص' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7210 | P2 | Edge content #18 scenario 3 | text='العربية نص' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7211 | P2 | Edge content #18 scenario 4 | text='العربية نص' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7212 | P2 | Edge content #19 scenario 0 | text='עברית טקסט' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7213 | P2 | Edge content #19 scenario 1 | text='עברית טקסט' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7214 | P2 | Edge content #19 scenario 2 | text='עברית טקסט' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7215 | P2 | Edge content #19 scenario 3 | text='עברית טקסט' | moderated | test_public_api_phase2_part_5.py |
-| TC-PUB-7216 | P2 | Edge content #19 scenario 4 | text='עברית טקסט' | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7017 | P2 | Validation over-limit text length 8193 | case=over-limit:8193 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7018 | P2 | Validation over-limit text length 8194 | case=over-limit:8194 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7019 | P2 | Validation over-limit text length 8195 | case=over-limit:8195 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7020 | P2 | Validation over-limit text length 8196 | case=over-limit:8196 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7021 | P2 | Validation over-limit text length 8197 | case=over-limit:8197 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7022 | P2 | Validation over-limit text length 8198 | case=over-limit:8198 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7023 | P2 | Validation over-limit text length 8199 | case=over-limit:8199 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7024 | P2 | Validation over-limit text length 8200 | case=over-limit:8200 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7025 | P2 | Validation over-limit text length 8201 | case=over-limit:8201 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7026 | P2 | Validation over-limit text length 8202 | case=over-limit:8202 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7027 | P2 | Validation over-limit text length 8203 | case=over-limit:8203 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7028 | P2 | Validation over-limit text length 8204 | case=over-limit:8204 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7029 | P2 | Validation over-limit text length 8205 | case=over-limit:8205 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7030 | P2 | Validation over-limit text length 8206 | case=over-limit:8206 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7031 | P2 | Validation over-limit text length 8207 | case=over-limit:8207 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7032 | P2 | Validation over-limit text length 8208 | case=over-limit:8208 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7033 | P2 | Validation over-limit text length 8209 | case=over-limit:8209 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7034 | P2 | Validation over-limit text length 8210 | case=over-limit:8210 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7035 | P2 | Validation over-limit text length 8211 | case=over-limit:8211 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7036 | P2 | Validation over-limit text length 8212 | case=over-limit:8212 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7037 | P2 | Validation over-limit text length 8213 | case=over-limit:8213 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7038 | P2 | Validation over-limit text length 8214 | case=over-limit:8214 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7039 | P2 | Validation over-limit text length 8215 | case=over-limit:8215 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7040 | P2 | Validation over-limit text length 8216 | case=over-limit:8216 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7041 | P2 | Validation over-limit text length 8217 | case=over-limit:8217 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7042 | P2 | Validation over-limit text length 8218 | case=over-limit:8218 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7043 | P2 | Validation over-limit text length 8219 | case=over-limit:8219 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7044 | P2 | Validation over-limit text length 8220 | case=over-limit:8220 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7045 | P2 | Validation over-limit text length 8221 | case=over-limit:8221 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7046 | P2 | Validation over-limit text length 8222 | case=over-limit:8222 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7047 | P2 | Validation over-limit text length 8223 | case=over-limit:8223 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7048 | P2 | Validation over-limit text length 8224 | case=over-limit:8224 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7049 | P2 | Validation over-limit text length 8225 | case=over-limit:8225 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7050 | P2 | Validation over-limit text length 8226 | case=over-limit:8226 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7051 | P2 | Validation over-limit text length 8227 | case=over-limit:8227 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7052 | P2 | Validation over-limit text length 8228 | case=over-limit:8228 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7053 | P2 | Validation over-limit text length 8229 | case=over-limit:8229 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7054 | P2 | Validation over-limit text length 8230 | case=over-limit:8230 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7055 | P2 | Validation over-limit text length 8231 | case=over-limit:8231 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7056 | P2 | Validation over-limit text length 8232 | case=over-limit:8232 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7057 | P2 | Validation over-limit text length 8233 | case=over-limit:8233 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7058 | P2 | Validation over-limit text length 8234 | case=over-limit:8234 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7059 | P2 | Validation over-limit text length 8235 | case=over-limit:8235 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7060 | P2 | Validation over-limit text length 8236 | case=over-limit:8236 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7061 | P2 | Validation over-limit text length 8237 | case=over-limit:8237 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7062 | P2 | Validation over-limit text length 8238 | case=over-limit:8238 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7063 | P2 | Validation over-limit text length 8239 | case=over-limit:8239 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7064 | P2 | Validation over-limit text length 8240 | case=over-limit:8240 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7065 | P2 | Validation over-limit text length 8241 | case=over-limit:8241 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7066 | P2 | Validation over-limit text length 8242 | case=over-limit:8242 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7067 | P2 | Validation over-limit text length 8243 | case=over-limit:8243 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7068 | P2 | Validation over-limit text length 8244 | case=over-limit:8244 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7069 | P2 | Validation over-limit text length 8245 | case=over-limit:8245 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7070 | P2 | Validation over-limit text length 8246 | case=over-limit:8246 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7071 | P2 | Validation over-limit text length 8247 | case=over-limit:8247 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7072 | P2 | Validation over-limit text length 8248 | case=over-limit:8248 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7073 | P2 | Validation over-limit text length 8249 | case=over-limit:8249 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7074 | P2 | Validation over-limit text length 8250 | case=over-limit:8250 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7075 | P2 | Validation over-limit text length 8251 | case=over-limit:8251 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7076 | P2 | Validation over-limit text length 8252 | case=over-limit:8252 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7077 | P2 | Validation over-limit text length 8253 | case=over-limit:8253 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7078 | P2 | Validation over-limit text length 8254 | case=over-limit:8254 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7079 | P2 | Validation over-limit text length 8255 | case=over-limit:8255 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7080 | P2 | Validation over-limit text length 8256 | case=over-limit:8256 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7081 | P2 | Validation over-limit text length 8257 | case=over-limit:8257 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7082 | P2 | Validation over-limit text length 8258 | case=over-limit:8258 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7083 | P2 | Validation over-limit text length 8259 | case=over-limit:8259 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7084 | P2 | Validation over-limit text length 8260 | case=over-limit:8260 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7085 | P2 | Validation over-limit text length 8261 | case=over-limit:8261 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7086 | P2 | Validation over-limit text length 8262 | case=over-limit:8262 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7087 | P2 | Validation over-limit text length 8263 | case=over-limit:8263 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7088 | P2 | Validation over-limit text length 8264 | case=over-limit:8264 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7089 | P2 | Validation over-limit text length 8265 | case=over-limit:8265 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7090 | P2 | Validation over-limit text length 8266 | case=over-limit:8266 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7091 | P2 | Validation over-limit text length 8267 | case=over-limit:8267 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7092 | P2 | Validation over-limit text length 8268 | case=over-limit:8268 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7093 | P2 | Validation over-limit text length 8269 | case=over-limit:8269 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7094 | P2 | Validation over-limit text length 8270 | case=over-limit:8270 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7095 | P2 | Validation over-limit text length 8271 | case=over-limit:8271 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7096 | P2 | Validation over-limit text length 8272 | case=over-limit:8272 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7097 | P2 | Validation over-limit text length 8273 | case=over-limit:8273 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7098 | P2 | Validation over-limit text length 8274 | case=over-limit:8274 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7099 | P2 | Validation over-limit text length 8275 | case=over-limit:8275 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7100 | P2 | Validation over-limit text length 8276 | case=over-limit:8276 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7101 | P2 | Validation over-limit text length 8277 | case=over-limit:8277 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7102 | P2 | Validation over-limit text length 8278 | case=over-limit:8278 | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7103 | P2 | Validation structural '{"text": ""}' | case=structural:'{"text": ""}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7104 | P2 | Validation structural '{"text": null}' | case=structural:'{"text": null}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7105 | P2 | Validation structural '{}' | case=structural:'{}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7106 | P2 | Validation structural '{"nope": 1}' | case=structural:'{"nope": 1}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7107 | P2 | Validation structural '{"text": 12345}' | case=structural:'{"text": 12345}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7108 | P2 | Validation structural '{"items": []}' | case=structural:'{"items": []}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7109 | P2 | Validation structural '{"items": [{"nope": 1}]}' | case=structural:'{"items": [{"nope": 1}]}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7110 | P2 | Validation structural '{not valid json' | case=structural:'{not valid json' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7111 | P2 | Validation structural '{"text": "   "}' | case=structural:'{"text": "   "}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7112 | P2 | Validation structural '{"text": "x"}' | case=structural:'{"text": "x"}' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7113 | P2 | Validation structural '{"text": "xxxxxxxxxxxxxx' | case=structural:'{"text": "xxxxxxxxxxxxxx' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7114 | P2 | Validation structural '{"text": "xxxxxxxxxxxxxx' | case=structural:'{"text": "xxxxxxxxxxxxxx' | rejected cleanly | test_public_api_phase2_part_4.py |
+| TC-PUB-7115 | P2 | Batch validation 200 | case=batch:1415 | bounded | test_public_api_phase2_part_4.py |
+| TC-PUB-7116 | P2 | Batch validation 422 | case=batch:1429 | bounded | test_public_api_phase2_part_4.py |
+| TC-PUB-7117 | P2 | Edge content #0 plain | text='emoji 😀 test',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7118 | P2 | Edge content #0 doubled | text='emoji 😀 test',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7119 | P2 | Edge content #0 tripled | text='emoji 😀 test',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7120 | P2 | Edge content #0 prefixed | text='emoji 😀 test',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7121 | P2 | Edge content #0 suffixed | text='emoji 😀 test',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7122 | P2 | Edge content #1 plain | text='café au lait',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7123 | P2 | Edge content #1 doubled | text='café au lait',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7124 | P2 | Edge content #1 tripled | text='café au lait',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7125 | P2 | Edge content #1 prefixed | text='café au lait',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7126 | P2 | Edge content #1 suffixed | text='café au lait',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7127 | P2 | Edge content #2 plain | text='ｆｕｌｌｗｉｄｔｈ',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7128 | P2 | Edge content #2 doubled | text='ｆｕｌｌｗｉｄｔｈ',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7129 | P2 | Edge content #2 tripled | text='ｆｕｌｌｗｉｄｔｈ',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7130 | P2 | Edge content #2 prefixed | text='ｆｕｌｌｗｉｄｔｈ',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7131 | P2 | Edge content #2 suffixed | text='ｆｕｌｌｗｉｄｔｈ',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7132 | P2 | Edge content #3 plain | text='mixed 中文 eng',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7133 | P2 | Edge content #3 doubled | text='mixed 中文 eng',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7134 | P2 | Edge content #3 tripled | text='mixed 中文 eng',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7135 | P2 | Edge content #3 prefixed | text='mixed 中文 eng',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7136 | P2 | Edge content #3 suffixed | text='mixed 中文 eng',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7137 | P2 | Edge content #4 plain | text='tab\tseparate',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7138 | P2 | Edge content #4 doubled | text='tab\tseparate',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7139 | P2 | Edge content #4 tripled | text='tab\tseparate',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7140 | P2 | Edge content #4 prefixed | text='tab\tseparate',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7141 | P2 | Edge content #4 suffixed | text='tab\tseparate',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7142 | P2 | Edge content #5 plain | text='line\nbreak',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7143 | P2 | Edge content #5 doubled | text='line\nbreak',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7144 | P2 | Edge content #5 tripled | text='line\nbreak',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7145 | P2 | Edge content #5 prefixed | text='line\nbreak',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7146 | P2 | Edge content #5 suffixed | text='line\nbreak',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7147 | P2 | Edge content #6 plain | text='multiple   s',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7148 | P2 | Edge content #6 doubled | text='multiple   s',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7149 | P2 | Edge content #6 tripled | text='multiple   s',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7150 | P2 | Edge content #6 prefixed | text='multiple   s',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7151 | P2 | Edge content #6 suffixed | text='multiple   s',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7152 | P2 | Edge content #7 plain | text='!!! ??? ...',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7153 | P2 | Edge content #7 doubled | text='!!! ??? ...',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7154 | P2 | Edge content #7 tripled | text='!!! ??? ...',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7155 | P2 | Edge content #7 prefixed | text='!!! ??? ...',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7156 | P2 | Edge content #7 suffixed | text='!!! ??? ...',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7157 | P2 | Edge content #8 plain | text='12345 67890',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7158 | P2 | Edge content #8 doubled | text='12345 67890',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7159 | P2 | Edge content #8 tripled | text='12345 67890',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7160 | P2 | Edge content #8 prefixed | text='12345 67890',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7161 | P2 | Edge content #8 suffixed | text='12345 67890',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7162 | P2 | Edge content #9 plain | text='x',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7163 | P2 | Edge content #9 doubled | text='x',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7164 | P2 | Edge content #9 tripled | text='x',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7165 | P2 | Edge content #9 prefixed | text='x',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7166 | P2 | Edge content #9 suffixed | text='x',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7167 | P2 | Edge content #10 plain | text='ßæøåñ',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7168 | P2 | Edge content #10 doubled | text='ßæøåñ',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7169 | P2 | Edge content #10 tripled | text='ßæøåñ',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7170 | P2 | Edge content #10 prefixed | text='ßæøåñ',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7171 | P2 | Edge content #10 suffixed | text='ßæøåñ',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7172 | P2 | Edge content #11 plain | text='\u2028hidden',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7173 | P2 | Edge content #11 doubled | text='\u2028hidden',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7174 | P2 | Edge content #11 tripled | text='\u2028hidden',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7175 | P2 | Edge content #11 prefixed | text='\u2028hidden',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7176 | P2 | Edge content #11 suffixed | text='\u2028hidden',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7177 | P2 | Edge content #12 plain | text='zero width \u200b',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7178 | P2 | Edge content #12 doubled | text='zero width \u200b',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7179 | P2 | Edge content #12 tripled | text='zero width \u200b',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7180 | P2 | Edge content #12 prefixed | text='zero width \u200b',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7181 | P2 | Edge content #12 suffixed | text='zero width \u200b',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7182 | P2 | Edge content #13 plain | text='directional ',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7183 | P2 | Edge content #13 doubled | text='directional ',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7184 | P2 | Edge content #13 tripled | text='directional ',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7185 | P2 | Edge content #13 prefixed | text='directional ',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7186 | P2 | Edge content #13 suffixed | text='directional ',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7187 | P2 | Edge content #14 plain | text='combining é',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7188 | P2 | Edge content #14 doubled | text='combining é',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7189 | P2 | Edge content #14 tripled | text='combining é',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7190 | P2 | Edge content #14 prefixed | text='combining é',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7191 | P2 | Edge content #14 suffixed | text='combining é',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7192 | P2 | Edge content #15 plain | text='русский текс',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7193 | P2 | Edge content #15 doubled | text='русский текс',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7194 | P2 | Edge content #15 tripled | text='русский текс',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7195 | P2 | Edge content #15 prefixed | text='русский текс',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7196 | P2 | Edge content #15 suffixed | text='русский текс',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7197 | P2 | Edge content #16 plain | text='日本語の文章',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7198 | P2 | Edge content #16 doubled | text='日本語の文章',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7199 | P2 | Edge content #16 tripled | text='日本語の文章',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7200 | P2 | Edge content #16 prefixed | text='日本語の文章',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7201 | P2 | Edge content #16 suffixed | text='日本語の文章',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7202 | P2 | Edge content #17 plain | text='한국어 문장',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7203 | P2 | Edge content #17 doubled | text='한국어 문장',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7204 | P2 | Edge content #17 tripled | text='한국어 문장',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7205 | P2 | Edge content #17 prefixed | text='한국어 문장',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7206 | P2 | Edge content #17 suffixed | text='한국어 문장',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7207 | P2 | Edge content #18 plain | text='العربية نص',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7208 | P2 | Edge content #18 doubled | text='العربية نص',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7209 | P2 | Edge content #18 tripled | text='العربية نص',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7210 | P2 | Edge content #18 prefixed | text='العربية نص',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7211 | P2 | Edge content #18 suffixed | text='العربية نص',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7212 | P2 | Edge content #19 plain | text='עברית טקסט',variant=plain | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7213 | P2 | Edge content #19 doubled | text='עברית טקסט',variant=doubled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7214 | P2 | Edge content #19 tripled | text='עברית טקסט',variant=tripled | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7215 | P2 | Edge content #19 prefixed | text='עברית טקסט',variant=prefixed | moderated | test_public_api_phase2_part_5.py |
+| TC-PUB-7216 | P2 | Edge content #19 suffixed | text='עברית טקסט',variant=suffixed | moderated | test_public_api_phase2_part_5.py |
 | TC-PUB-7217 | P2 | Profiling flow scenario 0 | user=pubuser0 | rows recorded | test_public_api_phase2_part_6.py |
 | TC-PUB-7218 | P2 | Profiling flow scenario 1 | user=pubuser1 | rows recorded | test_public_api_phase2_part_6.py |
 | TC-PUB-7219 | P2 | Profiling flow scenario 2 | user=pubuser2 | rows recorded | test_public_api_phase2_part_6.py |
