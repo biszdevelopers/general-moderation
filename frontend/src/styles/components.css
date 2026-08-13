@@ -121,3 +121,68 @@
     align-items: center;
     min-height: 320px;
 }
+
+/* Test workbench styles. */
+
+.workbench-card {
+    margin-bottom: 20px;
+}
+
+.workbench-tabs .ant-tabs-nav {
+    margin-bottom: 16px;
+}
+
+.workbench-result {
+    padding: 4px 2px 8px;
+}
+
+.workbench-verdict {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 3px 10px;
+}
+
+.workbench-pre {
+    max-height: 280px;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0;
+}
+
+.ratio-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 140px;
+    padding-top: 8px;
+    overflow-x: auto;
+}
+
+.ratio-chart__col {
+    flex: 1 0 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    gap: 4px;
+}
+
+.ratio-chart__bar {
+    width: 100%;
+    max-width: 26px;
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+}
+
+.ratio-chart__label {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
