@@ -14,9 +14,10 @@ import {
 import { PlayCircleOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { useAppContext } from "../contexts/AppContext";
 import { useSseStream } from "../hooks/useSseStream";
-import { ModerateDetailResult } from "../types";
+import { ModerateDetailRequest, ModerateDetailResult } from "../types";
 import { ConfigPlayground } from "./TestWorkbench/ConfigPlayground";
 import { DashboardPanel } from "./TestWorkbench/DashboardPanel";
+import { LiveStreamPanel } from "./TestWorkbench/LiveStreamPanel";
 import { LoadTestPanel } from "./TestWorkbench/LoadTestPanel";
 import { PipelineVisualization } from "./TestWorkbench/PipelineVisualization";
 import { UserProfileViewer } from "./TestWorkbench/UserProfileViewer";
@@ -44,12 +45,12 @@ export function TestWorkbench(): ReactElement {
         }
         setResult(null);
         reset();
-        const payload: { text: string; user_id: string; app_name: string } = {
+        const payload: ModerateDetailRequest = {
             text,
             user_id: userId.trim() || `wb-${Date.now().toString(36)}`,
             app_name: appName,
         };
-        const streamResult = await start((onEvent) =>
+        const streamResult: unknown = await start((onEvent) =>
             testApiService.moderateDetail(payload, onEvent),
         );
         if (streamResult !== null) {
@@ -123,11 +124,11 @@ export function TestWorkbench(): ReactElement {
             )}
             <Tabs
                 className="workbench-tabs"
-                defaultActiveKey="moderate"
+                defaultActiveKey="pipeline"
                 items={[
                     {
-                        key: "moderate",
-                        label: "Interactive Test",
+                        key: "pipeline",
+                        label: "Pipeline Trace",
                         children: (
                             <PipelineVisualization
                                 events={events}
@@ -137,13 +138,18 @@ export function TestWorkbench(): ReactElement {
                         ),
                     },
                     {
+                        key: "stream",
+                        label: "Live Stream",
+                        children: <LiveStreamPanel events={events} running={running} />,
+                    },
+                    {
                         key: "load",
                         label: "Load Test",
                         children: <LoadTestPanel />,
                     },
                     {
                         key: "config",
-                        label: "Configuration",
+                        label: "Detector Settings",
                         children: <ConfigPlayground />,
                     },
                     {
