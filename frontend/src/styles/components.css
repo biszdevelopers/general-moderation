@@ -135,6 +135,37 @@
     min-height: 320px;
 }
 
+/* Notification bell */
+
+.notification-bell__panel {
+    width: 340px;
+}
+
+.notification-bell__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 8px;
+}
+
+.notification-bell__loading {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.notification-bell__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.notification-bell__title .ant-typography {
+    flex: 1;
+    min-width: 0;
+}
+
 /* Test workbench styles. */
 
 .workbench-card {
