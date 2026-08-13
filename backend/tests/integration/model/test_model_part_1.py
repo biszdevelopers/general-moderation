@@ -325,7 +325,7 @@ class TestPromptBuilding(BaseTest):
         detector: LlamaCppDetector = _detector(tmp_path)
         detector._chat_template = None
         prompt: str = detector._build_prompt("hello")
-        assert "system" in prompt.lower() or "moderation" in prompt.lower()
+        assert "system" in prompt.lower()
 
     def test_fallback_prompt_sanitizes(self, tmp_path: Path) -> None:
         """The fallback prompt carries the sanitized payload."""
