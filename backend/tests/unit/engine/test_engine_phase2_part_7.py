@@ -8,1051 +8,199 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from app.engine.moderation_engine import ModerationEngine
 from app.models.request import BatchItem, BatchModerationRequest, ModerationRequest
 from app.models.response import ModerationResponse
 from tests.base_test import BaseTest
 
+_CACHE_TTL_CLOCK_CASES: tuple[tuple[int, bool, int], ...] = (
+    (120, False, 1801,),
+    (300, False, 1802,),
+    (600, False, 1803,),
+    (900, False, 1804,),
+    (1800, False, 1805,),
+    (3600, False, 1806,),
+    (7200, False, 1807,),
+    (86400, False, 1808,),
+    (172800, False, 1809,),
+)
 
 class TestCacheTtlClock(BaseTest):
-    """CacheTtlClock scenarios."""
+    """Cached results expire once the timestamp passes the TTL."""
 
-    def test_cache_ttl_clock_21_1801(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
+    @pytest.mark.parametrize(('offset', 'expected_cached', 'uid',), _CACHE_TTL_CLOCK_CASES)
+    def test_cache_ttl_clock(self, engine: ModerationEngine, offset: int, expected_cached: bool, uid: int) -> None:
+        """Cached results expire once the timestamp passes the TTL."""
+        engine.moderate(ModerationRequest(text='clock cache', app_name='a'))
+        key = engine._get_cache_key('clock cache')
+        assert engine._get_cached(key) is not None
+        engine._cache_timestamps[key] -= engine._cache_ttl + offset
+        if expected_cached:
+            assert engine._get_cached(key) is not None
+        else:
+            assert engine._get_cached(key) is None
 
-    def test_cache_ttl_clock_22_1802(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
 
-    def test_cache_ttl_clock_23_1803(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_24_1804(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_25_1805(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_26_1806(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_27_1807(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_28_1808(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
-    def test_cache_ttl_clock_29_1809(self, engine: ModerationEngine) -> None:
-        """Cached results remain bounded across clock advancement."""
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        self.advance_hours(2)
-        engine.moderate(ModerationRequest(text="clock cache", app_name="a"))
-        assert len(engine._cache) <= engine._cache_max_size
-        assert engine._cache_timestamps is not None
-
+_BATCH_MIXED_CASES: tuple[tuple[tuple[object, ...], int], ...] = (
+    (('clean message here', 'you are a zaphrin',), 1810,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now',), 1811,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now', 'ordinary daily update',), 1812,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now', 'ordinary daily update', 'i will hurt you badly',), 1813,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now', 'ordinary daily update', 'i will hurt you badly', 'free gift cards',), 1814,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now', 'ordinary daily update', 'i will hurt you badly', 'free gift cards',), 1815,),
+    (('clean message here', 'you are a zaphrin', 'buy cheap pills now', 'ordinary daily update', 'i will hurt you badly', 'free gift cards',), 1816,),
+)
 
 class TestBatchMixed(BaseTest):
-    """BatchMixed scenarios."""
+    """Mixed-content batches return a valid verdict per item."""
 
-    def test_batch_mixed_2_1810(self, engine: ModerationEngine, word_bank: Any) -> None:
+    @pytest.mark.parametrize(('items', 'uid',), _BATCH_MIXED_CASES)
+    def test_batch_mixed(self, engine: ModerationEngine, word_bank: Any, items: tuple[object, ...], uid: int) -> None:
         """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
+        word_bank.add_word('zaphrin')
         engine.refresh_detectors()
-        items = ["clean message here", "you are a zaphrin"]
         batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
+            items=[BatchItem(text=text, app_name='a') for text in items]
         )
         response = engine.moderate_batch(batch)
         assert len(response.results) == len(items)
         for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_3_1811(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = ["clean message here", "you are a zaphrin", "buy cheap pills now"]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_4_1812(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = [
-            "clean message here",
-            "you are a zaphrin",
-            "buy cheap pills now",
-            "ordinary daily update",
-        ]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_5_1813(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = [
-            "clean message here",
-            "you are a zaphrin",
-            "buy cheap pills now",
-            "ordinary daily update",
-            "i will hurt you badly",
-        ]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_6_1814(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = [
-            "clean message here",
-            "you are a zaphrin",
-            "buy cheap pills now",
-            "ordinary daily update",
-            "i will hurt you badly",
-            "free gift cards",
-        ]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_7_1815(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = [
-            "clean message here",
-            "you are a zaphrin",
-            "buy cheap pills now",
-            "ordinary daily update",
-            "i will hurt you badly",
-            "free gift cards",
-        ]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
-
-    def test_batch_mixed_8_1816(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """Mixed-content batches return a valid verdict per item."""
-        word_bank.add_word("zaphrin")
-        engine.refresh_detectors()
-        items = [
-            "clean message here",
-            "you are a zaphrin",
-            "buy cheap pills now",
-            "ordinary daily update",
-            "i will hurt you badly",
-            "free gift cards",
-        ]
-        batch: BatchModerationRequest = BatchModerationRequest(
-            items=[BatchItem(text=text, app_name="a") for text in items]
-        )
-        response = engine.moderate_batch(batch)
-        assert len(response.results) == len(items)
-        for result in response.results:
-            assert result.verdict.value in ("PASS", "BLOCK", "REVIEW")
+            assert result.verdict.value in ('PASS', 'BLOCK', 'REVIEW')
 
 
-class TestRefreshScenarios(BaseTest):
-    """RefreshScenarios scenarios."""
+_REFRESH_SCENARIO_CASES: tuple[tuple[int, int], ...] = (
+    (1, 1817,),
+    (2, 1818,),
+    (3, 1819,),
+    (4, 1820,),
+    (5, 1821,),
+    (6, 1822,),
+    (7, 1823,),
+    (8, 1824,),
+    (9, 1825,),
+    (10, 1826,),
+    (11, 1827,),
+    (12, 1828,),
+    (13, 1829,),
+    (14, 1830,),
+    (15, 1831,),
+    (16, 1832,),
+    (17, 1833,),
+    (18, 1834,),
+    (19, 1835,),
+    (20, 1836,),
+    (21, 1837,),
+    (22, 1838,),
+    (23, 1839,),
+    (24, 1840,),
+    (25, 1841,),
+    (26, 1842,),
+    (27, 1843,),
+    (28, 1844,),
+    (29, 1845,),
+    (30, 1846,),
+)
 
-    def test_refresh_scenario_0_1817(self, engine: ModerationEngine, word_bank: Any) -> None:
+class TestRefreshScenario(BaseTest):
+    """refresh_detectors clears the cache and keeps the roster."""
+
+    @pytest.mark.parametrize(('n_texts', 'uid',), _REFRESH_SCENARIO_CASES)
+    def test_refresh_scenario(self, engine: ModerationEngine, word_bank: Any, n_texts: int, uid: int) -> None:
         """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
+        for index in range(n_texts):
+            engine.moderate(ModerationRequest(text=f'pre refresh {index}', app_name='a'))
+        assert len(engine._cache) == min(n_texts, engine._cache_max_size)
+        word_bank.add_word('refreshword')
         engine.refresh_detectors()
         assert len(engine._cache) == 0
         assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
 
-    def test_refresh_scenario_1_1818(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
 
-    def test_refresh_scenario_2_1819(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_3_1820(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_4_1821(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_5_1822(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_6_1823(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_7_1824(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_8_1825(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_9_1826(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_10_1827(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_11_1828(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_12_1829(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_13_1830(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_14_1831(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_15_1832(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_16_1833(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_17_1834(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_18_1835(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_19_1836(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_20_1837(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_21_1838(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_22_1839(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_23_1840(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_24_1841(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_25_1842(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_26_1843(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_27_1844(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_28_1845(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
-    def test_refresh_scenario_29_1846(self, engine: ModerationEngine, word_bank: Any) -> None:
-        """refresh_detectors clears the cache and keeps the roster."""
-        engine.moderate(ModerationRequest(text="pre refresh", app_name="a"))
-        word_bank.add_word("refreshword")
-        engine.refresh_detectors()
-        assert len(engine._cache) == 0
-        assert len(engine._detectors) >= 4
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(text="post refresh content", app_name="a")
-        )
-        assert result.verdict is not None
-
+_PROFILER_INTEGRATION_CASES: tuple[tuple[str, str, int], ...] = (
+    ('p2user0', 'profile 0', 1847,),
+    ('p2user1', 'profile 1', 1848,),
+    ('p2user2', 'profile 2', 1849,),
+    ('p2user3', 'profile 3', 1850,),
+    ('p2user4', 'profile 4', 1851,),
+    ('p2user5', 'profile 5', 1852,),
+    ('p2user6', 'profile 6', 1853,),
+    ('p2user7', 'profile 7', 1854,),
+    ('p2user8', 'profile 8', 1855,),
+    ('p2user9', 'profile 9', 1856,),
+    ('p2user10', 'profile 10', 1857,),
+    ('p2user11', 'profile 11', 1858,),
+    ('p2user12', 'profile 12', 1859,),
+    ('p2user13', 'profile 13', 1860,),
+    ('p2user14', 'profile 14', 1861,),
+    ('p2user15', 'profile 15', 1862,),
+    ('p2user16', 'profile 16', 1863,),
+    ('p2user17', 'profile 17', 1864,),
+    ('p2user18', 'profile 18', 1865,),
+    ('p2user19', 'profile 19', 1866,),
+    ('p2user20', 'profile 20', 1867,),
+    ('p2user21', 'profile 21', 1868,),
+    ('p2user22', 'profile 22', 1869,),
+    ('p2user23', 'profile 23', 1870,),
+    ('p2user24', 'profile 24', 1871,),
+    ('p2user25', 'profile 25', 1872,),
+    ('p2user26', 'profile 26', 1873,),
+    ('p2user27', 'profile 27', 1874,),
+    ('p2user28', 'profile 28', 1875,),
+    ('p2user29', 'profile 29', 1876,),
+    ('p2user30', 'profile 30', 1877,),
+    ('p2user31', 'profile 31', 1878,),
+    ('p2user32', 'profile 32', 1879,),
+    ('p2user33', 'profile 33', 1880,),
+    ('p2user34', 'profile 34', 1881,),
+    ('p2user35', 'profile 35', 1882,),
+    ('p2user36', 'profile 36', 1883,),
+    ('p2user37', 'profile 37', 1884,),
+    ('p2user38', 'profile 38', 1885,),
+    ('p2user39', 'profile 39', 1886,),
+)
 
 class TestProfilerIntegration(BaseTest):
-    """ProfilerIntegration scenarios."""
+    """Engine moderation records daily profiling rows."""
 
-    def test_profiler_integration_0_1847(self, engine: ModerationEngine) -> None:
+    @pytest.mark.parametrize(('user_id', 'text', 'uid',), _PROFILER_INTEGRATION_CASES)
+    def test_profiler_integration(self, engine: ModerationEngine, user_id: str, text: str, uid: int) -> None:
         """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 0", app_name="app", user_id="p2user0"))
-        profile = engine._profiler.get_profile("app", "p2user0")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_1_1848(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 1", app_name="app", user_id="p2user1"))
-        profile = engine._profiler.get_profile("app", "p2user1")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_2_1849(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 2", app_name="app", user_id="p2user2"))
-        profile = engine._profiler.get_profile("app", "p2user2")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_3_1850(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 3", app_name="app", user_id="p2user3"))
-        profile = engine._profiler.get_profile("app", "p2user3")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_4_1851(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 4", app_name="app", user_id="p2user4"))
-        profile = engine._profiler.get_profile("app", "p2user4")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_5_1852(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 5", app_name="app", user_id="p2user5"))
-        profile = engine._profiler.get_profile("app", "p2user5")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_6_1853(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 6", app_name="app", user_id="p2user6"))
-        profile = engine._profiler.get_profile("app", "p2user6")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_7_1854(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 7", app_name="app", user_id="p2user7"))
-        profile = engine._profiler.get_profile("app", "p2user7")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_8_1855(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 8", app_name="app", user_id="p2user8"))
-        profile = engine._profiler.get_profile("app", "p2user8")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_9_1856(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 9", app_name="app", user_id="p2user9"))
-        profile = engine._profiler.get_profile("app", "p2user9")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_10_1857(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 10", app_name="app", user_id="p2user10"))
-        profile = engine._profiler.get_profile("app", "p2user10")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_11_1858(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 11", app_name="app", user_id="p2user11"))
-        profile = engine._profiler.get_profile("app", "p2user11")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_12_1859(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 12", app_name="app", user_id="p2user12"))
-        profile = engine._profiler.get_profile("app", "p2user12")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_13_1860(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 13", app_name="app", user_id="p2user13"))
-        profile = engine._profiler.get_profile("app", "p2user13")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_14_1861(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 14", app_name="app", user_id="p2user14"))
-        profile = engine._profiler.get_profile("app", "p2user14")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_15_1862(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 15", app_name="app", user_id="p2user15"))
-        profile = engine._profiler.get_profile("app", "p2user15")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_16_1863(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 16", app_name="app", user_id="p2user16"))
-        profile = engine._profiler.get_profile("app", "p2user16")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_17_1864(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 17", app_name="app", user_id="p2user17"))
-        profile = engine._profiler.get_profile("app", "p2user17")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_18_1865(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 18", app_name="app", user_id="p2user18"))
-        profile = engine._profiler.get_profile("app", "p2user18")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_19_1866(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 19", app_name="app", user_id="p2user19"))
-        profile = engine._profiler.get_profile("app", "p2user19")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_20_1867(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 20", app_name="app", user_id="p2user20"))
-        profile = engine._profiler.get_profile("app", "p2user20")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_21_1868(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 21", app_name="app", user_id="p2user21"))
-        profile = engine._profiler.get_profile("app", "p2user21")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_22_1869(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 22", app_name="app", user_id="p2user22"))
-        profile = engine._profiler.get_profile("app", "p2user22")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_23_1870(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 23", app_name="app", user_id="p2user23"))
-        profile = engine._profiler.get_profile("app", "p2user23")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_24_1871(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 24", app_name="app", user_id="p2user24"))
-        profile = engine._profiler.get_profile("app", "p2user24")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_25_1872(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 25", app_name="app", user_id="p2user25"))
-        profile = engine._profiler.get_profile("app", "p2user25")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_26_1873(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 26", app_name="app", user_id="p2user26"))
-        profile = engine._profiler.get_profile("app", "p2user26")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_27_1874(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 27", app_name="app", user_id="p2user27"))
-        profile = engine._profiler.get_profile("app", "p2user27")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_28_1875(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 28", app_name="app", user_id="p2user28"))
-        profile = engine._profiler.get_profile("app", "p2user28")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_29_1876(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 29", app_name="app", user_id="p2user29"))
-        profile = engine._profiler.get_profile("app", "p2user29")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_30_1877(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 30", app_name="app", user_id="p2user30"))
-        profile = engine._profiler.get_profile("app", "p2user30")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_31_1878(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 31", app_name="app", user_id="p2user31"))
-        profile = engine._profiler.get_profile("app", "p2user31")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_32_1879(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 32", app_name="app", user_id="p2user32"))
-        profile = engine._profiler.get_profile("app", "p2user32")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_33_1880(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 33", app_name="app", user_id="p2user33"))
-        profile = engine._profiler.get_profile("app", "p2user33")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_34_1881(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 34", app_name="app", user_id="p2user34"))
-        profile = engine._profiler.get_profile("app", "p2user34")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_35_1882(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 35", app_name="app", user_id="p2user35"))
-        profile = engine._profiler.get_profile("app", "p2user35")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_36_1883(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 36", app_name="app", user_id="p2user36"))
-        profile = engine._profiler.get_profile("app", "p2user36")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_37_1884(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 37", app_name="app", user_id="p2user37"))
-        profile = engine._profiler.get_profile("app", "p2user37")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_38_1885(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 38", app_name="app", user_id="p2user38"))
-        profile = engine._profiler.get_profile("app", "p2user38")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
-
-    def test_profiler_integration_39_1886(self, engine: ModerationEngine) -> None:
-        """Engine moderation records daily profiling rows."""
-        engine.moderate(ModerationRequest(text="profile 39", app_name="app", user_id="p2user39"))
-        profile = engine._profiler.get_profile("app", "p2user39")
-        assert profile["daily"]
-        assert profile["daily"][0]["total_msgs"] >= 1
-        assert profile["ratio"] == 0.0
+        engine.moderate(ModerationRequest(text=text, app_name='app', user_id=user_id))
+        profile = engine._profiler.get_profile('app', user_id)
+        assert profile['daily']
+        assert profile['daily'][0]['total_msgs'] >= 1
+        assert profile['ratio'] == 0.0
 
 
-class TestResponseInvariants(BaseTest):
-    """ResponseInvariants scenarios."""
+_RESPONSE_INVARIANT_CASES: tuple[tuple[str, str, int], ...] = (
+    ('resp-0', 'invariant 0', 1887,),
+    ('resp-1', 'invariant 1', 1888,),
+    ('resp-2', 'invariant 2', 1889,),
+    ('resp-3', 'invariant 3', 1890,),
+    ('resp-4', 'invariant 4', 1891,),
+    ('resp-5', 'invariant 5', 1892,),
+    ('resp-6', 'invariant 6', 1893,),
+    ('resp-7', 'invariant 7', 1894,),
+    ('resp-8', 'invariant 8', 1895,),
+    ('resp-9', 'invariant 9', 1896,),
+    ('resp-10', 'invariant 10', 1897,),
+    ('resp-11', 'invariant 11', 1898,),
+    ('resp-12', 'invariant 12', 1899,),
+    ('resp-13', 'invariant 13', 1900,),
+)
 
-    def test_response_invariant_0_1887(self, engine: ModerationEngine) -> None:
+class TestResponseInvariant(BaseTest):
+    """Every moderation response honors its structural invariants."""
+
+    @pytest.mark.parametrize(('request_id', 'text', 'uid',), _RESPONSE_INVARIANT_CASES)
+    def test_response_invariant(self, engine: ModerationEngine, request_id: str, text: str, uid: int) -> None:
         """Every moderation response honors its structural invariants."""
         result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-0", text="invariant 0", app_name="a", user_id="u")
+            ModerationRequest(id=request_id, text=text, app_name='a', user_id='u')
         )
-        assert result.id == "resp-0"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_1_1888(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-1", text="invariant 1", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-1"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_2_1889(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-2", text="invariant 2", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-2"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_3_1890(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-3", text="invariant 3", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-3"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_4_1891(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-4", text="invariant 4", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-4"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_5_1892(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-5", text="invariant 5", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-5"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_6_1893(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-6", text="invariant 6", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-6"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_7_1894(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-7", text="invariant 7", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-7"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_8_1895(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-8", text="invariant 8", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-8"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_9_1896(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-9", text="invariant 9", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-9"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_10_1897(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-10", text="invariant 10", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-10"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_11_1898(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-11", text="invariant 11", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-11"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_12_1899(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-12", text="invariant 12", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-12"
-        assert result.allowed == (result.verdict.value != "BLOCK")
-        assert 0.0 <= result.suspicion_score <= 100.0
-        assert result.latency_ms >= 0.0
-
-    def test_response_invariant_13_1900(self, engine: ModerationEngine) -> None:
-        """Every moderation response honors its structural invariants."""
-        result: ModerationResponse = engine.moderate(
-            ModerationRequest(id="resp-13", text="invariant 13", app_name="a", user_id="u")
-        )
-        assert result.id == "resp-13"
-        assert result.allowed == (result.verdict.value != "BLOCK")
+        assert result.id == request_id
+        assert result.allowed == (result.verdict.value != 'BLOCK')
         assert 0.0 <= result.suspicion_score <= 100.0
         assert result.latency_ms >= 0.0
