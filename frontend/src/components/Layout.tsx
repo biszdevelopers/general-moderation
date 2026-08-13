@@ -8,6 +8,7 @@ import {
     LogoutOutlined,
     SafetyCertificateOutlined,
     SettingOutlined,
+    ToolOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -22,6 +23,7 @@ const TITLES: Record<string, string> = {
     "/audit-log": "Audit Log",
     "/export": "Data Export",
     "/settings": "Settings",
+    "/test-workbench": "Test Workbench",
 };
 
 export function Layout(): ReactElement {
@@ -38,7 +40,9 @@ export function Layout(): ReactElement {
             ? "/export"
             : location.pathname.startsWith("/settings")
               ? "/settings"
-              : "/dashboard";
+              : location.pathname.startsWith("/test-workbench")
+                ? "/test-workbench"
+                : "/dashboard";
 
     const headerTitle: string = TITLES[selectedKey] ?? "General Moderation";
 
@@ -67,6 +71,11 @@ export function Layout(): ReactElement {
                         { key: "/word-bank", icon: <DatabaseOutlined />, label: "Word Bank" },
                         { key: "/audit-log", icon: <FileSearchOutlined />, label: "Audit Log" },
                         { key: "/export", icon: <ExportOutlined />, label: "Export" },
+                        {
+                            key: "/test-workbench",
+                            icon: <ToolOutlined />,
+                            label: "Test Workbench",
+                        },
                         { key: "/settings", icon: <SettingOutlined />, label: "Settings" },
                     ]}
                 />
