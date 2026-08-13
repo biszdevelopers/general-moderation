@@ -13,6 +13,8 @@ export class AuthService {
 
     private apiKey: string | null;
 
+    private readonly unauthorizedHandlers: (() => void)[] = [];
+
     public constructor(private readonly baseUrl: string) {
         this.apiKey = localStorage.getItem(AuthService.storageKey);
     }
@@ -45,5 +47,25 @@ export class AuthService {
 
     public getBaseUrl(): string {
         return this.baseUrl;
+    }
+
+    public onUnauthorized(handler: () => void): () => void {
+        this.unauthorizedHandlers.push(handler);
+        return (): void => {
+            const index: number = this.unauthorizedHandlers.indexOf(handler);
+            if (index !== -1) {
+                this.unauthorizedHandlers.splice(index, 1);
+            }
+        };
+    }
+
+    public handleUnauthorized(): void {
+        if (this.apiKey === null) {
+            return;
+        }
+        this.clearApiKey();
+        for (const handler of this.unauthorizedHandlers) {
+            handler();
+        }
     }
 }
