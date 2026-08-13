@@ -98,6 +98,7 @@ export default defineConfig(
                             { text: "Moderation", link: "/api/moderation" },
                             { text: "Public", link: "/api/public" },
                             { text: "Admin", link: "/api/admin" },
+                            { text: "Workbench", link: "/api/workbench" },
                         ],
                     },
                 ],
