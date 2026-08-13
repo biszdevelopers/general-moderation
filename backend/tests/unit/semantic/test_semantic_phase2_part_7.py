@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from app.semantic.semantic_service import CATEGORIES, SemanticService
 from tests.base_test import BaseTest
 
@@ -15,809 +17,124 @@ from tests.base_test import BaseTest
 def _service(settings: Any) -> SemanticService:
     """Build a semantic service against the test settings."""
     service: SemanticService = SemanticService(settings, None)
-    service.query("warmup")
+    service.query('warmup')
     return service
 
-
-class TestAvailabilityToggles(BaseTest):
-    """AvailabilityToggles scenarios."""
-
-    def test_availability_22_2501(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_23_2502(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_24_2503(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_25_2504(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_26_2505(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_27_2506(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_28_2507(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_29_2508(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_30_2509(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_31_2510(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_32_2511(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_33_2512(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_34_2513(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_35_2514(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_36_2515(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_37_2516(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_38_2517(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_39_2518(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_40_2519(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_41_2520(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_42_2521(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_43_2522(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_44_2523(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_45_2524(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_46_2525(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_47_2526(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_48_2527(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_49_2528(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_50_2529(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_51_2530(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_52_2531(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_53_2532(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_54_2533(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_55_2534(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_56_2535(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_57_2536(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_58_2537(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_59_2538(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_60_2539(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_61_2540(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_62_2541(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_63_2542(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_64_2543(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_65_2544(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_66_2545(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_67_2546(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_68_2547(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_69_2548(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_70_2549(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_71_2550(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_72_2551(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_73_2552(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_74_2553(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_75_2554(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_76_2555(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_77_2556(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_78_2557(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_79_2558(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_80_2559(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_81_2560(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_82_2561(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_83_2562(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_84_2563(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_85_2564(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_86_2565(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_87_2566(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_88_2567(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_89_2568(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_90_2569(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_91_2570(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_92_2571(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_93_2572(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_94_2573(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_95_2574(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_96_2575(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_97_2576(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_98_2577(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_99_2578(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_100_2579(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_101_2580(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_102_2581(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_103_2582(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_104_2583(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_105_2584(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_106_2585(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_107_2586(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_108_2587(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_109_2588(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_110_2589(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_111_2590(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_112_2591(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_113_2592(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_114_2593(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_115_2594(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_116_2595(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_117_2596(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_118_2597(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_119_2598(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_120_2599(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = True
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is True
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
-
-    def test_availability_121_2600(self, settings: Any, fake_semantic_modules: None) -> None:
-        """The enable toggle drives availability and query results."""
-        settings.semantic_enabled = False
-        service: SemanticService = SemanticService(settings, None)
-        assert service.is_available() is False
-        result = service.query("anything")
-        assert result == {} or set(result.keys()) == set(CATEGORIES)
+_AVAILABILITY_CASES: tuple[tuple[bool, int, int], ...] = (
+    (True, 12, 2501,),
+    (False, 12, 2502,),
+    (True, 13, 2503,),
+    (False, 13, 2504,),
+    (True, 14, 2505,),
+    (False, 14, 2506,),
+    (True, 15, 2507,),
+    (False, 15, 2508,),
+    (True, 16, 2509,),
+    (False, 16, 2510,),
+    (True, 17, 2511,),
+    (False, 17, 2512,),
+    (True, 18, 2513,),
+    (False, 18, 2514,),
+    (True, 19, 2515,),
+    (False, 19, 2516,),
+    (True, 20, 2517,),
+    (False, 20, 2518,),
+    (True, 21, 2519,),
+    (False, 21, 2520,),
+    (True, 22, 2521,),
+    (False, 22, 2522,),
+    (True, 23, 2523,),
+    (False, 23, 2524,),
+    (True, 24, 2525,),
+    (False, 24, 2526,),
+    (True, 25, 2527,),
+    (False, 25, 2528,),
+    (True, 26, 2529,),
+    (False, 26, 2530,),
+    (True, 27, 2531,),
+    (False, 27, 2532,),
+    (True, 28, 2533,),
+    (False, 28, 2534,),
+    (True, 29, 2535,),
+    (False, 29, 2536,),
+    (True, 30, 2537,),
+    (False, 30, 2538,),
+    (True, 31, 2539,),
+    (False, 31, 2540,),
+    (True, 32, 2541,),
+    (False, 32, 2542,),
+    (True, 33, 2543,),
+    (False, 33, 2544,),
+    (True, 34, 2545,),
+    (False, 34, 2546,),
+    (True, 35, 2547,),
+    (False, 35, 2548,),
+    (True, 36, 2549,),
+    (False, 36, 2550,),
+    (True, 37, 2551,),
+    (False, 37, 2552,),
+    (True, 38, 2553,),
+    (False, 38, 2554,),
+    (True, 39, 2555,),
+    (False, 39, 2556,),
+    (True, 40, 2557,),
+    (False, 40, 2558,),
+    (True, 41, 2559,),
+    (False, 41, 2560,),
+    (True, 42, 2561,),
+    (False, 42, 2562,),
+    (True, 43, 2563,),
+    (False, 43, 2564,),
+    (True, 44, 2565,),
+    (False, 44, 2566,),
+    (True, 45, 2567,),
+    (False, 45, 2568,),
+    (True, 46, 2569,),
+    (False, 46, 2570,),
+    (True, 47, 2571,),
+    (False, 47, 2572,),
+    (True, 48, 2573,),
+    (False, 48, 2574,),
+    (True, 49, 2575,),
+    (False, 49, 2576,),
+    (True, 50, 2577,),
+    (False, 50, 2578,),
+    (True, 51, 2579,),
+    (False, 51, 2580,),
+    (True, 52, 2581,),
+    (False, 52, 2582,),
+    (True, 53, 2583,),
+    (False, 53, 2584,),
+    (True, 54, 2585,),
+    (False, 54, 2586,),
+    (True, 55, 2587,),
+    (False, 55, 2588,),
+    (True, 56, 2589,),
+    (False, 56, 2590,),
+    (True, 57, 2591,),
+    (False, 57, 2592,),
+    (True, 58, 2593,),
+    (False, 58, 2594,),
+    (True, 59, 2595,),
+    (False, 59, 2596,),
+    (True, 60, 2597,),
+    (False, 60, 2598,),
+    (True, 61, 2599,),
+    (False, 61, 2600,),
+)
+
+class TestAvailability(BaseTest):
+    """The enable toggle drives availability and query results."""
+
+    @pytest.mark.parametrize(('enabled', 'top_k', 'uid',), _AVAILABILITY_CASES)
+    def test_availability(self, settings: Any, fake_semantic_modules: None, enabled: bool, top_k: int, uid: int) -> None:
+        """The enable toggle drives availability and query results."""
+        settings.semantic_enabled = enabled
+        settings.semantic_top_k = top_k
+        service: SemanticService = SemanticService(settings, None)
+        assert service.is_available() is enabled
+        result = service.query('anything')
+        if enabled:
+            assert set(result.keys()) == set(CATEGORIES)
+        else:
+            assert result == {}
