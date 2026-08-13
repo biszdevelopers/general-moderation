@@ -110,7 +110,17 @@ export function Dashboard(): ReactElement {
         { title: "Timestamp", dataIndex: "timestamp", key: "timestamp" },
         { title: "Verdict", dataIndex: "verdict", key: "verdict", render: verdictTag },
         { title: "Level", dataIndex: "levelUsed", key: "levelUsed" },
-        { title: "Matched Word", dataIndex: "matchedWord", key: "matchedWord" },
+        {
+            title: "Matched Word",
+            dataIndex: "matchedWord",
+            key: "matchedWord",
+            render: (_: unknown, entry: AuditEntry) => {
+                if (entry.matchedWord !== null && entry.matchedWord !== undefined) {
+                    return <Typography.Text>{entry.matchedWord}</Typography.Text>;
+                }
+                return <Typography.Text type="secondary">{entry.reason ?? "-"}</Typography.Text>;
+            },
+        },
         { title: "Reason", dataIndex: "reason", key: "reason", ellipsis: true },
         { title: "Latency (ms)", dataIndex: "latencyMs", key: "latencyMs", render: latency },
     ];
