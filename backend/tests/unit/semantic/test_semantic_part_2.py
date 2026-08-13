@@ -123,7 +123,7 @@ class TestSemanticAvailable(BaseTest):
         before: float = service.query("politicians take bribes")["political"]
         assert service.delete("political", "bribe politicians for favors") is True
         after: float = service.query("politicians take bribes")["political"]
-        assert after != before or service.stats()["categories"]["political"] >= 0
+        assert after <= before
 
 
 class TestSemanticThresholds(BaseTest):
@@ -221,10 +221,13 @@ class TestSemanticThresholds(BaseTest):
         """Stats report availability."""
         assert _service(settings).stats()["available"] is True
 
-    def test_delete_last_example(self, settings: Settings) -> None:
-        """Deleting every example of a category leaves it empty."""
+    def test_delete_added_example(self, settings: Settings) -> None:
+        """Deleting an added example restores the baseline count."""
         service: SemanticService = _service(settings)
-        assert service.delete("ads", "Buy this product now") or True
+        before: int = service.stats()["categories"]["ads"]
+        service.add("ads", "deletable ads example")
+        assert service.delete("ads", "deletable ads example") is True
+        assert service.stats()["categories"]["ads"] == before
 
     def test_query_political_similar(self, settings: Settings) -> None:
         """Political queries score high on the political category."""
