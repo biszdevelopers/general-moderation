@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, ReactElement } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, ReactElement } from "react";
 import { AuditService } from "../services/AuditService";
 import { AuthService } from "../services/AuthService";
 import { ExportService } from "../services/ExportService";
@@ -37,6 +37,10 @@ export function AppProvider(props: { children: ReactNode }): ReactElement {
     const [authenticated, setAuthenticated] = useState<boolean>(
         services.authService.isAuthenticated(),
     );
+
+    useEffect(() => {
+        return services.authService.onUnauthorized(() => setAuthenticated(false));
+    }, [services]);
 
     const login = (key: string): void => {
         services.authService.setApiKey(key);
