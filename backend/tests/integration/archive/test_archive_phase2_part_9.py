@@ -6,1381 +6,158 @@ archives and boundary edges under the frozen clock."""
 # multilingual fixtures use non-ASCII on purpose
 from __future__ import annotations
 
+import pytest
+
 from app.profiling.user_profiler import UserProfiler
 from tests.base_test import BaseTest
 
+_MIXED_ARCHIVE_CASES: tuple[tuple[int, int, int, int, int, float, int], ...] = (
+    (10, 6, 1, 2, 1, 0.7, 4109,),
+    (20, 13, 2, 5, 1, 0.75, 4110,),
+    (50, 32, 5, 12, 1, 0.74, 4111,),
+    (100, 65, 10, 25, 1, 0.75, 4112,),
+    (200, 130, 20, 50, 1, 0.75, 4113,),
+    (500, 325, 50, 125, 1, 0.75, 4114,),
+    (1000, 650, 100, 250, 1, 0.75, 4115,),
+    (2500, 1625, 250, 625, 1, 0.75, 4116,),
+    (5000, 3250, 500, 1250, 1, 0.75, 4117,),
+    (7500, 4875, 750, 1875, 1, 0.75, 4118,),
+    (10, 8, 2, 1, 1, 1.0, 4119,),
+    (20, 15, 3, 2, 1, 0.9, 4120,),
+    (50, 38, 8, 5, 1, 0.92, 4121,),
+    (100, 75, 15, 10, 1, 0.9, 4122,),
+    (200, 150, 30, 20, 1, 0.9, 4123,),
+    (500, 375, 75, 50, 1, 0.9, 4124,),
+    (1000, 750, 150, 100, 1, 0.9, 4125,),
+    (2500, 1875, 375, 250, 1, 0.9, 4126,),
+    (5000, 3750, 750, 500, 1, 0.9, 4127,),
+    (7500, 5625, 1125, 750, 1, 0.9, 4128,),
+    (10, 8, 0, 1, 1, 0.8, 4129,),
+    (20, 17, 1, 2, 1, 0.9, 4130,),
+    (50, 42, 2, 5, 1, 0.88, 4131,),
+    (100, 85, 5, 10, 1, 0.9, 4132,),
+    (200, 170, 10, 20, 1, 0.9, 4133,),
+    (500, 425, 25, 50, 1, 0.9, 4134,),
+    (1000, 850, 50, 100, 1, 0.9, 4135,),
+    (2500, 2125, 125, 250, 1, 0.9, 4136,),
+    (5000, 4250, 250, 500, 1, 0.9, 4137,),
+    (7500, 6375, 375, 750, 1, 0.9, 4138,),
+    (10, 10, 0, 0, 1, 1.0, 4139,),
+    (20, 19, 0, 1, 1, 0.95, 4140,),
+    (50, 48, 0, 2, 1, 0.96, 4141,),
+    (100, 95, 0, 5, 1, 0.95, 4142,),
+    (200, 190, 0, 10, 1, 0.95, 4143,),
+    (500, 475, 0, 25, 1, 0.95, 4144,),
+    (1000, 950, 0, 50, 1, 0.95, 4145,),
+    (2500, 2375, 0, 125, 1, 0.95, 4146,),
+    (5000, 4750, 0, 250, 1, 0.95, 4147,),
+    (7500, 7125, 0, 375, 1, 0.95, 4148,),
+    (10, 1, 1, 0, 1, 0.2, 4149,),
+    (20, 2, 2, 1, 1, 0.2, 4150,),
+    (50, 6, 4, 2, 1, 0.2, 4151,),
+    (100, 12, 8, 4, 1, 0.2, 4152,),
+    (200, 24, 16, 8, 1, 0.2, 4153,),
+    (500, 60, 40, 20, 1, 0.2, 4154,),
+    (1000, 120, 80, 40, 1, 0.2, 4155,),
+    (2500, 300, 200, 100, 1, 0.2, 4156,),
+    (5000, 600, 400, 200, 1, 0.2, 4157,),
+    (7500, 900, 600, 300, 1, 0.2, 4158,),
+)
 
 class TestMixedArchive(BaseTest):
-    """MixedArchive scenarios."""
+    """Mixed-verdict windows archive each counter correctly."""
 
-    def test_mixed_v10_f65_b10_r25_4109(self) -> None:
+    @pytest.mark.parametrize(('volume', 'flagged', 'blocked', 'reviewed', 'expected_summaries', 'expected_ratio', 'uid',), _MIXED_ARCHIVE_CASES)
+    def test_mixed_archive(self, volume: int, flagged: int, blocked: int, reviewed: int, expected_summaries: int, expected_ratio: float, uid: int) -> None:
         """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)
         for _ in range(91):
             profiler.record(
-                "app",
-                "u",
-                total_msgs=10,
-                flagged_msgs=6,
-                blocked_msgs=1,
-                reviewed_msgs=2,
+                'app', 'u',
+                total_msgs=volume,
+                flagged_msgs=flagged,
+                blocked_msgs=blocked,
+                reviewed_msgs=reviewed,
             )
             self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.7
+        profile = profiler.get_profile('app', 'u')
+        assert len(profile['summaries']) == expected_summaries
+        assert profiler.get_ratio('app', 'u') == expected_ratio
         profiler.close()
 
-    def test_mixed_v20_f65_b10_r25_4110(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
+
+_EDGE_ARCHIVE_CASES: tuple[tuple[int, int, int, int, int, int, float, int, int, int], ...] = (
+    (1, 1, 1, 1, 0, 0, 1.0, 1, 1, 4159,),
+    (1, 1, 1, 0, 0, 0, 0.0, 1, 1, 4160,),
+    (1, 1, 1, 0, 0, 0, 0.0, 1, 1, 4161,),
+    (1, 1, 1, 0, 1, 0, 1.0, 1, 1, 4162,),
+    (1, 1, 1, 0, 0, 1, 0.0, 1, 1, 4163,),
+    (1, 1, 2, 2, 0, 0, 1.0, 1, 2, 4164,),
+    (1, 1, 2, 0, 0, 0, 0.0, 1, 2, 4165,),
+    (1, 1, 2, 1, 0, 0, 0.5, 1, 2, 4166,),
+    (1, 1, 2, 0, 2, 0, 1.0, 1, 2, 4167,),
+    (1, 1, 2, 0, 0, 2, 0.0, 1, 2, 4168,),
+    (1, 1, 5, 5, 0, 0, 1.0, 1, 5, 4169,),
+    (1, 1, 5, 0, 0, 0, 0.0, 1, 5, 4170,),
+    (1, 1, 5, 2, 0, 0, 0.4, 1, 5, 4171,),
+    (1, 1, 5, 0, 5, 0, 1.0, 1, 5, 4172,),
+    (1, 1, 5, 0, 0, 5, 0.0, 1, 5, 4173,),
+    (1, 1, 10, 10, 0, 0, 1.0, 1, 10, 4174,),
+    (1, 1, 10, 0, 0, 0, 0.0, 1, 10, 4175,),
+    (1, 1, 10, 5, 0, 0, 0.5, 1, 10, 4176,),
+    (1, 1, 10, 0, 10, 0, 1.0, 1, 10, 4177,),
+    (1, 1, 10, 0, 0, 10, 0.0, 1, 10, 4178,),
+    (1, 1, 1, 1, 0, 0, 1.0, 1, 1, 4179,),
+    (1, 1, 1, 0, 0, 0, 0.0, 1, 1, 4180,),
+    (1, 1, 1, 0, 0, 0, 0.0, 1, 1, 4181,),
+    (1, 1, 1, 0, 1, 0, 1.0, 1, 1, 4182,),
+    (1, 1, 1, 0, 0, 1, 0.0, 1, 1, 4183,),
+    (1, 1, 2, 2, 0, 0, 1.0, 1, 2, 4184,),
+    (1, 1, 2, 0, 0, 0, 0.0, 1, 2, 4185,),
+    (1, 1, 2, 1, 0, 0, 0.5, 1, 2, 4186,),
+    (1, 1, 2, 0, 2, 0, 1.0, 1, 2, 4187,),
+    (1, 1, 2, 0, 0, 2, 0.0, 1, 2, 4188,),
+    (1, 1, 5, 5, 0, 0, 1.0, 1, 5, 4189,),
+    (1, 1, 5, 0, 0, 0, 0.0, 1, 5, 4190,),
+    (1, 1, 5, 2, 0, 0, 0.4, 1, 5, 4191,),
+    (1, 1, 5, 0, 5, 0, 1.0, 1, 5, 4192,),
+    (1, 1, 5, 0, 0, 5, 0.0, 1, 5, 4193,),
+    (1, 1, 10, 10, 0, 0, 1.0, 1, 10, 4194,),
+    (1, 1, 10, 0, 0, 0, 0.0, 1, 10, 4195,),
+    (1, 1, 10, 5, 0, 0, 0.5, 1, 10, 4196,),
+    (1, 1, 10, 0, 10, 0, 1.0, 1, 10, 4197,),
+    (1, 1, 10, 0, 0, 10, 0.0, 1, 10, 4198,),
+    (1, 2, 1, 1, 0, 0, 1.0, 2, 1, 4199,),
+    (1, 2, 1, 0, 0, 0, 0.0, 2, 1, 4200,),
+    (1, 2, 1, 0, 0, 0, 0.0, 2, 1, 4201,),
+    (1, 2, 1, 0, 1, 0, 1.0, 2, 1, 4202,),
+    (1, 2, 1, 0, 0, 1, 0.0, 2, 1, 4203,),
+    (1, 2, 2, 2, 0, 0, 1.0, 2, 2, 4204,),
+    (1, 2, 2, 0, 0, 0, 0.0, 2, 2, 4205,),
+    (1, 2, 2, 1, 0, 0, 0.5, 2, 2, 4206,),
+    (1, 2, 2, 0, 2, 0, 1.0, 2, 2, 4207,),
+    (1, 2, 2, 0, 0, 2, 0.0, 2, 2, 4208,),
+)
+
+class TestEdgeArchive(BaseTest):
+    """Boundary window and verdict states keep archive invariants."""
+
+    @pytest.mark.parametrize(('window', 'days', 'volume', 'flagged', 'blocked', 'reviewed', 'expected_ratio', 'expected_summaries', 'expected_total', 'uid',), _EDGE_ARCHIVE_CASES)
+    def test_edge_archive(self, window: int, days: int, volume: int, flagged: int, blocked: int, reviewed: int, expected_ratio: float, expected_summaries: int, expected_total: int, uid: int) -> None:
+        """Boundary window and verdict states keep archive invariants."""
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', window)
+        for _ in range(days):
             profiler.record(
-                "app",
-                "u",
-                total_msgs=20,
-                flagged_msgs=13,
-                blocked_msgs=2,
-                reviewed_msgs=5,
+                'app', 'u',
+                total_msgs=volume,
+                flagged_msgs=flagged,
+                blocked_msgs=blocked,
+                reviewed_msgs=reviewed,
             )
             self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v50_f65_b10_r25_4111(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=50,
-                flagged_msgs=32,
-                blocked_msgs=5,
-                reviewed_msgs=12,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.74
-        profiler.close()
-
-    def test_mixed_v100_f65_b10_r25_4112(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=100,
-                flagged_msgs=65,
-                blocked_msgs=10,
-                reviewed_msgs=25,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v200_f65_b10_r25_4113(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=200,
-                flagged_msgs=130,
-                blocked_msgs=20,
-                reviewed_msgs=50,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v500_f65_b10_r25_4114(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=500,
-                flagged_msgs=325,
-                blocked_msgs=50,
-                reviewed_msgs=125,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v1000_f65_b10_r25_4115(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=1000,
-                flagged_msgs=650,
-                blocked_msgs=100,
-                reviewed_msgs=250,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v2500_f65_b10_r25_4116(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=2500,
-                flagged_msgs=1625,
-                blocked_msgs=250,
-                reviewed_msgs=625,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v5000_f65_b10_r25_4117(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=5000,
-                flagged_msgs=3250,
-                blocked_msgs=500,
-                reviewed_msgs=1250,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v7500_f65_b10_r25_4118(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=7500,
-                flagged_msgs=4875,
-                blocked_msgs=750,
-                reviewed_msgs=1875,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.75
-        profiler.close()
-
-    def test_mixed_v10_f75_b15_r10_4119(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=10,
-                flagged_msgs=8,
-                blocked_msgs=2,
-                reviewed_msgs=1,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_mixed_v20_f75_b15_r10_4120(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=20,
-                flagged_msgs=15,
-                blocked_msgs=3,
-                reviewed_msgs=2,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v50_f75_b15_r10_4121(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=50,
-                flagged_msgs=38,
-                blocked_msgs=8,
-                reviewed_msgs=5,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.92
-        profiler.close()
-
-    def test_mixed_v100_f75_b15_r10_4122(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=100,
-                flagged_msgs=75,
-                blocked_msgs=15,
-                reviewed_msgs=10,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v200_f75_b15_r10_4123(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=200,
-                flagged_msgs=150,
-                blocked_msgs=30,
-                reviewed_msgs=20,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v500_f75_b15_r10_4124(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=500,
-                flagged_msgs=375,
-                blocked_msgs=75,
-                reviewed_msgs=50,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v1000_f75_b15_r10_4125(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=1000,
-                flagged_msgs=750,
-                blocked_msgs=150,
-                reviewed_msgs=100,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v2500_f75_b15_r10_4126(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=2500,
-                flagged_msgs=1875,
-                blocked_msgs=375,
-                reviewed_msgs=250,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v5000_f75_b15_r10_4127(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=5000,
-                flagged_msgs=3750,
-                blocked_msgs=750,
-                reviewed_msgs=500,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v7500_f75_b15_r10_4128(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=7500,
-                flagged_msgs=5625,
-                blocked_msgs=1125,
-                reviewed_msgs=750,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v10_f85_b5_r10_4129(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=10,
-                flagged_msgs=8,
-                blocked_msgs=0,
-                reviewed_msgs=1,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.8
-        profiler.close()
-
-    def test_mixed_v20_f85_b5_r10_4130(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=20,
-                flagged_msgs=17,
-                blocked_msgs=1,
-                reviewed_msgs=2,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v50_f85_b5_r10_4131(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=50,
-                flagged_msgs=42,
-                blocked_msgs=2,
-                reviewed_msgs=5,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.88
-        profiler.close()
-
-    def test_mixed_v100_f85_b5_r10_4132(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=100,
-                flagged_msgs=85,
-                blocked_msgs=5,
-                reviewed_msgs=10,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v200_f85_b5_r10_4133(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=200,
-                flagged_msgs=170,
-                blocked_msgs=10,
-                reviewed_msgs=20,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v500_f85_b5_r10_4134(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=500,
-                flagged_msgs=425,
-                blocked_msgs=25,
-                reviewed_msgs=50,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v1000_f85_b5_r10_4135(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=1000,
-                flagged_msgs=850,
-                blocked_msgs=50,
-                reviewed_msgs=100,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v2500_f85_b5_r10_4136(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=2500,
-                flagged_msgs=2125,
-                blocked_msgs=125,
-                reviewed_msgs=250,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v5000_f85_b5_r10_4137(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=5000,
-                flagged_msgs=4250,
-                blocked_msgs=250,
-                reviewed_msgs=500,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v7500_f85_b5_r10_4138(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=7500,
-                flagged_msgs=6375,
-                blocked_msgs=375,
-                reviewed_msgs=750,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.9
-        profiler.close()
-
-    def test_mixed_v10_f95_b0_r5_4139(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=10,
-                flagged_msgs=10,
-                blocked_msgs=0,
-                reviewed_msgs=0,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_mixed_v20_f95_b0_r5_4140(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=20,
-                flagged_msgs=19,
-                blocked_msgs=0,
-                reviewed_msgs=1,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v50_f95_b0_r5_4141(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=50,
-                flagged_msgs=48,
-                blocked_msgs=0,
-                reviewed_msgs=2,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.96
-        profiler.close()
-
-    def test_mixed_v100_f95_b0_r5_4142(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=100,
-                flagged_msgs=95,
-                blocked_msgs=0,
-                reviewed_msgs=5,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v200_f95_b0_r5_4143(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=200,
-                flagged_msgs=190,
-                blocked_msgs=0,
-                reviewed_msgs=10,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v500_f95_b0_r5_4144(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=500,
-                flagged_msgs=475,
-                blocked_msgs=0,
-                reviewed_msgs=25,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v1000_f95_b0_r5_4145(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=1000,
-                flagged_msgs=950,
-                blocked_msgs=0,
-                reviewed_msgs=50,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v2500_f95_b0_r5_4146(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=2500,
-                flagged_msgs=2375,
-                blocked_msgs=0,
-                reviewed_msgs=125,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v5000_f95_b0_r5_4147(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=5000,
-                flagged_msgs=4750,
-                blocked_msgs=0,
-                reviewed_msgs=250,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v7500_f95_b0_r5_4148(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=7500,
-                flagged_msgs=7125,
-                blocked_msgs=0,
-                reviewed_msgs=375,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.95
-        profiler.close()
-
-    def test_mixed_v10_f12_b8_r4_4149(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=10,
-                flagged_msgs=1,
-                blocked_msgs=1,
-                reviewed_msgs=0,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v20_f12_b8_r4_4150(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=20,
-                flagged_msgs=2,
-                blocked_msgs=2,
-                reviewed_msgs=1,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v50_f12_b8_r4_4151(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=50,
-                flagged_msgs=6,
-                blocked_msgs=4,
-                reviewed_msgs=2,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v100_f12_b8_r4_4152(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=100,
-                flagged_msgs=12,
-                blocked_msgs=8,
-                reviewed_msgs=4,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v200_f12_b8_r4_4153(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=200,
-                flagged_msgs=24,
-                blocked_msgs=16,
-                reviewed_msgs=8,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v500_f12_b8_r4_4154(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=500,
-                flagged_msgs=60,
-                blocked_msgs=40,
-                reviewed_msgs=20,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v1000_f12_b8_r4_4155(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=1000,
-                flagged_msgs=120,
-                blocked_msgs=80,
-                reviewed_msgs=40,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v2500_f12_b8_r4_4156(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=2500,
-                flagged_msgs=300,
-                blocked_msgs=200,
-                reviewed_msgs=100,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v5000_f12_b8_r4_4157(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=5000,
-                flagged_msgs=600,
-                blocked_msgs=400,
-                reviewed_msgs=200,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-    def test_mixed_v7500_f12_b8_r4_4158(self) -> None:
-        """Mixed-verdict windows archive each counter correctly."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record(
-                "app",
-                "u",
-                total_msgs=7500,
-                flagged_msgs=900,
-                blocked_msgs=600,
-                reviewed_msgs=300,
-            )
-            self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == 1
-        assert profiler.get_ratio("app", "u") == 0.2
-        profiler.close()
-
-
-class TestArchiveEdges(BaseTest):
-    """ArchiveEdges scenarios."""
-
-    def test_edge_0_4159(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_1_4160(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_2_4161(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_3_4162(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_4_4163(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_5_4164(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_6_4165(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_7_4166(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_8_4167(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_9_4168(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_10_4169(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_11_4170(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_12_4171(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_13_4172(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_14_4173(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_15_4174(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_16_4175(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_17_4176(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_18_4177(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_19_4178(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_20_4179(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_21_4180(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_22_4181(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_23_4182(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_24_4183(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_25_4184(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_26_4185(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_27_4186(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_28_4187(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_29_4188(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_30_4189(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_31_4190(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_32_4191(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_33_4192(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_34_4193(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_35_4194(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_36_4195(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_37_4196(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_38_4197(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_39_4198(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_40_4199(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_41_4200(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_42_4201(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=0)
-            self.advance_days(1)
-        summary = profiler.get_profile("app", "u")["summaries"][0]
-        assert summary["total_msgs"] == 0
-        profiler.close()
-
-    def test_edge_43_4202(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        profiler.record("app", "u", total_msgs=1)
-        self.advance_days(1)
-        self.advance_days(150)
-        profiler.record("app", "u", total_msgs=1)
-        stats = profiler.stats()
-        assert stats["summary_count"] >= 1
-        profiler.close()
-
-    def test_edge_44_4203(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "ghost") == 0.0
-        profiler.close()
-
-    def test_edge_45_4204(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, blocked_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_46_4205(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=1, reviewed_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
-        profiler.close()
-
-    def test_edge_47_4206(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 3)
-        for _ in range(3):
-            profiler.record("app", "u", total_msgs=2, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.5
-        profiler.close()
-
-    def test_edge_48_4207(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 1.0
-        profiler.close()
-
-    def test_edge_49_4208(self) -> None:
-        """Rare boundary states keep archive invariants."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
-        for _ in range(91):
-            profiler.record("app", "u", total_msgs=1)
-            self.advance_days(1)
-        assert profiler.get_ratio("app", "u") == 0.0
+        profile = profiler.get_profile('app', 'u')
+        assert profiler.get_ratio('app', 'u') == expected_ratio
+        assert len(profile['summaries']) == expected_summaries
+        if expected_summaries:
+            assert profile['summaries'][0]['total_msgs'] == expected_total
         profiler.close()
