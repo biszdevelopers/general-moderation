@@ -112,6 +112,30 @@ class SeedProfileRequest(BaseModel):
     flagged_msgs: int = Field(default=0, ge=0, le=1000)
 
 
+def _read_log_tail(path: Path, max_bytes: int = 20 * 1024 * 1024) -> list[str]:
+    """Return the last lines of a JSONL log without loading the whole file.
+
+    The audit log is written chronologically and rotates at ``LOG_MAX_BYTES``,
+    so today's records always live in the tail. Reading only the tail keeps the
+    auto-refreshing dashboard cheap even on heavily loaded instances.
+
+    :param path: the audit log path
+    :param max_bytes: maximum number of trailing bytes to read
+    :return: the trailing lines, oldest first
+    """
+    if not path.is_file():
+        return []
+    size: int = path.stat().st_size
+    with path.open("rb") as handle:
+        if size <= max_bytes:
+            data: bytes = handle.read()
+        else:
+            handle.seek(size - max_bytes)
+            handle.read(1)  # drop a possibly truncated first line
+            data = handle.read()
+    return data.decode("utf-8", errors="ignore").splitlines()
+
+
 def _dashboard(engine: ModerationEngine, log_file_path: str) -> dict[str, Any]:  # noqa: C901
     """Aggregate today's audit records into dashboard metrics.
 
@@ -128,7 +152,7 @@ def _dashboard(engine: ModerationEngine, log_file_path: str) -> dict[str, Any]: 
     detector_counts: Counter[str] = Counter()
     buckets: Counter[str] = Counter()
     if path.is_file():
-        for line in reversed(path.read_text(encoding="utf-8").splitlines()):
+        for line in reversed(_read_log_tail(path)):
             try:
                 record: dict[str, Any] = orjson.loads(line)
             except (orjson.JSONDecodeError, ValueError):
