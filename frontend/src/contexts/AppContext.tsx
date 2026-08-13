@@ -3,6 +3,7 @@ import { AuditService } from "../services/AuditService";
 import { AuthService } from "../services/AuthService";
 import { ExportService } from "../services/ExportService";
 import { SettingsService } from "../services/SettingsService";
+import { TestApiService } from "../services/TestApiService";
 import { WordBankService } from "../services/WordBankService";
 
 export interface AppContextType {
@@ -11,6 +12,7 @@ export interface AppContextType {
     auditService: AuditService;
     settingsService: SettingsService;
     exportService: ExportService;
+    testApiService: TestApiService;
     authenticated: boolean;
     login: (key: string) => void;
     logout: () => void;
@@ -29,6 +31,7 @@ export function AppProvider(props: { children: ReactNode }): ReactElement {
             auditService: new AuditService(authService, apiBaseUrl),
             settingsService: new SettingsService(authService, apiBaseUrl),
             exportService: new ExportService(authService, apiBaseUrl),
+            testApiService: new TestApiService(authService, apiBaseUrl),
         };
     });
     const [authenticated, setAuthenticated] = useState<boolean>(
