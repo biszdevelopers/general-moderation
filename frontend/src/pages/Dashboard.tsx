@@ -291,6 +291,7 @@ export function Dashboard(): ReactElement {
                             dataSource={recent}
                             pagination={false}
                             size="small"
+                            scroll={{ x: "max-content" }}
                             locale={{ emptyText: "No moderation activity yet" }}
                         />
                     </Card>
