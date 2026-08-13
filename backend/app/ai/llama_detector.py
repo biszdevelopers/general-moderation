@@ -69,6 +69,7 @@ class LlamaCppDetector(DetectorInterface):
         self._last_used: float = 0.0
         self._loading: bool = False
         self._load_lock: threading.Lock = threading.Lock()
+        self._infer_lock: threading.Lock = threading.Lock()
         self._shutdown: bool = False
         self._last_prompt: str | None = None
         self._last_reply: str | None = None
@@ -184,7 +185,8 @@ class LlamaCppDetector(DetectorInterface):
     def _warm_up(self) -> None:
         """Run a tiny generation to force model initialization."""
         if self._model is not None:
-            self._model(self._build_prompt("warmup"), temperature=0.0, max_tokens=1)
+            with self._infer_lock:
+                self._model(self._build_prompt("warmup"), temperature=0.0, max_tokens=1)
 
     def _ensure_model_downloaded(self) -> str:
         """Return the local model path, downloading it when configured as auto.
@@ -443,6 +445,21 @@ class LlamaCppDetector(DetectorInterface):
 
     def detect(self, text: str) -> DetectionResult:
         """Classify the text with the local model.
+
+        The llama.cpp ``Llama`` object is not safe for concurrent generation,
+        so every inference (including the idle check and lazy load) runs under
+        a dedicated lock. This serializes model calls across the worker thread
+        pool, preventing the KV-cache corruption and native stack panics that
+        concurrent generation can trigger on newer Python releases.
+
+        :param text: normalized input text
+        :return: a positive result when the model replies BLOCK
+        """
+        with self._infer_lock:
+            return self._detect_locked(text)
+
+    def _detect_locked(self, text: str) -> DetectionResult:
+        """Run one classification while holding the inference lock.
 
         :param text: normalized input text
         :return: a positive result when the model replies BLOCK
