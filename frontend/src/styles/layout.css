@@ -91,6 +91,12 @@
     overflow: auto;
 }
 
+.app-breadcrumb {
+    max-width: 1240px;
+    margin: 20px auto 0;
+    padding: 0 32px;
+}
+
 .app-footer {
     text-align: center;
     color: var(--color-text-secondary);
