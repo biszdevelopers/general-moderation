@@ -17,123 +17,534 @@ from tests.base_test import BaseTest
 def _service(settings: Any) -> SemanticService:
     """Build a semantic service against the test settings."""
     service: SemanticService = SemanticService(settings, None)
-    service.query('warmup')
+    service.query("warmup")
     return service
 
+
 _AVAILABILITY_CASES: tuple[tuple[bool, int, int], ...] = (
-    (True, 12, 2501,),
-    (False, 12, 2502,),
-    (True, 13, 2503,),
-    (False, 13, 2504,),
-    (True, 14, 2505,),
-    (False, 14, 2506,),
-    (True, 15, 2507,),
-    (False, 15, 2508,),
-    (True, 16, 2509,),
-    (False, 16, 2510,),
-    (True, 17, 2511,),
-    (False, 17, 2512,),
-    (True, 18, 2513,),
-    (False, 18, 2514,),
-    (True, 19, 2515,),
-    (False, 19, 2516,),
-    (True, 20, 2517,),
-    (False, 20, 2518,),
-    (True, 21, 2519,),
-    (False, 21, 2520,),
-    (True, 22, 2521,),
-    (False, 22, 2522,),
-    (True, 23, 2523,),
-    (False, 23, 2524,),
-    (True, 24, 2525,),
-    (False, 24, 2526,),
-    (True, 25, 2527,),
-    (False, 25, 2528,),
-    (True, 26, 2529,),
-    (False, 26, 2530,),
-    (True, 27, 2531,),
-    (False, 27, 2532,),
-    (True, 28, 2533,),
-    (False, 28, 2534,),
-    (True, 29, 2535,),
-    (False, 29, 2536,),
-    (True, 30, 2537,),
-    (False, 30, 2538,),
-    (True, 31, 2539,),
-    (False, 31, 2540,),
-    (True, 32, 2541,),
-    (False, 32, 2542,),
-    (True, 33, 2543,),
-    (False, 33, 2544,),
-    (True, 34, 2545,),
-    (False, 34, 2546,),
-    (True, 35, 2547,),
-    (False, 35, 2548,),
-    (True, 36, 2549,),
-    (False, 36, 2550,),
-    (True, 37, 2551,),
-    (False, 37, 2552,),
-    (True, 38, 2553,),
-    (False, 38, 2554,),
-    (True, 39, 2555,),
-    (False, 39, 2556,),
-    (True, 40, 2557,),
-    (False, 40, 2558,),
-    (True, 41, 2559,),
-    (False, 41, 2560,),
-    (True, 42, 2561,),
-    (False, 42, 2562,),
-    (True, 43, 2563,),
-    (False, 43, 2564,),
-    (True, 44, 2565,),
-    (False, 44, 2566,),
-    (True, 45, 2567,),
-    (False, 45, 2568,),
-    (True, 46, 2569,),
-    (False, 46, 2570,),
-    (True, 47, 2571,),
-    (False, 47, 2572,),
-    (True, 48, 2573,),
-    (False, 48, 2574,),
-    (True, 49, 2575,),
-    (False, 49, 2576,),
-    (True, 50, 2577,),
-    (False, 50, 2578,),
-    (True, 51, 2579,),
-    (False, 51, 2580,),
-    (True, 52, 2581,),
-    (False, 52, 2582,),
-    (True, 53, 2583,),
-    (False, 53, 2584,),
-    (True, 54, 2585,),
-    (False, 54, 2586,),
-    (True, 55, 2587,),
-    (False, 55, 2588,),
-    (True, 56, 2589,),
-    (False, 56, 2590,),
-    (True, 57, 2591,),
-    (False, 57, 2592,),
-    (True, 58, 2593,),
-    (False, 58, 2594,),
-    (True, 59, 2595,),
-    (False, 59, 2596,),
-    (True, 60, 2597,),
-    (False, 60, 2598,),
-    (True, 61, 2599,),
-    (False, 61, 2600,),
+    (
+        True,
+        12,
+        2501,
+    ),
+    (
+        False,
+        12,
+        2502,
+    ),
+    (
+        True,
+        13,
+        2503,
+    ),
+    (
+        False,
+        13,
+        2504,
+    ),
+    (
+        True,
+        14,
+        2505,
+    ),
+    (
+        False,
+        14,
+        2506,
+    ),
+    (
+        True,
+        15,
+        2507,
+    ),
+    (
+        False,
+        15,
+        2508,
+    ),
+    (
+        True,
+        16,
+        2509,
+    ),
+    (
+        False,
+        16,
+        2510,
+    ),
+    (
+        True,
+        17,
+        2511,
+    ),
+    (
+        False,
+        17,
+        2512,
+    ),
+    (
+        True,
+        18,
+        2513,
+    ),
+    (
+        False,
+        18,
+        2514,
+    ),
+    (
+        True,
+        19,
+        2515,
+    ),
+    (
+        False,
+        19,
+        2516,
+    ),
+    (
+        True,
+        20,
+        2517,
+    ),
+    (
+        False,
+        20,
+        2518,
+    ),
+    (
+        True,
+        21,
+        2519,
+    ),
+    (
+        False,
+        21,
+        2520,
+    ),
+    (
+        True,
+        22,
+        2521,
+    ),
+    (
+        False,
+        22,
+        2522,
+    ),
+    (
+        True,
+        23,
+        2523,
+    ),
+    (
+        False,
+        23,
+        2524,
+    ),
+    (
+        True,
+        24,
+        2525,
+    ),
+    (
+        False,
+        24,
+        2526,
+    ),
+    (
+        True,
+        25,
+        2527,
+    ),
+    (
+        False,
+        25,
+        2528,
+    ),
+    (
+        True,
+        26,
+        2529,
+    ),
+    (
+        False,
+        26,
+        2530,
+    ),
+    (
+        True,
+        27,
+        2531,
+    ),
+    (
+        False,
+        27,
+        2532,
+    ),
+    (
+        True,
+        28,
+        2533,
+    ),
+    (
+        False,
+        28,
+        2534,
+    ),
+    (
+        True,
+        29,
+        2535,
+    ),
+    (
+        False,
+        29,
+        2536,
+    ),
+    (
+        True,
+        30,
+        2537,
+    ),
+    (
+        False,
+        30,
+        2538,
+    ),
+    (
+        True,
+        31,
+        2539,
+    ),
+    (
+        False,
+        31,
+        2540,
+    ),
+    (
+        True,
+        32,
+        2541,
+    ),
+    (
+        False,
+        32,
+        2542,
+    ),
+    (
+        True,
+        33,
+        2543,
+    ),
+    (
+        False,
+        33,
+        2544,
+    ),
+    (
+        True,
+        34,
+        2545,
+    ),
+    (
+        False,
+        34,
+        2546,
+    ),
+    (
+        True,
+        35,
+        2547,
+    ),
+    (
+        False,
+        35,
+        2548,
+    ),
+    (
+        True,
+        36,
+        2549,
+    ),
+    (
+        False,
+        36,
+        2550,
+    ),
+    (
+        True,
+        37,
+        2551,
+    ),
+    (
+        False,
+        37,
+        2552,
+    ),
+    (
+        True,
+        38,
+        2553,
+    ),
+    (
+        False,
+        38,
+        2554,
+    ),
+    (
+        True,
+        39,
+        2555,
+    ),
+    (
+        False,
+        39,
+        2556,
+    ),
+    (
+        True,
+        40,
+        2557,
+    ),
+    (
+        False,
+        40,
+        2558,
+    ),
+    (
+        True,
+        41,
+        2559,
+    ),
+    (
+        False,
+        41,
+        2560,
+    ),
+    (
+        True,
+        42,
+        2561,
+    ),
+    (
+        False,
+        42,
+        2562,
+    ),
+    (
+        True,
+        43,
+        2563,
+    ),
+    (
+        False,
+        43,
+        2564,
+    ),
+    (
+        True,
+        44,
+        2565,
+    ),
+    (
+        False,
+        44,
+        2566,
+    ),
+    (
+        True,
+        45,
+        2567,
+    ),
+    (
+        False,
+        45,
+        2568,
+    ),
+    (
+        True,
+        46,
+        2569,
+    ),
+    (
+        False,
+        46,
+        2570,
+    ),
+    (
+        True,
+        47,
+        2571,
+    ),
+    (
+        False,
+        47,
+        2572,
+    ),
+    (
+        True,
+        48,
+        2573,
+    ),
+    (
+        False,
+        48,
+        2574,
+    ),
+    (
+        True,
+        49,
+        2575,
+    ),
+    (
+        False,
+        49,
+        2576,
+    ),
+    (
+        True,
+        50,
+        2577,
+    ),
+    (
+        False,
+        50,
+        2578,
+    ),
+    (
+        True,
+        51,
+        2579,
+    ),
+    (
+        False,
+        51,
+        2580,
+    ),
+    (
+        True,
+        52,
+        2581,
+    ),
+    (
+        False,
+        52,
+        2582,
+    ),
+    (
+        True,
+        53,
+        2583,
+    ),
+    (
+        False,
+        53,
+        2584,
+    ),
+    (
+        True,
+        54,
+        2585,
+    ),
+    (
+        False,
+        54,
+        2586,
+    ),
+    (
+        True,
+        55,
+        2587,
+    ),
+    (
+        False,
+        55,
+        2588,
+    ),
+    (
+        True,
+        56,
+        2589,
+    ),
+    (
+        False,
+        56,
+        2590,
+    ),
+    (
+        True,
+        57,
+        2591,
+    ),
+    (
+        False,
+        57,
+        2592,
+    ),
+    (
+        True,
+        58,
+        2593,
+    ),
+    (
+        False,
+        58,
+        2594,
+    ),
+    (
+        True,
+        59,
+        2595,
+    ),
+    (
+        False,
+        59,
+        2596,
+    ),
+    (
+        True,
+        60,
+        2597,
+    ),
+    (
+        False,
+        60,
+        2598,
+    ),
+    (
+        True,
+        61,
+        2599,
+    ),
+    (
+        False,
+        61,
+        2600,
+    ),
 )
+
 
 class TestAvailability(BaseTest):
     """The enable toggle drives availability and query results."""
 
-    @pytest.mark.parametrize(('enabled', 'top_k', 'uid',), _AVAILABILITY_CASES)
-    def test_availability(self, settings: Any, fake_semantic_modules: None, enabled: bool, top_k: int, uid: int) -> None:
+    @pytest.mark.parametrize(
+        (
+            "enabled",
+            "top_k",
+            "uid",
+        ),
+        _AVAILABILITY_CASES,
+    )
+    def test_availability(
+        self, settings: Any, fake_semantic_modules: None, enabled: bool, top_k: int, uid: int
+    ) -> None:
         """The enable toggle drives availability and query results."""
         settings.semantic_enabled = enabled
         settings.semantic_top_k = top_k
         service: SemanticService = SemanticService(settings, None)
         assert service.is_available() is enabled
-        result = service.query('anything')
+        result = service.query("anything")
         if enabled:
             assert set(result.keys()) == set(CATEGORIES)
         else:
