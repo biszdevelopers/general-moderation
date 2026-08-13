@@ -229,4 +229,20 @@ describe("TestApiService", () => {
             "Rate limit exceeded",
         );
     });
+
+    it("parses the slowapi error key as the failure detail", async () => {
+        const { service } = authenticatedService();
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue(
+                new Response(JSON.stringify({ error: "Rate limit exceeded: 100 per 60 second" }), {
+                    status: 429,
+                }),
+            ),
+        );
+
+        await expect(service.getDashboard()).rejects.toThrow(
+            "Rate limit exceeded: 100 per 60 second",
+        );
+    });
 });
