@@ -12,421 +12,114 @@ import pytest
 
 from tests.base_test import BaseTest
 
-_RESPONSE_SHAPE_CASES: tuple[tuple[str, int], ...] = (
-    (
-        "id",
-        7117,
-    ),
-    (
-        "id",
-        7118,
-    ),
-    (
-        "id",
-        7119,
-    ),
-    (
-        "id",
-        7120,
-    ),
-    (
-        "id",
-        7121,
-    ),
-    (
-        "id",
-        7122,
-    ),
-    (
-        "id",
-        7123,
-    ),
-    (
-        "id",
-        7124,
-    ),
-    (
-        "verdict",
-        7125,
-    ),
-    (
-        "verdict",
-        7126,
-    ),
-    (
-        "verdict",
-        7127,
-    ),
-    (
-        "verdict",
-        7128,
-    ),
-    (
-        "verdict",
-        7129,
-    ),
-    (
-        "verdict",
-        7130,
-    ),
-    (
-        "verdict",
-        7131,
-    ),
-    (
-        "verdict",
-        7132,
-    ),
-    (
-        "allowed",
-        7133,
-    ),
-    (
-        "allowed",
-        7134,
-    ),
-    (
-        "allowed",
-        7135,
-    ),
-    (
-        "allowed",
-        7136,
-    ),
-    (
-        "allowed",
-        7137,
-    ),
-    (
-        "allowed",
-        7138,
-    ),
-    (
-        "allowed",
-        7139,
-    ),
-    (
-        "allowed",
-        7140,
-    ),
-    (
-        "levelUsed",
-        7141,
-    ),
-    (
-        "levelUsed",
-        7142,
-    ),
-    (
-        "levelUsed",
-        7143,
-    ),
-    (
-        "levelUsed",
-        7144,
-    ),
-    (
-        "levelUsed",
-        7145,
-    ),
-    (
-        "levelUsed",
-        7146,
-    ),
-    (
-        "levelUsed",
-        7147,
-    ),
-    (
-        "levelUsed",
-        7148,
-    ),
-    (
-        "aiTriggered",
-        7149,
-    ),
-    (
-        "aiTriggered",
-        7150,
-    ),
-    (
-        "aiTriggered",
-        7151,
-    ),
-    (
-        "aiTriggered",
-        7152,
-    ),
-    (
-        "aiTriggered",
-        7153,
-    ),
-    (
-        "aiTriggered",
-        7154,
-    ),
-    (
-        "aiTriggered",
-        7155,
-    ),
-    (
-        "aiTriggered",
-        7156,
-    ),
-    (
-        "suspicionScore",
-        7157,
-    ),
-    (
-        "suspicionScore",
-        7158,
-    ),
-    (
-        "suspicionScore",
-        7159,
-    ),
-    (
-        "suspicionScore",
-        7160,
-    ),
-    (
-        "suspicionScore",
-        7161,
-    ),
-    (
-        "suspicionScore",
-        7162,
-    ),
-    (
-        "suspicionScore",
-        7163,
-    ),
-    (
-        "suspicionScore",
-        7164,
-    ),
-    (
-        "reasons",
-        7165,
-    ),
-    (
-        "reasons",
-        7166,
-    ),
-    (
-        "reasons",
-        7167,
-    ),
-    (
-        "reasons",
-        7168,
-    ),
-    (
-        "reasons",
-        7169,
-    ),
-    (
-        "reasons",
-        7170,
-    ),
-    (
-        "reasons",
-        7171,
-    ),
-    (
-        "reasons",
-        7172,
-    ),
-    (
-        "reason",
-        7173,
-    ),
-    (
-        "reason",
-        7174,
-    ),
-    (
-        "reason",
-        7175,
-    ),
-    (
-        "reason",
-        7176,
-    ),
-    (
-        "reason",
-        7177,
-    ),
-    (
-        "reason",
-        7178,
-    ),
-    (
-        "reason",
-        7179,
-    ),
-    (
-        "reason",
-        7180,
-    ),
-    (
-        "matchedWords",
-        7181,
-    ),
-    (
-        "matchedWords",
-        7182,
-    ),
-    (
-        "matchedWords",
-        7183,
-    ),
-    (
-        "matchedWords",
-        7184,
-    ),
-    (
-        "matchedWords",
-        7185,
-    ),
-    (
-        "matchedWords",
-        7186,
-    ),
-    (
-        "matchedWords",
-        7187,
-    ),
-    (
-        "matchedWords",
-        7188,
-    ),
-    (
-        "matchedWord",
-        7189,
-    ),
-    (
-        "matchedWord",
-        7190,
-    ),
-    (
-        "matchedWord",
-        7191,
-    ),
-    (
-        "matchedWord",
-        7192,
-    ),
-    (
-        "matchedWord",
-        7193,
-    ),
-    (
-        "matchedWord",
-        7194,
-    ),
-    (
-        "matchedWord",
-        7195,
-    ),
-    (
-        "matchedWord",
-        7196,
-    ),
-    (
-        "matchedLanguage",
-        7197,
-    ),
-    (
-        "matchedLanguage",
-        7198,
-    ),
-    (
-        "matchedLanguage",
-        7199,
-    ),
-    (
-        "matchedLanguage",
-        7200,
-    ),
-    (
-        "matchedLanguage",
-        7201,
-    ),
-    (
-        "matchedLanguage",
-        7202,
-    ),
-    (
-        "matchedLanguage",
-        7203,
-    ),
-    (
-        "matchedLanguage",
-        7204,
-    ),
-    (
-        "confidenceScore",
-        7205,
-    ),
-    (
-        "confidenceScore",
-        7206,
-    ),
-    (
-        "confidenceScore",
-        7207,
-    ),
-    (
-        "confidenceScore",
-        7208,
-    ),
-    (
-        "confidenceScore",
-        7209,
-    ),
-    (
-        "confidenceScore",
-        7210,
-    ),
-    (
-        "confidenceScore",
-        7211,
-    ),
-    (
-        "confidenceScore",
-        7212,
-    ),
-    (
-        "latencyMs",
-        7213,
-    ),
-    (
-        "latencyMs",
-        7214,
-    ),
-    (
-        "latencyMs",
-        7215,
-    ),
-    (
-        "latencyMs",
-        7216,
-    ),
+_RESPONSE_SHAPE_CASES: tuple[tuple[str, str, int], ...] = (
+    ('id', 'shape 0', 7117,),
+    ('id', 'shape 1', 7118,),
+    ('id', 'shape 2', 7119,),
+    ('id', 'shape 3', 7120,),
+    ('id', 'shape 4', 7121,),
+    ('id', 'shape 5', 7122,),
+    ('id', 'shape 6', 7123,),
+    ('id', 'shape 7', 7124,),
+    ('verdict', 'shape 0', 7125,),
+    ('verdict', 'shape 1', 7126,),
+    ('verdict', 'shape 2', 7127,),
+    ('verdict', 'shape 3', 7128,),
+    ('verdict', 'shape 4', 7129,),
+    ('verdict', 'shape 5', 7130,),
+    ('verdict', 'shape 6', 7131,),
+    ('verdict', 'shape 7', 7132,),
+    ('allowed', 'shape 0', 7133,),
+    ('allowed', 'shape 1', 7134,),
+    ('allowed', 'shape 2', 7135,),
+    ('allowed', 'shape 3', 7136,),
+    ('allowed', 'shape 4', 7137,),
+    ('allowed', 'shape 5', 7138,),
+    ('allowed', 'shape 6', 7139,),
+    ('allowed', 'shape 7', 7140,),
+    ('levelUsed', 'shape 0', 7141,),
+    ('levelUsed', 'shape 1', 7142,),
+    ('levelUsed', 'shape 2', 7143,),
+    ('levelUsed', 'shape 3', 7144,),
+    ('levelUsed', 'shape 4', 7145,),
+    ('levelUsed', 'shape 5', 7146,),
+    ('levelUsed', 'shape 6', 7147,),
+    ('levelUsed', 'shape 7', 7148,),
+    ('aiTriggered', 'shape 0', 7149,),
+    ('aiTriggered', 'shape 1', 7150,),
+    ('aiTriggered', 'shape 2', 7151,),
+    ('aiTriggered', 'shape 3', 7152,),
+    ('aiTriggered', 'shape 4', 7153,),
+    ('aiTriggered', 'shape 5', 7154,),
+    ('aiTriggered', 'shape 6', 7155,),
+    ('aiTriggered', 'shape 7', 7156,),
+    ('suspicionScore', 'shape 0', 7157,),
+    ('suspicionScore', 'shape 1', 7158,),
+    ('suspicionScore', 'shape 2', 7159,),
+    ('suspicionScore', 'shape 3', 7160,),
+    ('suspicionScore', 'shape 4', 7161,),
+    ('suspicionScore', 'shape 5', 7162,),
+    ('suspicionScore', 'shape 6', 7163,),
+    ('suspicionScore', 'shape 7', 7164,),
+    ('reasons', 'shape 0', 7165,),
+    ('reasons', 'shape 1', 7166,),
+    ('reasons', 'shape 2', 7167,),
+    ('reasons', 'shape 3', 7168,),
+    ('reasons', 'shape 4', 7169,),
+    ('reasons', 'shape 5', 7170,),
+    ('reasons', 'shape 6', 7171,),
+    ('reasons', 'shape 7', 7172,),
+    ('reason', 'shape 0', 7173,),
+    ('reason', 'shape 1', 7174,),
+    ('reason', 'shape 2', 7175,),
+    ('reason', 'shape 3', 7176,),
+    ('reason', 'shape 4', 7177,),
+    ('reason', 'shape 5', 7178,),
+    ('reason', 'shape 6', 7179,),
+    ('reason', 'shape 7', 7180,),
+    ('matchedWords', 'shape 0', 7181,),
+    ('matchedWords', 'shape 1', 7182,),
+    ('matchedWords', 'shape 2', 7183,),
+    ('matchedWords', 'shape 3', 7184,),
+    ('matchedWords', 'shape 4', 7185,),
+    ('matchedWords', 'shape 5', 7186,),
+    ('matchedWords', 'shape 6', 7187,),
+    ('matchedWords', 'shape 7', 7188,),
+    ('matchedWord', 'shape 0', 7189,),
+    ('matchedWord', 'shape 1', 7190,),
+    ('matchedWord', 'shape 2', 7191,),
+    ('matchedWord', 'shape 3', 7192,),
+    ('matchedWord', 'shape 4', 7193,),
+    ('matchedWord', 'shape 5', 7194,),
+    ('matchedWord', 'shape 6', 7195,),
+    ('matchedWord', 'shape 7', 7196,),
+    ('matchedLanguage', 'shape 0', 7197,),
+    ('matchedLanguage', 'shape 1', 7198,),
+    ('matchedLanguage', 'shape 2', 7199,),
+    ('matchedLanguage', 'shape 3', 7200,),
+    ('matchedLanguage', 'shape 4', 7201,),
+    ('matchedLanguage', 'shape 5', 7202,),
+    ('matchedLanguage', 'shape 6', 7203,),
+    ('matchedLanguage', 'shape 7', 7204,),
+    ('confidenceScore', 'shape 0', 7205,),
+    ('confidenceScore', 'shape 1', 7206,),
+    ('confidenceScore', 'shape 2', 7207,),
+    ('confidenceScore', 'shape 3', 7208,),
+    ('confidenceScore', 'shape 4', 7209,),
+    ('confidenceScore', 'shape 5', 7210,),
+    ('confidenceScore', 'shape 6', 7211,),
+    ('confidenceScore', 'shape 7', 7212,),
+    ('latencyMs', 'shape 0', 7213,),
+    ('latencyMs', 'shape 1', 7214,),
+    ('latencyMs', 'shape 2', 7215,),
+    ('latencyMs', 'shape 3', 7216,),
 )
-
 
 class TestResponseShape(BaseTest):
     """Every documented response field is present."""
 
-    @pytest.mark.parametrize(
-        (
-            "field",
-            "uid",
-        ),
-        _RESPONSE_SHAPE_CASES,
-    )
-    def test_response_shape(self, client: Any, field: str, uid: int) -> None:
+    @pytest.mark.parametrize(('field', 'text', 'uid',), _RESPONSE_SHAPE_CASES)
+    def test_response_shape(self, client: Any, field: str, text: str, uid: int) -> None:
         """Every documented response field is present."""
-        body = client.post("/moderate", json={"text": "shape", "app_name": "a"}).json()
+        body = client.post('/moderate', json={'text': text, 'app_name': 'a'}).json()
         assert field in body
