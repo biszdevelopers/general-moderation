@@ -78,7 +78,8 @@ class TestChaosDatabase(BaseTest):
         from app.settings_service import SettingsService
 
         service: SettingsService = SettingsService(settings)
-        assert service.get("WEIGHT_DETECTOR_AHO") is not None or service.all() is not None
+        assert "WEIGHT_DETECTOR_AHO" in service.all()
+        assert service.all() != {}
         service.close()
 
     def test_missing_custom_words_db(self, engine: Any) -> None:
@@ -323,7 +324,7 @@ class TestChaosRecovery(BaseTest):
         word_bank.add_word("zaphrin")
         engine.refresh_detectors()
         result = engine.moderate(ModerationRequest(text="you are a zaphrin", app_name="a"))
-        assert result.suspicion_score > 0 or result.verdict is not None
+        assert result.suspicion_score > 0
 
     def test_multiple_reloads(self, engine: Any, word_bank: Any) -> None:
         """Repeated reloads stay consistent."""
