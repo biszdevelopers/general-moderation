@@ -68,9 +68,7 @@ class TestModerateDetail(BaseTest):
         response = client.post("/test/moderate-detail", json={"text": "hello"})
         assert response.status_code == 401
 
-    def test_stream_emits_stage_events(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
+    def test_stream_emits_stage_events(self, client: Any, admin_headers: dict[str, str]) -> None:
         """The streaming variant emits stage events then a complete event."""
         response = client.post(
             "/test/moderate-detail?stream=true",
@@ -95,6 +93,78 @@ class TestModerateDetail(BaseTest):
         assert response.verdict.value == trace.verdict
 
 
+class TestPipelineStatus(BaseTest):
+    """The pipeline-status streaming endpoint."""
+
+    def test_requires_admin_key(self, client: Any) -> None:
+        """The endpoint rejects requests without a valid admin key."""
+        response = client.get("/test/pipeline-status", params={"text": "hello"})
+        assert response.status_code == 401
+
+    def test_streams_events_in_order(self, client: Any, admin_headers: dict[str, str]) -> None:
+        """The endpoint streams every stage event and finishes with a trace."""
+        response = client.get(
+            "/test/pipeline-status",
+            headers=admin_headers,
+            params={"text": "hello world", "user_id": "u6", "app_name": "default"},
+        )
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("text/event-stream")
+        frames: list[tuple[str, dict[str, Any]]] = _parse_sse(response.text)
+        names: list[str] = [name for name, _ in frames]
+        assert names[0] == "stage1_complete"
+        assert "detector_result" in names
+        assert (
+            names.index("stage1_complete")
+            < names.index("stage2_complete")
+            < names.index("stage3_complete")
+            < names.index("complete")
+        )
+        assert names[-1] == "complete"
+        complete: dict[str, Any] = dict(frames)["complete"]
+        assert set(complete["trace"]) >= {
+            "stage_1",
+            "stage_2",
+            "stage_3",
+            "verdict",
+            "suspicion_score",
+        }
+        assert complete["trace"]["stage_2"]["detector_results"]
+
+    def test_matches_moderate_detail_verdict(
+        self, client: Any, admin_headers: dict[str, str]
+    ) -> None:
+        """The streamed trace agrees with the non-streaming detail response."""
+        detail = client.post(
+            "/test/moderate-detail",
+            headers=admin_headers,
+            json={"text": "hello world", "user_id": "u7"},
+        ).json()
+        stream = client.get(
+            "/test/pipeline-status",
+            headers=admin_headers,
+            params={"text": "hello world", "user_id": "u7"},
+        )
+        frames: list[tuple[str, dict[str, Any]]] = _parse_sse(stream.text)
+        trace: dict[str, Any] = dict(frames)["complete"]["trace"]
+        assert trace["verdict"] == detail["trace"]["verdict"]
+        assert trace["suspicion_score"] == detail["trace"]["suspicion_score"]
+        assert [run["name"] for run in trace["stage_2"]["detector_results"]] == [
+            run["name"] for run in detail["trace"]["stage_2"]["detector_results"]
+        ]
+
+    def test_validates_text(self, client: Any, admin_headers: dict[str, str]) -> None:
+        """A missing or overlong text is rejected with 422."""
+        missing = client.get("/test/pipeline-status", headers=admin_headers)
+        assert missing.status_code == 422
+        overlong = client.get(
+            "/test/pipeline-status",
+            headers=admin_headers,
+            params={"text": "x" * 8193},
+        )
+        assert overlong.status_code == 422
+
+
 class TestDetectorToggles(BaseTest):
     """Runtime detector toggles affect the detailed pipeline."""
 
@@ -104,9 +174,7 @@ class TestDetectorToggles(BaseTest):
         _response, trace = engine.moderate_detailed(
             ModerationRequest(text="hello world", user_id="u4")
         )
-        names: dict[str, bool] = {
-            run.name: run.enabled for run in trace.stage_2.detector_results
-        }
+        names: dict[str, bool] = {run.name: run.enabled for run in trace.stage_2.detector_results}
         assert names["rolling_hash"] is False
         assert names["bloom_filter"] is True
 
@@ -116,18 +184,14 @@ class TestDetectorToggles(BaseTest):
         _response, trace = engine.moderate_detailed(
             ModerationRequest(text="hello world", user_id="u5")
         )
-        names: dict[str, bool] = {
-            run.name: run.enabled for run in trace.stage_2.detector_results
-        }
+        names: dict[str, bool] = {run.name: run.enabled for run in trace.stage_2.detector_results}
         assert names["rolling_hash"] is True
 
 
 class TestConfigPlayground(BaseTest):
     """The configuration playground endpoints."""
 
-    def test_get_config_returns_catalog(
-        self, client: Any, admin_headers: dict[str, str]
-    ) -> None:
+    def test_get_config_returns_catalog(self, client: Any, admin_headers: dict[str, str]) -> None:
         """GET /test/config returns the editable settings catalog."""
         response = client.get("/test/config", headers=admin_headers)
         assert response.status_code == 200
