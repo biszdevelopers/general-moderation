@@ -1,4 +1,4 @@
-import { ApiError, AuthService } from "./AuthService";
+import { ApiError, AuthService, errorDetail } from "./AuthService";
 import { HealthReport, SettingRecord, TuneReport } from "../types";
 
 export class SettingsService {
@@ -17,11 +17,7 @@ export class SettingsService {
                 this.authService.handleUnauthorized();
             }
             const body: unknown = await response.json().catch(() => null);
-            const detail: unknown =
-                body !== null && typeof body === "object" && "detail" in body
-                    ? (body as { detail: unknown }).detail
-                    : "Request failed";
-            throw new ApiError(response.status, String(detail));
+            throw new ApiError(response.status, errorDetail(body, "Request failed"));
         }
         return (await response.json()) as T;
     }
@@ -30,8 +26,18 @@ export class SettingsService {
         return this.request<HealthReport>("/admin/health");
     }
 
-    public getMetrics(): Promise<string> {
-        return this.request<string>("/admin/metrics");
+    public async getMetrics(): Promise<string> {
+        const response: Response = await fetch(`${this.apiBaseUrl}/admin/metrics`, {
+            headers: this.authService.headers(),
+        });
+        if (!response.ok) {
+            if (response.status === 401) {
+                this.authService.handleUnauthorized();
+            }
+            const body: unknown = await response.json().catch(() => null);
+            throw new ApiError(response.status, errorDetail(body, "Request failed"));
+        }
+        return response.text();
     }
 
     public reload(): Promise<{ status: string }> {
