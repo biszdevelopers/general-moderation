@@ -13,499 +13,132 @@ import pytest
 from tests.base_test import BaseTest
 
 _SETTINGS_ENDPOINT_CASES: tuple[tuple[str, int, int], ...] = (
-    (
-        "SEMANTIC_TOP_K",
-        32,
-        7724,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        40,
-        7725,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        50,
-        7726,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        60,
-        7727,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        70,
-        7728,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        80,
-        7729,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        88,
-        7730,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        92,
-        7731,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        96,
-        7732,
-    ),
-    (
-        "SEMANTIC_TOP_K",
-        100,
-        7733,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        1,
-        7734,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        5,
-        7735,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        10,
-        7736,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        50,
-        7737,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        100,
-        7738,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        500,
-        7739,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        1000,
-        7740,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        2500,
-        7741,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        5000,
-        7742,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        10000,
-        7743,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        20000,
-        7744,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        30000,
-        7745,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        40000,
-        7746,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        50000,
-        7747,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        60000,
-        7748,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        70000,
-        7749,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        80000,
-        7750,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        90000,
-        7751,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        95000,
-        7752,
-    ),
-    (
-        "CACHE_MAX_SIZE",
-        100000,
-        7753,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        1,
-        7754,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        5,
-        7755,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        10,
-        7756,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        30,
-        7757,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        60,
-        7758,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        120,
-        7759,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        300,
-        7760,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        600,
-        7761,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        900,
-        7762,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        1800,
-        7763,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        3600,
-        7764,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        7200,
-        7765,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        10800,
-        7766,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        14400,
-        7767,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        21600,
-        7768,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        28800,
-        7769,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        43200,
-        7770,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        57600,
-        7771,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        72000,
-        7772,
-    ),
-    (
-        "RATE_LIMIT_PERIOD",
-        86400,
-        7773,
-    ),
+    ('SEMANTIC_TOP_K', 32, 7883,),
+    ('SEMANTIC_TOP_K', 40, 7884,),
+    ('SEMANTIC_TOP_K', 50, 7885,),
+    ('SEMANTIC_TOP_K', 60, 7886,),
+    ('SEMANTIC_TOP_K', 70, 7887,),
+    ('SEMANTIC_TOP_K', 80, 7888,),
+    ('SEMANTIC_TOP_K', 88, 7889,),
+    ('SEMANTIC_TOP_K', 92, 7890,),
+    ('SEMANTIC_TOP_K', 96, 7891,),
+    ('SEMANTIC_TOP_K', 100, 7892,),
+    ('CACHE_MAX_SIZE', 1, 7893,),
+    ('CACHE_MAX_SIZE', 5, 7894,),
+    ('CACHE_MAX_SIZE', 10, 7895,),
+    ('CACHE_MAX_SIZE', 50, 7896,),
+    ('CACHE_MAX_SIZE', 100, 7897,),
+    ('CACHE_MAX_SIZE', 500, 7898,),
+    ('CACHE_MAX_SIZE', 1000, 7899,),
+    ('CACHE_MAX_SIZE', 2500, 7900,),
+    ('CACHE_MAX_SIZE', 5000, 7901,),
+    ('CACHE_MAX_SIZE', 10000, 7902,),
+    ('CACHE_MAX_SIZE', 20000, 7903,),
+    ('CACHE_MAX_SIZE', 30000, 7904,),
+    ('CACHE_MAX_SIZE', 40000, 7905,),
+    ('CACHE_MAX_SIZE', 50000, 7906,),
+    ('CACHE_MAX_SIZE', 60000, 7907,),
+    ('CACHE_MAX_SIZE', 70000, 7908,),
+    ('CACHE_MAX_SIZE', 80000, 7909,),
+    ('CACHE_MAX_SIZE', 90000, 7910,),
+    ('CACHE_MAX_SIZE', 95000, 7911,),
+    ('CACHE_MAX_SIZE', 100000, 7912,),
+    ('RATE_LIMIT_PERIOD', 1, 7913,),
+    ('RATE_LIMIT_PERIOD', 5, 7914,),
+    ('RATE_LIMIT_PERIOD', 10, 7915,),
+    ('RATE_LIMIT_PERIOD', 30, 7916,),
+    ('RATE_LIMIT_PERIOD', 60, 7917,),
+    ('RATE_LIMIT_PERIOD', 120, 7918,),
+    ('RATE_LIMIT_PERIOD', 300, 7919,),
+    ('RATE_LIMIT_PERIOD', 600, 7920,),
+    ('RATE_LIMIT_PERIOD', 900, 7921,),
+    ('RATE_LIMIT_PERIOD', 1800, 7922,),
+    ('RATE_LIMIT_PERIOD', 3600, 7923,),
+    ('RATE_LIMIT_PERIOD', 7200, 7924,),
+    ('RATE_LIMIT_PERIOD', 10800, 7925,),
+    ('RATE_LIMIT_PERIOD', 14400, 7926,),
+    ('RATE_LIMIT_PERIOD', 21600, 7927,),
+    ('RATE_LIMIT_PERIOD', 28800, 7928,),
+    ('RATE_LIMIT_PERIOD', 43200, 7929,),
+    ('RATE_LIMIT_PERIOD', 57600, 7930,),
+    ('RATE_LIMIT_PERIOD', 72000, 7931,),
+    ('RATE_LIMIT_PERIOD', 86400, 7932,),
 )
-
 
 class TestSettingsEndpoint(BaseTest):
     """The settings endpoint accepts valid values."""
 
-    @pytest.mark.parametrize(
-        (
-            "key",
-            "value",
-            "uid",
-        ),
-        _SETTINGS_ENDPOINT_CASES,
-    )
-    def test_settings_endpoint(
-        self, client: Any, admin_headers: dict[str, str], key: str, value: int, uid: int
-    ) -> None:
+    @pytest.mark.parametrize(('key', 'value', 'uid',), _SETTINGS_ENDPOINT_CASES)
+    def test_settings_endpoint(self, client: Any, admin_headers: dict[str, str], key: str, value: int, uid: int) -> None:
         """The settings endpoint accepts valid values."""
-        payload = {"settings": {key: value}}
-        response = client.post("/admin/settings", headers=admin_headers, json=payload)
+        payload = {'settings': {key: value}}
+        response = client.post('/admin/settings', headers=admin_headers, json=payload)
         assert response.status_code == 200
-        assert key in response.json()["updated"]
+        assert key in response.json()['updated']
 
 
 _LOGS_CASES: tuple[tuple[str, int], ...] = (
-    (
-        "..%2F..%2Fetc%2Fpasswd.0",
-        7774,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.1",
-        7775,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.2",
-        7776,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.3",
-        7777,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.4",
-        7778,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.5",
-        7779,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.6",
-        7780,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.7",
-        7781,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.8",
-        7782,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.9",
-        7783,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.10",
-        7784,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.11",
-        7785,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.12",
-        7786,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.13",
-        7787,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.14",
-        7788,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.15",
-        7789,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.16",
-        7790,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.17",
-        7791,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.18",
-        7792,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.19",
-        7793,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.20",
-        7794,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.21",
-        7795,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.22",
-        7796,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.23",
-        7797,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.24",
-        7798,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.25",
-        7799,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.26",
-        7800,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.27",
-        7801,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.28",
-        7802,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.29",
-        7803,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.30",
-        7804,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.31",
-        7805,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.32",
-        7806,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.33",
-        7807,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.34",
-        7808,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.35",
-        7809,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.36",
-        7810,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.37",
-        7811,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.38",
-        7812,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.39",
-        7813,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.40",
-        7814,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.41",
-        7815,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.42",
-        7816,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.43",
-        7817,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.44",
-        7818,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.45",
-        7819,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.46",
-        7820,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.47",
-        7821,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.48",
-        7822,
-    ),
-    (
-        "..%2F..%2Fetc%2Fpasswd.49",
-        7823,
-    ),
+    ('..%2F..%2Fetc%2Fpasswd.0', 7933,),
+    ('..%2F..%2Fetc%2Fpasswd.1', 7934,),
+    ('..%2F..%2Fetc%2Fpasswd.2', 7935,),
+    ('..%2F..%2Fetc%2Fpasswd.3', 7936,),
+    ('..%2F..%2Fetc%2Fpasswd.4', 7937,),
+    ('..%2F..%2Fetc%2Fpasswd.5', 7938,),
+    ('..%2F..%2Fetc%2Fpasswd.6', 7939,),
+    ('..%2F..%2Fetc%2Fpasswd.7', 7940,),
+    ('..%2F..%2Fetc%2Fpasswd.8', 7941,),
+    ('..%2F..%2Fetc%2Fpasswd.9', 7942,),
+    ('..%2F..%2Fetc%2Fpasswd.10', 7943,),
+    ('..%2F..%2Fetc%2Fpasswd.11', 7944,),
+    ('..%2F..%2Fetc%2Fpasswd.12', 7945,),
+    ('..%2F..%2Fetc%2Fpasswd.13', 7946,),
+    ('..%2F..%2Fetc%2Fpasswd.14', 7947,),
+    ('..%2F..%2Fetc%2Fpasswd.15', 7948,),
+    ('..%2F..%2Fetc%2Fpasswd.16', 7949,),
+    ('..%2F..%2Fetc%2Fpasswd.17', 7950,),
+    ('..%2F..%2Fetc%2Fpasswd.18', 7951,),
+    ('..%2F..%2Fetc%2Fpasswd.19', 7952,),
+    ('..%2F..%2Fetc%2Fpasswd.20', 7953,),
+    ('..%2F..%2Fetc%2Fpasswd.21', 7954,),
+    ('..%2F..%2Fetc%2Fpasswd.22', 7955,),
+    ('..%2F..%2Fetc%2Fpasswd.23', 7956,),
+    ('..%2F..%2Fetc%2Fpasswd.24', 7957,),
+    ('..%2F..%2Fetc%2Fpasswd.25', 7958,),
+    ('..%2F..%2Fetc%2Fpasswd.26', 7959,),
+    ('..%2F..%2Fetc%2Fpasswd.27', 7960,),
+    ('..%2F..%2Fetc%2Fpasswd.28', 7961,),
+    ('..%2F..%2Fetc%2Fpasswd.29', 7962,),
+    ('..%2F..%2Fetc%2Fpasswd.30', 7963,),
+    ('..%2F..%2Fetc%2Fpasswd.31', 7964,),
+    ('..%2F..%2Fetc%2Fpasswd.32', 7965,),
+    ('..%2F..%2Fetc%2Fpasswd.33', 7966,),
+    ('..%2F..%2Fetc%2Fpasswd.34', 7967,),
+    ('..%2F..%2Fetc%2Fpasswd.35', 7968,),
+    ('..%2F..%2Fetc%2Fpasswd.36', 7969,),
+    ('..%2F..%2Fetc%2Fpasswd.37', 7970,),
+    ('..%2F..%2Fetc%2Fpasswd.38', 7971,),
+    ('..%2F..%2Fetc%2Fpasswd.39', 7972,),
+    ('..%2F..%2Fetc%2Fpasswd.40', 7973,),
+    ('..%2F..%2Fetc%2Fpasswd.41', 7974,),
+    ('..%2F..%2Fetc%2Fpasswd.42', 7975,),
+    ('..%2F..%2Fetc%2Fpasswd.43', 7976,),
+    ('..%2F..%2Fetc%2Fpasswd.44', 7977,),
+    ('..%2F..%2Fetc%2Fpasswd.45', 7978,),
+    ('..%2F..%2Fetc%2Fpasswd.46', 7979,),
+    ('..%2F..%2Fetc%2Fpasswd.47', 7980,),
+    ('..%2F..%2Fetc%2Fpasswd.48', 7981,),
+    ('..%2F..%2Fetc%2Fpasswd.49', 7982,),
 )
-
 
 class TestLogs(BaseTest):
     """Log listing and downloads stay consistent."""
 
-    @pytest.mark.parametrize(
-        (
-            "target",
-            "uid",
-        ),
-        _LOGS_CASES,
-    )
+    @pytest.mark.parametrize(('target', 'uid',), _LOGS_CASES)
     def test_logs(self, client: Any, admin_headers: dict[str, str], target: str, uid: int) -> None:
         """Log listing and downloads stay consistent."""
-        response = client.get("/admin/logs", headers=admin_headers)
+        response = client.get('/admin/logs', headers=admin_headers)
         assert response.status_code == 200
         assert isinstance(response.json(), list)
-        invalid = client.get(f"/admin/logs/{target}", headers=admin_headers)
+        invalid = client.get(f'/admin/logs/{target}', headers=admin_headers)
         assert invalid.status_code in (400, 404)
-        assert "passwd" not in invalid.text
+        assert 'passwd' not in invalid.text
