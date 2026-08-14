@@ -12,744 +12,162 @@ from app.profiling.user_profiler import UserProfiler
 from tests.base_test import BaseTest
 
 _CYCLES_CASES: tuple[tuple[int, int, int, int], ...] = (
-    (
-        25,
-        0,
-        25,
-        3203,
-    ),
-    (
-        25,
-        1,
-        25,
-        3204,
-    ),
-    (
-        25,
-        2,
-        25,
-        3205,
-    ),
-    (
-        25,
-        3,
-        25,
-        3206,
-    ),
-    (
-        25,
-        4,
-        25,
-        3207,
-    ),
-    (
-        25,
-        5,
-        25,
-        3208,
-    ),
-    (
-        25,
-        6,
-        25,
-        3209,
-    ),
-    (
-        25,
-        7,
-        25,
-        3210,
-    ),
-    (
-        25,
-        8,
-        25,
-        3211,
-    ),
-    (
-        25,
-        9,
-        25,
-        3212,
-    ),
-    (
-        25,
-        10,
-        25,
-        3213,
-    ),
-    (
-        25,
-        11,
-        25,
-        3214,
-    ),
-    (
-        50,
-        0,
-        50,
-        3215,
-    ),
-    (
-        50,
-        1,
-        50,
-        3216,
-    ),
-    (
-        50,
-        2,
-        50,
-        3217,
-    ),
-    (
-        50,
-        3,
-        50,
-        3218,
-    ),
-    (
-        50,
-        4,
-        50,
-        3219,
-    ),
-    (
-        50,
-        5,
-        50,
-        3220,
-    ),
-    (
-        50,
-        6,
-        50,
-        3221,
-    ),
-    (
-        50,
-        7,
-        50,
-        3222,
-    ),
-    (
-        50,
-        8,
-        50,
-        3223,
-    ),
-    (
-        50,
-        9,
-        50,
-        3224,
-    ),
-    (
-        50,
-        10,
-        50,
-        3225,
-    ),
-    (
-        50,
-        11,
-        50,
-        3226,
-    ),
-    (
-        100,
-        0,
-        100,
-        3227,
-    ),
-    (
-        100,
-        1,
-        100,
-        3228,
-    ),
-    (
-        100,
-        2,
-        100,
-        3229,
-    ),
-    (
-        100,
-        3,
-        100,
-        3230,
-    ),
-    (
-        100,
-        4,
-        100,
-        3231,
-    ),
-    (
-        100,
-        5,
-        100,
-        3232,
-    ),
-    (
-        100,
-        6,
-        100,
-        3233,
-    ),
-    (
-        100,
-        7,
-        100,
-        3234,
-    ),
-    (
-        100,
-        8,
-        100,
-        3235,
-    ),
-    (
-        100,
-        9,
-        100,
-        3236,
-    ),
-    (
-        100,
-        10,
-        100,
-        3237,
-    ),
-    (
-        100,
-        11,
-        100,
-        3238,
-    ),
+    (25, 0, 25, 3203,),
+    (25, 1, 25, 3204,),
+    (25, 2, 25, 3205,),
+    (25, 3, 25, 3206,),
+    (25, 4, 25, 3207,),
+    (25, 5, 25, 3208,),
+    (25, 6, 25, 3209,),
+    (25, 7, 25, 3210,),
+    (25, 8, 25, 3211,),
+    (25, 9, 25, 3212,),
+    (25, 10, 25, 3213,),
+    (25, 11, 25, 3214,),
+    (50, 0, 50, 3215,),
+    (50, 1, 50, 3216,),
+    (50, 2, 50, 3217,),
+    (50, 3, 50, 3218,),
+    (50, 4, 50, 3219,),
+    (50, 5, 50, 3220,),
+    (50, 6, 50, 3221,),
+    (50, 7, 50, 3222,),
+    (50, 8, 50, 3223,),
+    (50, 9, 50, 3224,),
+    (50, 10, 50, 3225,),
+    (50, 11, 50, 3226,),
+    (100, 0, 100, 3227,),
+    (100, 1, 100, 3228,),
+    (100, 2, 100, 3229,),
+    (100, 3, 100, 3230,),
+    (100, 4, 100, 3231,),
+    (100, 5, 100, 3232,),
+    (100, 6, 100, 3233,),
+    (100, 7, 100, 3234,),
+    (100, 8, 100, 3235,),
+    (100, 9, 100, 3236,),
+    (100, 10, 100, 3237,),
+    (100, 11, 100, 3238,),
 )
-
 
 class TestCycles(BaseTest):
     """Repeated short windows produce the expected cycle count."""
 
-    @pytest.mark.parametrize(
-        (
-            "cycle_count",
-            "pattern",
-            "expected_cycles",
-            "uid",
-        ),
-        _CYCLES_CASES,
-    )
+    @pytest.mark.parametrize(('cycle_count', 'pattern', 'expected_cycles', 'uid',), _CYCLES_CASES)
     def test_cycles(self, cycle_count: int, pattern: int, expected_cycles: int, uid: int) -> None:
         """Repeated short windows produce the expected cycle count."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 2)
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)
         for _ in range(cycle_count * 2):
-            profiler.record("app", "u", total_msgs=1, flagged_msgs=pattern % 2)
+            profiler.record('app', 'u', total_msgs=1, flagged_msgs=pattern % 2)
             self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == expected_cycles
+        profile = profiler.get_profile('app', 'u')
+        assert len(profile['summaries']) == expected_cycles
         profiler.close()
 
 
 _CYCLES_CLEAN_CASES: tuple[tuple[int, int], ...] = (
-    (
-        6,
-        3239,
-    ),
-    (
-        7,
-        3240,
-    ),
-    (
-        8,
-        3241,
-    ),
-    (
-        9,
-        3242,
-    ),
+    (6, 3239,),
+    (7, 3240,),
+    (8, 3241,),
+    (9, 3242,),
 )
-
 
 class TestCyclesClean(BaseTest):
     """Clean repeated windows produce the expected cycle count."""
 
-    @pytest.mark.parametrize(
-        (
-            "expected_cycles",
-            "uid",
-        ),
-        _CYCLES_CLEAN_CASES,
-    )
+    @pytest.mark.parametrize(('expected_cycles', 'uid',), _CYCLES_CLEAN_CASES)
     def test_cycles_clean(self, expected_cycles: int, uid: int) -> None:
         """Clean repeated windows produce the expected cycle count."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 2)
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 2)
         for _ in range(expected_cycles * 2):
-            profiler.record("app", "u", total_msgs=1)
+            profiler.record('app', 'u', total_msgs=1)
             self.advance_days(1)
-        profile = profiler.get_profile("app", "u")
-        assert len(profile["summaries"]) == expected_cycles
+        profile = profiler.get_profile('app', 'u')
+        assert len(profile['summaries']) == expected_cycles
         profiler.close()
 
 
 _ISOLATION_CASES: tuple[tuple[int, int, int, int, int], ...] = (
-    (
-        2,
-        1,
-        1,
-        4,
-        3243,
-    ),
-    (
-        2,
-        1,
-        2,
-        6,
-        3244,
-    ),
-    (
-        2,
-        1,
-        3,
-        8,
-        3245,
-    ),
-    (
-        2,
-        2,
-        1,
-        6,
-        3246,
-    ),
-    (
-        2,
-        2,
-        2,
-        8,
-        3247,
-    ),
-    (
-        2,
-        2,
-        3,
-        10,
-        3248,
-    ),
-    (
-        2,
-        3,
-        1,
-        8,
-        3249,
-    ),
-    (
-        2,
-        3,
-        2,
-        10,
-        3250,
-    ),
-    (
-        2,
-        3,
-        3,
-        12,
-        3251,
-    ),
-    (
-        3,
-        1,
-        1,
-        6,
-        3252,
-    ),
-    (
-        3,
-        1,
-        2,
-        9,
-        3253,
-    ),
-    (
-        3,
-        1,
-        3,
-        12,
-        3254,
-    ),
-    (
-        3,
-        2,
-        1,
-        9,
-        3255,
-    ),
-    (
-        3,
-        2,
-        2,
-        12,
-        3256,
-    ),
-    (
-        3,
-        2,
-        3,
-        15,
-        3257,
-    ),
-    (
-        3,
-        3,
-        1,
-        12,
-        3258,
-    ),
-    (
-        3,
-        3,
-        2,
-        15,
-        3259,
-    ),
-    (
-        3,
-        3,
-        3,
-        18,
-        3260,
-    ),
-    (
-        4,
-        1,
-        1,
-        8,
-        3261,
-    ),
-    (
-        4,
-        1,
-        2,
-        12,
-        3262,
-    ),
-    (
-        4,
-        1,
-        3,
-        16,
-        3263,
-    ),
-    (
-        4,
-        2,
-        1,
-        12,
-        3264,
-    ),
-    (
-        4,
-        2,
-        2,
-        16,
-        3265,
-    ),
-    (
-        4,
-        2,
-        3,
-        20,
-        3266,
-    ),
-    (
-        4,
-        3,
-        1,
-        16,
-        3267,
-    ),
-    (
-        4,
-        3,
-        2,
-        20,
-        3268,
-    ),
-    (
-        4,
-        3,
-        3,
-        24,
-        3269,
-    ),
-    (
-        5,
-        1,
-        1,
-        10,
-        3270,
-    ),
-    (
-        5,
-        1,
-        2,
-        15,
-        3271,
-    ),
-    (
-        5,
-        1,
-        3,
-        20,
-        3272,
-    ),
-    (
-        5,
-        2,
-        1,
-        15,
-        3273,
-    ),
-    (
-        5,
-        2,
-        2,
-        20,
-        3274,
-    ),
-    (
-        5,
-        2,
-        3,
-        25,
-        3275,
-    ),
-    (
-        5,
-        3,
-        1,
-        20,
-        3276,
-    ),
-    (
-        5,
-        3,
-        2,
-        25,
-        3277,
-    ),
-    (
-        5,
-        3,
-        3,
-        30,
-        3278,
-    ),
-    (
-        6,
-        1,
-        1,
-        12,
-        3279,
-    ),
-    (
-        6,
-        1,
-        2,
-        18,
-        3280,
-    ),
-    (
-        6,
-        1,
-        3,
-        24,
-        3281,
-    ),
-    (
-        6,
-        2,
-        1,
-        18,
-        3282,
-    ),
-    (
-        6,
-        2,
-        2,
-        24,
-        3283,
-    ),
-    (
-        6,
-        2,
-        3,
-        30,
-        3284,
-    ),
-    (
-        6,
-        3,
-        1,
-        24,
-        3285,
-    ),
-    (
-        6,
-        3,
-        2,
-        30,
-        3286,
-    ),
-    (
-        6,
-        3,
-        3,
-        36,
-        3287,
-    ),
-    (
-        8,
-        1,
-        1,
-        16,
-        3288,
-    ),
-    (
-        8,
-        1,
-        2,
-        24,
-        3289,
-    ),
-    (
-        8,
-        1,
-        3,
-        32,
-        3290,
-    ),
-    (
-        8,
-        2,
-        1,
-        24,
-        3291,
-    ),
-    (
-        8,
-        2,
-        2,
-        32,
-        3292,
-    ),
-    (
-        8,
-        2,
-        3,
-        40,
-        3293,
-    ),
-    (
-        8,
-        3,
-        1,
-        32,
-        3294,
-    ),
-    (
-        8,
-        3,
-        2,
-        40,
-        3295,
-    ),
-    (
-        8,
-        3,
-        3,
-        48,
-        3296,
-    ),
-    (
-        10,
-        1,
-        1,
-        20,
-        3297,
-    ),
-    (
-        10,
-        1,
-        2,
-        30,
-        3298,
-    ),
-    (
-        10,
-        1,
-        3,
-        40,
-        3299,
-    ),
-    (
-        10,
-        2,
-        1,
-        30,
-        3300,
-    ),
-    (
-        10,
-        2,
-        2,
-        40,
-        3301,
-    ),
-    (
-        10,
-        2,
-        3,
-        50,
-        3302,
-    ),
+    (2, 1, 1, 4, 3243,),
+    (2, 1, 2, 6, 3244,),
+    (2, 1, 3, 8, 3245,),
+    (2, 2, 1, 6, 3246,),
+    (2, 2, 2, 8, 3247,),
+    (2, 2, 3, 10, 3248,),
+    (2, 3, 1, 8, 3249,),
+    (2, 3, 2, 10, 3250,),
+    (2, 3, 3, 12, 3251,),
+    (3, 1, 1, 6, 3252,),
+    (3, 1, 2, 9, 3253,),
+    (3, 1, 3, 12, 3254,),
+    (3, 2, 1, 9, 3255,),
+    (3, 2, 2, 12, 3256,),
+    (3, 2, 3, 15, 3257,),
+    (3, 3, 1, 12, 3258,),
+    (3, 3, 2, 15, 3259,),
+    (3, 3, 3, 18, 3260,),
+    (4, 1, 1, 8, 3261,),
+    (4, 1, 2, 12, 3262,),
+    (4, 1, 3, 16, 3263,),
+    (4, 2, 1, 12, 3264,),
+    (4, 2, 2, 16, 3265,),
+    (4, 2, 3, 20, 3266,),
+    (4, 3, 1, 16, 3267,),
+    (4, 3, 2, 20, 3268,),
+    (4, 3, 3, 24, 3269,),
+    (5, 1, 1, 10, 3270,),
+    (5, 1, 2, 15, 3271,),
+    (5, 1, 3, 20, 3272,),
+    (5, 2, 1, 15, 3273,),
+    (5, 2, 2, 20, 3274,),
+    (5, 2, 3, 25, 3275,),
+    (5, 3, 1, 20, 3276,),
+    (5, 3, 2, 25, 3277,),
+    (5, 3, 3, 30, 3278,),
+    (6, 1, 1, 12, 3279,),
+    (6, 1, 2, 18, 3280,),
+    (6, 1, 3, 24, 3281,),
+    (6, 2, 1, 18, 3282,),
+    (6, 2, 2, 24, 3283,),
+    (6, 2, 3, 30, 3284,),
+    (6, 3, 1, 24, 3285,),
+    (6, 3, 2, 30, 3286,),
+    (6, 3, 3, 36, 3287,),
+    (8, 1, 1, 16, 3288,),
+    (8, 1, 2, 24, 3289,),
+    (8, 1, 3, 32, 3290,),
+    (8, 2, 1, 24, 3291,),
+    (8, 2, 2, 32, 3292,),
+    (8, 2, 3, 40, 3293,),
+    (8, 3, 1, 32, 3294,),
+    (8, 3, 2, 40, 3295,),
+    (8, 3, 3, 48, 3296,),
+    (10, 1, 1, 20, 3297,),
+    (10, 1, 2, 30, 3298,),
+    (10, 1, 3, 40, 3299,),
+    (10, 2, 1, 30, 3300,),
+    (10, 2, 2, 40, 3301,),
+    (10, 2, 3, 50, 3302,),
 )
-
 
 class TestIsolation(BaseTest):
     """Users and apps remain isolated across ratio and archive state."""
 
-    @pytest.mark.parametrize(
-        (
-            "n_apps",
-            "bad",
-            "good",
-            "expected_active",
-            "uid",
-        ),
-        _ISOLATION_CASES,
-    )
-    def test_isolation(
-        self, n_apps: int, bad: int, good: int, expected_active: int, uid: int
-    ) -> None:
+    @pytest.mark.parametrize(('n_apps', 'bad', 'good', 'expected_active', 'uid',), _ISOLATION_CASES)
+    def test_isolation(self, n_apps: int, bad: int, good: int, expected_active: int, uid: int) -> None:
         """Users and apps remain isolated across ratio and archive state."""
-        profiler: UserProfiler = UserProfiler(":memory:", ":memory:", 91)
+        profiler: UserProfiler = UserProfiler(':memory:', ':memory:', 91)
         for app in range(n_apps):
             for user in range(bad):
                 profiler.record(
-                    f"app{app}",
-                    f"bad{user}",
-                    total_msgs=1,
-                    flagged_msgs=1 if app == 0 else 0,
+                    f'app{app}', f'bad{user}',
+                    total_msgs=1, flagged_msgs=1 if app == 0 else 0,
                 )
             for user in range(good):
-                profiler.record(f"app{app}", f"good{user}", total_msgs=1)
-        assert profiler.get_ratio("app0", "bad0") == 1.0
-        assert profiler.get_ratio("app0", "good0") == 0.0
-        assert profiler.get_ratio("app1", "bad0") == 0.0
-        assert profiler.get_ratio("app1", "good0") == 0.0
-        assert profiler.stats()["active_users"] == expected_active
+                profiler.record(f'app{app}', f'good{user}', total_msgs=1)
+        assert profiler.get_ratio('app0', 'bad0') == 1.0
+        assert profiler.get_ratio('app0', 'good0') == 0.0
+        assert profiler.get_ratio('app1', 'bad0') == 0.0
+        assert profiler.get_ratio('app1', 'good0') == 0.0
+        assert profiler.stats()['active_users'] == expected_active
         profiler.close()
