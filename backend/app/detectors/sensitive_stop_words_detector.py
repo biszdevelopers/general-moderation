@@ -82,6 +82,7 @@ class SensitiveStopWordsDetector(DetectorInterface):
         self._logger: Any = logger
         self._loader: SensitiveWordLoader = self._build_loader()
         self._automaton: Any | None = None
+        self._stopwords: frozenset[str] = frozenset(self._loader.load_category("stopwords"))
 
     @property
     def name(self) -> str:
@@ -132,6 +133,7 @@ class SensitiveStopWordsDetector(DetectorInterface):
     def reload(self) -> None:
         """Rebuild the loader and drop the compiled automaton."""
         self._loader = self._build_loader()
+        self._stopwords = frozenset(self._loader.load_category("stopwords"))
         self._automaton = None
 
     def _ensure_automaton(self) -> None:
@@ -166,6 +168,15 @@ class SensitiveStopWordsDetector(DetectorInterface):
     def detect(self, text: str) -> DetectionResult:
         """Scan the text for submodule words.
 
+        Two filters prevent common-text false positives while keeping real
+        sensitive coverage:
+
+        - terms shorter than ``sensitive_min_word_length`` (default 2) never
+          hard-block — single CJK characters appear everywhere;
+        - 2-character terms that also appear in the stopword list
+          (``stopword.dic``: 这个, 那个, 我们, ...) are excluded, since they
+          are common connective words, not sensitive content.
+
         :param text: normalized input text
         :return: a positive result when a submodule word occurs
         """
@@ -175,11 +186,19 @@ class SensitiveStopWordsDetector(DetectorInterface):
         if self._automaton is None:
             return DetectionResult(matched=False)
         matched: tuple[str, ...] = self._automaton.match(text)
-        if not matched:
+        min_length: int = int(self._settings.sensitive_min_word_length or 1)
+        filtered: list[str] = []
+        for word in matched:
+            if len(word) < min_length:
+                continue
+            if len(word) == 2 and word in self._stopwords:
+                continue
+            filtered.append(word)
+        if not filtered:
             return DetectionResult(matched=False)
         return DetectionResult(
             matched=True,
-            matched_words=matched,
+            matched_words=tuple(filtered),
             matched_language="zh-CN",
             reason="Sensitive stop word matched from submodule lists",
             confidence_score=0.85,
