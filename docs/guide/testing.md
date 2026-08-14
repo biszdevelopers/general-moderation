@@ -70,6 +70,7 @@ flowchart TB
             E["Engine suite"]
             S["Semantic suite"]
             P["Profiling suite"]
+            SV["Severe-content suite"]
         end
         subgraph I["Integration layer"]
             A["Archive suite"]
@@ -95,8 +96,10 @@ flowchart TB
 - **Unit layer** exercises a single component in isolation: individual
   detectors against a controlled word bank, the moderation pipeline against
   seeded dictionaries and thresholds, the semantic similarity service against
-  a deterministic embedding oracle, and the user profiler against an
-  in-memory database pair.
+  a deterministic embedding oracle, the user profiler against an in-memory
+  database pair, and the severe-content suite (phrase hard-blocks, score
+  floors, review escalation, false-positive regressions, cache
+  invalidation).
 - **Integration layer** wires several services together: the archive cycle
   (profiler plus SQLite persistence), the auto-tuning batch (feedback
   ingestion plus weight/threshold mutation), the LLM boundary (sanitization,
