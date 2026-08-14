@@ -85,6 +85,10 @@ class Settings(BaseSettings):
     )
     sensitive_lexicon_dir: str = "./data/sensitive-lexicon/Vocabulary"
     sensitive_dict_path: str = "./data/sensitive/dict/dict.txt"
+    # Minimum term length for a sensitive-list match to hard-block. Single
+    # CJK characters appear in benign text (祝, 你, 请, ...), so the lists'
+    # ~528 one-char terms are excluded from decisive blocking.
+    sensitive_min_word_length: int = 2
 
     # Stage 2 detector toggles (runtime-editable through the admin API)
     enable_detector_bloom_filter: bool = True
@@ -93,6 +97,11 @@ class Settings(BaseSettings):
     enable_detector_bk_tree: bool = True
     enable_detector_double_metaphone: bool = True
     enable_detector_multi_language: bool = True
+
+    # Benign words that multi-language packages misflag (e.g. Turkish "cok"
+    # = "very", flagged as profanity after diacritic stripping). A package hit
+    # is suppressed when the entire text consists of excluded words.
+    ml_benign_word_exclusions: str = "cok"
 
     # Detector weights (Stage 2 suspicion scoring)
     weight_detector_badwords: int = 25
