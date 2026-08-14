@@ -72,7 +72,7 @@ API reference, and algorithm documentation.
 | glin-profanity | 25+ | Context-aware | Active |
 | gangajal | All | WebAssembly | Active |
 | PyProfane | Universal | Soundex-based | Active |
-| sensitive-stop-words | Chinese | Submodule word lists (Aho-Corasick) | Active |
+| sensitive-stop-words | Chinese | Submodule + 3 raw word lists (Rust Aho-Corasick) | Active |
 | phrase-detector | Any | Severity-aware critical phrases | Active |
 | safetext | 13 | Phrase detection | Guard-wired |
 | sensitive-word-filter-cn | Chinese | Pinyin, symbols | Guard-wired |
@@ -93,7 +93,7 @@ From the repository root:
 ```bash
 npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
-git submodule update --init  # fetch the sensitive-stop-words word lists
+git submodule update --init  # fetch the Chinese sensitive-word lists
 npm run generate:secrets     # generate secure *_KEY/_SECRET values in backend/.env
 npm run seed         # seed critical phrases, semantic examples, and safe words (idempotent)
 npm run build        # build the frontend once (required before start:prod)
@@ -294,6 +294,27 @@ A single test file can also be run directly, e.g.
 
 `backend/test_reports/index.html` is generated with `pytest --html` and
 contains the full pass/fail history of the suite.
+
+## Credits
+
+This project builds on open-source work. The Chinese sensitive-word lists are
+consumed as **raw word data** through this service's own matching algorithms
+(Aho-Corasick, BK-tree, Bloom); the subrepos do not ship Python bindings, so
+no code from them runs here.
+
+| Source | Repository | Used for |
+| :--- | :--- | :--- |
+| sensitive-stop-words | [fwwdn/sensitive-stop-words](https://github.com/fwwdn/sensitive-stop-words) | Per-category Chinese blocking lists (political, porn, gun, ad, url) |
+| sensitive | [importcjj/sensitive](https://github.com/importcjj/sensitive) | `dict/dict.txt` — Chinese sensitive-word list |
+| sensitive-lexicon | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) | `Vocabulary/` — category word lists (political, porn, gun, URLs, etc.) |
+| sensitive-word-data | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) | `sensitive_word_dict.txt` — Chinese sensitive-word dictionary |
+
+All subrepos live under `backend/data/` and are fetched with
+`git submodule update --init`.
+
+The detector packages, algorithms, and the rest of the dependencies used by
+this project are credited on the [Credits page](docs/guide/credits.md) of the
+documentation site.
 
 ## License
 
