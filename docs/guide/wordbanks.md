@@ -1,8 +1,14 @@
 # Word Banks
 
-The service stores **no local sensitive-word text files**. Base dictionaries
-are pulled from the C/C++/Rust pip packages at runtime; custom words live in
-SQLite (C implementation) or a JSON document written atomically.
+The service combines three word sources:
+
+- **Base dictionaries** pulled from the C/C++/Rust pip packages at runtime
+  (~13,835 words, cached per process).
+- **Custom words** stored in SQLite (C implementation) or a JSON document
+  written atomically.
+- **Chinese sensitive-word lists** from the `backend/data/` subrepos, matched
+  by the dedicated top-priority sensitive-stop-words detector (see
+  [Configuration](/guide/configuration) and [Credits](/guide/credits)).
 
 ## How Words Are Combined
 
@@ -13,6 +19,13 @@ At startup and on every reload, the `WordBankManager`:
 3. Compiles the union into an Aho-Corasick automaton and seeds a Bloom filter.
 4. Swaps the new immutable snapshot into place with a single reference
    assignment — no locks, no partial states.
+
+The fuzzy layers (BK-tree, Double Metaphone, Bloom) operate **only** on
+administrator-curated custom words. Base words are covered exactly by the
+Aho-Corasick automaton (with an ASCII word-boundary guard) and the
+multi-language packages; matching them fuzzily would flag nearly every token.
+The Chinese subrepos are matched by the separate sensitive-stop-words detector,
+so they never pollute the custom-word fuzzy index.
 
 ## Custom Words
 
@@ -86,3 +99,11 @@ ligatures, and Unicode obfuscation.
 
 `GET /admin/wordbank/stats` returns total, custom, and base word counts plus
 the number of distinct languages and categories.
+
+## Severity and Category on Custom Words
+
+A custom word's `severity` (0–10) and `category` ride along on a match and
+feed Stage 2: the strongest matched severity promotes the suspicion score via
+the severity floor, and a phrase or word at or above
+`SEVERITY_HARD_BLOCK_THRESHOLD` (default 5) hard-blocks. See [Suspicion
+Score](/algorithms/suspicion-score) for how severity is consumed.
