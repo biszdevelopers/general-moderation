@@ -42,6 +42,7 @@ export default defineConfig(
                     { text: "Algorithms", link: "/algorithms/" },
                     { text: "API", link: "/api/" },
                     { text: "Languages", link: "/languages/" },
+                    { text: "Credits", link: "/guide/credits" },
                     { text: "Contributing", link: "/contributing" },
                 ],
             sidebar: {
@@ -60,6 +61,7 @@ export default defineConfig(
                             { text: "Security", link: "/guide/security" },
                             { text: "Testing", link: "/guide/testing" },
                             { text: "Deployment", link: "/guide/deployment" },
+                            { text: "Credits", link: "/guide/credits" },
                         ],
                     },
                 ],
