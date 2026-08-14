@@ -7,6 +7,7 @@ is a plain LRU keyed by 64-bit hash, bounded by ``spam_cache_size``.
 
 from __future__ import annotations
 
+import threading
 import time
 from collections import OrderedDict
 from collections.abc import MutableMapping
@@ -30,6 +31,7 @@ class RollingHashDetector(DetectorInterface):
         self._cache_size: int = cache_size
         self._ttl_seconds: int = ttl_seconds
         self._cache: MutableMapping[int, tuple[float, bool]] = OrderedDict()
+        self._lock: threading.Lock = threading.Lock()
 
     @property
     def name(self) -> str:
@@ -65,6 +67,11 @@ class RollingHashDetector(DetectorInterface):
         """
         now: float = time.monotonic()
         message_hash: int = self._hash(text)
+        with self._lock:
+            return self._detect_locked(now, message_hash)
+
+    def _detect_locked(self, now: float, message_hash: int) -> DetectionResult:
+        """Run the cache lookup while holding the lock."""
         entry: tuple[float, bool] | None = self._cache.get(message_hash)
         if entry is not None and entry[0] > now:
             self._cache.move_to_end(message_hash)
@@ -86,8 +93,9 @@ class RollingHashDetector(DetectorInterface):
         :param text: the message that was flagged by a later layer
         """
         now: float = time.monotonic()
-        self._cache[self._hash(text)] = (now + self._ttl_seconds, True)
-        self._evict(now)
+        with self._lock:
+            self._cache[self._hash(text)] = (now + self._ttl_seconds, True)
+            self._evict(now)
 
     def _evict(self, now: float) -> None:
         """Drop expired then overflow entries from the LRU cache.
