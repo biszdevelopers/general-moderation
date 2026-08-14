@@ -22,6 +22,7 @@ _WEIGHT_KEYS: dict[str, str] = {
     "bk_tree": "WEIGHT_DETECTOR_BKTREE",
     "double_metaphone": "WEIGHT_DETECTOR_METAPHONE",
     "multi_language": "WEIGHT_DETECTOR_BADWORDS",
+    "sensitive_stop_words": "WEIGHT_DETECTOR_AHO",
     "rolling_hash": "WEIGHT_DETECTOR_AHO",
     "bloom_filter": "WEIGHT_DETECTOR_AHO",
 }
