@@ -72,6 +72,12 @@ class Settings(BaseSettings):
     enable_pyprofane: bool = True
     enable_sensitive_stop_words: bool = True
     sensitive_stop_words_dir: str = "./data/sensitive-stop-words"
+    # Per-category toggles for the sensitive-stop-words submodule blocking lists.
+    enable_sensitive_stop_words_political: bool = True
+    enable_sensitive_stop_words_porn: bool = True
+    enable_sensitive_stop_words_gun: bool = True
+    enable_sensitive_stop_words_ad: bool = True
+    enable_sensitive_stop_words_url: bool = True
 
     # Stage 2 detector toggles (runtime-editable through the admin API)
     enable_detector_bloom_filter: bool = True
@@ -93,8 +99,8 @@ class Settings(BaseSettings):
     semantic_enabled: bool = True
     semantic_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
     semantic_index_dir: str = "./semantic/"
-    semantic_similarity_threshold: float = 0.85
-    semantic_force_llm_threshold: float = 0.90
+    semantic_similarity_threshold: float = 0.65
+    semantic_force_llm_threshold: float = 0.80
     semantic_top_k: int = 5
     weight_semantic_political: int = 35
     weight_semantic_violence: int = 40
@@ -114,6 +120,15 @@ class Settings(BaseSettings):
     # Stage 2: suspicion scoring
     weight_user: int = 20
     score_weights_cache_ttl_seconds: int = 300
+
+    # Stage 2: severity-aware phrase detection
+    critical_phrases_db_path: str = "./data/critical_phrases.db"
+    enable_phrase_detector: bool = True
+    severity_hard_block_threshold: int = 5
+    review_escalation_threshold: int = 40
+
+    # Stage 2: multi-language package handling
+    ml_review_mode: bool = False
 
     # Stage 3: LLM trigger policy
     ai_target_percentage: int = 5
@@ -257,6 +272,7 @@ class Settings(BaseSettings):
             self.user_archive_db_path,
             self.feedback_db_path,
             self.settings_db_path,
+            self.critical_phrases_db_path,
             self.log_file_path,
         )
         for raw_path in db_paths:
