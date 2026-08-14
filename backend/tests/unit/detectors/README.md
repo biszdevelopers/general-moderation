@@ -750,7 +750,7 @@
 | TC-DET-923 | P1 | glin-profanity tr positive | tr positive | matched=False | test_detectors_phase2_part_8.py |
 | TC-DET-924 | P1 | glin-profanity tr clean | tr clean | matched=False | test_detectors_phase2_part_8.py |
 | TC-DET-925 | P1 | glin-profanity pt positive | pt positive | matched=False | test_detectors_phase2_part_8.py |
-| TC-DET-926 | P1 | glin-profanity pt clean | pt clean | matched=True | test_detectors_phase2_part_8.py |
+| TC-DET-926 | P1 | glin-profanity pt clean | pt clean | matched=False | test_detectors_phase2_part_8.py |
 | TC-DET-927 | P1 | glin-profanity nl positive | nl positive | matched=False | test_detectors_phase2_part_8.py |
 | TC-DET-928 | P1 | glin-profanity nl clean | nl clean | matched=False | test_detectors_phase2_part_8.py |
 | TC-DET-929 | P1 | glin-profanity pl positive | pl positive | matched=False | test_detectors_phase2_part_8.py |
