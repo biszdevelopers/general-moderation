@@ -50,14 +50,16 @@ with HTTP 422 before any application logic runs.
     "levelUsed": 1,
     "aiTriggered": false,
     "suspicionScore": 60.0,
-    "reasons": ["Exact sensitive word matched in Aho-Corasick automaton"],
-    "reason": "Exact sensitive word matched in Aho-Corasick automaton",
-    "matchedWords": ["badword"],
-    "matchedWord": "badword",
-    "matchedLanguage": "en",
-    "confidenceScore": 1.0,
+    "reasons": ["Sensitive stop word matched from submodule lists"],
+    "reason": "Sensitive stop word matched from submodule lists",
+    "matchedWords": ["敏感词"],
+    "matchedWord": "敏感词",
+    "matchedLanguage": "zh-CN",
+    "confidenceScore": 0.85,
+    "severity": 8,
+    "category": "political",
     "latencyMs": 0.42,
-    "detectorChain": ["bloom_filter", "rolling_hash", "aho_corasick"]
+    "detectorChain": ["sensitive_stop_words", "bloom_filter", "rolling_hash", "aho_corasick"]
 }
 ```
 
@@ -75,20 +77,25 @@ with HTTP 422 before any application logic runs.
 | `matchedWord` | string \| null | The primary matched word |
 | `matchedLanguage` | string \| null | ISO language code when a package reported one |
 | `confidenceScore` | number \| null | Overall confidence, 0–1 |
+| `severity` | integer \| null | Severity of the strongest match (0–10), when known |
+| `category` | string \| null | Semantic bucket of the strongest match, when known |
 | `latencyMs` | number | Wall-clock time for this request |
-| `detectorChain` | array&lt;string&gt; | Ordered detectors that ran, e.g. `["rolling_hash", "bk_tree", "double_metaphone", "multi_language"]` |
+| `detectorChain` | array&lt;string&gt; | Ordered detectors that ran, e.g. `["sensitive_stop_words", "bloom_filter", "aho_corasick"]` |
 
 ### Verdict Semantics
 
 | Verdict | Meaning |
 | :--- | :--- |
 | `PASS` | No sensitive content detected; safe to publish |
-| `BLOCK` | A decisive exact match (Level 1) **or** the LLM confirmed sensitivity (Level 2) |
+| `BLOCK` | A decisive exact match (Level 1), a severity hard-block, **or** the LLM confirmed sensitivity (Level 2) |
 | `REVIEW` | A probabilistic or fuzzy hit awaiting human review |
 
-`REVIEW` escalates to `BLOCK` when the llama.cpp model is available and
-classifies the content as sensitive; without the model the verdict stays
-`REVIEW`.
+`BLOCK` verdicts are preserved even when the LLM is unavailable after a
+trigger fires (fail-open); only ambiguous content becomes `REVIEW`. `REVIEW`
+escalates to `BLOCK` when the llama.cpp model is available and classifies the
+content as sensitive, or when the suspicion score crosses
+`REVIEW_ESCALATION_THRESHOLD` (default 40) and the model confirms it; without
+the model the verdict stays `REVIEW`.
 
 ## Moderate a Batch
 
@@ -131,8 +138,10 @@ more than the batch cap is rejected with 422.
             "matchedWord": null,
             "matchedLanguage": null,
             "confidenceScore": null,
+            "severity": null,
+            "category": null,
             "latencyMs": 0.31,
-            "detectorChain": ["rolling_hash"]
+            "detectorChain": ["sensitive_stop_words", "bloom_filter", "rolling_hash"]
         }
     ],
     "totalLatencyMs": 0.64
@@ -159,12 +168,15 @@ Results are always returned in the order of the request items, and each item's
 
 - **Caching** — repeated identical requests are served from an in-memory LRU
   result cache keyed by `mmh3` over the request; a cache hit skips the
-  pipeline.
+  pipeline. Entries are fingerprint-validated against the runtime settings
+  that affect detection, and admin settings/app-config/phrase edits clear it.
 - **Profiling** — requests carrying a `user_id` update the per-app profiling
   window; the same `user_id` in different `app_name`s is profiled separately.
 - **Audit log** — every moderation decision is appended to the JSONL audit
-  log and feeds the admin dashboard and spot-check sampling.
+  log (including severity and category) and feeds the admin dashboard and
+  spot-check sampling.
 - **Level assignment** — `levelUsed` is `1` whenever rule detectors are
-  decisive, and `2` only when the conditional LLM actually runs.
+  decisive (including the top-priority sensitive-stop-words and phrase
+  detectors), and `2` only when the conditional LLM actually runs.
 - **Long messages** — when the LLM is invoked, long messages are processed in
   chunks; the final verdict is `BLOCK` if any chunk blocks.
