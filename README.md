@@ -268,10 +268,28 @@ npm run test:integration  # integration tests only (tests/integration)
 npm run test:e2e    # E2E only (tests/e2e)
 npm run test:phase2 # generated golden-master tests only (tests -k phase2)
 npm run test:serial # full suite serial (deterministic CI debugging)
+npm run eval        # labeled-corpus accuracy/precision/recall/F1 gate
 ```
 
 A single test file can also be run directly, e.g.
 `cd backend && uv run python -m pytest tests/unit/detectors -v`.
+
+### Evaluation Gate
+
+`npm run eval` runs the labeled corpus through the live pipeline and measures
+accuracy, precision, recall, and F1 (plus p50/p95/p99 latency). It fails with
+a nonzero exit when metrics drop below the configured minimums, so accuracy
+regressions are caught before a demo or release:
+
+```bash
+npm run eval                  # full corpus, default thresholds
+npm run eval -- --json        # machine-readable report
+cd backend && uv run python -m eval.evaluate --no-cjk  # skip sampled CJK terms
+```
+
+The corpus spans seed critical phrases, sampled Chinese list terms (redacted),
+benign English/Chinese/multilingual sentences, and obfuscated attacks. See
+`backend/eval/` for the labels and thresholds.
 
 ### Adding New Tests
 
