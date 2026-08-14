@@ -85,6 +85,8 @@ class ModerationLogger:
         detector_chain: list[str],
         suspicion_score: float = 0.0,
         ai_triggered: bool = False,
+        severity: int | None = None,
+        category: str | None = None,
     ) -> None:
         """Record a complete moderation decision.
 
@@ -101,6 +103,8 @@ class ModerationLogger:
         :param detector_chain: ordered detector names that ran
         :param suspicion_score: the computed 0-100 suspicion score
         :param ai_triggered: whether the LLM was invoked
+        :param severity: severity of the strongest match, if any
+        :param category: category of the strongest match, if any
         """
         text_hash: str = hashlib.sha256(text.encode("utf-8")).hexdigest()
         text_preview: str = text[:50]
@@ -121,6 +125,8 @@ class ModerationLogger:
             detectorChain=detector_chain,
             suspicionScore=suspicion_score,
             aiTriggered=ai_triggered,
+            severity=severity,
+            category=category,
         )
 
     def close(self) -> None:
