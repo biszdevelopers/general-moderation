@@ -135,11 +135,11 @@ class TestSemanticThresholds(BaseTest):
 
     def test_threshold_from_settings(self, settings: Settings) -> None:
         """The threshold mirrors the configured value."""
-        assert settings.semantic_similarity_threshold == 0.85
+        assert settings.semantic_similarity_threshold == 0.65
 
     def test_force_threshold_from_settings(self, settings: Settings) -> None:
         """The force threshold mirrors the configured value."""
-        assert settings.semantic_force_llm_threshold == 0.90
+        assert settings.semantic_force_llm_threshold == 0.80
 
     def test_top_k_positive(self, settings: Settings) -> None:
         """The top-k value is positive."""
