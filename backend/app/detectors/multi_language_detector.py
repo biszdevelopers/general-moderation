@@ -38,6 +38,7 @@ import concurrent.futures
 import importlib
 import inspect
 import logging
+import threading
 from collections.abc import Callable
 from typing import Any
 
@@ -96,6 +97,27 @@ def _prepare_badwords(module: Any) -> Any:
     return instance.filter_text
 
 
+def _prepare_glin(module: Any) -> Any:
+    """Return the accurate glin_profanity check callable.
+
+    ``Filter.is_profane`` is a fast substring probe that false-positives on
+    ordinary words (e.g. ``pass``); ``check_profanity`` performs the real,
+    word-boundary-aware analysis and returns a dict with ``contains_profanity``.
+    The adapter therefore binds the accurate API instead of the generic
+    method probe.
+
+    :param module: the imported glin_profanity module
+    :return: a bound check callable returning a bool, or None on failure
+    """
+    instance: Any = module.Filter()
+
+    def _check(text: str) -> bool:
+        result: Any = instance.check_profanity(text)
+        return bool(result.get("contains_profanity")) if isinstance(result, dict) else False
+
+    return _check
+
+
 def _prepare_safetext(module: Any) -> Any:
     """Return a ready-to-use safetext check callable.
 
@@ -119,6 +141,7 @@ def _prepare_safetext(module: Any) -> Any:
 _PREPARE_FUNCTIONS: dict[str, Callable[[Any], Any]] = {
     "badwords": _prepare_badwords,
     "safetext": _prepare_safetext,
+    "glin_profanity": _prepare_glin,
 }
 
 
@@ -143,6 +166,10 @@ class _PackageAdapter:
         self._mode: str = mode
         self._module: Any | None = self._import()
         self._callable: Any | None = self._resolve_callable(prepare)
+        # The C/Rust/WASM backends are not documented thread-safe, so each
+        # package serializes its own calls (different packages still run in
+        # parallel).
+        self._lock: threading.Lock = threading.Lock()
 
     def _import(self) -> Any | None:
         """Import the module.
@@ -212,6 +239,11 @@ class _PackageAdapter:
         """
         if self._callable is None:
             return DetectionResult(matched=False)
+        with self._lock:
+            return self._detect_unsafe(text)
+
+    def _detect_unsafe(self, text: str) -> DetectionResult:
+        """Run the package while holding the per-package lock."""
         try:
             result: Any = self._callable(text)
         except Exception:
@@ -242,10 +274,13 @@ class _SensitiveStopWordsAdapter:
     """Matches the external sensitive-stop-words submodule lists.
 
     Words are loaded through the cached loader and compiled into an
-    Aho-Corasick automaton on first use.
+    Aho-Corasick automaton on first use. The lists are Chinese-only, so the
+    adapter only scans text that actually contains CJK characters.
 
     :param loader: cached loader for the submodule word lists
     """
+
+    _CJK_RE = __import__("re").compile(r"[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]")
 
     def __init__(self, loader: SensitiveWordLoader) -> None:
         self.package_name: str = "sensitive-stop-words"
@@ -280,6 +315,8 @@ class _SensitiveStopWordsAdapter:
         :param text: normalized input text
         :return: a positive result when a submodule word occurs
         """
+        if not self._CJK_RE.search(text):
+            return DetectionResult(matched=False)
         self._ensure_automaton()
         if self._automaton is None:
             return DetectionResult(matched=False)
@@ -307,10 +344,22 @@ class MultiLanguageDetector(DetectorInterface):
     def __init__(self, settings: Any, logger: Any | None = None) -> None:
         self._settings: Any = settings
         self._logger: Any = logger
+        self._review_mode: bool = False
         self._adapters: list[_PackageAdapter] = self._build_adapters()
         self._hit_counts: dict[str, int] = {}
         self._total_counts: dict[str, int] = {}
         self._pool_size: int = settings.detector_thread_pool_size
+
+    def set_review_mode(self, enabled: bool) -> None:
+        """Downgrade package hits from BLOCK to REVIEW.
+
+        When enabled, every multi-language package match is reported as a
+        non-blocking REVIEW so the suspicion score (and the review escalation
+        threshold) decide whether the LLM settles it.
+
+        :param enabled: whether package matches become REVIEW
+        """
+        self._review_mode = bool(enabled)
 
     def _build_adapters(self) -> list[_PackageAdapter]:
         """Instantiate the adapters, honoring the enable toggles.
@@ -403,8 +452,21 @@ class MultiLanguageDetector(DetectorInterface):
             return DetectionResult(matched=False)
         self._count_total(ordered)
         if len(ordered) == 1:
-            return self._detect_sequential(ordered, normalized)
-        return self._detect_parallel(ordered, normalized)
+            result: DetectionResult = self._detect_sequential(ordered, normalized)
+        else:
+            result = self._detect_parallel(ordered, normalized)
+        if result.matched and result.blocking is None:
+            result = DetectionResult(
+                matched=True,
+                matched_words=result.matched_words,
+                matched_language=result.matched_language,
+                reason=result.reason,
+                confidence_score=result.confidence_score,
+                severity=result.severity,
+                category=result.category,
+                blocking=not self._review_mode,
+            )
+        return result
 
     def _ordered_available(self) -> list[_PackageAdapter]:
         """Return the usable adapters ordered by historical hit rate.
