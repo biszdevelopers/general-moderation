@@ -27,7 +27,7 @@ class TestSettingsSeeded(BaseTest):
         """Semantic thresholds are seeded."""
         service: SettingsService = engine._settings_service
         service.get("SEMANTIC_SIMILARITY_THRESHOLD")
-        assert float(service.get("SEMANTIC_SIMILARITY_THRESHOLD", 0.0)) == 0.85
+        assert float(service.get("SEMANTIC_SIMILARITY_THRESHOLD", 0.0)) == 0.65
 
     def test_window_seeded(self, engine: Any) -> None:
         """The profiling window is seeded."""
@@ -224,7 +224,7 @@ class TestSettingsTypes(BaseTest):
         """An unparseable stored float falls back to the default."""
         service: SettingsService = engine._settings_service
         service.get("SEMANTIC_SIMILARITY_THRESHOLD")
-        assert service.get("SEMANTIC_SIMILARITY_THRESHOLD", 0.5) == 0.85
+        assert service.get("SEMANTIC_SIMILARITY_THRESHOLD", 0.5) == 0.65
 
     def test_empty_string_rejected_for_strings(self, engine: Any) -> None:
         """Empty string settings are rejected on update."""
