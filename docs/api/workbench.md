@@ -79,14 +79,16 @@ Returns HTTP 200 with a JSON object:
         "levelUsed": 2,
         "aiTriggered": true,
         "suspicionScore": 55.0,
-        "reasons": ["Exact sensitive word matched in Aho-Corasick automaton"],
-        "reason": "Exact sensitive word matched in Aho-Corasick automaton",
-        "matchedWords": ["badword"],
-        "matchedWord": "badword",
-        "matchedLanguage": null,
-        "confidenceScore": 1.0,
+        "reasons": ["Sensitive stop word matched from submodule lists"],
+        "reason": "Sensitive stop word matched from submodule lists",
+        "matchedWords": ["敏感词"],
+        "matchedWord": "敏感词",
+        "matchedLanguage": "zh-CN",
+        "confidenceScore": 0.85,
+        "severity": 8,
+        "category": "political",
         "latencyMs": 3.2,
-        "detectorChain": ["bloom_filter", "rolling_hash", "aho_corasick"]
+        "detectorChain": ["sensitive_stop_words", "bloom_filter", "rolling_hash", "aho_corasick"]
     },
     "trace": {
         "request_id": null,
@@ -97,10 +99,10 @@ Returns HTTP 200 with a JSON object:
         "suspicion_score": 55.0,
         "level_used": 2,
         "ai_triggered": true,
-        "reasons": ["Exact sensitive word matched in Aho-Corasick automaton"],
-        "matched_words": ["badword"],
-        "matched_language": null,
-        "confidence_score": 1.0,
+        "reasons": ["Sensitive stop word matched from submodule lists"],
+        "matched_words": ["敏感词"],
+        "matched_language": "zh-CN",
+        "confidence_score": 0.85,
         "total_latency_ms": 3.2,
         "stage_1": {
             "fast_path": false,
@@ -110,16 +112,16 @@ Returns HTTP 200 with a JSON object:
         "stage_2": {
             "detector_results": [
                 {
-                    "name": "bloom_filter",
+                    "name": "sensitive_stop_words",
                     "enabled": true,
                     "available": true,
                     "matched": true,
-                    "blocking": false,
-                    "confidence": 0.5,
-                    "matched_words": ["badword"],
-                    "matched_language": null,
-                    "reason": "Token possibly present in word bank (Bloom hit)",
-                    "latency_ms": 0.03,
+                    "blocking": true,
+                    "confidence": 0.85,
+                    "matched_words": ["敏感词"],
+                    "matched_language": "zh-CN",
+                    "reason": "Sensitive stop word matched from submodule lists",
+                    "latency_ms": 0.02,
                     "weight": 30
                 }
             ],
@@ -164,7 +166,7 @@ stage completion is pushed to the stream as it happens.
 | Event | Payload |
 | :--- | :--- |
 | `stage1_complete` | `{"stage":1,"fast_path":false,"verdict":"REVIEW","latency_ms":0.11}` |
-| `detector_result` | `{"name":"bloom_filter","matched":true,"blocking":false,"confidence":0.5,"matched_words":["badword"],"reason":"Token possibly present in word bank (Bloom hit)","latency_ms":0.03}` |
+| `detector_result` | `{"name":"sensitive_stop_words","matched":true,"blocking":true,"confidence":0.85,"matched_words":["敏感词"],"matched_language":"zh-CN","reason":"Sensitive stop word matched from submodule lists","latency_ms":0.02}` |
 | `stage2_complete` | `{"stage":2,"suspicion_score":55.0,"latency_ms":1.2,"semantic_similarities":{},"user_profile":null,"weight_contributions":[...]}` |
 | `stage3_complete` | `{"stage":3,"invoked":true,"trigger":"[or] score 55 > 50","model_available":true,"prompt":"...","response":"BLOCK","verdict":"BLOCK","confidence":0.9,"latency_ms":1200.0}` |
 | `complete` | `{"response":{...},"trace":{...}}` |
