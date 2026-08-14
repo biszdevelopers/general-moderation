@@ -75,13 +75,14 @@ merely **dispatches and interprets the result of**, never re-implements.
 | Responsibility | Python surface | Native engine | What the native layer accelerates |
 | :--- | :--- | :--- | :--- |
 | Exact multi-pattern search | `aho_detector.py` | `pyahocorasick` (C) | Scanning text once against the whole dictionary |
+| CJK sensitive-word scan | `sensitive_stop_words_detector.py` | `ahocorasick-rs` (Rust) | Fastest scan path for the ~110k CJK terms; C `pyahocorasick` fallback |
 | Fuzzy matching | `bktree_detector.py` | `python-Levenshtein` (C) | Edit-distance computation between tokens |
 | Approximate membership | `bloom_detector.py` | `pybloom-live` + `mmh3` (C) | Constant-time "definitely not in set" rejection |
 | Cache keys & hashing | engine cache | `mmh3` (C) | MurmurHash3 fingerprinting |
 | Regex validation & safe words | fast path, admin routers | `regex` → Onigmo (C) | Compiled-pattern matching, filename validation |
 | Word-level profanity | `multi_language_detector.py` | `badwords-py` (Rust) | Rust word lists with tight loops |
 | WebAssembly profanity | `multi_language_detector.py` | `gangajal` (WASM) | Sandboxed wasm evaluation on-device |
-| Script word lists | sensitive-stop-words | Rust submodule | Rust Aho-Corasick over CJK lists |
+| Script word lists | `sensitive_stop_words_detector.py` | `ahocorasick-rs` (Rust) | Rust Aho-Corasick over the merged CJK lists |
 | Request validation | Pydantic models | `pydantic-core` (Rust) | Field validation at the API boundary |
 | JSON serialization | FastAPI responses | `orjson` (Rust) | Sub-millisecond serialization |
 | Secrets & signing | `security/` | `cryptography` (OpenSSL + Rust) | Constant-time compare, hashing |
