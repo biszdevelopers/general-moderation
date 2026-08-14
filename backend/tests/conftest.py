@@ -63,6 +63,7 @@ def _build_settings(root: Path) -> Settings:
         settings_db_path=str(data / "settings.db"),
         app_config_db_path=str(data / "config.db"),
         custom_words_path=str(data / "custom_words.db"),
+        critical_phrases_db_path=str(data / "critical_phrases.db"),
         log_file_path=str(root / "logs" / "moderation.log"),
         export_temp_dir=str(root / "exports"),
         semantic_index_dir=str(root / "semantic"),
