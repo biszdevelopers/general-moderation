@@ -73,6 +73,7 @@ API reference, and algorithm documentation.
 | gangajal | All | WebAssembly | Active |
 | PyProfane | Universal | Soundex-based | Active |
 | sensitive-stop-words | Chinese | Submodule word lists (Aho-Corasick) | Active |
+| phrase-detector | Any | Severity-aware critical phrases | Active |
 | safetext | 13 | Phrase detection | Guard-wired |
 | sensitive-word-filter-cn | Chinese | Pinyin, symbols | Guard-wired |
 | profanity-filter2 | Universal | Levenshtein automaton | Guard-wired |
@@ -94,10 +95,31 @@ npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
 git submodule update --init  # fetch the sensitive-stop-words word lists
 npm run generate:secrets     # generate secure *_KEY/_SECRET values in backend/.env
+npm run seed         # seed critical phrases, semantic examples, and safe words (idempotent)
 npm run build        # build the frontend once (required before start:prod)
 npm run start:dev    # dev: backend (uvicorn :8080) + frontend (vite :5173)
 npm run start:prod   # prod: serve everything on APP_PORT (frontend must be built)
 ```
+
+### Seeding first-run data
+
+`npm run seed` fills the data that a fresh deployment needs to detect
+high-severity content out of the box:
+
+- **Critical phrases** — a curated starter set of high-severity phrases
+  (violence, hate speech, political extremism, child safety) from
+  `backend/seed_data/critical_phrases.json`, stored in
+  `data/critical_phrases.db` and matched by the severity-aware
+  `phrase_detector`.
+- **Semantic examples** — the default per-category example texts are persisted
+  into the semantic indexes (only when the optional semantic dependencies are
+  installed and a category index is empty).
+- **Safe words** — a minimal starter safe-word list, only when
+  `data/safe_words.txt` is empty.
+
+The seed is **idempotent** and **never overwrites operator edits**; it is not
+run automatically at startup. Extend the phrase list through the admin API
+(`POST /admin/phrases`) or by editing the seed JSON.
 
 Production runs on a **single port**: FastAPI serves the built frontend and
 the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
@@ -105,7 +127,8 @@ the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
 (or `npm run build:prod`) once before `npm run start:prod`.
 
 Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
-`npm run docs:dev`, `npm run docs:build`, `npm run install:backend`.
+`npm run docs:dev`, `npm run docs:build`, `npm run install:backend`,
+`npm run seed`.
 
 ### Manual backend
 
@@ -165,9 +188,13 @@ to free memory.
 
 - **Dashboard**: live statistics, counters, and profiling data.
 - **Word Bank**: add, edit, remove, import, and export custom words.
+- **Critical Phrases**: manage the severity-aware high-severity phrase list
+  (`/admin/phrases`), which hard-blocks matches at or above
+  `SEVERITY_HARD_BLOCK_THRESHOLD`.
 - **Settings**: edit every runtime parameter (weights, thresholds, toggles,
   LLM, logging, performance) without a restart; values persist in
-  `settings.db` and apply immediately.
+  `settings.db` and apply immediately. Detector toggles and per-app policies
+  invalidate the result cache so changes take effect right away.
 - **Export**: download a ZIP of all databases, CSV dumps, logs, a redacted
   configuration snapshot, and semantic indexes (rate-limited).
 - **Feedback**: submit corrections; the daily auto-tuning batch adjusts weights
