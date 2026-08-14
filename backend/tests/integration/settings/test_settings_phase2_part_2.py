@@ -14,498 +14,133 @@ from app.settings_service import SettingsService
 from tests.base_test import BaseTest
 
 _DESCRIBE_FIELD_CASES: tuple[tuple[str, str, int], ...] = (
-    (
-        "EXPORT_RETENTION_DAYS",
-        "key",
-        5463,
-    ),
-    (
-        "EXPORT_RETENTION_DAYS",
-        "value",
-        5464,
-    ),
-    (
-        "EXPORT_RETENTION_DAYS",
-        "type",
-        5465,
-    ),
-    (
-        "EXPORT_RETENTION_DAYS",
-        "editable",
-        5466,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        "key",
-        5467,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        "value",
-        5468,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        "type",
-        5469,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        "editable",
-        5470,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        "key",
-        5471,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        "value",
-        5472,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        "type",
-        5473,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        "editable",
-        5474,
-    ),
-    (
-        "FORCE_LLM_ON_SEMANTIC_HIGH",
-        "key",
-        5475,
-    ),
-    (
-        "FORCE_LLM_ON_SEMANTIC_HIGH",
-        "value",
-        5476,
-    ),
-    (
-        "FORCE_LLM_ON_SEMANTIC_HIGH",
-        "type",
-        5477,
-    ),
-    (
-        "FORCE_LLM_ON_SEMANTIC_HIGH",
-        "editable",
-        5478,
-    ),
-    (
-        "FORCE_LLM_ON_USER_RATIO_HIGH",
-        "key",
-        5479,
-    ),
-    (
-        "FORCE_LLM_ON_USER_RATIO_HIGH",
-        "value",
-        5480,
-    ),
-    (
-        "FORCE_LLM_ON_USER_RATIO_HIGH",
-        "type",
-        5481,
-    ),
-    (
-        "FORCE_LLM_ON_USER_RATIO_HIGH",
-        "editable",
-        5482,
-    ),
-    (
-        "FRONTEND_DIST_PATH",
-        "key",
-        5483,
-    ),
-    (
-        "FRONTEND_DIST_PATH",
-        "value",
-        5484,
-    ),
-    (
-        "FRONTEND_DIST_PATH",
-        "type",
-        5485,
-    ),
-    (
-        "FRONTEND_DIST_PATH",
-        "editable",
-        5486,
-    ),
-    (
-        "FUZZY_MAX_DISTANCE",
-        "key",
-        5487,
-    ),
-    (
-        "FUZZY_MAX_DISTANCE",
-        "value",
-        5488,
-    ),
-    (
-        "FUZZY_MAX_DISTANCE",
-        "type",
-        5489,
-    ),
-    (
-        "FUZZY_MAX_DISTANCE",
-        "editable",
-        5490,
-    ),
-    (
-        "HF_ENDPOINT",
-        "key",
-        5491,
-    ),
-    (
-        "HF_ENDPOINT",
-        "value",
-        5492,
-    ),
-    (
-        "HF_ENDPOINT",
-        "type",
-        5493,
-    ),
-    (
-        "HF_ENDPOINT",
-        "editable",
-        5494,
-    ),
-    (
-        "HF_MIRROR",
-        "key",
-        5495,
-    ),
-    (
-        "HF_MIRROR",
-        "value",
-        5496,
-    ),
-    (
-        "HF_MIRROR",
-        "type",
-        5497,
-    ),
-    (
-        "HF_MIRROR",
-        "editable",
-        5498,
-    ),
-    (
-        "LLM_RESPONSE_TIMEOUT_SECONDS",
-        "key",
-        5499,
-    ),
-    (
-        "LLM_RESPONSE_TIMEOUT_SECONDS",
-        "value",
-        5500,
-    ),
-    (
-        "LLM_RESPONSE_TIMEOUT_SECONDS",
-        "type",
-        5501,
-    ),
-    (
-        "LLM_RESPONSE_TIMEOUT_SECONDS",
-        "editable",
-        5502,
-    ),
-    (
-        "LOG_BACKUP_COUNT",
-        "key",
-        5503,
-    ),
-    (
-        "LOG_BACKUP_COUNT",
-        "value",
-        5504,
-    ),
-    (
-        "LOG_BACKUP_COUNT",
-        "type",
-        5505,
-    ),
-    (
-        "LOG_BACKUP_COUNT",
-        "editable",
-        5506,
-    ),
-    (
-        "LOG_FILE_PATH",
-        "key",
-        5507,
-    ),
-    (
-        "LOG_FILE_PATH",
-        "value",
-        5508,
-    ),
-    (
-        "LOG_FILE_PATH",
-        "type",
-        5509,
-    ),
-    (
-        "LOG_FILE_PATH",
-        "editable",
-        5510,
-    ),
-    (
-        "LOG_LEVEL",
-        "key",
-        5511,
-    ),
-    (
-        "LOG_LEVEL",
-        "value",
-        5512,
-    ),
+    ('ENABLE_PHRASE_DETECTOR', 'key', 5463,),
+    ('ENABLE_PHRASE_DETECTOR', 'value', 5464,),
+    ('ENABLE_PHRASE_DETECTOR', 'type', 5465,),
+    ('ENABLE_PHRASE_DETECTOR', 'editable', 5466,),
+    ('ENABLE_PROFANITE', 'key', 5467,),
+    ('ENABLE_PROFANITE', 'value', 5468,),
+    ('ENABLE_PROFANITE', 'type', 5469,),
+    ('ENABLE_PROFANITE', 'editable', 5470,),
+    ('ENABLE_PROFANITY_FILTER', 'key', 5471,),
+    ('ENABLE_PROFANITY_FILTER', 'value', 5472,),
+    ('ENABLE_PROFANITY_FILTER', 'type', 5473,),
+    ('ENABLE_PROFANITY_FILTER', 'editable', 5474,),
+    ('ENABLE_PYPROFANE', 'key', 5475,),
+    ('ENABLE_PYPROFANE', 'value', 5476,),
+    ('ENABLE_PYPROFANE', 'type', 5477,),
+    ('ENABLE_PYPROFANE', 'editable', 5478,),
+    ('ENABLE_SAFETEXT', 'key', 5479,),
+    ('ENABLE_SAFETEXT', 'value', 5480,),
+    ('ENABLE_SAFETEXT', 'type', 5481,),
+    ('ENABLE_SAFETEXT', 'editable', 5482,),
+    ('ENABLE_SENSITIVE_STOP_WORDS', 'key', 5483,),
+    ('ENABLE_SENSITIVE_STOP_WORDS', 'value', 5484,),
+    ('ENABLE_SENSITIVE_STOP_WORDS', 'type', 5485,),
+    ('ENABLE_SENSITIVE_STOP_WORDS', 'editable', 5486,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_AD', 'key', 5487,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_AD', 'value', 5488,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_AD', 'type', 5489,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_AD', 'editable', 5490,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'key', 5491,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'value', 5492,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'type', 5493,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'editable', 5494,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'key', 5495,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'value', 5496,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'type', 5497,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'editable', 5498,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'key', 5499,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'value', 5500,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'type', 5501,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'editable', 5502,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'key', 5503,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'value', 5504,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'type', 5505,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'editable', 5506,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'key', 5507,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'value', 5508,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'type', 5509,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'editable', 5510,),
+    ('ENCRYPTION_KEY', 'key', 5511,),
+    ('ENCRYPTION_KEY', 'value', 5512,),
 )
-
 
 class TestDescribeField(BaseTest):
     """Every describe entry exposes the documented metadata field."""
 
-    @pytest.mark.parametrize(
-        (
-            "key",
-            "field",
-            "uid",
-        ),
-        _DESCRIBE_FIELD_CASES,
-    )
+    @pytest.mark.parametrize(('key', 'field', 'uid',), _DESCRIBE_FIELD_CASES)
     def test_describe_field(self, engine: Any, key: str, field: str, uid: int) -> None:
         """Every describe entry exposes the documented metadata field."""
         entries = engine._settings_service.describe()
-        match = next((e for e in entries if e["key"] == key), None)
+        match = next((e for e in entries if e['key'] == key), None)
         assert match is not None
-        assert "key" in match
+        assert 'key' in match
 
 
 _READ_ONLY_REJECTED_CASES: tuple[tuple[str, int], ...] = (
-    (
-        "ADMIN_API_KEY",
-        5767,
-    ),
-    (
-        "ADMIN_API_KEY",
-        5768,
-    ),
-    (
-        "ADMIN_API_KEY",
-        5769,
-    ),
-    (
-        "ADMIN_API_KEY",
-        5770,
-    ),
-    (
-        "ADMIN_API_KEY",
-        5771,
-    ),
-    (
-        "ADMIN_API_KEY",
-        5772,
-    ),
-    (
-        "APP_PORT",
-        5773,
-    ),
-    (
-        "APP_PORT",
-        5774,
-    ),
-    (
-        "APP_PORT",
-        5775,
-    ),
-    (
-        "APP_PORT",
-        5776,
-    ),
-    (
-        "APP_PORT",
-        5777,
-    ),
-    (
-        "APP_PORT",
-        5778,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5779,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5780,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5781,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5782,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5783,
-    ),
-    (
-        "ENCRYPTION_KEY",
-        5784,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5785,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5786,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5787,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5788,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5789,
-    ),
-    (
-        "EXPORT_TEMP_DIR",
-        5790,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5791,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5792,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5793,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5794,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5795,
-    ),
-    (
-        "FEEDBACK_DB_PATH",
-        5796,
-    ),
-    (
-        "MODEL_PATH",
-        5797,
-    ),
-    (
-        "MODEL_PATH",
-        5798,
-    ),
-    (
-        "MODEL_PATH",
-        5799,
-    ),
-    (
-        "MODEL_PATH",
-        5800,
-    ),
-    (
-        "MODEL_PATH",
-        5801,
-    ),
-    (
-        "MODEL_PATH",
-        5802,
-    ),
-    (
-        "SECRET_KEY",
-        5803,
-    ),
-    (
-        "SECRET_KEY",
-        5804,
-    ),
-    (
-        "SECRET_KEY",
-        5805,
-    ),
-    (
-        "SECRET_KEY",
-        5806,
-    ),
-    (
-        "SECRET_KEY",
-        5807,
-    ),
-    (
-        "SECRET_KEY",
-        5808,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5809,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5810,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5811,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5812,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5813,
-    ),
-    (
-        "WEBUI_API_KEY",
-        5814,
-    ),
-    (
-        "WORKERS",
-        5815,
-    ),
-    (
-        "WORKERS",
-        5816,
-    ),
+    ('ADMIN_API_KEY', 5831,),
+    ('ADMIN_API_KEY', 5832,),
+    ('ADMIN_API_KEY', 5833,),
+    ('ADMIN_API_KEY', 5834,),
+    ('ADMIN_API_KEY', 5835,),
+    ('ADMIN_API_KEY', 5836,),
+    ('APP_PORT', 5837,),
+    ('APP_PORT', 5838,),
+    ('APP_PORT', 5839,),
+    ('APP_PORT', 5840,),
+    ('APP_PORT', 5841,),
+    ('APP_PORT', 5842,),
+    ('ENCRYPTION_KEY', 5843,),
+    ('ENCRYPTION_KEY', 5844,),
+    ('ENCRYPTION_KEY', 5845,),
+    ('ENCRYPTION_KEY', 5846,),
+    ('ENCRYPTION_KEY', 5847,),
+    ('ENCRYPTION_KEY', 5848,),
+    ('EXPORT_TEMP_DIR', 5849,),
+    ('EXPORT_TEMP_DIR', 5850,),
+    ('EXPORT_TEMP_DIR', 5851,),
+    ('EXPORT_TEMP_DIR', 5852,),
+    ('EXPORT_TEMP_DIR', 5853,),
+    ('EXPORT_TEMP_DIR', 5854,),
+    ('FEEDBACK_DB_PATH', 5855,),
+    ('FEEDBACK_DB_PATH', 5856,),
+    ('FEEDBACK_DB_PATH', 5857,),
+    ('FEEDBACK_DB_PATH', 5858,),
+    ('FEEDBACK_DB_PATH', 5859,),
+    ('FEEDBACK_DB_PATH', 5860,),
+    ('MODEL_PATH', 5861,),
+    ('MODEL_PATH', 5862,),
+    ('MODEL_PATH', 5863,),
+    ('MODEL_PATH', 5864,),
+    ('MODEL_PATH', 5865,),
+    ('MODEL_PATH', 5866,),
+    ('SECRET_KEY', 5867,),
+    ('SECRET_KEY', 5868,),
+    ('SECRET_KEY', 5869,),
+    ('SECRET_KEY', 5870,),
+    ('SECRET_KEY', 5871,),
+    ('SECRET_KEY', 5872,),
+    ('WEBUI_API_KEY', 5873,),
+    ('WEBUI_API_KEY', 5874,),
+    ('WEBUI_API_KEY', 5875,),
+    ('WEBUI_API_KEY', 5876,),
+    ('WEBUI_API_KEY', 5877,),
+    ('WEBUI_API_KEY', 5878,),
+    ('WORKERS', 5879,),
+    ('WORKERS', 5880,),
 )
-
 
 class TestReadOnlyRejected(BaseTest):
     """Read-only settings reject every update attempt."""
 
-    @pytest.mark.parametrize(
-        (
-            "key",
-            "uid",
-        ),
-        _READ_ONLY_REJECTED_CASES,
-    )
+    @pytest.mark.parametrize(('key', 'uid',), _READ_ONLY_REJECTED_CASES)
     def test_read_only_rejected(self, engine: Any, key: str, uid: int) -> None:
         """Read-only settings reject every update attempt."""
         service: SettingsService = engine._settings_service
         service.get(key)
         with pytest.raises(ValueError):
-            service.update({key: "changed"})
+            service.update({key: 'changed'})
         with pytest.raises(ValueError):
             service.update({key: 123})
         with pytest.raises(ValueError):
