@@ -339,6 +339,16 @@ class SettingsService:
         if raw == "":
             raise ValueError(f"{key} must not be empty")
 
+    def cache_freshness(self) -> float:
+        """Return the monotonic timestamp of the last settings load.
+
+        Callers (the engine cache fingerprint) use this to detect that
+        settings changed and drop their memoized derivation.
+
+        :return: the monotonic time of the last ``_load``
+        """
+        return self._cache_loaded_at
+
     def _load(self) -> dict[str, str]:
         """Reload every setting from the database into the cache."""
         rows = self._connection.execute("SELECT key, value FROM settings").fetchall()
