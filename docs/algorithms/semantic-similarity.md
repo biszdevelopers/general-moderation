@@ -30,6 +30,48 @@ when \(s_c > \theta_\text{force}\) (the
   normalized vectors, which is \(O(N)\) and identical in output.
 - **Storage**: one index file plus one JSON source-text file per category.
 
+## Integration in General Moderation
+
+The semantic stage is per-category and optional — it reports itself
+unavailable when the heavy dependencies are absent, and the pipeline skips it:
+
+```mermaid
+flowchart LR
+    TEXT["Input text"] --> EMB["SentenceTransformer encode (C++)"]
+    EMB --> NORM["L2 normalize"]
+    NORM --> Q["Query every category index"]
+    subgraph CATS["Per-category Faiss indexes"]
+        C1["political"]
+        C2["violence"]
+        C3["sexual · hate · pii · ads · other"]
+    end
+    Q --> C1
+    Q --> C2
+    Q --> C3
+    C1 --> SIM["similarities = {category: max score}"]
+    C2 --> SIM
+    C3 --> SIM
+    SIM --> THRESH{"above SEMANTIC_SIMILARITY_THRESHOLD?"}
+    THRESH -- yes --> W["add category weight to suspicion score"]
+    THRESH --> FORCE{"above SEMANTIC_FORCE_LLM_THRESHOLD?"}
+    FORCE -- yes --> LLM["force LLM invocation"]
+```
+
+- **Categories** — the seven fixed buckets `political`, `violence`,
+  `sexual`, `hate`, `pii`, `ads`, and `other`; each owns an index and a
+  source-text ledger on disk.
+- **Management** — administrators add or delete sensitive examples per
+  category; each mutation appends the embedding and source text, rebuilds the
+  index, and persists both files.
+- **Determinism** — the embedder is deterministic for a fixed model, so
+  identical inputs produce identical similarities.
+- **Native core** — embedding runs in C++ (torch / SentenceTransformers) and
+  search runs in C++ (Faiss); the service layer orchestrates persistence and
+  thresholding.
+- **Optionality** — without `torch`, `sentence-transformers`, or `faiss`
+  installed, `is_available()` is `false`, `query` returns an empty mapping,
+  and the engine degrades to rule + profiling signals only.
+
 ## Flowchart
 
 ```mermaid

@@ -73,3 +73,49 @@ sequenceDiagram
     Tune->>Tune: Re-tune threshold toward AI_TARGET_PERCENTAGE
     Tune-->>FB: tuning report
 ```
+
+## Workbench Flow
+
+The [Test Workbench](/guide/test-workbench) drives the same three-stage
+pipeline but asks the engine for a full `PipelineTrace` and streams it live.
+`moderate_detailed()` is an additive method over `moderate()`: it runs the
+identical pipeline, records per-stage latencies, per-detector results, the
+score breakdown, and the LLM prompt/reply, and — when given an `event_sink` —
+emits one SSE event per completed stage.
+
+```mermaid
+sequenceDiagram
+    participant W as Workbench SPA
+    participant R as /test router
+    participant E as ModerationEngine
+    participant S1 as Stage 1
+    participant S2 as Stage 2
+    participant S3 as Stage 3
+    participant D as Detectors
+
+    W->>R: POST /test/moderate-detail?stream=true
+    R->>E: moderate_detailed(req, event_sink)
+    E->>S1: safe word check
+    S1-->>E: fast path result
+    E-->>R: event: stage1_complete
+    E->>S2: run detectors
+    S2->>D: detect(text) per detector
+    D-->>S2: DetectionResult
+    S2-->>E: detector results + score
+    E-->>R: event: detector_result (per detector)
+    E-->>R: event: stage2_complete
+    alt Trigger policy fires
+        E->>S3: LLM classify(text)
+        S3-->>E: BLOCK/ALLOW + confidence
+        E-->>R: event: stage3_complete
+    end
+    E-->>R: event: complete (response + trace)
+    R-->>W: SSE frames rendered incrementally
+```
+
+The concurrent load test (`POST /test/load-test`) runs the same
+`moderate_detailed()` path from an async generator, with a semaphore capping
+in-flight users, and streams `progress` events plus a final `complete` event.
+See the [Workbench API reference](/api/workbench) for the event schemas and the
+[Test Workbench guide](/guide/test-workbench) for the full field-by-field
+trace structure.

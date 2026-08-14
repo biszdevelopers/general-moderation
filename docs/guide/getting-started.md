@@ -53,6 +53,7 @@ service (the backend serves both the API and the React app):
 
 ```bash
 npm run build        # build the frontend once
+npm run seed         # optional: seed critical phrases, semantic examples, safe words
 npm run start:prod   # start the single-port service
 ```
 
@@ -60,6 +61,11 @@ npm run start:prod   # start the single-port service
 (Gunicorn is Unix-only). Start scripts never rebuild the frontend, so re-run
 `npm run build` after changing the UI. See [Deployment](/guide/deployment) for
 systemd, FRP, and Docker recipes.
+
+`npm run seed` is **idempotent** and safe to run repeatedly. It fills data a
+fresh deployment needs for high-severity detection (critical phrases with
+severity scores, semantic example indexes, and a starter safe-word list)
+without overwriting operator edits. It is not run automatically at startup.
 
 ### Level 2 (llama.cpp)
 
@@ -77,12 +83,18 @@ reports `llama_available` once it is ready.
 
 ## Sensitive Stop Words Submodule
 
-Initialize the Chinese word-list submodule so the `sensitive-stop-words`
-detector activates:
+Initialize the Chinese word-list subrepos so the `sensitive-stop-words`
+detector activates (it matches the merged lists with the native Rust/C
+Aho-Corasick engine):
 
 ```bash
 git submodule update --init
 ```
+
+This fetches the `sensitive-stop-words`, `sensitive`, `sensitive-lexicon`, and
+`sensitive-word-data` word lists under `backend/data/`. See
+[Configuration](/guide/configuration) for the per-source paths and
+[Credits](/guide/credits) for the sources.
 
 ## Frontend Setup
 
@@ -116,7 +128,7 @@ Response:
     "matched_language": null,
     "confidence_score": null,
     "latency_ms": 0.31,
-    "detector_chain": ["bloom_filter", "rolling_hash", "aho_corasick"]
+    "detector_chain": ["sensitive_stop_words", "bloom_filter", "rolling_hash", "aho_corasick"]
 }
 ```
 

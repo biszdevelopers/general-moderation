@@ -162,6 +162,13 @@ class FeedbackService:
         )
         self._connection.commit()
 
+    def last_tuned(self) -> str:
+        """Return the timestamp of the most recent tuning batch.
+
+        :return: the stored ISO timestamp, or an empty string when never tuned
+        """
+        return self._meta("last_tuned")
+
     def run_batch(self) -> dict[str, Any]:
         """Execute the daily weight and threshold tuning.
 

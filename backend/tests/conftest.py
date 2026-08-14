@@ -8,6 +8,7 @@ real ``data/``, ``logs/``, or ``models/``.
 
 from __future__ import annotations
 
+import shutil
 import sys
 from collections.abc import Callable, Generator, Iterator
 from pathlib import Path
@@ -27,6 +28,7 @@ from app.models.response import BatchModerationResponse, ModerationResponse
 from app.security.auth import RequireAdminApiKey
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.ratelimit import RateLimiter
+from app.test.router import create_test_router
 from app.utils.logger import ModerationLogger
 from app.wordbank.manager import WordBankManager
 from app.wordbank.storage import create_storage
@@ -61,10 +63,14 @@ def _build_settings(root: Path) -> Settings:
         settings_db_path=str(data / "settings.db"),
         app_config_db_path=str(data / "config.db"),
         custom_words_path=str(data / "custom_words.db"),
+        critical_phrases_db_path=str(data / "critical_phrases.db"),
         log_file_path=str(root / "logs" / "moderation.log"),
         export_temp_dir=str(root / "exports"),
         semantic_index_dir=str(root / "semantic"),
         sensitive_stop_words_dir=str(root / "none"),
+        sensitive_word_data_dict=str(root / "none"),
+        sensitive_lexicon_dir=str(root / "none"),
+        sensitive_dict_path=str(root / "none"),
         admin_api_key="test-admin-key",
         webui_api_key="test-webui-key",
         secret_key="test-secret-key",
@@ -76,10 +82,69 @@ def _build_settings(root: Path) -> Settings:
     )
 
 
+@pytest.fixture(scope="session")
+def db_template(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Pre-seeded SQLite database files shared by every test.
+
+    Creating and seeding the settings, app-config, profiler, feedback and
+    custom-words databases costs ~130 ms per test. This fixture builds them
+    once for the whole session; the per-test ``settings`` fixture copies the
+    files into its sandbox, so services open existing, schema-complete
+    databases instead of creating and seeding them from scratch. Isolation is
+    unchanged: each test still gets its own copy.
+    """
+    from app.appconfig.app_config_service import AppConfigService
+    from app.feedback.feedback_service import FeedbackService
+    from app.profiling.user_profiler import UserProfiler
+    from app.settings_service import SettingsService
+    from app.utils.logger import ModerationLogger
+
+    root: Path = tmp_path_factory.mktemp("db_template")
+    template_settings: Settings = _build_settings(root)
+    logger: ModerationLogger = ModerationLogger(
+        str(root / "logs" / "template.log"), max_bytes=100_000
+    )
+    settings_service: SettingsService = SettingsService(template_settings)
+    app_config: AppConfigService = AppConfigService(template_settings.app_config_db_path)
+    profiler: UserProfiler = UserProfiler(
+        template_settings.user_db_path,
+        template_settings.user_archive_db_path,
+        template_settings.user_window_days,
+    )
+    feedback: FeedbackService = FeedbackService(
+        template_settings, settings_service, app_config, logger
+    )
+    storage: Any = create_storage("sqlite", template_settings.custom_words_path)
+    settings_service.close()
+    app_config.close()
+    profiler.close()
+    feedback.close()
+    storage.close()
+    logger.close()
+    return root / "data"
+
+
+def _copy_db_template(tmp_path: Path, template: Path) -> None:
+    """Copy the pre-seeded database files into a test sandbox.
+
+    :param tmp_path: the per-test temporary directory
+    :param template: the session template ``data`` directory
+    """
+    for source in template.iterdir():
+        if source.is_file():
+            shutil.copy2(source, tmp_path / "data" / source.name)
+
+
 @pytest.fixture()
-def settings(tmp_path: Path) -> Settings:
-    """Per-test settings isolated under a temporary directory."""
-    return _build_settings(tmp_path)
+def settings(tmp_path: Path, db_template: Path) -> Settings:
+    """Per-test settings isolated under a temporary directory.
+
+    The pre-seeded databases from ``db_template`` are copied into the sandbox
+    so the services these settings point at initialize without re-seeding.
+    """
+    settings_instance: Settings = _build_settings(tmp_path)
+    _copy_db_template(tmp_path, db_template)
+    return settings_instance
 
 
 @pytest.fixture()
@@ -253,6 +318,7 @@ def build_app(
     application.include_router(
         create_admin_router(engine, word_bank, settings.log_file_path, auth_dependency)
     )
+    application.include_router(create_test_router(engine, settings.log_file_path, auth_dependency))
 
     @application.get("/health")
     def health() -> dict[str, str]:

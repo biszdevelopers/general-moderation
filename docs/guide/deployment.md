@@ -34,7 +34,7 @@ Deploy from the repository root:
 ```bash
 npm install
 npm run install:all
-git submodule update --init          # fetch sensitive-stop-words word lists
+git submodule update --init          # fetch the Chinese sensitive-word lists
 npm run build                        # build the frontend once
 npm run start:prod                   # serve everything on APP_PORT (no build)
 ```
@@ -63,9 +63,12 @@ Unix-only. Both read the same `backend/.env`, so `APP_HOST`, `APP_PORT`, and
 
 ### Sensitive Stop Words Submodule
 
-The `backend/data/sensitive-stop-words` submodule provides Chinese political,
-pornographic, gun/explosive, advertising, and URL word lists loaded by the
-`sensitive-stop-words` detector. Fetch it after cloning:
+The `backend/data/` subrepos provide Chinese political, pornographic,
+gun/explosive, advertising, URL, and general word lists loaded by the
+top-priority `sensitive-stop-words` detector. The sources are
+`sensitive-stop-words`, `sensitive`, `sensitive-lexicon`, and
+`sensitive-word-data` (see [Credits](/guide/credits)). Fetch them after
+cloning:
 
 ```bash
 git submodule update --init
@@ -168,13 +171,19 @@ Certbot or your certificate authority.
 
 ## Multi-Language Detection
 
-The service runs **five active detectors** on a standard PyPI install:
+The service runs **five active package detectors** on a standard PyPI install:
 
 1. **badwords** – Rust, 26+ languages (`filter_text`)
 2. **profanite** – Rust, anti-obfuscation (`contains_profanity`)
-3. **glin-profanity** – C, 25+ languages, context-aware (`is_profane`)
+3. **glin-profanity** – C, 25+ languages, context-aware (`check_profanity`)
 4. **gangajal** – WebAssembly, all languages (`validate`)
 5. **PyProfane** – C, Soundex-based (`isProfane`)
+
+These sit inside the `multi_language` detector (priority 6), which serializes
+each native/WASM package behind a per-adapter lock. Before it, the dedicated
+`SensitiveStopWordsDetector` (priority 0) runs the Chinese subrepo lists with a
+native Rust/C Aho-Corasick engine, and the severity-aware `PhraseDetector`
+(priority 7) runs the critical-phrase table.
 
 Three more packages are guard-wired (`safetext`, `sensitive-word-filter-cn`,
 `profanity-filter2`) but no reachable index provides an installable release.

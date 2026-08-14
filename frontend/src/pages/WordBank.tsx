@@ -186,15 +186,27 @@ export function WordBank(): ReactElement {
             : words.filter((word: WordEntry): boolean => word.category === categoryFilter);
 
     const columns: TableProps<WordEntry>["columns"] = [
-        { title: "Word", dataIndex: "word", key: "word" },
+        {
+            title: "Word",
+            dataIndex: "word",
+            key: "word",
+            render: (value: string): ReactElement => (
+                <Typography.Text code>{value}</Typography.Text>
+            ),
+        },
         { title: "Language", dataIndex: "language", key: "language" },
-        { title: "Category", dataIndex: "category", key: "category" },
+        {
+            title: "Category",
+            dataIndex: "category",
+            key: "category",
+            render: (value: string): ReactElement => <Tag color="blue">{value}</Tag>,
+        },
         {
             title: "Severity",
             dataIndex: "severity",
             key: "severity",
             render: (value: number): ReactElement => (
-                <Tag color={value >= 5 ? "red" : "orange"}>{value}</Tag>
+                <Tag color={value >= 5 ? "red" : value >= 3 ? "orange" : "green"}>{value}</Tag>
             ),
         },
         { title: "Created At", dataIndex: "createdAt", key: "createdAt" },
@@ -266,11 +278,16 @@ export function WordBank(): ReactElement {
                     </Button>
                 </Space>
             </div>
+            <Typography.Paragraph type="secondary" className="wordbank-summary">
+                Showing {filteredWords.length} of {words.length} words
+                {categoryFilter !== "all" ? ` in ${categoryFilter}` : ""}.
+            </Typography.Paragraph>
             <Table<WordEntry>
                 rowKey="id"
                 columns={columns}
                 dataSource={filteredWords}
                 pagination={{ pageSize: 20 }}
+                scroll={{ x: "max-content" }}
                 locale={{ emptyText: "No words match your filters" }}
             />
             <Modal

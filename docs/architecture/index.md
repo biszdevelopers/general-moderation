@@ -5,6 +5,36 @@ service that pre-filters content before human review. It combines fast-path
 rule detection with semantic similarity, user behavior profiling, and an
 optional locally hosted LLM.
 
+## Native-Core Design
+
+The service is **maximally optimized by layering Python over compiled
+engines**: Python is the surface glue that orchestrates state, policy, and
+routing, while every hot path is delegated to C, C++, Rust, or WebAssembly
+underneath — exact matching runs in C, fuzzy distance in C, hashing in C,
+profanity lists in Rust, sandboxed evaluation in WebAssembly, validation and
+serialization in Rust, persistence in C (SQLite), and inference in C++
+(llama.cpp). The full inventory of native engines and the per-request
+execution path are documented in [Performance
+Engineering](/architecture/performance).
+
+```mermaid
+flowchart TB
+    subgraph Glue["Python glue layer (policy + orchestration)"]
+        API["FastAPI · engine · profiler · admin"]
+    end
+    subgraph Native["Compiled engines (C / C++ / Rust / WASM)"]
+        C1["Aho-Corasick (C)"]
+        C2["Levenshtein (C)"]
+        C3["Bloom · MurmurHash (C)"]
+        R1["badwords · stop-words (Rust)"]
+        W1["gangajal (WASM)"]
+        RS["pydantic-core · orjson · cryptography (Rust)"]
+        SQ["SQLite (C)"]
+        LLM["llama.cpp (C++)"]
+    end
+    Glue --> Native
+```
+
 ## Components
 
 ```mermaid
@@ -20,7 +50,7 @@ flowchart TD
         S1 --> S2 --> S3
     end
 
-    S2 --> DET[Parallel detectors<br/>Aho-Corasick, BK-tree, Metaphone,<br/>5+ multi-language packages]
+    S2 --> DET["Parallel detectors<br/>Sensitive-stop-words (Rust/C), Aho-Corasick,<br/>BK-tree, Metaphone, phrase detector,<br/>5+ multi-language packages"]
     S2 --> SEM[Semantic similarity<br/>SentenceTransformer + Faiss per category]
     S2 --> PRO[User profiling<br/>91-day rolling window + summaries]
 

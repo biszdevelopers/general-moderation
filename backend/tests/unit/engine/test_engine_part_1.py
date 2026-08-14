@@ -34,8 +34,6 @@ class TestEngineStage1(BaseTest):
 
     def test_safe_word_fast_path(self, engine: ModerationEngine, word_bank: Any) -> None:
         """Content composed of safe words exits at level one."""
-        for word in ("hello", "world"):
-            word_bank.add_word(word)
         engine._safe_word.add_word("hello")
         engine._safe_word.add_word("world")
         result: ModerationResponse = engine.moderate(
@@ -147,10 +145,14 @@ class TestEngineStage3(BaseTest):
         assert result.level_used == 1
         assert result.ai_triggered is False
 
-    def test_trigger_without_llm_returns_review(
+    def test_trigger_without_llm_preserves_block(
         self, engine: ModerationEngine, word_bank: Any
     ) -> None:
-        """A score above the threshold without an LLM yields a REVIEW."""
+        """A hard block survives an unavailable LLM.
+
+        A score above the threshold with the model unavailable must not
+        downgrade an exact-match BLOCK; only ambiguous content becomes REVIEW.
+        """
         word_bank.add_word("zaphrin")
         engine.refresh_detectors()
         engine._app_config.update_default_threshold(10)
@@ -159,7 +161,7 @@ class TestEngineStage3(BaseTest):
         )
         assert result.ai_triggered is False
         assert result.level_used == 2
-        assert result.verdict.value == "REVIEW"
+        assert result.verdict.value == "BLOCK"
 
     def test_trigger_with_llm_available_not_run(self, engine: ModerationEngine) -> None:
         """The model never loads in tests, so it stays unavailable."""

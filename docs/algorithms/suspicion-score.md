@@ -7,9 +7,12 @@ number that drives the Stage 3 trigger decision.
 
 \[
 \text{score} =
+\max\left(
 \sum_{d \in D} \text{hit}_d \cdot w_d
 + \sum_{c \in C} \mathbb{1}[s_c > \theta_c] \cdot w_c
-+ \text{ratio}_u \cdot w_u
++ \text{ratio}_u \cdot w_u,\;
+\text{severity\_floor}(\text{severity})
+\right)
 \]
 
 clamped to \([0, 100]\), where:
@@ -20,6 +23,19 @@ clamped to \([0, 100]\), where:
   `WEIGHT_SEMANTIC_*` weight when its similarity exceeds the threshold.
 - \(\text{ratio}_u\) is the user bad-content ratio from the profiling layer,
   weighted by `WEIGHT_USER`.
+- \(\text{severity\_floor}(\text{severity})\) raises the score to a floor based
+  on the strongest matched severity, so low scores cannot mask severe content.
+
+## Severity Floor and Hard Block
+
+The strongest severity reported by any matched detector (custom words carry
+`severity`; the phrase detector carries phrase severity) participates in two
+policies:
+
+- **Hard block** — a match with `severity >= SEVERITY_HARD_BLOCK_THRESHOLD`
+  (default 5, per-app overridable) produces `BLOCK` regardless of the score.
+- **Score floor** — a match below the hard-block threshold still lifts the
+  suspicion score, pushing ambiguous content toward the LLM trigger.
 
 ## Complexity
 
@@ -33,16 +49,20 @@ flowchart TD
     A[Detector hits] --> S[Sum weights]
     B[Category similarities above threshold] --> S
     C[User ratio] --> S
-    S --> CLAMP[Clamp to 0-100]
+    D[Max matched severity] --> F[Severity floor]
+    S --> F
+    F --> CLAMP[Clamp to 0-100]
     CLAMP --> T{"score > app threshold?"}
     T -->|yes| LLM[Trigger LLM]
     T -->|no| PASS[PASS without LLM]
+    D --> HB{"severity >= hard-block?"}
+    HB -->|yes| BLOCK[BLOCK]
 ```
 
 ## Pseudocode
 
 ```text
-function score(detector_hits, similarities, user_ratio):
+function score(detector_hits, similarities, user_ratio, max_severity):
     raw = 0
     for detector in detector_hits:
         raw += weight(detector)
@@ -50,7 +70,7 @@ function score(detector_hits, similarities, user_ratio):
         if similarity > similarity_threshold:
             raw += weight(category)
     raw += user_ratio * weight_user
-    return clamp(raw, 0, 100)
+    return clamp(max(raw, severity_floor(max_severity)), 0, 100)
 ```
 
 ## Trigger Policy
@@ -61,6 +81,8 @@ The LLM trigger uses the per-application policy from `config.db`:
 - `semantic_boost`: similarity above `SEMANTIC_FORCE_LLM_THRESHOLD`.
 - `user_ratio_boost`: user ratio above `USER_RATIO_THRESHOLD`.
 - `logic_type`: `"or"` (any) or `"and"` (all).
+- `severity_hard_block_threshold` / `review_escalation_threshold`: per-app
+  overrides for the hard-block severity and the REVIEW escalation score.
 
 ## Weight Tuning
 

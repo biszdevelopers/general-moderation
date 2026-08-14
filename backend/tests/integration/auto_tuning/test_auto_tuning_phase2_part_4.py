@@ -1,0 +1,157 @@
+"""Phase 2 auto-tuning tests (generated).
+
+Precision deltas, threshold pass-rate sweeps, decay half-lives and
+report structure under the frozen clock."""
+
+# multilingual fixtures use non-ASCII on purpose
+from __future__ import annotations
+
+import pytest
+
+from app.appconfig.app_config_service import AppConfigService
+from app.config import Settings
+from app.feedback.feedback_service import FeedbackService
+from app.settings_service import SettingsService
+from app.utils.logger import ModerationLogger
+from tests.base_test import BaseTest
+
+
+def _feedback_service(enabled: bool = True) -> FeedbackService:
+    import tempfile
+    from pathlib import Path
+    root: Path = Path(tempfile.mkdtemp())
+    (root / 'logs').mkdir(parents=True, exist_ok=True)
+    settings = Settings(
+        app_port=0,
+        log_file_path=str(root / 'logs' / 'l.log'),
+        feedback_db_path=str(root / 'f.db'),
+        settings_db_path=str(root / 's.db'),
+        app_config_db_path=str(root / 'c.db'),
+        auto_tuning_enabled=enabled,
+    )
+    logger: ModerationLogger = ModerationLogger(settings.log_file_path, max_bytes=100_000)
+    settings_service: SettingsService = SettingsService(settings)
+    app_config: AppConfigService = AppConfigService(settings.app_config_db_path)
+    return FeedbackService(settings, settings_service, app_config, logger)
+
+_DECAY_HALF_LIFE_CASES: tuple[tuple[int, int, int, int], ...] = (
+    (0, 50, 50, 4559,),
+    (0, 40, 40, 4560,),
+    (0, 30, 30, 4561,),
+    (0, 20, 20, 4562,),
+    (0, 10, 10, 4563,),
+    (1, 50, 50, 4564,),
+    (1, 40, 40, 4565,),
+    (1, 30, 30, 4566,),
+    (1, 20, 20, 4567,),
+    (1, 10, 10, 4568,),
+    (3, 50, 49, 4569,),
+    (3, 40, 39, 4570,),
+    (3, 30, 30, 4571,),
+    (3, 20, 21, 4572,),
+    (3, 10, 11, 4573,),
+    (7, 50, 47, 4574,),
+    (7, 40, 39, 4575,),
+    (7, 30, 30, 4576,),
+    (7, 20, 21, 4577,),
+    (7, 10, 13, 4578,),
+    (14, 50, 44, 4579,),
+    (14, 40, 37, 4580,),
+    (14, 30, 30, 4581,),
+    (14, 20, 23, 4582,),
+    (14, 10, 16, 4583,),
+    (21, 50, 42, 4584,),
+    (21, 40, 36, 4585,),
+    (21, 30, 30, 4586,),
+    (21, 20, 24, 4587,),
+    (21, 10, 18, 4588,),
+    (30, 50, 40, 4589,),
+    (30, 40, 35, 4590,),
+    (30, 30, 30, 4591,),
+    (30, 20, 25, 4592,),
+    (30, 10, 20, 4593,),
+    (45, 50, 37, 4594,),
+    (45, 40, 34, 4595,),
+    (45, 30, 30, 4596,),
+    (45, 20, 26, 4597,),
+    (45, 10, 23, 4598,),
+    (60, 50, 35, 4599,),
+    (60, 40, 32, 4600,),
+    (60, 30, 30, 4601,),
+    (60, 20, 28, 4602,),
+    (60, 10, 25, 4603,),
+    (90, 50, 32, 4604,),
+    (90, 40, 31, 4605,),
+    (90, 30, 30, 4606,),
+    (90, 20, 29, 4607,),
+    (90, 10, 28, 4608,),
+    (120, 50, 31, 4609,),
+    (120, 40, 31, 4610,),
+    (120, 30, 30, 4611,),
+    (120, 20, 29, 4612,),
+    (120, 10, 29, 4613,),
+    (180, 50, 30, 4614,),
+    (180, 40, 30, 4615,),
+    (180, 30, 30, 4616,),
+    (180, 20, 30, 4617,),
+    (180, 10, 30, 4618,),
+    (300, 50, 30, 4619,),
+    (300, 40, 30, 4620,),
+    (300, 30, 30, 4621,),
+    (300, 20, 30, 4622,),
+    (300, 10, 30, 4623,),
+    (365, 50, 30, 4624,),
+    (365, 40, 30, 4625,),
+    (365, 30, 30, 4626,),
+    (365, 20, 30, 4627,),
+    (365, 10, 30, 4628,),
+    (500, 50, 30, 4629,),
+    (500, 40, 30, 4630,),
+    (500, 30, 30, 4631,),
+    (500, 20, 30, 4632,),
+    (500, 10, 30, 4633,),
+    (730, 50, 30, 4634,),
+    (730, 40, 30, 4635,),
+    (730, 30, 30, 4636,),
+    (730, 20, 30, 4637,),
+    (730, 10, 30, 4638,),
+    (1000, 50, 30, 4639,),
+    (1000, 40, 30, 4640,),
+    (1000, 30, 30, 4641,),
+    (1000, 20, 30, 4642,),
+    (1000, 10, 30, 4643,),
+    (1500, 50, 30, 4644,),
+    (1500, 40, 30, 4645,),
+    (1500, 30, 30, 4646,),
+    (1500, 20, 30, 4647,),
+    (1500, 10, 30, 4648,),
+    (2000, 50, 30, 4649,),
+    (2000, 40, 30, 4650,),
+    (2000, 30, 30, 4651,),
+    (2000, 20, 30, 4652,),
+    (2000, 10, 30, 4653,),
+    (3650, 50, 30, 4654,),
+    (3650, 40, 30, 4655,),
+    (3650, 30, 30, 4656,),
+    (3650, 20, 30, 4657,),
+    (3650, 10, 30, 4658,),
+)
+
+class TestDecayHalfLife(BaseTest):
+    """Weights decay toward defaults over the half-life."""
+
+    @pytest.mark.parametrize(('days_ago', 'initial', 'expected', 'uid',), _DECAY_HALF_LIFE_CASES)
+    def test_decay_half_life(self, days_ago: int, initial: int, expected: int, uid: int) -> None:
+        """Weights decay toward defaults over the half-life."""
+        feedback: FeedbackService = _feedback_service()
+        service: SettingsService = feedback._settings_service
+        service.get('WEIGHT_DETECTOR_AHO')
+        service.update({'WEIGHT_DETECTOR_AHO': initial})
+        self._clock.advance(days=-days_ago)
+        feedback._set_meta('last_tuned', self._clock.now().isoformat())
+        self._clock.advance(days=days_ago)
+        feedback.run_batch()
+        value = int(service.get('WEIGHT_DETECTOR_AHO', 30))
+        assert value == expected
+        assert 5 <= value <= 50
+        feedback.close()

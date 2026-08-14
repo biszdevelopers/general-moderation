@@ -1,8 +1,18 @@
-"""Word list loader for the sensitive-stop-words submodule.
+"""Word list loader for the sensitive-word submodules.
 
-The submodule stores one file per category with two supported delimiters:
-comma-separated (political, porn) and newline-separated (gun, ad, url,
-stopwords). Files are loaded lazily and cached; a missing submodule or a
+Three kinds of sources feed the loader:
+
+- the ``sensitive-stop-words`` submodule: one file per category with two
+  supported delimiters (comma-separated for political/porn, newline-separated
+  for gun/ad/url/stopwords);
+- ``extra_files``: additional raw newline-delimited txt lists
+  (``sensitive-word-data`` and ``sensitive``);
+- ``extra_dirs``: directories whose ``*.txt`` files are all loaded as
+  newline-delimited lists (``sensitive-lexicon/Vocabulary``).
+
+All extra sources are loaded as raw text and merged into the same word bank
+so the service's own algorithms (Aho-Corasick, BK-tree, Bloom) do the
+matching. Sources are loaded lazily and cached; a missing submodule or a
 missing file degrades to an empty list so the service stays operational.
 """
 
@@ -30,21 +40,63 @@ _BLOCKING_CATEGORIES: tuple[str, ...] = ("political", "porn", "gun", "ad", "url"
 class SensitiveWordLoader:
     """Load and cache the external sensitive-word lists.
 
-    :param base_dir: directory containing the submodule files
+    :param base_dir: directory containing the sensitive-stop-words files
+    :param enabled_categories: optional set of blocking category names that
+        participate in ``all_words``/``blocking_words``; when None every
+        blocking category is used
+    :param extra_files: optional raw newline-delimited txt lists to merge
+    :param extra_dirs: optional directories whose ``*.txt`` files are merged
     """
 
-    def __init__(self, base_dir: str | Path) -> None:
+    def __init__(
+        self,
+        base_dir: str | Path,
+        enabled_categories: set[str] | None = None,
+        extra_files: tuple[str | Path, ...] = (),
+        extra_dirs: tuple[str | Path, ...] = (),
+    ) -> None:
         self._base_dir: Path = Path(base_dir)
+        self._extra_files: tuple[Path, ...] = tuple(Path(path) for path in extra_files)
+        self._extra_dirs: tuple[Path, ...] = tuple(Path(path) for path in extra_dirs)
         self._cache: dict[str, tuple[str, ...]] = {}
+        self._enabled: set[str] | None = (
+            set(enabled_categories) if enabled_categories is not None else None
+        )
 
     @property
     def base_dir(self) -> Path:
         """Return the submodule directory."""
         return self._base_dir
 
+    def enabled_categories(self) -> set[str]:
+        """Return the categories that participate in blocking.
+
+        :return: the active blocking categories (all of them by default)
+        """
+        if self._enabled is None:
+            return set(_BLOCKING_CATEGORIES)
+        return set(self._enabled) & set(_BLOCKING_CATEGORIES)
+
+    def set_category_enabled(self, category: str, enabled: bool) -> None:
+        """Toggle one blocking category on or off.
+
+        :param category: a blocking category name (political, porn, gun, ad, url)
+        :param enabled: whether the category contributes its words
+        """
+        if self._enabled is None:
+            self._enabled = set(_BLOCKING_CATEGORIES)
+        if enabled:
+            self._enabled.add(category)
+        else:
+            self._enabled.discard(category)
+
     def available(self) -> bool:
-        """Whether the submodule directory exists."""
-        return self._base_dir.is_dir()
+        """Whether any configured source directory exists."""
+        if self._base_dir.is_dir():
+            return True
+        if any(path.is_dir() for path in self._extra_dirs):
+            return True
+        return any(path.is_file() for path in self._extra_files)
 
     def load_category(self, category: str) -> tuple[str, ...]:
         """Return the deduplicated words for one category.
@@ -62,20 +114,61 @@ class SensitiveWordLoader:
         return words
 
     def loaded_categories(self) -> list[str]:
-        """List the categories that produced at least one word.
+        """List the sources that produced at least one word.
 
-        :return: category names with non-empty files
+        :return: category names with non-empty files, plus ``__extra__`` when
+            the raw extra sources contribute words
         """
-        return [category for category in _CATEGORY_FILES if self.load_category(category)]
+        categories: list[str] = [
+            category for category in _CATEGORY_FILES if self.load_category(category)
+        ]
+        if self.extra_words():
+            categories.append("__extra__")
+        return categories
+
+    def active_blocking_categories(self) -> list[str]:
+        """List the blocking categories that are both enabled and non-empty.
+
+        :return: the enabled blocking categories with loaded words
+        """
+        return [category for category in self.enabled_categories() if self.load_category(category)]
+
+    def extra_words(self) -> tuple[str, ...]:
+        """Merge the extra raw txt sources into one sorted tuple.
+
+        :return: the union of every extra file and directory list
+        """
+        cache_key: str = "__extra__"
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+        combined: set[str] = set()
+        for path in self._extra_files:
+            combined.update(self._parse(path, "\n"))
+        for directory in self._extra_dirs:
+            if not directory.is_dir():
+                continue
+            for path in sorted(directory.glob("*.txt")):
+                combined.update(self._parse(path, "\n"))
+        words: tuple[str, ...] = tuple(sorted(combined))
+        self._cache[cache_key] = words
+        return words
 
     def all_words(self) -> tuple[str, ...]:
-        """Merge every blocking category into one sorted tuple.
+        """Merge every active blocking category and extra source into one tuple.
 
-        :return: the union of the blocking category words
+        :return: the union of the enabled blocking category words and extras
+        """
+        return self.blocking_words()
+
+    def blocking_words(self) -> tuple[str, ...]:
+        """Merge the active blocking categories and extras into one tuple.
+
+        :return: the union of the enabled blocking category words and extras
         """
         combined: set[str] = set()
-        for category in _BLOCKING_CATEGORIES:
+        for category in self.active_blocking_categories():
             combined.update(self.load_category(category))
+        combined.update(self.extra_words())
         return tuple(sorted(combined))
 
     def reload(self) -> None:

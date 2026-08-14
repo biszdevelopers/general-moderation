@@ -217,6 +217,9 @@ switch (command) {
     case "download":
         runInBackend(["python", "-m", "app.ai.download"]);
         break;
+    case "seed":
+        runInBackend(["python", "seed.py"]);
+        break;
     case "gen-secrets":
         genSecrets();
         break;

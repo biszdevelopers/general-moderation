@@ -9,8 +9,10 @@ to English when no library is installed, per the pipeline contract.
 
 from __future__ import annotations
 
+import logging
 import re
 import threading
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -25,12 +27,21 @@ class SafeWordFilter:
 
     :param settings: application settings
     :param logger: audit logger
+    :param blocked_terms: optional callback returning the set of blocked terms
+        (word bank and critical phrases); a safe word that overlaps them is
+        rejected so the fast path can never whitelist harmful content
     """
 
-    def __init__(self, settings: Any, logger: Any) -> None:
+    def __init__(
+        self,
+        settings: Any,
+        logger: Any,
+        blocked_terms: Callable[[], set[str]] | None = None,
+    ) -> None:
         self._path: str = settings.safe_word_list_path
         self._enabled: bool = bool(settings.safe_word_enabled)
         self._logger: Any = logger
+        self._blocked_terms: Callable[[], set[str]] | None = blocked_terms
         self._lock: threading.Lock = threading.Lock()
         self._words: set[str] = set()
         self._load()
@@ -58,14 +69,29 @@ class SafeWordFilter:
         with self._lock:
             self._load()
 
-    def add_word(self, word: str) -> None:
+    def _is_blocked(self, word: str) -> bool:
+        """Return True when a safe word overlaps the blocked term sets.
+
+        :param word: the lowercased candidate safe word
+        :return: True when it must not be whitelisted
+        """
+        if self._blocked_terms is None:
+            return False
+        return word in self._blocked_terms()
+
+    def add_word(self, word: str) -> bool:
         """Append a safe word to the list.
 
         :param word: the safe term to add
+        :return: True when the word was added, False when it overlaps blocked
+            content and was rejected
         """
         word = word.strip().lower()
         if not word:
-            return
+            return False
+        if self._is_blocked(word):
+            self._logger.log(logging.WARNING, "safe_word:overlap_rejected", word=word)
+            return False
         with self._lock:
             self._words.add(word)
             path: Path = Path(self._path)
@@ -75,6 +101,7 @@ class SafeWordFilter:
             if word not in {line.strip().lower() for line in lines}:
                 lines.append(word)
                 path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return True
 
     def remove_word(self, word: str) -> bool:
         """Remove a safe word from the list.

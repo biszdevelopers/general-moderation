@@ -69,11 +69,16 @@ class MetaphoneDetector(DetectorInterface):
         return _metaphone_function is not None and _distance is not None
 
     def reload(self) -> None:
-        """Rebuild the phonetic code index after the word bank changes."""
+        """Rebuild the phonetic code index after the word bank changes.
+
+        Only the administrator-curated custom words are indexed; phonetic
+        matching against the large base dictionaries would flag far too many
+        benign tokens as REVIEW.
+        """
         self._code_to_words = {}
         if _metaphone_function is None:
             return
-        for word in self._word_bank.snapshot.words:
+        for word in self._word_bank.snapshot.custom_words:
             code: str = self._encode(word)
             if code:
                 self._code_to_words.setdefault(code, set()).add(word)

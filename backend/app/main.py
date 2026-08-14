@@ -8,12 +8,15 @@ guarded by the constant-time API key dependency.
 
 from __future__ import annotations
 
+import asyncio
 import gc
+import os
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, ORJSONResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -29,6 +32,8 @@ from app.models.response import BatchModerationResponse, ModerationResponse
 from app.security.auth import RequireAdminApiKey
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.ratelimit import RateLimiter
+from app.static import serve_frontend
+from app.test.router import create_test_router
 from app.utils.logger import ModerationLogger
 from app.wordbank.manager import WordBankManager
 from app.wordbank.storage import create_storage
@@ -75,8 +80,72 @@ async def lifespan(app: FastAPI):
     :param app: the FastAPI application
     """
     ENGINE.warm_up_model()
+    tuning_task: asyncio.Task[None] | None = None
+    if SETTINGS.auto_tuning_enabled:
+        tuning_task = asyncio.create_task(_auto_tuning_scheduler())
     yield
+    if tuning_task is not None:
+        tuning_task.cancel()
     ENGINE.shutdown()
+
+
+async def _auto_tuning_scheduler() -> None:
+    """Run the daily weight/threshold tuning batch at the configured hour.
+
+    The scheduler is intentionally conservative: it polls once a minute, only
+    acts during the configured UTC hour, and serializes across Gunicorn
+    workers with a small lockfile so the batch runs at most once per day.
+    """
+    lock_path: Path = Path(SETTINGS.settings_db_path).parent / "auto_tuning.lock"
+    last_run: str = ""
+    while True:
+        await asyncio.sleep(60)
+        now: datetime = datetime.now(UTC)
+        if not SETTINGS.auto_tuning_enabled or now.hour != SETTINGS.auto_tuning_batch_hour:
+            continue
+        if ENGINE._feedback.last_tuned() == last_run:
+            continue
+        if not _acquire_tuning_lock(lock_path):
+            continue
+        try:
+            report: dict[str, object] = await asyncio.to_thread(ENGINE._feedback.run_batch)
+            last_run = ENGINE._feedback.last_tuned()
+            LOGGER.log(20, "auto_tuning:batch_complete", status=report.get("status"))
+        finally:
+            _release_tuning_lock(lock_path)
+
+
+def _acquire_tuning_lock(lock_path: Path) -> bool:
+    """Try to create a lockfile, ignoring stale locks from crashed workers.
+
+    :param lock_path: the lockfile path
+    :return: True when this process owns the lock
+    """
+    try:
+        fd: int = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.write(fd, str(os.getpid()).encode("ascii"))
+        os.close(fd)
+        return True
+    except FileExistsError:
+        try:
+            age: float = datetime.now().timestamp() - lock_path.stat().st_mtime
+        except OSError:
+            return False
+        if age > 2 * 3600:
+            try:
+                lock_path.unlink()
+                return _acquire_tuning_lock(lock_path)
+            except OSError:
+                return False
+        return False
+
+
+def _release_tuning_lock(lock_path: Path) -> None:
+    """Remove the lockfile if we own it."""
+    try:
+        lock_path.unlink(missing_ok=True)
+    except OSError:
+        pass
 
 
 app: FastAPI = FastAPI(
@@ -99,6 +168,7 @@ app.state.limiter = RATE_LIMITER.limiter
 app.add_middleware(SlowAPIMiddleware)
 
 app.include_router(create_admin_router(ENGINE, WORD_BANK, SETTINGS.log_file_path, ADMIN_AUTH))
+app.include_router(create_test_router(ENGINE, SETTINGS.log_file_path, ADMIN_AUTH))
 
 
 @app.exception_handler(RateLimitExceeded)
@@ -164,17 +234,17 @@ if _frontend_dist.is_dir():
 
     @app.get("/{full_path:path}")
     def spa_fallback(full_path: str) -> Response:
-        """Serve the SPA entry for client-side routes.
+        """Serve built assets and the SPA entry for client-side routes.
+
+        Real files under the dist directory (``logo.svg``, ``favicon.svg``,
+        and every ``public/`` asset) are served as-is; anything else is the
+        SPA ``index.html`` so the React router handles client-side navigation.
+        Unknown API-prefixed paths return 404.
 
         :param full_path: the requested path
-        :return: index.html, or 404 for unknown API paths
+        :return: the matched asset, index.html, or a 404
         """
-        if full_path.startswith(("admin", "moderate", "health", "metrics")):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        index_file: Path = _frontend_dist / "index.html"
-        if index_file.is_file():
-            return FileResponse(index_file)
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return serve_frontend(_frontend_dist, full_path)
 
 
 @app.post("/moderate", response_model=ModerationResponse)

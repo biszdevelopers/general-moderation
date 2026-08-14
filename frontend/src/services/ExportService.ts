@@ -1,4 +1,4 @@
-import { ApiError, AuthService } from "./AuthService";
+import { ApiError, AuthService, errorDetail } from "./AuthService";
 
 export class ExportService {
     public constructor(
@@ -12,15 +12,14 @@ export class ExportService {
             headers: { ...this.authService.headers() },
         }).then((response: Response): Promise<Blob> => {
             if (!response.ok) {
+                if (response.status === 401) {
+                    this.authService.handleUnauthorized();
+                }
                 return response
                     .json()
                     .catch(() => null)
                     .then((body: unknown): Promise<Blob> => {
-                        const detail: unknown =
-                            body !== null && typeof body === "object" && "detail" in body
-                                ? (body as { detail: unknown }).detail
-                                : "Export failed";
-                        throw new ApiError(response.status, String(detail));
+                        throw new ApiError(response.status, errorDetail(body, "Export failed"));
                     });
             }
             return response.blob();

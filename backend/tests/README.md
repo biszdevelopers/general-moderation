@@ -3,13 +3,41 @@
 ## Overview
 
 General Moderation ships a **Phase 1 core suite of exactly 1,000 test cases**
+and a **Phase 2 suite of exactly 9,000 additional cases** (10,000 total)
 covering every critical path of the backend moderation service, plus a fully
 documented roadmap to a **planned universe of 25,000,000+ test cases** across
 all future phases.
 
-- **Phase 1 (current):** 1,000 cases across 13 module directories.
-- **Execution target:** under 5 minutes in parallel (`pytest -n auto`).
+- **Phase 1:** 1,000 cases across 13 module directories.
+- **Phase 2 (current):** 9,000 cases across 92 generated files — golden-master
+  characterization tests emitted by `tests/tools/phase2_generator.py`, with
+  zero overlap against Phase 1 (verified by `phase2_uniqueness_report.md`).
+- **Speed:** the suite parallelizes across every available CPU core via
+  pytest-xdist (`-n auto`; worker count derived from the machine at runtime).
+  The session-scoped `db_template` fixture pre-seeds the SQLite files once per
+  worker and copies them into each test's sandbox, so per-test setup is file
+  copies instead of schema creation and seeding. No hard-coded worker counts
+  or wall-clock figures are baked in.
 - **Report target:** `test_reports/index.html` (generated with `pytest-html`).
+
+## Phase 2 Allocation (Implemented)
+
+| Module | Phase 1 | Phase 2 | Total |
+| :--- | :--- | :--- | :--- |
+| Detectors | 125 | 1,200 | 1,325 |
+| Engine | 80 | 700 | 780 |
+| Semantic | 80 | 700 | 780 |
+| User Profiling | 80 | 700 | 780 |
+| Archive | 115 | 950 | 1,065 |
+| Auto-Tuning | 60 | 550 | 610 |
+| Model/LLM | 60 | 550 | 610 |
+| Settings | 60 | 550 | 610 |
+| Public API | 80 | 700 | 780 |
+| Admin API | 50 | 600 | 650 |
+| Export | 70 | 600 | 670 |
+| Security | 80 | 700 | 780 |
+| Chaos/Resilience | 60 | 500 | 560 |
+| **Total** | **1,000** | **9,000** | **10,000** |
 
 ## Priority Breakdown
 
@@ -32,7 +60,8 @@ tests/
 │   ├── detectors/       # 125 Phase-1 cases (aho, bk-tree, metaphone, multi-lang)
 │   ├── engine/          # 80 Phase-1 cases (pipeline, cache, metrics, components)
 │   ├── semantic/        # 80 Phase-1 cases (service + SuspicionScorer)
-│   └── profiling/       # 80 Phase-1 cases (ratios, cycles, isolation)
+│   ├── profiling/       # 80 Phase-1 cases (ratios, cycles, isolation)
+│   └── severe/          # Phase-1 cases (severity phrases, hard-block, escalation)
 ├── integration/
 │   ├── README.md        # All planned integration tests
 │   ├── archive/         # 115 Phase-1 cases (91-day cycles)
@@ -86,6 +115,13 @@ uv run python -m pytest tests
 
 # All tests (parallel, target < 5 min)
 uv run python -m pytest tests -n auto
+
+# Phase 2 tests only
+uv run python -m pytest tests -k phase2
+
+# Regenerate the Phase 2 suite + READMEs (only when changing the generator)
+uv run python tests/tools/phase2_generator.py
+```
 
 # A single module
 uv run python -m pytest tests/unit/detectors -v
@@ -163,4 +199,4 @@ add the next batch of cases.
 - [Architecture](../../docs/architecture/)
 - [API Reference](../../docs/api/)
 - [Configuration](../../docs/guide/configuration.md)
-- [Testing Guide](../docs/guide/testing.md)
+- [Testing Guide](../../docs/guide/testing.md)

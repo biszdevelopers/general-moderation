@@ -72,6 +72,36 @@ class Settings(BaseSettings):
     enable_pyprofane: bool = True
     enable_sensitive_stop_words: bool = True
     sensitive_stop_words_dir: str = "./data/sensitive-stop-words"
+    # Per-category toggles for the sensitive-stop-words submodule blocking lists.
+    enable_sensitive_stop_words_political: bool = True
+    enable_sensitive_stop_words_porn: bool = True
+    enable_sensitive_stop_words_gun: bool = True
+    enable_sensitive_stop_words_ad: bool = True
+    enable_sensitive_stop_words_url: bool = True
+    # Additional raw Chinese sensitive-word lists (newline-delimited txt).
+    # Wired into the same detector so the service's own algorithms match them.
+    sensitive_word_data_dict: str = (
+        "./data/sensitive-word-data/src/main/resources/sensitive_word_dict.txt"
+    )
+    sensitive_lexicon_dir: str = "./data/sensitive-lexicon/Vocabulary"
+    sensitive_dict_path: str = "./data/sensitive/dict/dict.txt"
+    # Minimum term length for a sensitive-list match to hard-block. Single
+    # CJK characters appear in benign text (祝, 你, 请, ...), so the lists'
+    # ~528 one-char terms are excluded from decisive blocking.
+    sensitive_min_word_length: int = 2
+
+    # Stage 2 detector toggles (runtime-editable through the admin API)
+    enable_detector_bloom_filter: bool = True
+    enable_detector_rolling_hash: bool = True
+    enable_detector_aho_corasick: bool = True
+    enable_detector_bk_tree: bool = True
+    enable_detector_double_metaphone: bool = True
+    enable_detector_multi_language: bool = True
+
+    # Benign words that multi-language packages misflag (e.g. Turkish "cok"
+    # = "very", flagged as profanity after diacritic stripping). A package hit
+    # is suppressed when the entire text consists of excluded words.
+    ml_benign_word_exclusions: str = "cok"
 
     # Detector weights (Stage 2 suspicion scoring)
     weight_detector_badwords: int = 25
@@ -85,8 +115,8 @@ class Settings(BaseSettings):
     semantic_enabled: bool = True
     semantic_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
     semantic_index_dir: str = "./semantic/"
-    semantic_similarity_threshold: float = 0.85
-    semantic_force_llm_threshold: float = 0.90
+    semantic_similarity_threshold: float = 0.65
+    semantic_force_llm_threshold: float = 0.80
     semantic_top_k: int = 5
     weight_semantic_political: int = 35
     weight_semantic_violence: int = 40
@@ -106,6 +136,15 @@ class Settings(BaseSettings):
     # Stage 2: suspicion scoring
     weight_user: int = 20
     score_weights_cache_ttl_seconds: int = 300
+
+    # Stage 2: severity-aware phrase detection
+    critical_phrases_db_path: str = "./data/critical_phrases.db"
+    enable_phrase_detector: bool = True
+    severity_hard_block_threshold: int = 5
+    review_escalation_threshold: int = 40
+
+    # Stage 2: multi-language package handling
+    ml_review_mode: bool = False
 
     # Stage 3: LLM trigger policy
     ai_target_percentage: int = 5
@@ -249,6 +288,7 @@ class Settings(BaseSettings):
             self.user_archive_db_path,
             self.feedback_db_path,
             self.settings_db_path,
+            self.critical_phrases_db_path,
             self.log_file_path,
         )
         for raw_path in db_paths:

@@ -6,11 +6,13 @@
     "scripts": {
         "docs:dev": "vitepress dev",
         "docs:build": "vitepress build",
-        "docs:preview": "vitepress preview"
+        "docs:preview": "vitepress preview",
+        "docs:check:mermaid": "node scripts/check-mermaid.mjs"
     },
     "devDependencies": {
         "@mdit/plugin-katex": "^1.0.3",
         "katex": "^0.18.4",
+        "linkedom": "^0.18.13",
         "mermaid": "^11.16.1",
         "vitepress": "1.6.4",
         "vitepress-plugin-mermaid": "^2.0.17"

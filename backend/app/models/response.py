@@ -29,6 +29,8 @@ class ModerationResponse(BaseModel):
     :param confidence_score: overall confidence in the verdict
     :param latency_ms: total processing time in milliseconds
     :param detector_chain: ordered names of detectors that ran
+    :param severity: severity of the strongest match (0-10), when known
+    :param category: semantic bucket of the strongest match, when known
     """
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
@@ -47,6 +49,8 @@ class ModerationResponse(BaseModel):
     confidence_score: float | None = None
     latency_ms: float
     detector_chain: list[str] = []
+    severity: int | None = None
+    category: str | None = None
 
 
 class BatchModerationResponse(BaseModel):

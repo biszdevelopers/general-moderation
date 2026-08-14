@@ -1,0 +1,42 @@
+/* Mermaid diagrams: render at natural size, never squished, zoom-in on click. */
+
+.mermaid {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin: 1.5rem 0;
+    padding: 0.5rem;
+    text-align: center;
+    scrollbar-width: thin;
+    scrollbar-color: var(--vp-c-divider) transparent;
+}
+
+.mermaid svg {
+    max-width: none !important;
+    height: auto;
+    cursor: zoom-in;
+    transition: transform 0.2s ease-in-out;
+}
+
+.mermaid svg.zoomed {
+    cursor: zoom-out;
+    transform: scale(1.8);
+    transform-origin: 0 0;
+}
+
+.mermaid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.mermaid::-webkit-scrollbar-thumb {
+    background: var(--vp-c-divider);
+    border-radius: 4px;
+}
+
+@media print {
+    .mermaid {
+        overflow: visible;
+    }
+    .mermaid svg.zoomed {
+        transform: none;
+    }
+}

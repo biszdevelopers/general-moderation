@@ -43,6 +43,21 @@ _DESCRIPTIONS: dict[str, str] = {
     "ENABLE_GANGAJAL": "Enable the gangajal detector",
     "ENABLE_PYPROFANE": "Enable the PyProfane detector",
     "ENABLE_SENSITIVE_STOP_WORDS": "Enable the sensitive-stop-words submodule detector",
+    "ENABLE_SENSITIVE_STOP_WORDS_POLITICAL": "Enable the sensitive-stop-words political category",
+    "ENABLE_SENSITIVE_STOP_WORDS_PORN": "Enable the sensitive-stop-words porn category",
+    "ENABLE_SENSITIVE_STOP_WORDS_GUN": "Enable the sensitive-stop-words gun/explosive category",
+    "ENABLE_SENSITIVE_STOP_WORDS_AD": "Enable the sensitive-stop-words ads category",
+    "ENABLE_SENSITIVE_STOP_WORDS_URL": "Enable the sensitive-stop-words URL category",
+    "ENABLE_PHRASE_DETECTOR": "Enable the severity-aware phrase detector",
+    "ML_REVIEW_MODE": "Downgrade multi-language package hits from BLOCK to REVIEW",
+    "SEVERITY_HARD_BLOCK_THRESHOLD": "Severity at or above which a phrase hard-blocks",
+    "REVIEW_ESCALATION_THRESHOLD": "Suspicion score at or above which REVIEW escalates to the LLM",
+    "ENABLE_DETECTOR_BLOOM_FILTER": "Enable the Bloom filter fast-negative detector",
+    "ENABLE_DETECTOR_ROLLING_HASH": "Enable the rolling hash spam detector",
+    "ENABLE_DETECTOR_AHO_CORASICK": "Enable the Aho-Corasick exact matcher",
+    "ENABLE_DETECTOR_BK_TREE": "Enable the BK-tree fuzzy matcher",
+    "ENABLE_DETECTOR_DOUBLE_METAPHONE": "Enable the Double Metaphone phonetic matcher",
+    "ENABLE_DETECTOR_MULTI_LANGUAGE": "Enable the multi-language package detector",
     "WEIGHT_DETECTOR_BADWORDS": "Suspicion weight contributed by badwords-py",
     "WEIGHT_DETECTOR_PROFANITE": "Suspicion weight contributed by profanite",
     "WEIGHT_DETECTOR_GLIN": "Suspicion weight contributed by glin-profanity",
@@ -144,6 +159,8 @@ _RANGES: dict[str, tuple[int, int]] = {
     "LOG_RETENTION_DAYS": (1, 365),
     "EXPORT_RETENTION_DAYS": (1, 365),
     "SCORE_WEIGHTS_CACHE_TTL_SECONDS": (1, 3600),
+    "SEVERITY_HARD_BLOCK_THRESHOLD": (1, 10),
+    "REVIEW_ESCALATION_THRESHOLD": (1, 100),
 }
 
 _BOOL_KEYS: frozenset[str] = frozenset(
@@ -158,6 +175,19 @@ _BOOL_KEYS: frozenset[str] = frozenset(
         "ENABLE_GANGAJAL",
         "ENABLE_PYPROFANE",
         "ENABLE_SENSITIVE_STOP_WORDS",
+        "ENABLE_SENSITIVE_STOP_WORDS_POLITICAL",
+        "ENABLE_SENSITIVE_STOP_WORDS_PORN",
+        "ENABLE_SENSITIVE_STOP_WORDS_GUN",
+        "ENABLE_SENSITIVE_STOP_WORDS_AD",
+        "ENABLE_SENSITIVE_STOP_WORDS_URL",
+        "ENABLE_PHRASE_DETECTOR",
+        "ML_REVIEW_MODE",
+        "ENABLE_DETECTOR_BLOOM_FILTER",
+        "ENABLE_DETECTOR_ROLLING_HASH",
+        "ENABLE_DETECTOR_AHO_CORASICK",
+        "ENABLE_DETECTOR_BK_TREE",
+        "ENABLE_DETECTOR_DOUBLE_METAPHONE",
+        "ENABLE_DETECTOR_MULTI_LANGUAGE",
         "SEMANTIC_ENABLED",
         "USER_PROFILING_ENABLED",
         "FORCE_LLM_ON_SEMANTIC_HIGH",
@@ -309,6 +339,16 @@ class SettingsService:
         if raw == "":
             raise ValueError(f"{key} must not be empty")
 
+    def cache_freshness(self) -> float:
+        """Return the monotonic timestamp of the last settings load.
+
+        Callers (the engine cache fingerprint) use this to detect that
+        settings changed and drop their memoized derivation.
+
+        :return: the monotonic time of the last ``_load``
+        """
+        return self._cache_loaded_at
+
     def _load(self) -> dict[str, str]:
         """Reload every setting from the database into the cache."""
         rows = self._connection.execute("SELECT key, value FROM settings").fetchall()
@@ -352,13 +392,16 @@ class SettingsService:
     def describe(self) -> list[dict[str, Any]]:
         """Return the full metadata list for the admin settings UI.
 
+        Secret values (``*_KEY`` and ``*_SECRET`` suffixes) are redacted so the
+        catalog never exposes credentials through the admin or test APIs.
+
         :return: key, value, type, description, and editability per setting
         """
         values: dict[str, Any] = self.all()
         return [
             {
                 "key": key,
-                "value": values[key],
+                "value": "********" if key.endswith(_SECRET_SUFFIXES) else values[key],
                 "type": self._value_type(values[key]),
                 "description": _DESCRIPTIONS.get(key, ""),
                 "editable": self.is_public(key),

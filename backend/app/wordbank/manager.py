@@ -10,9 +10,10 @@ structure and no locks are required.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
+from app.utils.sensitive_word_loader import SensitiveWordLoader
 from app.utils.wordlist_loader import WordListLoader
 from app.wordbank.models import CustomWord
 from app.wordbank.storage import WordStorageInterface
@@ -25,11 +26,19 @@ class WordBankSnapshot:
     :param words: every active word (base plus custom), lowercased
     :param automaton: compiled Aho-Corasick automaton, or None when unavailable
     :param bloom: seeded Bloom filter, or None when unavailable
+    :param base_words: words originating from the pip package dictionaries
+    :param custom_words: words curated by administrators through the word bank
+    :param severity_by_word: custom word to its configured severity (0-10)
+    :param category_by_word: custom word to its configured category
     """
 
     words: tuple[str, ...]
     automaton: Any | None
     bloom: Any | None
+    base_words: frozenset[str] = frozenset()
+    custom_words: frozenset[str] = frozenset()
+    severity_by_word: dict[str, int] = field(default_factory=dict)
+    category_by_word: dict[str, str] = field(default_factory=dict)
 
 
 class WordBankManager:
@@ -39,6 +48,7 @@ class WordBankManager:
     :param bloom_capacity: Bloom filter capacity
     :param bloom_error_rate: Bloom filter false-positive rate
     :param logger: audit logger for change tracking
+    :param sensitive_loader: optional loader for the sensitive-stop-words lists
     """
 
     def __init__(
@@ -47,12 +57,25 @@ class WordBankManager:
         bloom_capacity: int = 1_000_000,
         bloom_error_rate: float = 0.001,
         logger: Any | None = None,
+        sensitive_loader: SensitiveWordLoader | None = None,
     ) -> None:
         self._storage: WordStorageInterface = storage
         self._bloom_capacity: int = bloom_capacity
         self._bloom_error_rate: float = bloom_error_rate
         self._logger: Any = logger
+        self._sensitive_loader: SensitiveWordLoader | None = sensitive_loader
         self._snapshot: WordBankSnapshot = WordBankSnapshot(words=(), automaton=None, bloom=None)
+        self.reload()
+
+    @property
+    def sensitive_loader(self) -> SensitiveWordLoader | None:
+        """Return the optional sensitive-stop-words loader."""
+        return self._sensitive_loader
+
+    @sensitive_loader.setter
+    def sensitive_loader(self, loader: SensitiveWordLoader | None) -> None:
+        """Attach (or detach) the sensitive-stop-words loader and reload."""
+        self._sensitive_loader = loader
         self.reload()
 
     def add_word(
@@ -166,14 +189,27 @@ class WordBankManager:
         making the reload atomic with respect to concurrent readers.
         """
         custom_words: list[CustomWord] = self._storage.list_all()
-        base_words: tuple[str, ...] = WordListLoader.load_from_packages()
-        all_words: tuple[str, ...] = tuple(
-            dict.fromkeys((*base_words, *(word.word for word in custom_words)))
+        base_words: frozenset[str] = frozenset(WordListLoader.load_from_packages())
+        sensitive_words: tuple[str, ...] = (
+            self._sensitive_loader.blocking_words() if self._sensitive_loader else ()
         )
+        custom_terms: tuple[str, ...] = tuple(word.word for word in custom_words)
+        all_words: tuple[str, ...] = tuple(
+            dict.fromkeys((*sorted(base_words), *sensitive_words, *custom_terms))
+        )
+        # Fuzzy layers (BK-tree, Metaphone, Bloom) operate only on the
+        # administrator-curated words: fuzzy matching against the large,
+        # noisy base dictionaries flags nearly every token and inflates
+        # suspicion scores on benign text. Base words are covered exactly
+        # by the Aho-Corasick automaton and the multi-language packages.
         self._snapshot = WordBankSnapshot(
             words=all_words,
             automaton=self._build_automaton(all_words),
-            bloom=self._build_bloom(all_words),
+            bloom=self._build_bloom(custom_terms),
+            base_words=base_words,
+            custom_words=frozenset(custom_terms),
+            severity_by_word={word.word: word.severity for word in custom_words},
+            category_by_word={word.word: word.category for word in custom_words},
         )
         self._audit("wordbank_reloaded", total_words=len(all_words))
 

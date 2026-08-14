@@ -1,0 +1,125 @@
+"""Phase 2 public moderation API tests (generated).
+
+Language verdict matrices, batch sizes, validation, unicode edges,
+profiling flows and response shapes; see tests/tools/phase2_generator.py."""
+
+# multilingual fixtures use non-ASCII on purpose
+from __future__ import annotations
+
+from typing import Any
+
+import pytest
+
+from tests.base_test import BaseTest
+
+_RESPONSE_SHAPE_CASES: tuple[tuple[str, str, int], ...] = (
+    ('id', 'shape 0', 7316,),
+    ('id', 'shape 1', 7317,),
+    ('id', 'shape 2', 7318,),
+    ('id', 'shape 3', 7319,),
+    ('id', 'shape 4', 7320,),
+    ('id', 'shape 5', 7321,),
+    ('id', 'shape 6', 7322,),
+    ('id', 'shape 7', 7323,),
+    ('verdict', 'shape 0', 7324,),
+    ('verdict', 'shape 1', 7325,),
+    ('verdict', 'shape 2', 7326,),
+    ('verdict', 'shape 3', 7327,),
+    ('verdict', 'shape 4', 7328,),
+    ('verdict', 'shape 5', 7329,),
+    ('verdict', 'shape 6', 7330,),
+    ('verdict', 'shape 7', 7331,),
+    ('allowed', 'shape 0', 7332,),
+    ('allowed', 'shape 1', 7333,),
+    ('allowed', 'shape 2', 7334,),
+    ('allowed', 'shape 3', 7335,),
+    ('allowed', 'shape 4', 7336,),
+    ('allowed', 'shape 5', 7337,),
+    ('allowed', 'shape 6', 7338,),
+    ('allowed', 'shape 7', 7339,),
+    ('levelUsed', 'shape 0', 7340,),
+    ('levelUsed', 'shape 1', 7341,),
+    ('levelUsed', 'shape 2', 7342,),
+    ('levelUsed', 'shape 3', 7343,),
+    ('levelUsed', 'shape 4', 7344,),
+    ('levelUsed', 'shape 5', 7345,),
+    ('levelUsed', 'shape 6', 7346,),
+    ('levelUsed', 'shape 7', 7347,),
+    ('aiTriggered', 'shape 0', 7348,),
+    ('aiTriggered', 'shape 1', 7349,),
+    ('aiTriggered', 'shape 2', 7350,),
+    ('aiTriggered', 'shape 3', 7351,),
+    ('aiTriggered', 'shape 4', 7352,),
+    ('aiTriggered', 'shape 5', 7353,),
+    ('aiTriggered', 'shape 6', 7354,),
+    ('aiTriggered', 'shape 7', 7355,),
+    ('suspicionScore', 'shape 0', 7356,),
+    ('suspicionScore', 'shape 1', 7357,),
+    ('suspicionScore', 'shape 2', 7358,),
+    ('suspicionScore', 'shape 3', 7359,),
+    ('suspicionScore', 'shape 4', 7360,),
+    ('suspicionScore', 'shape 5', 7361,),
+    ('suspicionScore', 'shape 6', 7362,),
+    ('suspicionScore', 'shape 7', 7363,),
+    ('reasons', 'shape 0', 7364,),
+    ('reasons', 'shape 1', 7365,),
+    ('reasons', 'shape 2', 7366,),
+    ('reasons', 'shape 3', 7367,),
+    ('reasons', 'shape 4', 7368,),
+    ('reasons', 'shape 5', 7369,),
+    ('reasons', 'shape 6', 7370,),
+    ('reasons', 'shape 7', 7371,),
+    ('reason', 'shape 0', 7372,),
+    ('reason', 'shape 1', 7373,),
+    ('reason', 'shape 2', 7374,),
+    ('reason', 'shape 3', 7375,),
+    ('reason', 'shape 4', 7376,),
+    ('reason', 'shape 5', 7377,),
+    ('reason', 'shape 6', 7378,),
+    ('reason', 'shape 7', 7379,),
+    ('matchedWords', 'shape 0', 7380,),
+    ('matchedWords', 'shape 1', 7381,),
+    ('matchedWords', 'shape 2', 7382,),
+    ('matchedWords', 'shape 3', 7383,),
+    ('matchedWords', 'shape 4', 7384,),
+    ('matchedWords', 'shape 5', 7385,),
+    ('matchedWords', 'shape 6', 7386,),
+    ('matchedWords', 'shape 7', 7387,),
+    ('matchedWord', 'shape 0', 7388,),
+    ('matchedWord', 'shape 1', 7389,),
+    ('matchedWord', 'shape 2', 7390,),
+    ('matchedWord', 'shape 3', 7391,),
+    ('matchedWord', 'shape 4', 7392,),
+    ('matchedWord', 'shape 5', 7393,),
+    ('matchedWord', 'shape 6', 7394,),
+    ('matchedWord', 'shape 7', 7395,),
+    ('matchedLanguage', 'shape 0', 7396,),
+    ('matchedLanguage', 'shape 1', 7397,),
+    ('matchedLanguage', 'shape 2', 7398,),
+    ('matchedLanguage', 'shape 3', 7399,),
+    ('matchedLanguage', 'shape 4', 7400,),
+    ('matchedLanguage', 'shape 5', 7401,),
+    ('matchedLanguage', 'shape 6', 7402,),
+    ('matchedLanguage', 'shape 7', 7403,),
+    ('confidenceScore', 'shape 0', 7404,),
+    ('confidenceScore', 'shape 1', 7405,),
+    ('confidenceScore', 'shape 2', 7406,),
+    ('confidenceScore', 'shape 3', 7407,),
+    ('confidenceScore', 'shape 4', 7408,),
+    ('confidenceScore', 'shape 5', 7409,),
+    ('confidenceScore', 'shape 6', 7410,),
+    ('confidenceScore', 'shape 7', 7411,),
+    ('latencyMs', 'shape 0', 7412,),
+    ('latencyMs', 'shape 1', 7413,),
+    ('latencyMs', 'shape 2', 7414,),
+    ('latencyMs', 'shape 3', 7415,),
+)
+
+class TestResponseShape(BaseTest):
+    """Every documented response field is present."""
+
+    @pytest.mark.parametrize(('field', 'text', 'uid',), _RESPONSE_SHAPE_CASES)
+    def test_response_shape(self, client: Any, field: str, text: str, uid: int) -> None:
+        """Every documented response field is present."""
+        body = client.post('/moderate', json={'text': text, 'app_name': 'a'}).json()
+        assert field in body

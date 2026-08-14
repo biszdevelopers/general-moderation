@@ -72,7 +72,8 @@ API reference, and algorithm documentation.
 | glin-profanity | 25+ | Context-aware | Active |
 | gangajal | All | WebAssembly | Active |
 | PyProfane | Universal | Soundex-based | Active |
-| sensitive-stop-words | Chinese | Submodule word lists (Aho-Corasick) | Active |
+| sensitive-stop-words | Chinese | Submodule + 3 raw word lists (Rust Aho-Corasick) | Active |
+| phrase-detector | Any | Severity-aware critical phrases | Active |
 | safetext | 13 | Phrase detection | Guard-wired |
 | sensitive-word-filter-cn | Chinese | Pinyin, symbols | Guard-wired |
 | profanity-filter2 | Universal | Levenshtein automaton | Guard-wired |
@@ -92,12 +93,33 @@ From the repository root:
 ```bash
 npm install          # installs concurrently (root tooling)
 npm run install:all  # uv sync (backend) + npm deps (frontend)
-git submodule update --init  # fetch the sensitive-stop-words word lists
+git submodule update --init  # fetch the Chinese sensitive-word lists
 npm run generate:secrets     # generate secure *_KEY/_SECRET values in backend/.env
+npm run seed         # seed critical phrases, semantic examples, and safe words (idempotent)
 npm run build        # build the frontend once (required before start:prod)
 npm run start:dev    # dev: backend (uvicorn :8080) + frontend (vite :5173)
 npm run start:prod   # prod: serve everything on APP_PORT (frontend must be built)
 ```
+
+### Seeding first-run data
+
+`npm run seed` fills the data that a fresh deployment needs to detect
+high-severity content out of the box:
+
+- **Critical phrases** — a curated starter set of high-severity phrases
+  (violence, hate speech, political extremism, child safety) from
+  `backend/seed_data/critical_phrases.json`, stored in
+  `data/critical_phrases.db` and matched by the severity-aware
+  `phrase_detector`.
+- **Semantic examples** — the default per-category example texts are persisted
+  into the semantic indexes (only when the optional semantic dependencies are
+  installed and a category index is empty).
+- **Safe words** — a minimal starter safe-word list, only when
+  `data/safe_words.txt` is empty.
+
+The seed is **idempotent** and **never overwrites operator edits**; it is not
+run automatically at startup. Extend the phrase list through the admin API
+(`POST /admin/phrases`) or by editing the seed JSON.
 
 Production runs on a **single port**: FastAPI serves the built frontend and
 the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
@@ -105,7 +127,8 @@ the whole API on `APP_HOST:APP_PORT` (default `0.0.0.0:18427`, set in
 (or `npm run build:prod`) once before `npm run start:prod`.
 
 Other root scripts: `npm run lint`, `npm run format`, `npm run build`,
-`npm run docs:dev`, `npm run docs:build`, `npm run install:backend`.
+`npm run docs:dev`, `npm run docs:build`, `npm run install:backend`,
+`npm run seed`.
 
 ### Manual backend
 
@@ -165,9 +188,13 @@ to free memory.
 
 - **Dashboard**: live statistics, counters, and profiling data.
 - **Word Bank**: add, edit, remove, import, and export custom words.
+- **Critical Phrases**: manage the severity-aware high-severity phrase list
+  (`/admin/phrases`), which hard-blocks matches at or above
+  `SEVERITY_HARD_BLOCK_THRESHOLD`.
 - **Settings**: edit every runtime parameter (weights, thresholds, toggles,
   LLM, logging, performance) without a restart; values persist in
-  `settings.db` and apply immediately.
+  `settings.db` and apply immediately. Detector toggles and per-app policies
+  invalidate the result cache so changes take effect right away.
 - **Export**: download a ZIP of all databases, CSV dumps, logs, a redacted
   configuration snapshot, and semantic indexes (rate-limited).
 - **Feedback**: submit corrections; the daily auto-tuning batch adjusts weights
@@ -198,38 +225,114 @@ preview it locally.
 
 ## Testing
 
-### Phase 1 (Current)
-- **1,000 core test cases** covering critical paths across detectors, engine,
-  semantic similarity, user profiling, 91-day archive, auto-tuning, the LLM
-  model, settings, security, export, and chaos resilience.
-- **Execution time**: under 5 minutes in parallel (`pytest -n auto`), ~4
-  minutes serial.
-- **Report**: `backend/test_reports/index.html` (generated with
-  `pytest --html`).
-- Each test file contains at most 100 test cases; every test is isolated in
-  its own temporary directory.
+The test suite is a deterministic, fully parallel, self-generating system.
+It grows through **phases**: a hand-written core that locks in the critical
+paths, followed by generated golden-master suites that sweep every module's
+dimension matrix. Once all planned phases are delivered, the application
+encompasses **on the order of tens of millions of test cases** — the full
+combinatorial universe of languages, text lengths, content classes, edit
+distances, volumes, thresholds, concurrency levels, fault types, and attack
+vectors is documented per module under `backend/tests/`.
 
-### Future Phases
-- A full test universe of 25,000,000+ cases is documented in
-  `backend/tests/*/README.md`.
-- Each README contains the planned ID ranges, the dimension matrix, current
-  implementation status, and detailed instructions for adding new cases.
-- Later phases expand coverage to every dimension combination (languages,
-  volumes, thresholds, concurrency, obfuscation, and more).
+The suite is engineered to be fast, not just large:
+
+- **Every core, dynamically.** Tests run with pytest-xdist across all
+  available CPU cores; the worker count is derived from the machine at
+  runtime, never hard-coded.
+- **Pre-seeded databases.** A session-scoped template builds the SQLite
+  schema and seed data once per worker; each test copies those files into its
+  own sandbox instead of recreating them, so per-test setup is file copies
+  rather than schema construction.
+- **Isolated.** Every test gets a private temporary directory and its own
+  database copies; nothing can leak across tests.
+- **Golden-master generation.** The generated suites are emitted by
+  `backend/tests/tools/phase2_generator.py`, which runs the real application
+  to capture expected values and freezes them as regression expectations.
+  Regenerating is a safe, idempotent operation that also refreshes the
+  per-module documentation and the uniqueness report.
+- **Machine-checked.** Collection asserts an exact expected test count,
+  generation emits a uniqueness report proving zero overlap with earlier
+  phases, and every file passes the same `ruff` lint and format gates as
+  production code.
+
+The full pipeline — discovery, parametrization, worker distribution, fixture
+lifecycle, generation, and verification — is documented with diagrams in
+`docs/guide/testing.md`.
 
 ### Run Tests
+
 ```bash
-npm run test        # all backend tests (uv run python -m pytest tests)
+npm run test        # all backend tests, all available cores (-n auto)
 npm run test:unit   # unit tests only (tests/unit)
-npm run test:e2e    # E2E only (tests/e2e)
 npm run test:integration  # integration tests only (tests/integration)
+npm run test:e2e    # E2E only (tests/e2e)
+npm run test:phase2 # generated golden-master tests only (tests -k phase2)
+npm run test:serial # full suite serial (deterministic CI debugging)
+npm run eval        # labeled-corpus accuracy/precision/recall/F1 gate
 ```
 
+A single test file can also be run directly, e.g.
+`cd backend && uv run python -m pytest tests/unit/detectors -v`.
+
+### Evaluation Gate
+
+`npm run eval` runs the labeled corpus through the live pipeline and measures
+accuracy, precision, recall, and F1 (plus p50/p95/p99 latency). It fails with
+a nonzero exit when metrics drop below the configured minimums, so accuracy
+regressions are caught before a demo or release:
+
+```bash
+npm run eval                  # full corpus, default thresholds
+npm run eval -- --json        # machine-readable report
+cd backend && uv run python -m eval.evaluate --no-cjk  # skip sampled CJK terms
+```
+
+The corpus spans seed critical phrases, sampled Chinese list terms (redacted),
+benign English/Chinese/multilingual sentences, and obfuscated attacks. See
+`backend/eval/` for the labels and thresholds.
+
 ### Adding New Tests
-- See the README in each test directory for step-by-step instructions.
-- Follow the same patterns as Phase 1 (BaseTest, frozen clock, fixtures).
-- Update the corresponding README when adding new tests.
-- Commit one file per commit with `[TEST-<TYPE>]` tags.
+
+1. Pick the module and phase from its README under `backend/tests/` — each
+   one documents its dimension matrix, planned identifier ranges, and status.
+2. **Hand-written core cases** follow the established pattern: extend the
+   `BaseTest` helper, use the frozen clock and the shared fixtures from
+   `backend/tests/conftest.py`, and keep every test isolated in its own
+   temporary directory.
+3. **Generated golden-master cases** are data entry: add rows to a module's
+   dimension matrix in `backend/tests/tools/phase2_generator.py`, then run
+   `cd backend && uv run python tests/tools/phase2_generator.py` to emit the
+   new test files, refresh every module README, and regenerate the uniqueness
+   report.
+4. Verify with `ruff check`, `ruff format`, and the relevant test slice.
+5. Update the corresponding README.
+6. Commit **one file per commit** with `[TEST-<TYPE>]` tags.
+
+### Report
+
+`backend/test_reports/index.html` is generated with `pytest --html` and
+contains the full pass/fail history of the suite.
+
+## Credits
+
+This project builds on open-source work. The Chinese sensitive-word lists are
+consumed as **raw word data** through this service's own matching algorithms
+(Aho-Corasick, BK-tree, Bloom); the subrepos do not ship Python bindings, so
+no code from them runs here.
+
+| Source | Repository | Used for |
+| :--- | :--- | :--- |
+| sensitive-stop-words | [fwwdn/sensitive-stop-words](https://github.com/fwwdn/sensitive-stop-words) | Per-category Chinese blocking lists (political, porn, gun, ad, url) |
+| sensitive | [importcjj/sensitive](https://github.com/importcjj/sensitive) | `dict/dict.txt` — Chinese sensitive-word list |
+| sensitive-lexicon | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) | `Vocabulary/` — category word lists (political, porn, gun, URLs, etc.) |
+| sensitive-word-data | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) | `sensitive_word_dict.txt` — Chinese sensitive-word dictionary |
+
+All subrepos live under `backend/data/` and are fetched with
+`git submodule update --init`.
+
+The detector packages, algorithms, and the rest of the dependencies used by
+this project are credited on the [Credits page](docs/guide/credits.md) of the
+documentation site.
 
 ## License
 

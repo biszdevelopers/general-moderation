@@ -38,12 +38,12 @@ import concurrent.futures
 import importlib
 import inspect
 import logging
+import threading
 from collections.abc import Callable
 from typing import Any
 
 from app.detectors.interface import DetectorInterface
 from app.models.verdict import DetectionResult
-from app.utils.sensitive_word_loader import SensitiveWordLoader
 from app.utils.unicode_utils import UnicodeUtils
 
 # Candidate method names tried on each package, in order.
@@ -70,15 +70,17 @@ _PROFANITY_METHODS: tuple[str, ...] = (
 # - "truthy": a truthy callable result is a positive.
 # - "censored": the callable returns censored text; a result that differs
 #   from the input is a positive (e.g. gangajal).
-_PACKAGES: tuple[tuple[str, str, str], ...] = (
-    ("profanite", "any", "truthy"),
-    ("glin_profanity", "multi", "truthy"),
-    ("badwords", "multi", "truthy"),
-    ("safetext", "multi", "truthy"),
-    ("sensitive_word_filter_cn", "zh-CN", "truthy"),
-    ("profanity_filter", "any", "truthy"),
-    ("gangajal", "any", "censored"),
-    ("PyProfane", "any", "truthy"),
+# Fourth element: whether a package hit hard-blocks. gangajal's bundled list
+# censors ordinary words ("day", "ass") and is therefore a REVIEW-only signal.
+_PACKAGES: tuple[tuple[str, str, str, bool], ...] = (
+    ("profanite", "any", "truthy", True),
+    ("glin_profanity", "multi", "truthy", True),
+    ("badwords", "multi", "truthy", True),
+    ("safetext", "multi", "truthy", True),
+    ("sensitive_word_filter_cn", "zh-CN", "truthy", True),
+    ("profanity_filter", "any", "truthy", True),
+    ("gangajal", "any", "censored", False),
+    ("PyProfane", "any", "truthy", True),
 )
 
 
@@ -94,6 +96,27 @@ def _prepare_badwords(module: Any) -> Any:
     instance: Any = module.ProfanityFilter()
     instance.init()
     return instance.filter_text
+
+
+def _prepare_glin(module: Any) -> Any:
+    """Return the accurate glin_profanity check callable.
+
+    ``Filter.is_profane`` is a fast substring probe that false-positives on
+    ordinary words (e.g. ``pass``); ``check_profanity`` performs the real,
+    word-boundary-aware analysis and returns a dict with ``contains_profanity``.
+    The adapter therefore binds the accurate API instead of the generic
+    method probe.
+
+    :param module: the imported glin_profanity module
+    :return: a bound check callable returning a bool, or None on failure
+    """
+    instance: Any = module.Filter()
+
+    def _check(text: str) -> bool:
+        result: Any = instance.check_profanity(text)
+        return bool(result.get("contains_profanity")) if isinstance(result, dict) else False
+
+    return _check
 
 
 def _prepare_safetext(module: Any) -> Any:
@@ -119,6 +142,7 @@ def _prepare_safetext(module: Any) -> Any:
 _PREPARE_FUNCTIONS: dict[str, Callable[[Any], Any]] = {
     "badwords": _prepare_badwords,
     "safetext": _prepare_safetext,
+    "glin_profanity": _prepare_glin,
 }
 
 
@@ -129,6 +153,7 @@ class _PackageAdapter:
     :param language: ISO code reported on a match
     :param mode: match strategy, "truthy" or "censored"
     :param prepare: optional factory that returns the check callable
+    :param blocking: whether a package hit hard-blocks
     """
 
     def __init__(
@@ -137,12 +162,18 @@ class _PackageAdapter:
         language: str,
         mode: str,
         prepare: Callable[[Any], Any] | None = None,
+        blocking: bool = True,
     ) -> None:
         self.package_name: str = package_name
         self.language: str = language
         self._mode: str = mode
+        self.blocking: bool = blocking
         self._module: Any | None = self._import()
         self._callable: Any | None = self._resolve_callable(prepare)
+        # The C/Rust/WASM backends are not documented thread-safe, so each
+        # package serializes its own calls (different packages still run in
+        # parallel).
+        self._lock: threading.Lock = threading.Lock()
 
     def _import(self) -> Any | None:
         """Import the module.
@@ -212,6 +243,11 @@ class _PackageAdapter:
         """
         if self._callable is None:
             return DetectionResult(matched=False)
+        with self._lock:
+            return self._detect_unsafe(text)
+
+    def _detect_unsafe(self, text: str) -> DetectionResult:
+        """Run the package while holding the per-package lock."""
         try:
             result: Any = self._callable(text)
         except Exception:
@@ -223,6 +259,7 @@ class _PackageAdapter:
                 matched_language=self.language,
                 reason=f"{self.package_name} flagged the text",
                 confidence_score=0.8,
+                blocking=self.blocking,
             )
         return DetectionResult(matched=False)
 
@@ -238,65 +275,6 @@ class _PackageAdapter:
         return bool(result)
 
 
-class _SensitiveStopWordsAdapter:
-    """Matches the external sensitive-stop-words submodule lists.
-
-    Words are loaded through the cached loader and compiled into an
-    Aho-Corasick automaton on first use.
-
-    :param loader: cached loader for the submodule word lists
-    """
-
-    def __init__(self, loader: SensitiveWordLoader) -> None:
-        self.package_name: str = "sensitive-stop-words"
-        self._loader: SensitiveWordLoader = loader
-        self._automaton: Any | None = None
-
-    @property
-    def available(self) -> bool:
-        """Whether the submodule exposes at least one loaded category."""
-        return self._loader.available() and bool(self._loader.loaded_categories())
-
-    def _ensure_automaton(self) -> None:
-        """Build the Aho-Corasick automaton from the loaded words once."""
-        if self._automaton is not None:
-            return
-        try:
-            import ahocorasick
-        except ImportError:
-            return
-        words: tuple[str, ...] = self._loader.all_words()
-        if not words:
-            return
-        automaton: Any = ahocorasick.Automaton()
-        for word in words:
-            automaton.add_word(word, word)
-        automaton.make_automaton()
-        self._automaton = automaton
-
-    def detect(self, text: str) -> DetectionResult:
-        """Scan the text for submodule words.
-
-        :param text: normalized input text
-        :return: a positive result when a submodule word occurs
-        """
-        self._ensure_automaton()
-        if self._automaton is None:
-            return DetectionResult(matched=False)
-        matched: list[str] = []
-        for _, stored_word in self._automaton.iter(text):
-            matched.append(str(stored_word))
-        if not matched:
-            return DetectionResult(matched=False)
-        return DetectionResult(
-            matched=True,
-            matched_words=tuple(dict.fromkeys(matched)),
-            matched_language="zh-CN",
-            reason="Sensitive stop word matched from submodule lists",
-            confidence_score=0.85,
-        )
-
-
 class MultiLanguageDetector(DetectorInterface):
     """Runs the wired multi-language packages in priority order.
 
@@ -307,10 +285,27 @@ class MultiLanguageDetector(DetectorInterface):
     def __init__(self, settings: Any, logger: Any | None = None) -> None:
         self._settings: Any = settings
         self._logger: Any = logger
+        self._review_mode: bool = False
         self._adapters: list[_PackageAdapter] = self._build_adapters()
         self._hit_counts: dict[str, int] = {}
         self._total_counts: dict[str, int] = {}
         self._pool_size: int = settings.detector_thread_pool_size
+        self._executor: concurrent.futures.ThreadPoolExecutor | None = None
+        self._benign_exclusions: frozenset[str] = frozenset(
+            token.lower()
+            for token in str(getattr(settings, "ml_benign_word_exclusions", "")).split(",")
+            if token.strip()
+        )
+
+    def set_review_mode(self, enabled: bool) -> None:
+        """Downgrade package hits from BLOCK to REVIEW.
+
+        When enabled, every multi-language package match is reported as a
+        non-blocking REVIEW so the suspicion score (and the review escalation        threshold) decide whether the LLM settles it.
+
+        :param enabled: whether package matches become REVIEW
+        """
+        self._review_mode = bool(enabled)
 
     def _build_adapters(self) -> list[_PackageAdapter]:
         """Instantiate the adapters, honoring the enable toggles.
@@ -328,11 +323,13 @@ class MultiLanguageDetector(DetectorInterface):
             "PyProfane": self._settings.enable_pyprofane,
         }
         adapters: list[_PackageAdapter] = []
-        for package_name, language, mode in _PACKAGES:
+        for package_name, language, mode, blocking in _PACKAGES:
             if not toggles.get(package_name, True):
                 continue
             prepare: Callable[[Any], Any] | None = _PREPARE_FUNCTIONS.get(package_name)
-            adapter: _PackageAdapter = _PackageAdapter(package_name, language, mode, prepare)
+            adapter: _PackageAdapter = _PackageAdapter(
+                package_name, language, mode, prepare, blocking=blocking
+            )
             if not adapter.available and self._logger is not None:
                 self._logger.log(
                     logging.WARNING,
@@ -340,17 +337,6 @@ class MultiLanguageDetector(DetectorInterface):
                     package=package_name,
                 )
             adapters.append(adapter)
-        if self._settings.enable_sensitive_stop_words:
-            sensitive: _SensitiveStopWordsAdapter = _SensitiveStopWordsAdapter(
-                SensitiveWordLoader(self._settings.sensitive_stop_words_dir)
-            )
-            if not sensitive.available and self._logger is not None:
-                self._logger.log(
-                    logging.WARNING,
-                    "multi_language:sensitive_stop_words_unavailable",
-                    package="sensitive-stop-words",
-                )
-            adapters.append(sensitive)
         return adapters
 
     @property
@@ -380,6 +366,12 @@ class MultiLanguageDetector(DetectorInterface):
     def reload(self) -> None:
         """No-op: package adapters are fixed for the process lifetime."""
 
+    def shutdown(self) -> None:
+        """Release the shared thread pool."""
+        if self._executor is not None:
+            self._executor.shutdown(wait=False)
+            self._executor = None
+
     def available_packages(self) -> list[str]:
         """List the names of the usable packages.
 
@@ -398,13 +390,33 @@ class MultiLanguageDetector(DetectorInterface):
         :return: the first positive result, or a non-match
         """
         normalized: str = UnicodeUtils.prepare(text)
+        if self._benign_exclusions:
+            tokens: list[str] = UnicodeUtils.tokenize(normalized)
+            retained: list[str] = [t for t in tokens if t not in self._benign_exclusions]
+            if retained != tokens:
+                if not retained:
+                    return DetectionResult(matched=False)
+                normalized = UnicodeUtils.collapse_whitespace(" ".join(retained))
         ordered: list[_PackageAdapter] = self._ordered_available()
         if not ordered:
             return DetectionResult(matched=False)
         self._count_total(ordered)
         if len(ordered) == 1:
-            return self._detect_sequential(ordered, normalized)
-        return self._detect_parallel(ordered, normalized)
+            result: DetectionResult = self._detect_sequential(ordered, normalized)
+        else:
+            result = self._detect_parallel(ordered, normalized)
+        if result.matched and result.blocking is None:
+            result = DetectionResult(
+                matched=True,
+                matched_words=result.matched_words,
+                matched_language=result.matched_language,
+                reason=result.reason,
+                confidence_score=result.confidence_score,
+                severity=result.severity,
+                category=result.category,
+                blocking=not self._review_mode,
+            )
+        return result
 
     def _ordered_available(self) -> list[_PackageAdapter]:
         """Return the usable adapters ordered by historical hit rate.
@@ -431,29 +443,35 @@ class MultiLanguageDetector(DetectorInterface):
     def _detect_parallel(self, ordered: list[_PackageAdapter], normalized: str) -> DetectionResult:
         """Run the adapters concurrently and return the first match.
 
+        A single executor is created once and reused across requests — the
+        per-request ``ThreadPoolExecutor`` teardown was a measurable fraction
+        of request latency. Falls back to sequential execution when the pool
+        cannot run (e.g. an incompatible runtime library).
+
         :param ordered: adapters in priority order
         :param normalized: normalized input text
         :return: the first positive result, or a non-match
         """
         try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=self._pool_size) as executor:
-                futures: dict[concurrent.futures.Future, _PackageAdapter] = {
-                    executor.submit(adapter.detect, normalized): adapter for adapter in ordered
-                }
-                for future in concurrent.futures.as_completed(futures):
-                    adapter: _PackageAdapter = futures[future]
-                    try:
-                        matched: DetectionResult = future.result()
-                    except Exception:
-                        continue
-                    if matched.matched:
-                        self._record_hit(adapter.package_name)
-                        for pending in futures:
-                            pending.cancel()
-                        return matched
+            if self._executor is None:
+                self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=self._pool_size)
+            futures: dict[concurrent.futures.Future, _PackageAdapter] = {
+                self._executor.submit(adapter.detect, normalized): adapter for adapter in ordered
+            }
+            for future in concurrent.futures.as_completed(futures):
+                adapter: _PackageAdapter = futures[future]
+                try:
+                    matched: DetectionResult = future.result()
+                except Exception:
+                    continue
+                if matched.matched:
+                    self._record_hit(adapter.package_name)
+                    for pending in futures:
+                        pending.cancel()
+                    return matched
         except Exception:
-            pass
-        return self._detect_sequential(ordered, normalized)
+            return self._detect_sequential(ordered, normalized)
+        return DetectionResult(matched=False)
 
     def _detect_sequential(
         self, ordered: list[_PackageAdapter], normalized: str

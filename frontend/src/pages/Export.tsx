@@ -3,10 +3,13 @@ import { CloudDownloadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { ReactElement } from "react";
 import { useAppContext } from "../contexts/AppContext";
+import { ApiError } from "../services/AuthService";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { LoginPrompt } from "../components/LoginPrompt";
 
 const LAST_EXPORT_KEY: string = "moderation_last_export";
+const RATE_LIMIT_MESSAGE: string =
+    "The export endpoint is rate-limited to one request per ten minutes. Please wait before trying again.";
 
 function saveBlob(blob: Blob, filename: string): void {
     const url: string = URL.createObjectURL(blob);
@@ -23,12 +26,14 @@ export function Export(): ReactElement {
     const { exportService, authenticated } = useAppContext();
     const { message } = AntdApp.useApp();
     const [exporting, setExporting] = useState<boolean>(false);
+    const [rateLimited, setRateLimited] = useState<boolean>(false);
     const [lastExport, setLastExport] = useState<string | null>(
         localStorage.getItem(LAST_EXPORT_KEY),
     );
 
     const onExport = async (): Promise<void> => {
         setExporting(true);
+        setRateLimited(false);
         try {
             const blob: Blob = await exportService.downloadExport();
             const stamp: string = new Date().toLocaleString();
@@ -37,6 +42,11 @@ export function Export(): ReactElement {
             setLastExport(stamp);
             message.success("Export archive downloaded");
         } catch (error: unknown) {
+            if (error instanceof ApiError && error.statusCode === 429) {
+                setRateLimited(true);
+                message.warning("Export rate limit reached");
+                return;
+            }
             message.error(String(error));
         } finally {
             setExporting(false);
@@ -79,6 +89,7 @@ export function Export(): ReactElement {
                             <Descriptions.Item label="Last Export">{lastExport}</Descriptions.Item>
                         </Descriptions>
                     )}
+                    {rateLimited && <Alert type="warning" showIcon message={RATE_LIMIT_MESSAGE} />}
                     <Alert
                         type="info"
                         message="The export endpoint is rate-limited to one request per ten minutes."

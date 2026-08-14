@@ -32,13 +32,8 @@
     width: 34px;
     height: 34px;
     flex: 0 0 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-    color: #ffffff;
-    border-radius: 9px;
-    font-size: 17px;
+    display: block;
+    border-radius: 8px;
 }
 
 .app-sider__name {
@@ -89,6 +84,12 @@
 
 .app-content {
     overflow: auto;
+}
+
+.app-breadcrumb {
+    max-width: 1240px;
+    margin: 20px auto 0;
+    padding: 0 32px;
 }
 
 .app-footer {

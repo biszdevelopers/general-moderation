@@ -103,11 +103,88 @@ Endpoints are probed in order and the first reachable one is used:
 | `CACHE_MAX_SIZE` | `500` | Maximum cached moderation results. |
 | `CACHE_TTL_SECONDS` | `60` | How long a cached result stays valid. |
 
+Cached results are fingerprint-validated against the runtime settings that
+affect detection (thresholds, weights, category toggles). Admin settings,
+app-config, and phrase edits invalidate the cache so a stale verdict is never
+served after a configuration change.
+
 ## Concurrency
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
 | `DETECTOR_THREAD_POOL_SIZE` | `4` | Worker threads for the multi-language detector pool. |
+
+## Semantic Similarity (Stage 2, optional)
+
+The semantic layer is enabled by default and degrades gracefully when the
+optional dependencies (`torch`, `sentence-transformers`, `faiss-cpu`) are
+absent. Thresholds were lowered to realistic values in the rework.
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `SEMANTIC_ENABLED` | `true` | Enable semantic similarity detection. |
+| `SEMANTIC_MODEL` | `paraphrase-multilingual-MiniLM-L12-v2` | SentenceTransformer model. |
+| `SEMANTIC_INDEX_DIR` | `./semantic/` | Directory holding the per-category Faiss indexes. |
+| `SEMANTIC_SIMILARITY_THRESHOLD` | `0.65` | Similarity above which a category contributes weight. |
+| `SEMANTIC_FORCE_LLM_THRESHOLD` | `0.80` | Similarity above which the LLM is forced. |
+| `SEMANTIC_TOP_K` | `5` | Nearest neighbors returned per category index. |
+
+Semantic category weights (`WEIGHT_SEMANTIC_*`) cover `political`, `violence`,
+`sexual`, `hate`, `pii`, and `ads`.
+
+## User Profiling (Stage 2)
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `USER_PROFILING_ENABLED` | `true` | Enable per-user behavior profiling. |
+| `USER_DB_PATH` | `./data/users.db` | Rolling-window database. |
+| `USER_ARCHIVE_DB_PATH` | `./data/archive.db` | Archived cycle summaries. |
+| `USER_RATIO_THRESHOLD` | `0.3` | Bad-content ratio above which a user is boosted. |
+| `USER_SCORE_MODIFIER` | `20` | Points added for boosted users. |
+| `USER_WINDOW_DAYS` | `91` | Length of the rolling profiling window. |
+
+## Suspicion Scoring
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `WEIGHT_USER` | `20` | Suspicion weight contributed by the user ratio. |
+| `SCORE_WEIGHTS_CACHE_TTL_SECONDS` | `300` | TTL of the score weight cache. |
+
+Detector weights (`WEIGHT_DETECTOR_*`) are clamped to the 5–50 range and feed
+the weighted score sum. The strongest matched severity applies a score floor so
+low scores cannot mask severe content.
+
+## LLM Trigger Policy
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `AI_TARGET_PERCENTAGE` | `5` | Target percentage of traffic handled by the LLM. |
+| `FORCE_LLM_ON_SEMANTIC_HIGH` | `true` | Force the LLM when semantic similarity is high. |
+| `FORCE_LLM_ON_USER_RATIO_HIGH` | `true` | Force the LLM when the user ratio is high. |
+| `LLM_RESPONSE_TIMEOUT_SECONDS` | `30` | Timeout for a single LLM response. |
+
+## Feedback and Auto-Tuning
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `FEEDBACK_DB_PATH` | `./data/feedback.db` | Feedback and decision rows. |
+| `AUTO_TUNING_ENABLED` | `true` | Enable the daily weight and threshold tuning batch. |
+| `WEIGHT_DECAY_HALF_LIFE_DAYS` | `30` | Half-life for decaying old feedback influence. |
+| `AUTO_TUNING_BATCH_HOUR` | `0` | UTC hour at which the tuning batch runs. |
+
+The tuning batch is scheduled by a gated daily task (polling + cross-worker
+lockfile) in `app/main.py`; it only runs when `AUTO_TUNING_ENABLED` is true.
+
+## Runtime Settings Persistence
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `SETTINGS_DB_PATH` | `./data/settings.db` | Runtime settings database. |
+| `SETTINGS_CACHE_TTL_SECONDS` | `60` | Settings cache TTL. |
+
+Runtime-editable settings (detector toggles, weights, thresholds) are seeded
+from the environment on first run and then persisted, so later admin edits
+survive restarts and always win over the environment fallback.
 
 ## Detector Thresholds
 
@@ -133,16 +210,39 @@ Each registered package can be disabled independently:
 | `ENABLE_PROFANITY_FILTER` | `profanity-filter2` (guard-wired) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
-| `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` (submodule word lists) |
+| `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` + 3 raw lists |
+
+`sensitive-stop-words` blocking categories can be toggled individually:
+
+| Variable | Default | Blocking category |
+| :--- | :--- | :--- |
+| `ENABLE_SENSITIVE_STOP_WORDS_POLITICAL` | `true` | political terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_PORN` | `true` | pornographic terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_GUN` | `true` | gun/explosive terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_AD` | `true` | ad/spam terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_URL` | `true` | blocked URL domains |
+
+The Chinese sensitive-word detector also merges three raw, newline-delimited
+txt lists from other subrepos. They carry no Python bindings, so the words are
+matched with this service's own native algorithms (Rust `ahocorasick-rs`, with
+a C `pyahocorasick` fallback):
+
+| Variable | Default | Source |
+| :--- | :--- | :--- |
+| `SENSITIVE_WORD_DATA_DICT` | `./data/sensitive-word-data/src/main/resources/sensitive_word_dict.txt` | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) |
+| `SENSITIVE_LEXICON_DIR` | `./data/sensitive-lexicon/Vocabulary` | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) |
+| `SENSITIVE_DICT_PATH` | `./data/sensitive/dict/dict.txt` | [importcjj/sensitive](https://github.com/importcjj/sensitive) |
+| `SENSITIVE_MIN_WORD_LENGTH` | `2` | Minimum term length for a sensitive-list match to hard-block (single CJK chars are common in benign text) |
 
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
-activate on a standard install. `sensitive-stop-words` activates when the
-`backend/data/sensitive-stop-words` submodule is initialized
-(`git submodule update --init`); its directory is configurable with
-`SENSITIVE_STOP_WORDS_DIR`. `safetext`, `sensitive-word-filter-cn`,
-and `profanity-filter2` are guard-wired but no reachable index (pypi.org,
-Tsinghua, Aliyun) provides an installable release; they activate only when a
-working index provides them:
+activate on a standard install. The Chinese sensitive-word detector activates
+when any of its source submodules is initialized
+(`git submodule update --init`); the directories are configurable with
+`SENSITIVE_STOP_WORDS_DIR`, `SENSITIVE_WORD_DATA_DICT`,
+`SENSITIVE_LEXICON_DIR`, and `SENSITIVE_DICT_PATH`. `safetext`,
+`sensitive-word-filter-cn`, and `profanity-filter2` are guard-wired but no
+reachable index (pypi.org, Tsinghua, Aliyun) provides an installable release;
+they activate only when a working index provides them:
 
 ```bash
 uv add safetext==0.3.3
@@ -153,6 +253,49 @@ uv add profanity-filter2==1.4.3
 `scheckbl` and `valx` are not registered (their documented APIs do not exist
 in the installed versions). `datasketch` is installed as a dependency but not
 wired; MinHash semantic similarity is not a direct profanity detector.
+
+## Severity-Aware Phrase Detection
+
+High-severity phrases live in their own table (`CRITICAL_PHRASES_DB_PATH`,
+`data/critical_phrases.db` by default) managed through the admin API
+(`/admin/phrases`). A phrase match at or above `SEVERITY_HARD_BLOCK_THRESHOLD`
+hard-blocks; lower-severity matches lift the suspicion score so ambiguous
+content escalates to the LLM. The starter set is loaded with `npm run seed`.
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `CRITICAL_PHRASES_DB_PATH` | `./data/critical_phrases.db` | Phrase table location. |
+| `ENABLE_PHRASE_DETECTOR` | `true` | Enable the severity-aware phrase detector. |
+| `SEVERITY_HARD_BLOCK_THRESHOLD` | `5` | Severity at or above which a phrase hard-blocks. |
+| `REVIEW_ESCALATION_THRESHOLD` | `40` | Suspicion score that escalates REVIEW content to the LLM. |
+| `ML_REVIEW_MODE` | `false` | Downgrade all multi-language package hits from BLOCK to REVIEW. |
+| `ML_BENIGN_WORD_EXCLUSIONS` | `cok` | Comma-separated benign words packages misflag (e.g. Turkish "cok" = "very"); stripped before package matching. |
+
+The phrase detector runs an obfuscation pass after the exact automaton, so
+leetspeak and separator-heavy evasions (`k1ll y0urs3lf`, `k i l l`) still
+match stored phrases. The `gangajal` package is configured as a REVIEW-only
+signal because its bundled list censors ordinary words.
+
+## Safe-Word Fast Path
+
+Stage 1 exits content composed entirely of safe words (from
+`data/safe_words.txt`, editable via the admin UI). The fast path rejects any
+safe word that overlaps a word-bank term or a critical phrase, so whitelisting
+can never mask harmful content.
+
+## Per-Application Trigger Policy
+
+Beyond the global settings, each application (`config.db`, managed via
+`/admin/app-config`) can override its trigger behavior:
+
+| Field | Default | Description |
+| :--- | :--- | :--- |
+| `score_threshold` | `50` | Suspicion score that alone forces the LLM. |
+| `severity_hard_block_threshold` | `5` | Per-app hard-block severity. |
+| `review_escalation_threshold` | `40` | Per-app REVIEW escalation threshold. |
+| `llm_mode` | `auto` | `auto`, `aggressive`, or `passthrough` (LLM on every request). |
+| `semantic_boost` / `user_ratio_boost` / `logic_type` | — | Existing trigger conditions. |
+
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
@@ -207,3 +350,9 @@ service stays fully operational.
 | :--- | :--- | :--- |
 | `METRICS_ENABLED` | `true` | Enable Prometheus metrics. |
 | `METRICS_PORT` | `9090` | Metrics port (exposed under `/admin/metrics`). |
+| `METRICS_COLLECTION_INTERVAL_SECONDS` | `60` | Collection interval. |
+
+Metrics include `requests_total`, `ai_requests_total`, `rate_limit_hits_total`,
+`stage1_fast_path_total`, `semantic_queries_total`, and
+`model_unavailable_total` (counts the fail-open path where a trigger fired but
+the LLM was unavailable and a Stage-2 hard block was preserved).

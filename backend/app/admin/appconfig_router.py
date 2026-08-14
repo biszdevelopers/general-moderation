@@ -18,6 +18,9 @@ class AppConfigRequest(BaseModel):
     :param semantic_boost: force the LLM on high semantic similarity
     :param user_ratio_boost: force the LLM on a high user bad-content ratio
     :param logic_type: "or" for any condition, "and" for all conditions
+    :param severity_hard_block_threshold: severity that hard-blocks a match
+    :param review_escalation_threshold: suspicion score that escalates REVIEW
+    :param llm_mode: "auto", "aggressive", or "passthrough"
     """
 
     app_name: str = Field(min_length=1)
@@ -25,13 +28,21 @@ class AppConfigRequest(BaseModel):
     semantic_boost: bool = True
     user_ratio_boost: bool = True
     logic_type: str = Field(default="or", pattern="^(and|or)$")
+    severity_hard_block_threshold: int = Field(default=5, ge=1, le=10)
+    review_escalation_threshold: int = Field(default=40, ge=1, le=100)
+    llm_mode: str = Field(default="auto", pattern="^(auto|aggressive|passthrough)$")
 
 
-def create_appconfig_router(app_config: AppConfigService, auth_dependency: Any) -> APIRouter:
+def create_appconfig_router(
+    app_config: AppConfigService,
+    auth_dependency: Any,
+    engine: Any | None = None,
+) -> APIRouter:
     """Build the app trigger policy admin router.
 
     :param app_config: the app configuration service
     :param auth_dependency: FastAPI dependency guarding the routes
+    :param engine: optional engine whose result cache is cleared on changes
     :return: the configured APIRouter
     """
     router: APIRouter = APIRouter(prefix="/admin", tags=["admin"], dependencies=[auth_dependency])
@@ -51,13 +62,19 @@ def create_appconfig_router(app_config: AppConfigService, auth_dependency: Any) 
         :param payload: the policy to store
         :return: the stored policy
         """
-        return app_config.set(
+        stored: dict[str, Any] = app_config.set(
             app_name=payload.app_name,
             score_threshold=payload.score_threshold,
             semantic_boost=payload.semantic_boost,
             user_ratio_boost=payload.user_ratio_boost,
             logic_type=payload.logic_type,
+            severity_hard_block_threshold=payload.severity_hard_block_threshold,
+            review_escalation_threshold=payload.review_escalation_threshold,
+            llm_mode=payload.llm_mode,
         )
+        if engine is not None:
+            engine.clear_cache()
+        return stored
 
     @router.get("/app-config/{app_name}")
     def get_app_config(app_name: str) -> dict[str, Any]:

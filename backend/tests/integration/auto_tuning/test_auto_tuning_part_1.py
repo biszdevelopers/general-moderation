@@ -108,7 +108,7 @@ class TestAutoTuningPrecision(BaseTest):
         elif expected_delta < 0:
             assert after < before
         else:
-            assert after == before or abs(after - before) < 3
+            assert after == before
         feedback.close()
 
     @pytest.mark.parametrize(

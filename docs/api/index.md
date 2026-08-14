@@ -22,6 +22,7 @@ JSON. Responses are serialized with Rust `orjson`.
 | :--- | :--- | :--- |
 | [Public moderation](/api/public) | `/moderate`, `/moderate/batch` | None |
 | [Admin](/api/admin) | `/admin` | API key |
+| [Workbench](/api/workbench) | `/test` | API key |
 
 ## Error Format
 
@@ -42,3 +43,9 @@ Rate limiting returns HTTP 429 with `{"detail": "Rate limit exceeded"}`.
 - **Level 2**: the llama.cpp model, used when the trigger policy fires.
 - **detector_chain**: the ordered names of detectors that ran, e.g.
   `["bloom_filter", "rolling_hash", "aho_corasick"]`.
+- **Pipeline trace**: the full record of one moderation run, returned by the
+  [workbench](/api/workbench) `moderate-detail` endpoint — every stage's
+  latency, every detector's result, the score breakdown, and the LLM prompt
+  and response.
+- **SSE streaming**: the workbench `moderate-detail` and `load-test`
+  endpoints can stream their events over Server-Sent Events for live progress.
