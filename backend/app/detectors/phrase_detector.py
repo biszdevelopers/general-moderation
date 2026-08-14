@@ -12,6 +12,7 @@ from __future__ import annotations
 from app.detectors.interface import DetectorInterface
 from app.models.verdict import DetectionResult
 from app.phrases.manager import CriticalPhraseManager
+from app.utils.unicode_utils import UnicodeUtils
 
 
 class PhraseDetector(DetectorInterface):
@@ -48,9 +49,32 @@ class PhraseDetector(DetectorInterface):
         self._manager.reload()
 
     def detect(self, text: str) -> DetectionResult:
-        """Scan the text for critical phrases.
+        """Scan the text for critical phrases, including obfuscated variants.
+
+        Runs the exact automaton first, then a deobfuscated pass so leetspeak
+        and separator-heavy evasions (``k1ll y0urs3lf``, ``k i l l``) still
+        match the stored phrase.
 
         :param text: normalized input text
         :return: a positive result with the maximum matched severity
         """
-        return self._manager.detect(text)
+        result: DetectionResult = self._manager.detect(text)
+        if result.matched:
+            return result
+        variants: tuple[str, str] = UnicodeUtils.deobfuscate(text)
+        plain: str = UnicodeUtils.prepare(text)
+        if all(variant == plain for variant in variants):
+            return result
+        for variant in variants:
+            obfuscated: DetectionResult = self._manager.detect(variant)
+            if not obfuscated.matched:
+                continue
+            return DetectionResult(
+                matched=True,
+                matched_words=obfuscated.matched_words,
+                severity=obfuscated.severity,
+                category=obfuscated.category,
+                reason="Critical phrase matched (obfuscated)",
+                confidence_score=obfuscated.confidence_score,
+            )
+        return result
