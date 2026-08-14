@@ -2,7 +2,8 @@
 
 The service detects vulgar and politically sensitive content across 20+
 languages. Coverage comes from the union of the verified C/C++/Rust/
-WebAssembly packages plus custom words.
+WebAssembly packages, the Chinese sensitive-word subrepo lists, the
+severity-aware phrase detector, and custom words.
 
 ## Package Matrix
 
@@ -16,6 +17,8 @@ registered in the detector.
 | `badwords` | Rust | 26+ languages | Active |
 | `gangajal` | WebAssembly | All languages | Active |
 | `PyProfane` | C | Universal | Active |
+| sensitive-stop-words lists | Rust/C Aho-Corasick | Chinese | Active |
+| phrase-detector | native automaton | Any | Active |
 | `safetext` | Python | 13 languages | Guard-wired |
 | `sensitive-word-filter-cn` | Python | Chinese | Guard-wired |
 | `profanity-filter2` | Python | Universal | Guard-wired |
@@ -24,6 +27,12 @@ registered in the detector.
 import-guarded but no reachable index (pypi.org, Tsinghua, Aliyun) provides an
 installable release; they activate only when a working index provides them
 (e.g. `uv add safetext==0.3.3`).
+
+The Chinese sensitive-word lists come from the `backend/data/` subrepos
+(`sensitive-stop-words`, `sensitive`, `sensitive-lexicon`,
+`sensitive-word-data`), fetched with `git submodule update --init` and matched
+by the service's own Rust/C Aho-Corasick engine. See
+[Credits](/guide/credits) for the sources.
 
 Not registered: `scheckbl` and `valx` (their documented APIs do not exist in
 the installed versions) and `datasketch` (MinHash semantic similarity is not
