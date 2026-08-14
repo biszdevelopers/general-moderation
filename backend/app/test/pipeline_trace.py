@@ -30,6 +30,8 @@ class DetectorRunTrace:
     :param reason: human-readable explanation of the match
     :param latency_ms: wall time spent in the detector
     :param weight: suspicion points the detector contributes on a match
+    :param severity: severity of the strongest match (0-10), when known
+    :param category: semantic bucket of the strongest match, when known
     """
 
     name: str
@@ -43,6 +45,8 @@ class DetectorRunTrace:
     reason: str | None = None
     latency_ms: float = 0.0
     weight: int = 0
+    severity: int | None = None
+    category: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -143,6 +147,8 @@ class PipelineTrace:
     :param stage_2: Stage 2 details
     :param stage_3: Stage 3 details, when the LLM was consulted
     :param total_latency_ms: total processing time in milliseconds
+    :param severity: severity of the strongest match (0-10), when known
+    :param category: semantic bucket of the strongest match, when known
     """
 
     request_id: str | None
@@ -161,6 +167,8 @@ class PipelineTrace:
     stage_2: Stage2Trace = field(default_factory=Stage2Trace)
     stage_3: Stage3Trace | None = None
     total_latency_ms: float = 0.0
+    severity: int | None = None
+    category: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize the trace to a plain JSON-ready mapping.
