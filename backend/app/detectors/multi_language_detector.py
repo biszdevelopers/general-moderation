@@ -70,15 +70,17 @@ _PROFANITY_METHODS: tuple[str, ...] = (
 # - "truthy": a truthy callable result is a positive.
 # - "censored": the callable returns censored text; a result that differs
 #   from the input is a positive (e.g. gangajal).
-_PACKAGES: tuple[tuple[str, str, str], ...] = (
-    ("profanite", "any", "truthy"),
-    ("glin_profanity", "multi", "truthy"),
-    ("badwords", "multi", "truthy"),
-    ("safetext", "multi", "truthy"),
-    ("sensitive_word_filter_cn", "zh-CN", "truthy"),
-    ("profanity_filter", "any", "truthy"),
-    ("gangajal", "any", "censored"),
-    ("PyProfane", "any", "truthy"),
+# Fourth element: whether a package hit hard-blocks. gangajal's bundled list
+# censors ordinary words ("day", "ass") and is therefore a REVIEW-only signal.
+_PACKAGES: tuple[tuple[str, str, str, bool], ...] = (
+    ("profanite", "any", "truthy", True),
+    ("glin_profanity", "multi", "truthy", True),
+    ("badwords", "multi", "truthy", True),
+    ("safetext", "multi", "truthy", True),
+    ("sensitive_word_filter_cn", "zh-CN", "truthy", True),
+    ("profanity_filter", "any", "truthy", True),
+    ("gangajal", "any", "censored", False),
+    ("PyProfane", "any", "truthy", True),
 )
 
 
@@ -151,6 +153,7 @@ class _PackageAdapter:
     :param language: ISO code reported on a match
     :param mode: match strategy, "truthy" or "censored"
     :param prepare: optional factory that returns the check callable
+    :param blocking: whether a package hit hard-blocks
     """
 
     def __init__(
@@ -159,10 +162,12 @@ class _PackageAdapter:
         language: str,
         mode: str,
         prepare: Callable[[Any], Any] | None = None,
+        blocking: bool = True,
     ) -> None:
         self.package_name: str = package_name
         self.language: str = language
         self._mode: str = mode
+        self.blocking: bool = blocking
         self._module: Any | None = self._import()
         self._callable: Any | None = self._resolve_callable(prepare)
         # The C/Rust/WASM backends are not documented thread-safe, so each
@@ -254,6 +259,7 @@ class _PackageAdapter:
                 matched_language=self.language,
                 reason=f"{self.package_name} flagged the text",
                 confidence_score=0.8,
+                blocking=self.blocking,
             )
         return DetectionResult(matched=False)
 
@@ -284,13 +290,18 @@ class MultiLanguageDetector(DetectorInterface):
         self._hit_counts: dict[str, int] = {}
         self._total_counts: dict[str, int] = {}
         self._pool_size: int = settings.detector_thread_pool_size
+        self._executor: concurrent.futures.ThreadPoolExecutor | None = None
+        self._benign_exclusions: frozenset[str] = frozenset(
+            token.lower()
+            for token in str(getattr(settings, "ml_benign_word_exclusions", "")).split(",")
+            if token.strip()
+        )
 
     def set_review_mode(self, enabled: bool) -> None:
         """Downgrade package hits from BLOCK to REVIEW.
 
         When enabled, every multi-language package match is reported as a
-        non-blocking REVIEW so the suspicion score (and the review escalation
-        threshold) decide whether the LLM settles it.
+        non-blocking REVIEW so the suspicion score (and the review escalation        threshold) decide whether the LLM settles it.
 
         :param enabled: whether package matches become REVIEW
         """
@@ -312,11 +323,13 @@ class MultiLanguageDetector(DetectorInterface):
             "PyProfane": self._settings.enable_pyprofane,
         }
         adapters: list[_PackageAdapter] = []
-        for package_name, language, mode in _PACKAGES:
+        for package_name, language, mode, blocking in _PACKAGES:
             if not toggles.get(package_name, True):
                 continue
             prepare: Callable[[Any], Any] | None = _PREPARE_FUNCTIONS.get(package_name)
-            adapter: _PackageAdapter = _PackageAdapter(package_name, language, mode, prepare)
+            adapter: _PackageAdapter = _PackageAdapter(
+                package_name, language, mode, prepare, blocking=blocking
+            )
             if not adapter.available and self._logger is not None:
                 self._logger.log(
                     logging.WARNING,
@@ -353,6 +366,12 @@ class MultiLanguageDetector(DetectorInterface):
     def reload(self) -> None:
         """No-op: package adapters are fixed for the process lifetime."""
 
+    def shutdown(self) -> None:
+        """Release the shared thread pool."""
+        if self._executor is not None:
+            self._executor.shutdown(wait=False)
+            self._executor = None
+
     def available_packages(self) -> list[str]:
         """List the names of the usable packages.
 
@@ -371,6 +390,13 @@ class MultiLanguageDetector(DetectorInterface):
         :return: the first positive result, or a non-match
         """
         normalized: str = UnicodeUtils.prepare(text)
+        if self._benign_exclusions:
+            tokens: list[str] = UnicodeUtils.tokenize(normalized)
+            retained: list[str] = [t for t in tokens if t not in self._benign_exclusions]
+            if retained != tokens:
+                if not retained:
+                    return DetectionResult(matched=False)
+                normalized = UnicodeUtils.collapse_whitespace(" ".join(retained))
         ordered: list[_PackageAdapter] = self._ordered_available()
         if not ordered:
             return DetectionResult(matched=False)
@@ -417,29 +443,35 @@ class MultiLanguageDetector(DetectorInterface):
     def _detect_parallel(self, ordered: list[_PackageAdapter], normalized: str) -> DetectionResult:
         """Run the adapters concurrently and return the first match.
 
+        A single executor is created once and reused across requests — the
+        per-request ``ThreadPoolExecutor`` teardown was a measurable fraction
+        of request latency. Falls back to sequential execution when the pool
+        cannot run (e.g. an incompatible runtime library).
+
         :param ordered: adapters in priority order
         :param normalized: normalized input text
         :return: the first positive result, or a non-match
         """
         try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=self._pool_size) as executor:
-                futures: dict[concurrent.futures.Future, _PackageAdapter] = {
-                    executor.submit(adapter.detect, normalized): adapter for adapter in ordered
-                }
-                for future in concurrent.futures.as_completed(futures):
-                    adapter: _PackageAdapter = futures[future]
-                    try:
-                        matched: DetectionResult = future.result()
-                    except Exception:
-                        continue
-                    if matched.matched:
-                        self._record_hit(adapter.package_name)
-                        for pending in futures:
-                            pending.cancel()
-                        return matched
+            if self._executor is None:
+                self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=self._pool_size)
+            futures: dict[concurrent.futures.Future, _PackageAdapter] = {
+                self._executor.submit(adapter.detect, normalized): adapter for adapter in ordered
+            }
+            for future in concurrent.futures.as_completed(futures):
+                adapter: _PackageAdapter = futures[future]
+                try:
+                    matched: DetectionResult = future.result()
+                except Exception:
+                    continue
+                if matched.matched:
+                    self._record_hit(adapter.package_name)
+                    for pending in futures:
+                        pending.cancel()
+                    return matched
         except Exception:
-            pass
-        return self._detect_sequential(ordered, normalized)
+            return self._detect_sequential(ordered, normalized)
+        return DetectionResult(matched=False)
 
     def _detect_sequential(
         self, ordered: list[_PackageAdapter], normalized: str
