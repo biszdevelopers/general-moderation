@@ -48,9 +48,9 @@ ai = ["llama-cpp-python==0.3.34"]
 # Semantic similarity stage (SentenceTransformers + Faiss). Heavy: pulls torch.
 # Enable with: uv sync --extra ai --extra semantic
 semantic = [
-    "torch>=2.0",
-    "sentence-transformers==4.4.0",
-    "faiss-cpu==1.11.0",
+    "torch>=2.2",
+    "sentence-transformers>=4.5,<6",
+    "faiss-cpu>=1.9,<2",
 ]
 
 [dependency-groups]
