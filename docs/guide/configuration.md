@@ -135,6 +135,16 @@ Each registered package can be disabled independently:
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
 | `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` (submodule word lists) |
 
+`sensitive-stop-words` blocking categories can be toggled individually:
+
+| Variable | Default | Blocking category |
+| :--- | :--- | :--- |
+| `ENABLE_SENSITIVE_STOP_WORDS_POLITICAL` | `true` | political terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_PORN` | `true` | pornographic terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_GUN` | `true` | gun/explosive terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_AD` | `true` | ad/spam terms |
+| `ENABLE_SENSITIVE_STOP_WORDS_URL` | `true` | blocked URL domains |
+
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
 activate on a standard install. `sensitive-stop-words` activates when the
 `backend/data/sensitive-stop-words` submodule is initialized
@@ -153,6 +163,36 @@ uv add profanity-filter2==1.4.3
 `scheckbl` and `valx` are not registered (their documented APIs do not exist
 in the installed versions). `datasketch` is installed as a dependency but not
 wired; MinHash semantic similarity is not a direct profanity detector.
+
+## Severity-Aware Phrase Detection
+
+High-severity phrases live in their own table (`CRITICAL_PHRASES_DB_PATH`,
+`data/critical_phrases.db` by default) managed through the admin API
+(`/admin/phrases`). A phrase match at or above `SEVERITY_HARD_BLOCK_THRESHOLD`
+hard-blocks; lower-severity matches lift the suspicion score so ambiguous
+content escalates to the LLM. The starter set is loaded with `npm run seed`.
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `CRITICAL_PHRASES_DB_PATH` | `./data/critical_phrases.db` | Phrase table location. |
+| `ENABLE_PHRASE_DETECTOR` | `true` | Enable the severity-aware phrase detector. |
+| `SEVERITY_HARD_BLOCK_THRESHOLD` | `5` | Severity at or above which a phrase hard-blocks. |
+| `REVIEW_ESCALATION_THRESHOLD` | `40` | Suspicion score that escalates REVIEW content to the LLM. |
+| `ML_REVIEW_MODE` | `false` | Downgrade multi-language package hits from BLOCK to REVIEW. |
+
+## Per-Application Trigger Policy
+
+Beyond the global settings, each application (`config.db`, managed via
+`/admin/app-config`) can override its trigger behavior:
+
+| Field | Default | Description |
+| :--- | :--- | :--- |
+| `score_threshold` | `50` | Suspicion score that alone forces the LLM. |
+| `severity_hard_block_threshold` | `5` | Per-app hard-block severity. |
+| `review_escalation_threshold` | `40` | Per-app REVIEW escalation threshold. |
+| `llm_mode` | `auto` | `auto`, `aggressive`, or `passthrough` (LLM on every request). |
+| `semantic_boost` / `user_ratio_boost` / `logic_type` | — | Existing trigger conditions. |
+
 
 A package that is not installed or that is disabled is skipped at runtime; the
 service stays fully operational.
