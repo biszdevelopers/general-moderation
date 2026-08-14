@@ -117,6 +117,8 @@ class ModerationEngine:
         self._cache: dict[int, ModerationResponse] = {}
         self._cache_timestamps: dict[int, float] = {}
         self._cache_fingerprints: dict[int, int] = {}
+        self._fingerprint_cache: int | None = None
+        self._fingerprint_at: float = 0.0
         self._cache_max_size: int = settings.cache_max_size
         self._cache_ttl: int = settings.cache_ttl_seconds
 
@@ -162,19 +164,27 @@ class ModerationEngine:
         self._llama.start_preload()
 
     def clear_cache(self) -> None:
-        """Drop every cached moderation result."""
+        """Drop every cached moderation result and the fingerprint memo."""
         self._cache.clear()
         self._cache_timestamps.clear()
         self._cache_fingerprints.clear()
+        self._invalidate_fingerprint()
 
     def _config_fingerprint(self) -> int:
         """Hash the runtime settings that influence verdicts.
 
         Cached responses are invalidated when this value changes, so tuning a
-        weight or threshold applies immediately instead of after the TTL.
+        weight or threshold applies immediately instead of after the TTL. The
+        fingerprint is memoized and recomputed whenever the settings cache is
+        reloaded (an ``update()`` bumps the freshness timestamp), so the
+        per-request cost is a timestamp compare instead of ~17 setting
+        lookups while still reflecting edits instantly.
 
         :return: a 64-bit MurmurHash3 key
         """
+        freshness: float = self._settings_service.cache_freshness()
+        if self._fingerprint_cache is not None and self._fingerprint_at >= freshness:
+            return self._fingerprint_cache
         keys: tuple[str, ...] = (
             "SEVERITY_HARD_BLOCK_THRESHOLD",
             "REVIEW_ESCALATION_THRESHOLD",
@@ -195,7 +205,14 @@ class ModerationEngine:
             "WEIGHT_DETECTOR_METAPHONE",
         )
         values: tuple[object, ...] = tuple(self._settings_service.get(key, None) for key in keys)
-        return mmh3.hash64(repr(values))[0]
+        fingerprint: int = mmh3.hash64(repr(values))[0]
+        self._fingerprint_cache = fingerprint
+        self._fingerprint_at = time.monotonic()
+        return fingerprint
+
+    def _invalidate_fingerprint(self) -> None:
+        """Force the next fingerprint computation to re-read settings."""
+        self._fingerprint_cache = None
 
     def _get_cache_key(self, text: str) -> int:
         """Compute the cache key for a message.
@@ -1055,6 +1072,10 @@ class ModerationEngine:
     def shutdown(self) -> None:
         """Release models, storage, and logger resources."""
         self._llama.shutdown()
+        for detector in getattr(self, "_detectors", []):
+            shutdown = getattr(detector, "shutdown", None)
+            if callable(shutdown):
+                shutdown()
         self._word_bank.close()
         self._phrases.close()
         self._logger.close()
