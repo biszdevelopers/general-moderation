@@ -1,8 +1,11 @@
 # BK-Tree
 
-The Burkhard-Keller tree (BK-tree) indexes the word bank by Levenshtein
-distance so that fuzzy matches within a small edit distance can be found
-without scanning the entire dictionary.
+The Burkhard-Keller tree (BK-tree) indexes the administrator-curated **custom
+words** by Levenshtein distance so that fuzzy matches within a small edit
+distance can be found without scanning the entire dictionary. Base dictionary
+words and the Chinese subrepo lists are intentionally excluded: fuzzy matching
+against the large, noisy base dictionaries flags nearly every token, so the
+fuzzy layers operate only on the custom-word set.
 
 ## Mathematical Formulation
 
