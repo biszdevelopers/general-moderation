@@ -19,6 +19,10 @@ incorrect key returns HTTP 401.
 | Word bank | `/admin/wordbank/stats` | GET | Word bank statistics |
 | Word bank | `/admin/wordbank/languages` | GET | Distinct languages |
 | Word bank | `/admin/wordbank/categories` | GET | Distinct categories |
+| Phrases | `/admin/phrases` | POST | Add a critical phrase |
+| Phrases | `/admin/phrases` | GET | List critical phrases |
+| Phrases | `/admin/phrases/{id}` | PUT | Update a critical phrase |
+| Phrases | `/admin/phrases` | DELETE | Remove a critical phrase by `phrase_id` |
 | Service | `/admin/reload` | POST | Rebuild word bank structures |
 | Service | `/admin/shutdown` | POST | Graceful shutdown |
 | Service | `/admin/health` | GET | Health report |
@@ -119,6 +123,46 @@ Returns the last 100 parsed JSONL audit records.
 - `GET /admin/wordbank/languages`
 - `GET /admin/wordbank/categories`
 
+## Critical Phrases
+
+Critical phrases are managed independently of the general word bank. Each
+phrase carries a `language`, `category`, and `severity` (0–10); a match at or
+above `SEVERITY_HARD_BLOCK_THRESHOLD` hard-blocks, and lower severities lift
+the suspicion score.
+
+### Add a Critical Phrase
+
+`POST /admin/phrases`
+
+```json
+{
+    "phrase": "sensitive phrase",
+    "language": "zh-CN",
+    "category": "political",
+    "severity": 8
+}
+```
+
+Returns `201` with the stored record.
+
+### List Critical Phrases
+
+`GET /admin/phrases`
+
+Returns all critical phrases as an array.
+
+### Update a Critical Phrase
+
+`PUT /admin/phrases/{id}`
+
+Accepts any subset of `phrase`, `language`, `category`, `severity`.
+
+### Remove a Critical Phrase
+
+`DELETE /admin/phrases?phrase_id=1`
+
+Returns `{"removed": true}`.
+
 ## Service Control
 
 ### Reload Word Bank
@@ -143,11 +187,13 @@ Releases the model, storage, and logger, then stops the process. Returns
 {
     "status": "ok",
     "uptimeSeconds": 4321.5,
-    "wordCount": { "totalWords": 1024, "customWords": 24, "baseWords": 1000, "languages": 26, "categories": 6 },
+    "wordCount": { "totalWords": 110000, "customWords": 24, "baseWords": 13835, "languages": 26, "categories": 6 },
     "llamaAvailable": true,
     "detectors": [
+        { "name": "sensitive_stop_words", "available": true },
         { "name": "bloom_filter", "available": true },
-        { "name": "aho_corasick", "available": true }
+        { "name": "aho_corasick", "available": true },
+        { "name": "phrase_detector", "available": true }
     ]
 }
 ```
@@ -257,9 +303,16 @@ with the adjusted weights and threshold.
     "score_threshold": 50,
     "semantic_boost": true,
     "user_ratio_boost": true,
-    "logic_type": "or"
+    "logic_type": "or",
+    "severity_hard_block_threshold": 5,
+    "review_escalation_threshold": 40,
+    "llm_mode": "auto"
 }
 ```
+
+Per-app `severity_hard_block_threshold` and `review_escalation_threshold`
+override the global settings for that application, and `llm_mode` controls how
+often the LLM runs (`auto`, `aggressive`, or `passthrough`).
 
 ## Semantic Index Management
 
@@ -311,7 +364,10 @@ scores.
 | `POST /admin/wordbank/import` | 1–1000 items, each with `word` | 422 (empty, over-cap, missing key) |
 | `PUT /admin/wordbank/words/{id}` | unknown `id` | 404 |
 | `GET /admin/app-config/{app}` | empty app name | 400 |
-| `POST /admin/app-config` | `score_threshold` 0–100; `logic_type` `and`\|`or` | 422 |
+| `POST /admin/app-config` | `score_threshold` 0–100; `severity_hard_block_threshold` 1–10; `review_escalation_threshold` 1–100; `logic_type` `and`\|`or`; `llm_mode` `auto`\|`aggressive`\|`passthrough` | 422 |
+| `POST /admin/phrases` | `phrase` length 1–200; `severity` 0–10 | 422 |
+| `PUT /admin/phrases/{id}` | unknown `id` | 404 |
+| `DELETE /admin/phrases` | `phrase_id` ≥ 1 | 422 |
 | `POST /admin/settings` | unknown, invalid, or read-only key | 400 |
 | `GET /admin/logs/{filename}` | filename must match `[A-Za-z0-9._-]+` | 400; missing file 404 |
 | `POST /admin/semantic` | unknown category or empty text | 400; deleting a missing example 404 |
