@@ -26,6 +26,7 @@ from app.detectors.metaphone_detector import MetaphoneDetector
 from app.detectors.multi_language_detector import MultiLanguageDetector
 from app.detectors.phrase_detector import PhraseDetector
 from app.detectors.rolling_hash_detector import RollingHashDetector
+from app.detectors.sensitive_stop_words_detector import SensitiveStopWordsDetector
 from app.export.export_service import ExportService
 from app.fastpath.safe_word_filter import SafeWordFilter
 from app.feedback.feedback_service import FeedbackService
@@ -45,7 +46,6 @@ from app.test.pipeline_trace import (
     Stage3Trace,
     WeightContribution,
 )
-from app.utils.sensitive_word_loader import SensitiveWordLoader
 from app.wordbank.manager import WordBankManager
 
 
@@ -124,24 +124,8 @@ class ModerationEngine:
         """Apply runtime settings that the detectors read at construction.
 
         Re-runs on every reload so admin edits take effect without a restart:
-        - sensitive-stop-words category toggles feed the shared word bank.
         - multi-language package hits downgrade to REVIEW in review mode.
         """
-        sensitive_loader: SensitiveWordLoader = SensitiveWordLoader(
-            self._settings.sensitive_stop_words_dir
-        )
-        category_keys: dict[str, str] = {
-            "political": "ENABLE_SENSITIVE_STOP_WORDS_POLITICAL",
-            "porn": "ENABLE_SENSITIVE_STOP_WORDS_PORN",
-            "gun": "ENABLE_SENSITIVE_STOP_WORDS_GUN",
-            "ad": "ENABLE_SENSITIVE_STOP_WORDS_AD",
-            "url": "ENABLE_SENSITIVE_STOP_WORDS_URL",
-        }
-        for category, key in category_keys.items():
-            sensitive_loader.set_category_enabled(
-                category, bool(self._settings_service.get(key, True))
-            )
-        self._word_bank.sensitive_loader = sensitive_loader
         for detector in getattr(self, "_detectors", []):
             if isinstance(detector, MultiLanguageDetector):
                 detector.set_review_mode(bool(self._settings_service.get("ML_REVIEW_MODE", False)))
@@ -152,6 +136,7 @@ class ModerationEngine:
         :return: the ordered detector list
         """
         detectors: list[DetectorInterface] = [
+            SensitiveStopWordsDetector(self._settings, self._settings_service, self._logger),
             BloomFilterDetector(self._word_bank),
             self._rolling_hash,
             AhoCorasickDetector(self._word_bank),
