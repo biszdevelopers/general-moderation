@@ -78,6 +78,13 @@ class Settings(BaseSettings):
     enable_sensitive_stop_words_gun: bool = True
     enable_sensitive_stop_words_ad: bool = True
     enable_sensitive_stop_words_url: bool = True
+    # Additional raw Chinese sensitive-word lists (newline-delimited txt).
+    # Wired into the same detector so the service's own algorithms match them.
+    sensitive_word_data_dict: str = (
+        "./data/sensitive-word-data/src/main/resources/sensitive_word_dict.txt"
+    )
+    sensitive_lexicon_dir: str = "./data/sensitive-lexicon/Vocabulary"
+    sensitive_dict_path: str = "./data/sensitive/dict/dict.txt"
 
     # Stage 2 detector toggles (runtime-editable through the admin API)
     enable_detector_bloom_filter: bool = True
