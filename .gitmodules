@@ -1,3 +1,12 @@
 [submodule "backend/data/sensitive-stop-words"]
 	path = backend/data/sensitive-stop-words
 	url = https://github.com/fwwdn/sensitive-stop-words.git
+[submodule "backend/data/sensitive"]
+	path = backend/data/sensitive
+	url = https://github.com/importcjj/sensitive.git
+[submodule "backend/data/sensitive-lexicon"]
+	path = backend/data/sensitive-lexicon
+	url = https://github.com/konsheng/Sensitive-lexicon.git
+[submodule "backend/data/sensitive-word-data"]
+	path = backend/data/sensitive-word-data
+	url = https://github.com/houbb/sensitive-word-data.git
