@@ -45,8 +45,10 @@ profiling per application.
     "matchedWord": null,
     "matchedLanguage": null,
     "confidenceScore": null,
+    "severity": null,
+    "category": null,
     "latencyMs": 12.4,
-    "detectorChain": ["rolling_hash", "bk_tree", "double_metaphone", "multi_language"]
+    "detectorChain": ["sensitive_stop_words", "bloom_filter", "rolling_hash", "aho_corasick"]
 }
 ```
 
@@ -61,6 +63,8 @@ profiling per application.
 | `matchedWord` | string \| null | the primary matched word |
 | `matchedLanguage` | string \| null | ISO code of the detected language |
 | `confidenceScore` | number \| null | overall confidence |
+| `severity` | integer \| null | severity of the strongest match (0–10) |
+| `category` | string \| null | semantic bucket of the strongest match |
 
 ## Moderate a Batch
 
