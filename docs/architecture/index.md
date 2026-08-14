@@ -50,7 +50,7 @@ flowchart TD
         S1 --> S2 --> S3
     end
 
-    S2 --> DET[Parallel detectors<br/>Aho-Corasick, BK-tree, Metaphone,<br/>5+ multi-language packages]
+    S2 --> DET["Parallel detectors<br/>Sensitive-stop-words (Rust/C), Aho-Corasick,<br/>BK-tree, Metaphone, phrase detector,<br/>5+ multi-language packages"]
     S2 --> SEM[Semantic similarity<br/>SentenceTransformer + Faiss per category]
     S2 --> PRO[User profiling<br/>91-day rolling window + summaries]
 
