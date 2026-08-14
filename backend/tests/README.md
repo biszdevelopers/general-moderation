@@ -60,7 +60,8 @@ tests/
 │   ├── detectors/       # 125 Phase-1 cases (aho, bk-tree, metaphone, multi-lang)
 │   ├── engine/          # 80 Phase-1 cases (pipeline, cache, metrics, components)
 │   ├── semantic/        # 80 Phase-1 cases (service + SuspicionScorer)
-│   └── profiling/       # 80 Phase-1 cases (ratios, cycles, isolation)
+│   ├── profiling/       # 80 Phase-1 cases (ratios, cycles, isolation)
+│   └── severe/          # Phase-1 cases (severity phrases, hard-block, escalation)
 ├── integration/
 │   ├── README.md        # All planned integration tests
 │   ├── archive/         # 115 Phase-1 cases (91-day cycles)
