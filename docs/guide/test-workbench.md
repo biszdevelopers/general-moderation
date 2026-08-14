@@ -264,7 +264,7 @@ pipeline, in priority order:
 
 | Column | Description |
 | :--- | :--- |
-| Detector | Name, e.g. `bloom_filter`, `rolling_hash`, `aho_corasick`, `bk_tree`, `double_metaphone`, `multi_language` |
+| Detector | Name, e.g. `sensitive_stop_words`, `bloom_filter`, `rolling_hash`, `aho_corasick`, `bk_tree`, `double_metaphone`, `multi_language`, `phrase_detector` |
 | Status | `Clean` (green), `REVIEW` (orange, non-blocking match), `BLOCK` (red, blocking match), `Disabled` (runtime toggle off), `Unavailable` (library missing or no word bank) |
 | Latency (ms) | Wall time spent inside that detector for this request |
 | Weight | Suspicion points the detector would contribute on a match |
@@ -454,6 +454,7 @@ The detector → weight resolution used by both the engine and the trace:
 
 | Detector | Settings key | Default |
 | :--- | :--- | :--- |
+| `sensitive_stop_words` | `WEIGHT_DETECTOR_AHO` | 30 |
 | `bloom_filter` | `WEIGHT_DETECTOR_AHO` | 30 |
 | `rolling_hash` | `WEIGHT_DETECTOR_AHO` | 30 |
 | `aho_corasick` | `WEIGHT_DETECTOR_AHO` | 30 |
