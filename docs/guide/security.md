@@ -15,7 +15,7 @@ C/C++/Rust library. Python is orchestration glue only.
 | Encryption at rest | libsodium / OpenSSL | `cryptography.fernet` (C) |
 | Input validation | Rust / C regex | `regex`, `re` (C) |
 | JSON | Rust | `orjson` |
-| String search | C Aho-Corasick | `pyahocorasick` (C) |
+| String search | Rust Aho-Corasick, C Aho-Corasick | `ahocorasick_rs` (Rust), `pyahocorasick` (C) |
 | Fuzzy matching | C edit distance | `python-Levenshtein` (C) |
 | Bloom filter | C | `pybloom_live` (C) |
 
