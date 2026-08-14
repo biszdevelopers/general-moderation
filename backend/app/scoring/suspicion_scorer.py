@@ -72,12 +72,19 @@ class SuspicionScorer:
         detector_names: list[str] | None = None,
         semantic_similarities: dict[str, float] | None = None,
         user_ratio: float = 0.0,
+        max_severity: int = 0,
     ) -> float:
         """Compute the suspicion score for one request.
+
+        Severity acts as a floor: a match whose severity is at least three
+        lifts the score so ambiguous high-severity content clears the review
+        escalation threshold. Low-severity matches (the default for ordinary
+        custom words) leave the score unchanged, preserving existing behavior.
 
         :param detector_names: detectors that matched this request
         :param semantic_similarities: per-category similarities, in 0-1
         :param user_ratio: the user bad-content ratio, in 0-1
+        :param max_severity: severity of the strongest match, 0-10
         :return: a score clamped to the 0-100 range
         """
         raw: float = 0.0
@@ -89,4 +96,21 @@ class SuspicionScorer:
                 raw += self._category_weight(category)
         user_weight: int = int(self._settings.get("WEIGHT_USER", 0) or 0)
         raw += user_ratio * user_weight
+        severity_floor: float = self._severity_floor(max_severity)
+        if severity_floor > raw:
+            raw = severity_floor
         return max(0.0, min(100.0, raw))
+
+    @staticmethod
+    def _severity_floor(max_severity: int) -> float:
+        """Return the suspicion floor for a severity value.
+
+        Severity below three contributes nothing so ordinary custom words
+        (severity 1) keep the historical score exactly.
+
+        :param max_severity: the strongest matched severity, 0-10
+        :return: the floor, e.g. 30 points for severity 5
+        """
+        if max_severity < 3:
+            return 0.0
+        return float((max_severity - 2) * 10)
