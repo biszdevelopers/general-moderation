@@ -248,11 +248,26 @@ class TestChaosLogs(BaseTest):
         assert len(entries) == 1
         assert entries[0]["verdict"] == "PASS"
 
-    def test_missing_log_file_audit(self, client: Any, admin_headers: dict[str, str]) -> None:
+    def test_missing_log_file_audit(
+        self,
+        engine: Any,
+        word_bank: Any,
+        settings: Any,
+        admin_headers: dict[str, str],
+        tmp_path: Path,
+    ) -> None:
         """A missing log file yields an empty audit."""
-        response = client.get("/admin/wordbank/audit", headers=admin_headers)
-        assert response.status_code == 200
-        assert response.json() == []
+        from fastapi.testclient import TestClient
+
+        from tests.conftest import build_app
+
+        missing_settings: Any = settings.model_copy(deep=True)
+        missing_settings.log_file_path = str(tmp_path / "absent" / "moderation.log")
+        client: Any = TestClient(build_app(engine, word_bank, missing_settings))
+        with client:
+            response = client.get("/admin/wordbank/audit", headers=admin_headers)
+            assert response.status_code == 200
+            assert response.json() == []
 
     def test_truncated_log_tail(self, client: Any, admin_headers: dict[str, str]) -> None:
         """The audit endpoint tolerates many lines."""
