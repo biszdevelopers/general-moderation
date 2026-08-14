@@ -232,6 +232,7 @@ a C `pyahocorasick` fallback):
 | `SENSITIVE_WORD_DATA_DICT` | `./data/sensitive-word-data/src/main/resources/sensitive_word_dict.txt` | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) |
 | `SENSITIVE_LEXICON_DIR` | `./data/sensitive-lexicon/Vocabulary` | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) |
 | `SENSITIVE_DICT_PATH` | `./data/sensitive/dict/dict.txt` | [importcjj/sensitive](https://github.com/importcjj/sensitive) |
+| `SENSITIVE_MIN_WORD_LENGTH` | `2` | Minimum term length for a sensitive-list match to hard-block (single CJK chars are common in benign text) |
 
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
 activate on a standard install. The Chinese sensitive-word detector activates
@@ -267,7 +268,13 @@ content escalates to the LLM. The starter set is loaded with `npm run seed`.
 | `ENABLE_PHRASE_DETECTOR` | `true` | Enable the severity-aware phrase detector. |
 | `SEVERITY_HARD_BLOCK_THRESHOLD` | `5` | Severity at or above which a phrase hard-blocks. |
 | `REVIEW_ESCALATION_THRESHOLD` | `40` | Suspicion score that escalates REVIEW content to the LLM. |
-| `ML_REVIEW_MODE` | `false` | Downgrade multi-language package hits from BLOCK to REVIEW. |
+| `ML_REVIEW_MODE` | `false` | Downgrade all multi-language package hits from BLOCK to REVIEW. |
+| `ML_BENIGN_WORD_EXCLUSIONS` | `cok` | Comma-separated benign words packages misflag (e.g. Turkish "cok" = "very"); stripped before package matching. |
+
+The phrase detector runs an obfuscation pass after the exact automaton, so
+leetspeak and separator-heavy evasions (`k1ll y0urs3lf`, `k i l l`) still
+match stored phrases. The `gangajal` package is configured as a REVIEW-only
+signal because its bundled list censors ordinary words.
 
 ## Safe-Word Fast Path
 
