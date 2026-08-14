@@ -7,7 +7,7 @@ data produced by the service, for backup, migration, or audit purposes.
 
 | Entry | Contents |
 | :--- | :--- |
-| `databases/` | Every SQLite database (`users.db`, `archive.db`, `feedback.db`, `config.db`, `settings.db`, `custom_words.db`) |
+| `databases/` | Every SQLite database (`users.db`, `archive.db`, `feedback.db`, `config.db`, `settings.db`, `custom_words.db`, `critical_phrases.db`) |
 | `csv/` | A CSV dump of every table in every database |
 | `logs/` | `moderation.log` and every rotated backup |
 | `config/` | `.env` (secrets redacted) and `.env.example` |
