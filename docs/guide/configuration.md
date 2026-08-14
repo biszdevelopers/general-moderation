@@ -103,11 +103,88 @@ Endpoints are probed in order and the first reachable one is used:
 | `CACHE_MAX_SIZE` | `500` | Maximum cached moderation results. |
 | `CACHE_TTL_SECONDS` | `60` | How long a cached result stays valid. |
 
+Cached results are fingerprint-validated against the runtime settings that
+affect detection (thresholds, weights, category toggles). Admin settings,
+app-config, and phrase edits invalidate the cache so a stale verdict is never
+served after a configuration change.
+
 ## Concurrency
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
 | `DETECTOR_THREAD_POOL_SIZE` | `4` | Worker threads for the multi-language detector pool. |
+
+## Semantic Similarity (Stage 2, optional)
+
+The semantic layer is enabled by default and degrades gracefully when the
+optional dependencies (`torch`, `sentence-transformers`, `faiss-cpu`) are
+absent. Thresholds were lowered to realistic values in the rework.
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `SEMANTIC_ENABLED` | `true` | Enable semantic similarity detection. |
+| `SEMANTIC_MODEL` | `paraphrase-multilingual-MiniLM-L12-v2` | SentenceTransformer model. |
+| `SEMANTIC_INDEX_DIR` | `./semantic/` | Directory holding the per-category Faiss indexes. |
+| `SEMANTIC_SIMILARITY_THRESHOLD` | `0.65` | Similarity above which a category contributes weight. |
+| `SEMANTIC_FORCE_LLM_THRESHOLD` | `0.80` | Similarity above which the LLM is forced. |
+| `SEMANTIC_TOP_K` | `5` | Nearest neighbors returned per category index. |
+
+Semantic category weights (`WEIGHT_SEMANTIC_*`) cover `political`, `violence`,
+`sexual`, `hate`, `pii`, and `ads`.
+
+## User Profiling (Stage 2)
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `USER_PROFILING_ENABLED` | `true` | Enable per-user behavior profiling. |
+| `USER_DB_PATH` | `./data/users.db` | Rolling-window database. |
+| `USER_ARCHIVE_DB_PATH` | `./data/archive.db` | Archived cycle summaries. |
+| `USER_RATIO_THRESHOLD` | `0.3` | Bad-content ratio above which a user is boosted. |
+| `USER_SCORE_MODIFIER` | `20` | Points added for boosted users. |
+| `USER_WINDOW_DAYS` | `91` | Length of the rolling profiling window. |
+
+## Suspicion Scoring
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `WEIGHT_USER` | `20` | Suspicion weight contributed by the user ratio. |
+| `SCORE_WEIGHTS_CACHE_TTL_SECONDS` | `300` | TTL of the score weight cache. |
+
+Detector weights (`WEIGHT_DETECTOR_*`) are clamped to the 5–50 range and feed
+the weighted score sum. The strongest matched severity applies a score floor so
+low scores cannot mask severe content.
+
+## LLM Trigger Policy
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `AI_TARGET_PERCENTAGE` | `5` | Target percentage of traffic handled by the LLM. |
+| `FORCE_LLM_ON_SEMANTIC_HIGH` | `true` | Force the LLM when semantic similarity is high. |
+| `FORCE_LLM_ON_USER_RATIO_HIGH` | `true` | Force the LLM when the user ratio is high. |
+| `LLM_RESPONSE_TIMEOUT_SECONDS` | `30` | Timeout for a single LLM response. |
+
+## Feedback and Auto-Tuning
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `FEEDBACK_DB_PATH` | `./data/feedback.db` | Feedback and decision rows. |
+| `AUTO_TUNING_ENABLED` | `true` | Enable the daily weight and threshold tuning batch. |
+| `WEIGHT_DECAY_HALF_LIFE_DAYS` | `30` | Half-life for decaying old feedback influence. |
+| `AUTO_TUNING_BATCH_HOUR` | `0` | UTC hour at which the tuning batch runs. |
+
+The tuning batch is scheduled by a gated daily task (polling + cross-worker
+lockfile) in `app/main.py`; it only runs when `AUTO_TUNING_ENABLED` is true.
+
+## Runtime Settings Persistence
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `SETTINGS_DB_PATH` | `./data/settings.db` | Runtime settings database. |
+| `SETTINGS_CACHE_TTL_SECONDS` | `60` | Settings cache TTL. |
+
+Runtime-editable settings (detector toggles, weights, thresholds) are seeded
+from the environment on first run and then persisted, so later admin edits
+survive restarts and always win over the environment fallback.
 
 ## Detector Thresholds
 
@@ -192,6 +269,13 @@ content escalates to the LLM. The starter set is loaded with `npm run seed`.
 | `REVIEW_ESCALATION_THRESHOLD` | `40` | Suspicion score that escalates REVIEW content to the LLM. |
 | `ML_REVIEW_MODE` | `false` | Downgrade multi-language package hits from BLOCK to REVIEW. |
 
+## Safe-Word Fast Path
+
+Stage 1 exits content composed entirely of safe words (from
+`data/safe_words.txt`, editable via the admin UI). The fast path rejects any
+safe word that overlaps a word-bank term or a critical phrase, so whitelisting
+can never mask harmful content.
+
 ## Per-Application Trigger Policy
 
 Beyond the global settings, each application (`config.db`, managed via
@@ -259,3 +343,9 @@ service stays fully operational.
 | :--- | :--- | :--- |
 | `METRICS_ENABLED` | `true` | Enable Prometheus metrics. |
 | `METRICS_PORT` | `9090` | Metrics port (exposed under `/admin/metrics`). |
+| `METRICS_COLLECTION_INTERVAL_SECONDS` | `60` | Collection interval. |
+
+Metrics include `requests_total`, `ai_requests_total`, `rate_limit_hits_total`,
+`stage1_fast_path_total`, `semantic_queries_total`, and
+`model_unavailable_total` (counts the fail-open path where a trigger fired but
+the LLM was unavailable and a Stage-2 hard block was preserved).
