@@ -78,3 +78,22 @@ class WordEntry(AdminModel):
     category: str
     severity: int
     created_at: str
+
+
+class CriticalPhraseEntry(AdminModel):
+    """A critical phrase returned by the admin API.
+
+    :param id: storage-assigned identifier
+    :param phrase: the normalized phrase
+    :param language: ISO 639-1 language code, or "any"
+    :param category: semantic bucket
+    :param severity: severity from 0 to 10
+    :param created_at: ISO 8601 UTC creation timestamp
+    """
+
+    id: int
+    phrase: str
+    language: str
+    category: str
+    severity: int
+    created_at: str
