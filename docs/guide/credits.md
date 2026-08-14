@@ -14,9 +14,9 @@ the word lists are read at load time. Fetch them with
 
 | Source | Repository | License | Used for |
 | :--- | :--- | :--- | :--- |
-| sensitive-stop-words | [fwwdn/sensitive-stop-words](https://github.com/fwwdn/sensitive-stop-words) | — | Per-category blocking lists (political, porn, gun, ad, url) |
+| sensitive-stop-words | [fwwdn/sensitive-stop-words](https://github.com/fwwdn/sensitive-stop-words) | Apache-2.0 | Per-category blocking lists (political, porn, gun, ad, url) |
 | sensitive | [importcjj/sensitive](https://github.com/importcjj/sensitive) | MIT | `dict/dict.txt` — Chinese sensitive-word list |
-| sensitive-lexicon | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) | — | `Vocabulary/` — political, porn, gun, URL, and other category lists |
+| sensitive-lexicon | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) | MIT | `Vocabulary/` — political, porn, gun, URL, and other category lists |
 | sensitive-word-data | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) | Apache-2.0 | `sensitive_word_dict.txt` — Chinese sensitive-word dictionary |
 
 ## Detection packages
