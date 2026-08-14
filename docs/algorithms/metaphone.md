@@ -2,7 +2,10 @@
 
 Double Metaphone encodes a word into one or two phonetic keys so that words
 that sound alike — but are spelled differently — can be matched. It catches
-misspellings and phonetic variants that exact matchers miss.
+misspellings and phonetic variants that exact matchers miss. Like the other
+fuzzy layers, it operates only on the administrator-curated custom words;
+base dictionaries and the Chinese subrepo lists are covered exactly by
+Aho-Corasick.
 
 ## Mathematical Formulation
 
@@ -34,7 +37,7 @@ flowchart TD
     C --> D[Skip silent letters and duplicates]
     D --> E[Build primary key]
     E --> F[Build alternate key for ambiguous letters]
-    F --> G[Compare keys with the word bank]
+    F --> G[Compare keys with the custom-word index]
 ```
 
 ## Pseudocode
