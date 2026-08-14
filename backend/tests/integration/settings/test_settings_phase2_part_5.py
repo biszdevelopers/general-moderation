@@ -13,271 +13,63 @@ import pytest
 from app.settings_service import SettingsService
 from tests.base_test import BaseTest
 
-_INVALID_UPDATE_CASES: tuple[tuple[str, int, int], ...] = (
-    (
-        "LOG_MAX_BYTES",
-        0,
-        6180,
-    ),
-    (
-        "LOG_MAX_BYTES",
-        "not-a-number",
-        6181,
-    ),
-    (
-        "LOG_MAX_BYTES",
-        2.5,
-        6182,
-    ),
-    (
-        "LOG_RETENTION_DAYS",
-        -5,
-        6183,
-    ),
-    (
-        "LOG_RETENTION_DAYS",
-        -1,
-        6184,
-    ),
-    (
-        "LOG_RETENTION_DAYS",
-        0,
-        6185,
-    ),
-    (
-        "LOG_RETENTION_DAYS",
-        1000000000,
-        6186,
-    ),
-    (
-        "LOG_RETENTION_DAYS",
-        "not-a-number",
-        6187,
-    ),
-    (
-        "MAX_BATCH_SIZE",
-        -5,
-        6188,
-    ),
-    (
-        "MAX_BATCH_SIZE",
-        -1,
-        6189,
-    ),
-    (
-        "MAX_BATCH_SIZE",
-        0,
-        6190,
-    ),
-    (
-        "MAX_BATCH_SIZE",
-        1000000000,
-        6191,
-    ),
-    (
-        "MAX_BATCH_SIZE",
-        "not-a-number",
-        6192,
-    ),
-    (
-        "METRICS_ENABLED",
-        "",
-        6193,
-    ),
-    (
-        "METRICS_PORT",
-        "",
-        6194,
-    ),
-    (
-        "MODELSCOPE_ENDPOINT",
-        "",
-        6195,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        -5,
-        6196,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        -1,
-        6197,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        0,
-        6198,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        1000000000,
-        6199,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        "not-a-number",
-        6200,
-    ),
-    (
-        "MODEL_BATCH_SIZE",
-        2.5,
-        6201,
-    ),
-    (
-        "MODEL_CACHE_TYPE_K",
-        "",
-        6202,
-    ),
-    (
-        "MODEL_CACHE_TYPE_V",
-        "",
-        6203,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        -5,
-        6204,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        -1,
-        6205,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        0,
-        6206,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        1000000000,
-        6207,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        "not-a-number",
-        6208,
-    ),
-    (
-        "MODEL_CONTEXT_SIZE",
-        2.5,
-        6209,
-    ),
-    (
-        "MODEL_DIR",
-        "",
-        6210,
-    ),
-    (
-        "MODEL_FALLBACK_REPO",
-        "",
-        6211,
-    ),
-    (
-        "MODEL_FILENAME",
-        "",
-        6212,
-    ),
-    (
-        "MODEL_FLASH_ATTN",
-        "maybe",
-        6213,
-    ),
-    (
-        "MODEL_FLASH_ATTN",
-        "bogus",
-        6214,
-    ),
-    (
-        "MODEL_FLASH_ATTN",
-        5,
-        6215,
-    ),
-    (
-        "MODEL_FLASH_ATTN",
-        "not-bool",
-        6216,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        -5,
-        6217,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        -1,
-        6218,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        0,
-        6219,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        1000000000,
-        6220,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        "not-a-number",
-        6221,
-    ),
-    (
-        "MODEL_IDLE_TIMEOUT_SECONDS",
-        2.5,
-        6222,
-    ),
-    (
-        "MODEL_MAX_TOKENS",
-        -5,
-        6223,
-    ),
-    (
-        "MODEL_MAX_TOKENS",
-        -1,
-        6224,
-    ),
-    (
-        "MODEL_MAX_TOKENS",
-        0,
-        6225,
-    ),
-    (
-        "MODEL_MAX_TOKENS",
-        1000000000,
-        6226,
-    ),
-    (
-        "MODEL_MAX_TOKENS",
-        "not-a-number",
-        6227,
-    ),
-    (
-        "MODEL_MLOCK",
-        "maybe",
-        6228,
-    ),
-    (
-        "MODEL_MLOCK",
-        "bogus",
-        6229,
-    ),
+_INVALID_UPDATE_CASES: tuple[tuple[str, str, int], ...] = (
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'bogus', 6276,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 5, 6277,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_GUN', 'not-bool', 6278,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'maybe', 6279,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'bogus', 6280,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 5, 6281,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_POLITICAL', 'not-bool', 6282,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'maybe', 6283,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'bogus', 6284,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 5, 6285,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_PORN', 'not-bool', 6286,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'maybe', 6287,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'bogus', 6288,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 5, 6289,),
+    ('ENABLE_SENSITIVE_STOP_WORDS_URL', 'not-bool', 6290,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'maybe', 6291,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'bogus', 6292,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 5, 6293,),
+    ('ENABLE_SENSITIVE_WORD_FILTER_CN', 'not-bool', 6294,),
+    ('EXPORT_RETENTION_DAYS', -5, 6295,),
+    ('EXPORT_RETENTION_DAYS', -1, 6296,),
+    ('EXPORT_RETENTION_DAYS', 0, 6297,),
+    ('EXPORT_RETENTION_DAYS', 1000000000, 6298,),
+    ('EXPORT_RETENTION_DAYS', 'not-a-number', 6299,),
+    ('FORCE_LLM_ON_SEMANTIC_HIGH', 'maybe', 6300,),
+    ('FORCE_LLM_ON_SEMANTIC_HIGH', 'bogus', 6301,),
+    ('FORCE_LLM_ON_SEMANTIC_HIGH', 5, 6302,),
+    ('FORCE_LLM_ON_SEMANTIC_HIGH', 'not-bool', 6303,),
+    ('FORCE_LLM_ON_USER_RATIO_HIGH', 'maybe', 6304,),
+    ('FORCE_LLM_ON_USER_RATIO_HIGH', 'bogus', 6305,),
+    ('FORCE_LLM_ON_USER_RATIO_HIGH', 5, 6306,),
+    ('FORCE_LLM_ON_USER_RATIO_HIGH', 'not-bool', 6307,),
+    ('FRONTEND_DIST_PATH', '', 6308,),
+    ('FUZZY_MAX_DISTANCE', '', 6309,),
+    ('HF_ENDPOINT', '', 6310,),
+    ('HF_MIRROR', '', 6311,),
+    ('LLM_RESPONSE_TIMEOUT_SECONDS', -5, 6312,),
+    ('LLM_RESPONSE_TIMEOUT_SECONDS', -1, 6313,),
+    ('LLM_RESPONSE_TIMEOUT_SECONDS', 0, 6314,),
+    ('LLM_RESPONSE_TIMEOUT_SECONDS', 1000000000, 6315,),
+    ('LLM_RESPONSE_TIMEOUT_SECONDS', 'not-a-number', 6316,),
+    ('LOG_BACKUP_COUNT', -5, 6317,),
+    ('LOG_BACKUP_COUNT', -1, 6318,),
+    ('LOG_BACKUP_COUNT', 1000000000, 6319,),
+    ('LOG_BACKUP_COUNT', 'not-a-number', 6320,),
+    ('LOG_FILE_PATH', '', 6321,),
+    ('LOG_LEVEL', '', 6322,),
+    ('LOG_MAX_BYTES', -5, 6323,),
+    ('LOG_MAX_BYTES', -1, 6324,),
+    ('LOG_MAX_BYTES', 0, 6325,),
 )
-
 
 class TestInvalidUpdate(BaseTest):
     """Out-of-range or malformed settings values raise ValueError."""
 
-    @pytest.mark.parametrize(
-        (
-            "key",
-            "value",
-            "uid",
-        ),
-        _INVALID_UPDATE_CASES,
-    )
+    @pytest.mark.parametrize(('key', 'value', 'uid',), _INVALID_UPDATE_CASES)
     def test_invalid_update(self, engine: Any, key: str, value: object, uid: int) -> None:
         """Out-of-range or malformed settings values raise ValueError."""
         service: SettingsService = engine._settings_service
@@ -287,324 +79,63 @@ class TestInvalidUpdate(BaseTest):
 
 
 _COERCION_MATRIX_CASES: tuple[tuple[str, str, bool, int], ...] = (
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6389,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6390,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6391,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6392,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6393,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6394,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6395,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6396,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6397,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "true",
-        True,
-        6398,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6399,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6400,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6401,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6402,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6403,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6404,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6405,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6406,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6407,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "1",
-        True,
-        6408,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6409,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6410,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6411,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6412,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6413,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6414,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6415,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6416,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6417,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "yes",
-        True,
-        6418,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6419,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6420,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6421,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6422,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6423,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6424,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6425,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6426,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6427,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "false",
-        False,
-        6428,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6429,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6430,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6431,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6432,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6433,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6434,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6435,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6436,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6437,
-    ),
-    (
-        "SAFE_WORD_ENABLED",
-        "0",
-        False,
-        6438,
-    ),
+    ('SAFE_WORD_ENABLED', 'true', True, 6548,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6549,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6550,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6551,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6552,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6553,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6554,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6555,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6556,),
+    ('SAFE_WORD_ENABLED', 'true', True, 6557,),
+    ('SAFE_WORD_ENABLED', '1', True, 6558,),
+    ('SAFE_WORD_ENABLED', '1', True, 6559,),
+    ('SAFE_WORD_ENABLED', '1', True, 6560,),
+    ('SAFE_WORD_ENABLED', '1', True, 6561,),
+    ('SAFE_WORD_ENABLED', '1', True, 6562,),
+    ('SAFE_WORD_ENABLED', '1', True, 6563,),
+    ('SAFE_WORD_ENABLED', '1', True, 6564,),
+    ('SAFE_WORD_ENABLED', '1', True, 6565,),
+    ('SAFE_WORD_ENABLED', '1', True, 6566,),
+    ('SAFE_WORD_ENABLED', '1', True, 6567,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6568,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6569,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6570,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6571,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6572,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6573,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6574,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6575,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6576,),
+    ('SAFE_WORD_ENABLED', 'yes', True, 6577,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6578,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6579,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6580,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6581,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6582,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6583,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6584,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6585,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6586,),
+    ('SAFE_WORD_ENABLED', 'false', False, 6587,),
+    ('SAFE_WORD_ENABLED', '0', False, 6588,),
+    ('SAFE_WORD_ENABLED', '0', False, 6589,),
+    ('SAFE_WORD_ENABLED', '0', False, 6590,),
+    ('SAFE_WORD_ENABLED', '0', False, 6591,),
+    ('SAFE_WORD_ENABLED', '0', False, 6592,),
+    ('SAFE_WORD_ENABLED', '0', False, 6593,),
+    ('SAFE_WORD_ENABLED', '0', False, 6594,),
+    ('SAFE_WORD_ENABLED', '0', False, 6595,),
+    ('SAFE_WORD_ENABLED', '0', False, 6596,),
+    ('SAFE_WORD_ENABLED', '0', False, 6597,),
 )
-
 
 class TestCoercionMatrix(BaseTest):
     """Typed coercion reproduces the golden value."""
 
-    @pytest.mark.parametrize(
-        (
-            "key",
-            "raw",
-            "expected",
-            "uid",
-        ),
-        _COERCION_MATRIX_CASES,
-    )
-    def test_coercion_matrix(
-        self, engine: Any, key: str, raw: str, expected: object, uid: int
-    ) -> None:
+    @pytest.mark.parametrize(('key', 'raw', 'expected', 'uid',), _COERCION_MATRIX_CASES)
+    def test_coercion_matrix(self, engine: Any, key: str, raw: str, expected: object, uid: int) -> None:
         """Typed coercion reproduces the golden value."""
         service: SettingsService = engine._settings_service
         service.get(key)
