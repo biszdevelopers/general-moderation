@@ -24,11 +24,17 @@ class UpdateSettingsRequest(BaseModel):
     settings: dict[str, Any]
 
 
-def create_settings_router(settings_service: SettingsService, auth_dependency: Any) -> APIRouter:
+def create_settings_router(
+    settings_service: SettingsService,
+    auth_dependency: Any,
+    engine: Any | None = None,
+) -> APIRouter:
     """Build the runtime settings admin router.
 
     :param settings_service: the runtime settings service
     :param auth_dependency: FastAPI dependency guarding the routes
+    :param engine: optional engine whose detector caches are refreshed after
+        a settings change so toggles apply without a restart
     :return: the configured APIRouter
     """
     router: APIRouter = APIRouter(prefix="/admin", tags=["admin"], dependencies=[auth_dependency])
@@ -53,6 +59,8 @@ def create_settings_router(settings_service: SettingsService, auth_dependency: A
             updated: dict[str, Any] = settings_service.update(payload.settings)
         except ValueError as exc:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+        if engine is not None:
+            engine.refresh_detectors()
         return {"status": "ok", "updated": list(updated.keys())}
 
     return router
