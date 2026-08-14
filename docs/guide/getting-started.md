@@ -53,6 +53,7 @@ service (the backend serves both the API and the React app):
 
 ```bash
 npm run build        # build the frontend once
+npm run seed         # optional: seed critical phrases, semantic examples, safe words
 npm run start:prod   # start the single-port service
 ```
 
@@ -60,6 +61,11 @@ npm run start:prod   # start the single-port service
 (Gunicorn is Unix-only). Start scripts never rebuild the frontend, so re-run
 `npm run build` after changing the UI. See [Deployment](/guide/deployment) for
 systemd, FRP, and Docker recipes.
+
+`npm run seed` is **idempotent** and safe to run repeatedly. It fills data a
+fresh deployment needs for high-severity detection (critical phrases, semantic
+example indexes, and a starter safe-word list) without overwriting operator
+edits. It is not run automatically at startup.
 
 ### Level 2 (llama.cpp)
 
