@@ -64,12 +64,17 @@ class BkTreeDetector(DetectorInterface):
         return _BKTree is not None and _distance is not None and self._tree is not None
 
     def reload(self) -> None:
-        """Rebuild the BK-tree after the word bank changes."""
+        """Rebuild the BK-tree after the word bank changes.
+
+        Fuzzy matching runs only over the administrator-curated custom words;
+        the large base dictionaries would put nearly every token within edit
+        distance of something and flood benign text with REVIEW signals.
+        """
         if _BKTree is None or _distance is None:
             self._tree = None
             return
-        words: tuple[str, ...] = self._word_bank.snapshot.words
-        self._tree = _BKTree(_distance, words)
+        words: frozenset[str] = self._word_bank.snapshot.custom_words
+        self._tree = _BKTree(_distance, tuple(words)) if words else None
 
     def detect(self, text: str) -> DetectionResult:
         """Find dictionary words within the edit distance bound.
