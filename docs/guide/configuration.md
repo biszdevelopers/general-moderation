@@ -133,7 +133,7 @@ Each registered package can be disabled independently:
 | `ENABLE_PROFANITY_FILTER` | `profanity-filter2` (guard-wired) |
 | `ENABLE_GANGAJAL` | `gangajal` (WebAssembly) |
 | `ENABLE_PYPROFANE` | `PyProfane` (C) |
-| `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` (submodule word lists) |
+| `ENABLE_SENSITIVE_STOP_WORDS` | `sensitive-stop-words` + 3 raw lists |
 
 `sensitive-stop-words` blocking categories can be toggled individually:
 
@@ -145,14 +145,26 @@ Each registered package can be disabled independently:
 | `ENABLE_SENSITIVE_STOP_WORDS_AD` | `true` | ad/spam terms |
 | `ENABLE_SENSITIVE_STOP_WORDS_URL` | `true` | blocked URL domains |
 
+The Chinese sensitive-word detector also merges three raw, newline-delimited
+txt lists from other subrepos. They carry no Python bindings, so the words are
+matched with this service's own native algorithms (Rust `ahocorasick-rs`, with
+a C `pyahocorasick` fallback):
+
+| Variable | Default | Source |
+| :--- | :--- | :--- |
+| `SENSITIVE_WORD_DATA_DICT` | `./data/sensitive-word-data/src/main/resources/sensitive_word_dict.txt` | [houbb/sensitive-word-data](https://github.com/houbb/sensitive-word-data) |
+| `SENSITIVE_LEXICON_DIR` | `./data/sensitive-lexicon/Vocabulary` | [konsheng/Sensitive-lexicon](https://github.com/konsheng/Sensitive-lexicon) |
+| `SENSITIVE_DICT_PATH` | `./data/sensitive/dict/dict.txt` | [importcjj/sensitive](https://github.com/importcjj/sensitive) |
+
 `badwords`, `profanite`, `glin-profanity`, `gangajal`, and `PyProfane`
-activate on a standard install. `sensitive-stop-words` activates when the
-`backend/data/sensitive-stop-words` submodule is initialized
-(`git submodule update --init`); its directory is configurable with
-`SENSITIVE_STOP_WORDS_DIR`. `safetext`, `sensitive-word-filter-cn`,
-and `profanity-filter2` are guard-wired but no reachable index (pypi.org,
-Tsinghua, Aliyun) provides an installable release; they activate only when a
-working index provides them:
+activate on a standard install. The Chinese sensitive-word detector activates
+when any of its source submodules is initialized
+(`git submodule update --init`); the directories are configurable with
+`SENSITIVE_STOP_WORDS_DIR`, `SENSITIVE_WORD_DATA_DICT`,
+`SENSITIVE_LEXICON_DIR`, and `SENSITIVE_DICT_PATH`. `safetext`,
+`sensitive-word-filter-cn`, and `profanity-filter2` are guard-wired but no
+reachable index (pypi.org, Tsinghua, Aliyun) provides an installable release;
+they activate only when a working index provides them:
 
 ```bash
 uv add safetext==0.3.3
