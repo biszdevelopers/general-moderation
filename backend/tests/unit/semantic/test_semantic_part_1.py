@@ -6,6 +6,7 @@ SuspicionScorer semantic weighting used by the engine.
 
 from __future__ import annotations
 
+import sys
 from typing import Any
 
 import pytest
@@ -17,6 +18,24 @@ from tests.base_test import BaseTest
 
 class TestSemanticUnavailable(BaseTest):
     """Behavior when the optional heavy dependencies are not installed."""
+
+    @pytest.fixture(autouse=True)
+    def _block_heavy_deps(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Simulate missing faiss/sentence-transformers regardless of the env.
+
+        The optional deps may be installed on the machine; forcing the import
+        failure keeps the unavailable-path tests deterministic.
+        """
+        real_import: Any = __import__
+
+        def _blocked_import(name: str, *args: Any, **kwargs: Any) -> Any:
+            if name in ("faiss", "sentence_transformers"):
+                raise ImportError(f"blocked import: {name}")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.delitem(sys.modules, "faiss", raising=False)
+        monkeypatch.delitem(sys.modules, "sentence_transformers", raising=False)
+        monkeypatch.setattr("builtins.__import__", _blocked_import)
 
     def test_not_available_without_deps(self, engine: Any) -> None:
         """Without torch/faiss the service reports unavailable."""
