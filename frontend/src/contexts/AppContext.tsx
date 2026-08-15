@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, ReactNode, ReactElement
 import { AuditService } from "../services/AuditService";
 import { AuthService } from "../services/AuthService";
 import { ExportService } from "../services/ExportService";
+import { PhraseService } from "../services/PhraseService";
+import { SemanticIndexService } from "../services/SemanticIndexService";
 import { SettingsService } from "../services/SettingsService";
 import { TestApiService } from "../services/TestApiService";
 import { WordBankService } from "../services/WordBankService";
@@ -13,6 +15,8 @@ export interface AppContextType {
     settingsService: SettingsService;
     exportService: ExportService;
     testApiService: TestApiService;
+    phraseService: PhraseService;
+    semanticIndexService: SemanticIndexService;
     authenticated: boolean;
     login: (key: string) => void;
     logout: () => void;
@@ -32,6 +36,8 @@ export function AppProvider(props: { children: ReactNode }): ReactElement {
             settingsService: new SettingsService(authService, apiBaseUrl),
             exportService: new ExportService(authService, apiBaseUrl),
             testApiService: new TestApiService(authService, apiBaseUrl),
+            phraseService: new PhraseService(authService, apiBaseUrl),
+            semanticIndexService: new SemanticIndexService(authService, apiBaseUrl),
         };
     });
     const [authenticated, setAuthenticated] = useState<boolean>(
