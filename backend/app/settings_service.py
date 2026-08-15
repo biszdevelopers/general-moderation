@@ -441,9 +441,17 @@ class SettingsService:
         return updated
 
     def to_json(self) -> str:
-        """Serialize every setting as compact JSON for export."""
+        """Serialize every setting as compact JSON for export.
+
+        Secret values (``*_KEY`` and ``*_SECRET`` suffixes) are redacted so
+        export archives never contain credentials.
+        """
         values: dict[str, Any] = self.all()
-        return json.dumps(values, sort_keys=True)
+        redacted: dict[str, Any] = {
+            key: ("********" if key.endswith(_SECRET_SUFFIXES) else value)
+            for key, value in values.items()
+        }
+        return json.dumps(redacted, sort_keys=True)
 
     def close(self) -> None:
         """Close the underlying database connection."""
