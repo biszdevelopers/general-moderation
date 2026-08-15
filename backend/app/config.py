@@ -173,6 +173,9 @@ class Settings(BaseSettings):
 
     rate_limit_requests: int = 100
     rate_limit_period: int = 60
+    # Optional Redis URI for cross-worker rate limiting (slowapi storage) and
+    # cross-worker result-cache invalidation (pub/sub). Empty disables both.
+    redis_uri: str = ""
 
     allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: [])
 
