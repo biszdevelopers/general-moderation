@@ -30,7 +30,12 @@
         "test:e2e": "cd backend && uv run python -m pytest tests/e2e -n auto",
         "test:phase2": "cd backend && uv run python -m pytest tests -k phase2 -n auto",
         "test:serial": "cd backend && uv run python -m pytest tests",
-        "eval": "cd backend && uv run python -m eval.evaluate"
+        "eval": "cd backend && uv run python -m eval.evaluate",
+        "bootstrap:eval": "cd backend && uv run python -m tools.bootstrap_eval",
+        "load-test": "cd backend && uv run python -m tools.load_test_cli",
+        "demo": "node scripts/demo.mjs",
+        "demo:messages": "node scripts/demo.mjs messages",
+        "sbom": "cd backend && uv run python tools/sbom.py"
     },
     "devDependencies": {
         "concurrently": "9.1.0"
