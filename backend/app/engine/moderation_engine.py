@@ -18,6 +18,7 @@ import mmh3
 
 from app.ai.llama_detector import LlamaCppDetector
 from app.appconfig.app_config_service import AppConfigService
+from app.cache.invalidator import CacheInvalidator
 from app.detectors.aho_detector import AhoCorasickDetector
 from app.detectors.bktree_detector import BkTreeDetector
 from app.detectors.bloom_detector import BloomFilterDetector
@@ -33,6 +34,7 @@ from app.feedback.feedback_service import FeedbackService
 from app.models.request import BatchModerationRequest, ModerationRequest
 from app.models.response import BatchModerationResponse, ModerationResponse
 from app.models.verdict import DetectionResult, Verdict
+from app.observability.metrics import Histogram, render_prometheus
 from app.phrases.manager import CriticalPhraseManager
 from app.profiling.user_profiler import UserProfiler
 from app.scoring.suspicion_scorer import SuspicionScorer
@@ -112,8 +114,20 @@ class ModerationEngine:
             "stage1_fast_path_total": 0.0,
             "semantic_queries_total": 0.0,
             "model_unavailable_total": 0.0,
+            "cache_hits_total": 0.0,
+            "cache_misses_total": 0.0,
         }
         self._detector_seconds: dict[str, float] = {}
+        self._histograms: dict[str, Histogram] = {
+            "request_latency": Histogram(),
+            "stage1_latency": Histogram(),
+            "stage2_latency": Histogram(),
+        }
+        self._histogram_help: dict[str, str] = {
+            "request_latency": "total moderation request latency",
+            "stage1_latency": "stage 1 (fast path + level one) latency",
+            "stage2_latency": "stage 2 (semantic + user profile) latency",
+        }
         self._cache: dict[int, ModerationResponse] = {}
         self._cache_timestamps: dict[int, float] = {}
         self._cache_fingerprints: dict[int, int] = {}
@@ -121,6 +135,11 @@ class ModerationEngine:
         self._fingerprint_at: float = 0.0
         self._cache_max_size: int = settings.cache_max_size
         self._cache_ttl: int = settings.cache_ttl_seconds
+        self._invalidator: CacheInvalidator = CacheInvalidator(
+            redis_uri=getattr(settings, "redis_uri", ""),
+            on_invalidate=self.clear_cache,
+        )
+        self._invalidator.start()
 
     def _sync_runtime_detectors(self) -> None:
         """Apply runtime settings that the detectors read at construction.
@@ -170,6 +189,7 @@ class ModerationEngine:
         self._cache_timestamps.clear()
         self._cache_fingerprints.clear()
         self._invalidate_fingerprint()
+        self._invalidator.publish()
 
     def _config_fingerprint(self) -> int:
         """Hash the runtime settings that influence verdicts.
@@ -318,11 +338,14 @@ class ModerationEngine:
             cached: ModerationResponse | None = self._get_cached(cache_key)
             if cached is not None:
                 self._metrics["requests_total"] += 1.0
+                self._metrics["cache_hits_total"] += 1.0
                 self._metrics[f"requests_{cached.verdict.value.lower()}_total"] = (
                     self._metrics.get(f"requests_{cached.verdict.value.lower()}_total", 0.0) + 1.0
                 )
                 latency_ms: float = (time.perf_counter_ns() - start_ns) / 1_000_000.0
+                self._histograms["request_latency"].observe(latency_ms / 1000.0)
                 return self._restore_cached(request, cached, latency_ms), None
+            self._metrics["cache_misses_total"] += 1.0
 
         app_name: str = request.app_name or "default"
         verdict: Verdict = Verdict.PASS
@@ -337,6 +360,7 @@ class ModerationEngine:
         ai_triggered: bool = False
         trigger_info: dict[str, Any] = {}
         runs: list[DetectorRunTrace] = []
+        detector_latencies_ms: dict[str, float] = {}
 
         # Stage 1: safe word fast path.
         stage1_start: int = time.perf_counter_ns()
@@ -358,7 +382,11 @@ class ModerationEngine:
                 matched_detectors,
                 max_severity,
                 severity_category,
-            ) = self._run_level_one(request.text, runs=runs if trace_mode else None)
+            ) = self._run_level_one(
+                request.text,
+                runs=runs if trace_mode else None,
+                detector_latencies=detector_latencies_ms,
+            )
             if max_severity > 0 and verdict is not Verdict.BLOCK:
                 policy: dict[str, Any] = self._app_config.get(app_name)
                 severity_threshold: int = int(
@@ -373,6 +401,7 @@ class ModerationEngine:
                         f"Matched severity {max_severity} reaches the hard-block threshold"
                     )
         stage1_ms: float = (time.perf_counter_ns() - stage1_start) / 1_000_000.0
+        self._histograms["stage1_latency"].observe(stage1_ms / 1000.0)
         if event_sink is not None:
             event_sink(
                 "stage1_complete",
@@ -433,6 +462,7 @@ class ModerationEngine:
                 )
             )
         stage2_ms: float = (time.perf_counter_ns() - stage2_start) / 1_000_000.0
+        self._histograms["stage2_latency"].observe(stage2_ms / 1000.0)
         if event_sink is not None:
             for run in runs:
                 event_sink(
@@ -476,7 +506,7 @@ class ModerationEngine:
                 blocked_msgs=1 if verdict is Verdict.BLOCK else 0,
             )
         if record_training:
-            self._feedback.record_decision(verdict.value, ai_triggered)
+            self._feedback.record_decision(verdict.value, ai_triggered, severity=max_severity)
 
         matched_words = list(dict.fromkeys(matched_words))
 
@@ -486,6 +516,7 @@ class ModerationEngine:
         )
 
         latency_ms = (time.perf_counter_ns() - start_ns) / 1_000_000.0
+        self._histograms["request_latency"].observe(latency_ms / 1000.0)
 
         self._audit(
             request=request,
@@ -501,6 +532,9 @@ class ModerationEngine:
             ai_triggered=ai_triggered,
             severity=max_severity or None,
             category=severity_category,
+            stage1_ms=stage1_ms,
+            stage2_ms=stage2_ms,
+            detector_latencies_ms=detector_latencies_ms,
         )
 
         response: ModerationResponse = self._build_response(
@@ -771,6 +805,7 @@ class ModerationEngine:
         self,
         text: str,
         runs: list[DetectorRunTrace] | None = None,
+        detector_latencies: dict[str, float] | None = None,
     ) -> tuple[
         list[str],
         list[str],
@@ -836,6 +871,15 @@ class ModerationEngine:
             self._detector_seconds[detector.name] = (
                 self._detector_seconds.get(detector.name, 0.0) + detector_ms / 1_000.0
             )
+            histogram_name: str = f"detector_{detector.name}_latency"
+            histogram: Histogram = self._histograms.get(histogram_name)
+            if histogram is None:
+                histogram = Histogram()
+                self._histograms[histogram_name] = histogram
+                self._histogram_help[histogram_name] = f"{detector.name} detector latency"
+            histogram.observe(detector_ms / 1000.0)
+            if detector_latencies is not None:
+                detector_latencies[detector.name] = round(detector_ms, 3)
             effective_blocking: bool = (
                 result.blocking if result.blocking is not None else detector.blocking
             )
@@ -948,6 +992,10 @@ class ModerationEngine:
             # review threshold so weak signals are never a silent PASS.
             score_trigger = score_trigger or (
                 verdict is Verdict.REVIEW and suspicion_score >= review_escalation
+            )
+        if score_trigger:
+            self._metrics["review_escalations_total"] = (
+                self._metrics.get("review_escalations_total", 0.0) + 1.0
             )
         force_semantic: bool = bool(policy["semantic_boost"]) and bool(
             semantic_similarities and max(semantic_similarities.values()) >= semantic_threshold
@@ -1085,6 +1133,7 @@ class ModerationEngine:
         self._settings_service.close()
         self._app_config.close()
         self._feedback.close()
+        self._invalidator.stop()
 
     def _audit(
         self,
@@ -1102,6 +1151,9 @@ class ModerationEngine:
         ai_triggered: bool,
         severity: int | None = None,
         category: str | None = None,
+        stage1_ms: float = 0.0,
+        stage2_ms: float = 0.0,
+        detector_latencies_ms: dict[str, float] | None = None,
     ) -> None:
         """Emit the structured audit record for one decision.
 
@@ -1118,6 +1170,9 @@ class ModerationEngine:
         :param ai_triggered: whether the LLM ran
         :param severity: severity of the strongest match, if any
         :param category: category of the strongest match, if any
+        :param stage1_ms: stage 1 wall time in milliseconds
+        :param stage2_ms: stage 2 wall time in milliseconds
+        :param detector_latencies_ms: per-detector wall time in milliseconds
         """
         self._logger.log_moderation(
             request_id=request.id,
@@ -1135,11 +1190,20 @@ class ModerationEngine:
             ai_triggered=ai_triggered,
             severity=severity,
             category=category,
+            stage1_ms=stage1_ms,
+            stage2_ms=stage2_ms,
+            detector_latencies_ms=detector_latencies_ms,
         )
 
     def record_rate_limit_hit(self) -> None:
         """Increment the rate limit violation counter."""
         self._metrics["rate_limit_hits_total"] += 1.0
+
+    def record_error(self) -> None:
+        """Increment the request error counter (5xx responses)."""
+        self._metrics["requests_errors_total"] = (
+            self._metrics.get("requests_errors_total", 0.0) + 1.0
+        )
 
     def metrics(self) -> dict[str, float]:
         """Return a snapshot of the runtime counters.
@@ -1150,6 +1214,34 @@ class ModerationEngine:
         for detector_name, seconds in self._detector_seconds.items():
             combined[f"detector_{detector_name}_seconds_total"] = seconds
         return combined
+
+    def metrics_text(self) -> str:
+        """Return the full Prometheus exposition payload.
+
+        Emits counters, latency histograms (with p50/p95/p99), and runtime
+        gauges (model availability, semantic readiness, cache hit rate) in the
+        ``text/plain; version=0.0.4`` format the /metrics endpoint serves.
+
+        :return: the Prometheus text payload
+        """
+        combined: dict[str, float] = self.metrics()
+        gauges: dict[str, float] = {
+            "model_available": 1.0 if self._llama.is_available() else 0.0,
+            "semantic_available": 1.0 if self._semantic.is_available() else 0.0,
+            "semantic_ready": 1.0 if self._semantic.is_ready() else 0.0,
+            "cache_size": float(len(self._cache)),
+            "cache_max_size": float(self._cache_max_size),
+        }
+        hits: float = combined.get("cache_hits_total", 0.0)
+        misses: float = combined.get("cache_misses_total", 0.0)
+        total_cache: float = hits + misses
+        gauges["cache_hit_rate"] = hits / total_cache if total_cache else 0.0
+        return render_prometheus(
+            counters=combined,
+            histograms=self._histograms,
+            gauges=gauges,
+            help_text=self._histogram_help,
+        )
 
     def log(self, message: str, **fields: Any) -> None:
         """Emit a structured log record through the shared logger.
