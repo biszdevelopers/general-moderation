@@ -87,6 +87,9 @@ class ModerationLogger:
         ai_triggered: bool = False,
         severity: int | None = None,
         category: str | None = None,
+        stage1_ms: float = 0.0,
+        stage2_ms: float = 0.0,
+        detector_latencies_ms: dict[str, float] | None = None,
     ) -> None:
         """Record a complete moderation decision.
 
@@ -105,6 +108,9 @@ class ModerationLogger:
         :param ai_triggered: whether the LLM was invoked
         :param severity: severity of the strongest match, if any
         :param category: category of the strongest match, if any
+        :param stage1_ms: stage 1 wall time in milliseconds
+        :param stage2_ms: stage 2 wall time in milliseconds
+        :param detector_latencies_ms: per-detector wall time in milliseconds
         """
         text_hash: str = hashlib.sha256(text.encode("utf-8")).hexdigest()
         text_preview: str = text[:50]
@@ -127,6 +133,9 @@ class ModerationLogger:
             aiTriggered=ai_triggered,
             severity=severity,
             category=category,
+            stage1Ms=round(stage1_ms, 3),
+            stage2Ms=round(stage2_ms, 3),
+            detectorLatenciesMs=detector_latencies_ms,
         )
 
     def close(self) -> None:
