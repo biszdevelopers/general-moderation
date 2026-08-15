@@ -85,6 +85,30 @@ export interface WordPayload {
     severity: number;
 }
 
+export interface PhraseEntry {
+    id: number;
+    phrase: string;
+    language: string;
+    category: string;
+    severity: number;
+    created_at: string;
+}
+
+export interface PhrasePayload {
+    phrase: string;
+    language: string;
+    category: string;
+    severity: number;
+}
+
+export interface SemanticStatus {
+    available: boolean;
+    ready: boolean;
+    loading: boolean;
+    model?: string;
+    categories: Record<string, number>;
+}
+
 export interface SettingRecord {
     key: string;
     value: string | number | boolean;
