@@ -309,6 +309,7 @@ service stays fully operational.
 | `ENCRYPTION_KEY` | auto-generated | 32-byte hex key for encryption at rest. Generated on first run. |
 | `RATE_LIMIT_REQUESTS` | `100` | Allowed requests per period. |
 | `RATE_LIMIT_PERIOD` | `60` | Rate limit window in seconds. |
+| `REDIS_URI` | empty | Optional `redis://` URI. Enables cross-worker rate limiting (slowapi storage) and cross-worker result-cache invalidation (pub/sub). Empty disables both. |
 | `ALLOWED_ORIGINS` | empty | Comma-separated CORS origins. No wildcard is permitted. |
 
 ## Logging
@@ -355,4 +356,9 @@ service stays fully operational.
 Metrics include `requests_total`, `ai_requests_total`, `rate_limit_hits_total`,
 `stage1_fast_path_total`, `semantic_queries_total`, and
 `model_unavailable_total` (counts the fail-open path where a trigger fired but
-the LLM was unavailable and a Stage-2 hard block was preserved).
+the LLM was unavailable and a Stage-2 hard block was preserved). Latency
+histograms (`request_latency_seconds`, `stage1_latency_seconds`,
+`stage2_latency_seconds`, and per-detector) expose p50/p95/p99, and gauges
+report `model_available`, `semantic_ready`, and `cache_hit_rate`. See
+[Observability](/guide/observability) for the full payload, alert rules, and
+the Grafana dashboard.
