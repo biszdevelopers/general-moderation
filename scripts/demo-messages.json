@@ -1,0 +1,30 @@
+{
+    "name": "general-moderation-demo",
+    "description": "Curated live-message script spanning benign, blocked, and obfuscated content across several languages. Every blocked example is matched by the live pipeline (critical phrases, sensitive-word lists, or the deobfuscation pass); benign examples pass the fast path.",
+    "messages": [
+        { "label": "Benign EN", "lang": "en", "text": "hello world, how is everyone doing today?" },
+        { "label": "Benign EN", "lang": "en", "text": "can you pass the glass please, class president" },
+        { "label": "Benign ZH", "lang": "zh-CN", "text": "今天天气很好，我们一起去公园散步吧" },
+        { "label": "Benign FR", "lang": "fr", "text": "bonjour comment ca va aujourd'hui" },
+        { "label": "Benign JA", "lang": "ja", "text": "今日はいい天気ですね" },
+        { "label": "Blocked EN violence", "lang": "en", "text": "I will kill you tonight" },
+        { "label": "Blocked EN violence", "lang": "en", "text": "bomb the school building now" },
+        { "label": "Blocked EN hate", "lang": "en", "text": "I hate all people from that country" },
+        { "label": "Blocked EN hate", "lang": "en", "text": "they are animals not people" },
+        { "label": "Blocked EN political", "lang": "en", "text": "overthrow the government by force" },
+        { "label": "Blocked EN sexual", "lang": "en", "text": "send me photos of children" },
+        { "label": "Blocked FR violence", "lang": "fr", "text": "je vais te tuer" },
+        { "label": "Blocked DE violence", "lang": "de", "text": "ich bringe dich um" },
+        { "label": "Blocked ES violence", "lang": "es", "text": "te voy a matar" },
+        { "label": "Blocked RU violence", "lang": "ru", "text": "я тебя убью" },
+        { "label": "Blocked TR violence", "lang": "tr", "text": "seni öldüreceğim" },
+        { "label": "Obfuscated EN", "lang": "en", "text": "i w1ll k1ll y0u" },
+        { "label": "Obfuscated EN", "lang": "en", "text": "k i l l yourself" },
+        { "label": "Obfuscated EN", "lang": "en", "text": "b0mb th3 sch00l" },
+        { "label": "Obfuscated EN", "lang": "en", "text": "s3nd m3 ph0t0s 0f ch1ldr3n" },
+        { "label": "Review weak", "lang": "en", "text": "that was a really bad idea" },
+        { "label": "Benign multilingual AR", "lang": "ar", "text": "صباح الخير كيف حالك" },
+        { "label": "Benign multilingual TR", "lang": "tr", "text": "bugun hava cok guzel" },
+        { "label": "Benign multilingual RU", "lang": "ru", "text": "сегодня хорошая погода" }
+    ]
+}
