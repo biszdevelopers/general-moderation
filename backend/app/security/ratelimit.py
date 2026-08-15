@@ -11,7 +11,6 @@ the C Redis client (hiredis) for multi-worker enforcement.
 
 from __future__ import annotations
 
-import os
 from collections.abc import Callable
 from typing import Any
 
@@ -25,10 +24,13 @@ class RateLimiter:
 
     :param requests: number of allowed requests
     :param period_seconds: the window in seconds
+    :param redis_uri: optional ``redis://`` URI for multi-worker storage
     """
 
-    def __init__(self, requests: int = 100, period_seconds: int = 60) -> None:
-        storage_uri: str | None = os.getenv("RATE_LIMIT_STORAGE_URI") or None
+    def __init__(
+        self, requests: int = 100, period_seconds: int = 60, redis_uri: str | None = None
+    ) -> None:
+        storage_uri: str | None = redis_uri or None
         self._limiter: Limiter = Limiter(
             key_func=get_remote_address,
             default_limits=[],
