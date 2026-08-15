@@ -23,7 +23,7 @@ class AppConfigRequest(BaseModel):
     :param llm_mode: "auto", "aggressive", or "passthrough"
     """
 
-    app_name: str = Field(min_length=1)
+    app_name: str = Field(min_length=1, max_length=128)
     score_threshold: int = Field(default=50, ge=0, le=100)
     semantic_boost: bool = True
     user_ratio_boost: bool = True
