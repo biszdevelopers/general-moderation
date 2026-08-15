@@ -160,8 +160,9 @@ class ModerationEngine:
                 detector.reload()
 
     def warm_up_model(self) -> None:
-        """Start the background model download-and-load."""
+        """Start the background LLM and semantic model loads."""
         self._llama.start_preload()
+        self._semantic.start_preload()
 
     def clear_cache(self) -> None:
         """Drop every cached moderation result and the fingerprint memo."""
@@ -399,6 +400,7 @@ class ModerationEngine:
             semantic_enabled = (
                 bool(self._settings_service.get("SEMANTIC_ENABLED", True))
                 and self._semantic.is_available()
+                and (self._semantic.is_ready() or self._semantic.is_loading())
             )
             if semantic_enabled:
                 self._metrics["semantic_queries_total"] += 1.0
