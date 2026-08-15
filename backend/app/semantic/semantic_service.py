@@ -121,12 +121,14 @@ class SemanticService:
         self._top_k: int = int(settings.semantic_top_k)
         self._logger: Any = logger
         self._lock: threading.Lock = threading.Lock()
+        self._load_lock: threading.Lock = threading.Lock()
         self._model: Any = None
         self._faiss: Any = None
         self._indexes: dict[str, Any] = {}
         self._texts: dict[str, list[str]] = {category: [] for category in CATEGORIES}
         self._available: bool = False
         self._ready: bool = False
+        self._loading: bool = False
         try:
             import faiss
             import sentence_transformers  # noqa: F401
@@ -143,31 +145,75 @@ class SemanticService:
         """Return whether the optional dependencies are installed."""
         return self._available and self._enabled
 
+    def is_ready(self) -> bool:
+        """Return whether the model and indexes are loaded."""
+        return self._ready
+
+    def is_loading(self) -> bool:
+        """Return whether a background preload is in flight."""
+        return self._loading
+
+    def start_preload(self) -> None:
+        """Load the model and indexes in a background thread.
+
+        The model download/load can take minutes on first run, so it must
+        never block a moderation request. The request path falls back to an
+        empty similarity map until the preload finishes.
+        """
+        if not self.is_available() or self._ready or self._loading:
+            return
+        self._loading = True
+        thread: threading.Thread = threading.Thread(
+            target=self._preload_worker, name="semantic-preload", daemon=True
+        )
+        thread.start()
+
+    def _preload_worker(self) -> None:
+        """Background load: build the model and indexes once."""
+        try:
+            self._load()
+        except Exception as exc:
+            _LOGGER.warning("Semantic preload failed: %s", exc)
+        finally:
+            self._loading = False
+
     def _load(self) -> None:
-        """Load the transformer model and every persisted index."""
+        """Load the transformer model and every persisted index.
+
+        Guards against concurrent loads; a second caller waits for the first
+        to finish (or returns immediately when already ready).
+        """
         if self._ready:
             return
-        from sentence_transformers import SentenceTransformer
+        with self._load_lock:
+            if self._ready:
+                return
+            from sentence_transformers import SentenceTransformer
 
-        self._model = SentenceTransformer(self._model_name)
-        self._index_dir.mkdir(parents=True, exist_ok=True)
-        for category in CATEGORIES:
-            index_path: Path = self._index_dir / f"{category}.index"
-            texts_path: Path = self._index_dir / f"{category}.json"
-            if index_path.exists() and texts_path.exists():
-                self._indexes[category] = self._faiss.read_index(str(index_path))
-                self._texts[category] = json.loads(texts_path.read_text(encoding="utf-8"))
-            else:
-                self._indexes[category] = self._faiss.IndexFlatIP(384)
-                self._texts[category] = list(_DEFAULT_EXAMPLES.get(category, []))
-                if self._texts[category]:
-                    self._reindex(category)
-        self._ready = True
+            self._model = SentenceTransformer(self._model_name)
+            self._index_dir.mkdir(parents=True, exist_ok=True)
+            for category in CATEGORIES:
+                index_path: Path = self._index_dir / f"{category}.index"
+                texts_path: Path = self._index_dir / f"{category}.json"
+                if index_path.exists() and texts_path.exists():
+                    self._indexes[category] = self._faiss.read_index(str(index_path))
+                    self._texts[category] = json.loads(texts_path.read_text(encoding="utf-8"))
+                else:
+                    self._indexes[category] = self._faiss.IndexFlatIP(384)
+                    self._texts[category] = list(_DEFAULT_EXAMPLES.get(category, []))
+                    if self._texts[category]:
+                        self._reindex(category)
+            self._ready = True
 
     def _embed(self, texts: list[str]) -> Any:
-        """Encode and L2-normalize a list of texts."""
+        """Encode and L2-normalize a list of texts.
+
+        ``faiss.normalize_L2`` normalizes in place and returns ``None``, so
+        the original array (already normalized) is returned.
+        """
         vectors = self._model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
-        return self._faiss.normalize_L2(vectors)
+        self._faiss.normalize_L2(vectors)
+        return vectors
 
     def _reindex(self, category: str) -> None:
         """Rebuild one category index from its stored texts."""
@@ -180,14 +226,22 @@ class SemanticService:
     def query(self, text: str) -> dict[str, float]:
         """Return the maximum similarity per category for a text.
 
+        Loads the model on demand only when nothing else is loading it (the
+        background preload path). When a preload is already in flight the
+        query returns an empty map instead of blocking the request, so a
+        first-request download never stalls the pipeline.
+
         :param text: input text
         :return: category to similarity mapping, empty when unavailable
         """
         if not self.is_available():
             return {}
-        with self._lock:
+        if not self._ready and not self._loading:
             self._load()
-        vector = self._faiss.normalize_L2(self._embed([text]))
+        if not self._ready:
+            return {}
+        with self._lock:
+            vector: Any = self._embed([text])
         results: dict[str, float] = {}
         for category in CATEGORIES:
             index = self._indexes[category]
@@ -245,9 +299,16 @@ class SemanticService:
     def stats(self) -> dict[str, Any]:
         """Return per-category entry counts."""
         if not self._ready:
-            return {"available": self.is_available(), "categories": {}}
+            return {
+                "available": self.is_available(),
+                "ready": self._ready,
+                "loading": self._loading,
+                "categories": {},
+            }
         return {
             "available": self.is_available(),
+            "ready": self._ready,
+            "loading": self._loading,
             "model": self._model_name,
             "categories": {category: len(self._texts[category]) for category in CATEGORIES},
         }
