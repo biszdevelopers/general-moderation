@@ -31,13 +31,11 @@ class ExternalLlamaCppProvider(OpenAICompatibleProvider):
         :param sanitized: sanitized user text
         :return: the raw reply text
         """
-        from app.ai.prompt import SYSTEM_PROMPT
-
         payload: dict[str, str] = {"role": "user", "content": sanitized}
         model: str = self._config("EXTERNAL_LLAMACPP_MODEL")
         body_payload: dict[str, object] = {
             "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": self._system_prompt()},
                 payload,
             ],
             "temperature": 0,
