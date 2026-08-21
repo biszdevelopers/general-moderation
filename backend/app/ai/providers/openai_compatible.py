@@ -50,14 +50,12 @@ class OpenAICompatibleProvider(RemoteProvider):
         :param sanitized: sanitized user text
         :return: the raw reply text
         """
-        from app.ai.prompt import SYSTEM_PROMPT
-
         body: dict[str, Any] = self._post(
             self._chat_url(),
             {
                 "model": self._config("OPENAI_MODEL"),
                 "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "system", "content": self._system_prompt()},
                     {"role": "user", "content": sanitized},
                 ],
                 "temperature": 0,
