@@ -3,6 +3,8 @@
 The download, load, idle-unload, and inference machinery already lives in
 :class:`~app.ai.llama_detector.LlamaCppDetector`; this adapter presents it
 through the provider interface so the router treats every backend alike.
+A runtime settings view overlays the registry-selected GGUF path onto the
+static model configuration so admin switches apply on the next load.
 """
 
 from __future__ import annotations
@@ -16,16 +18,48 @@ from app.ai.providers.interface import LLMProvider, ProviderResult
 _ALLOW_CONFIDENCE: float = 0.5
 
 
+class RuntimeModelSettings:
+    """Read-only view merging runtime keys over static model settings.
+
+    :param static_settings: the environment-backed Settings object
+    :param settings_service: runtime settings holding ACTIVE_GGUF_PATH
+    """
+
+    def __init__(self, static_settings: Any, settings_service: Any) -> None:
+        self._static: Any = static_settings
+        self._runtime: Any = settings_service
+
+    def __getattr__(self, name: str) -> Any:
+        """Resolve an attribute from runtime overrides, then static settings.
+
+        :param name: the attribute name
+        :return: the resolved value
+        """
+        if name == "model_path":
+            active: Any = self._runtime.get("ACTIVE_GGUF_PATH", "")
+            if active:
+                return str(active)
+        return getattr(self._static, name)
+
+
 class LocalLlamaCppProvider(LLMProvider):
     """Serves Stage 3 classifications from an in-process GGUF model."""
 
-    def __init__(self, settings: Any, logger: Any | None = None) -> None:
+    def __init__(
+        self, settings: Any, settings_service: Any | None = None, logger: Any | None = None
+    ) -> None:
         """Wrap a lazily loading llama.cpp detector.
 
         :param settings: application settings with MODEL_* variables
+        :param settings_service: optional runtime settings for the active path
         :param logger: optional structured logger
         """
-        self._detector: LlamaCppDetector = LlamaCppDetector(settings, logger)
+        view: Any = (
+            RuntimeModelSettings(settings, settings_service)
+            if settings_service is not None
+            else settings
+        )
+        self._detector: LlamaCppDetector = LlamaCppDetector(view, logger)
 
     @property
     def name(self) -> str:
@@ -61,6 +95,13 @@ class LocalLlamaCppProvider(LLMProvider):
     def last_reply(self) -> str | None:
         """Return the most recent raw reply."""
         return self._detector.last_reply
+
+    def set_system_prompt(self, template: str) -> None:
+        """Replace the system prompt used for classification.
+
+        :param template: the new system prompt text
+        """
+        self._detector.set_system_prompt(template)
 
     def start(self) -> None:
         """Kick off the background download-and-load."""
