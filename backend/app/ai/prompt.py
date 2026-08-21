@@ -16,15 +16,16 @@ USER_TAG_OPEN = "<user_text>"
 USER_TAG_CLOSE = "</user_text>"
 
 
-def build_classification_prompt(sanitized_payload: str) -> str:
+def build_classification_prompt(sanitized_payload: str, system_prompt: str = SYSTEM_PROMPT) -> str:
     """Build the ChatML classification prompt around a sanitized payload.
 
     :param sanitized_payload: sanitized, XML-escaped user text
+    :param system_prompt: system prompt text; defaults to the built-in prompt
     :return: the full ChatML prompt
     """
     return (
         "<|im_start|>system\n"
-        f"{SYSTEM_PROMPT}<|im_end|>\n"
+        f"{system_prompt}<|im_end|>\n"
         f"<|im_start|>user\n"
         f"{USER_TAG_OPEN}{sanitized_payload}{USER_TAG_CLOSE}<|im_end|>\n"
         "<|im_start|>assistant\n"
