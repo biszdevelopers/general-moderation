@@ -12,11 +12,15 @@ from __future__ import annotations
 import logging
 import time
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import mmh3
 
-from app.ai.llama_detector import LlamaCppDetector
+from app.ai.calibration import ConfidenceCalibrator
+from app.ai.model_registry import ModelRegistryService
+from app.ai.prompt_store import PromptStore
+from app.ai.providers.router import ModelRouter
 from app.appconfig.app_config_service import AppConfigService
 from app.cache.invalidator import CacheInvalidator
 from app.detectors.aho_detector import AhoCorasickDetector
@@ -104,7 +108,14 @@ class ModerationEngine:
             cache_size=settings.spam_cache_size,
             ttl_seconds=settings.spam_cache_ttl_seconds,
         )
-        self._llama: LlamaCppDetector = LlamaCppDetector(settings, logger)
+        self._model_router: ModelRouter = ModelRouter(settings, self._settings_service, logger)
+        self._model_registry: ModelRegistryService = ModelRegistryService(
+            settings, self._settings_service, logger
+        )
+        self._prompt_store: PromptStore = PromptStore(
+            str(Path(settings.settings_db_path).parent / "prompts.db")
+        )
+        self._calibrator: ConfidenceCalibrator = ConfidenceCalibrator(self._settings_service)
         self._sync_runtime_detectors()
         self._detectors: list[DetectorInterface] = self._build_detectors()
         self._metrics: dict[str, float] = {
@@ -180,8 +191,18 @@ class ModerationEngine:
 
     def warm_up_model(self) -> None:
         """Start the background LLM and semantic model loads."""
-        self._llama.start_preload()
+        self._model_router.start()
+        self.apply_prompt()
         self._semantic.start_preload()
+
+    def refresh_model_router(self) -> None:
+        """Rebuild the routed providers after provider settings change."""
+        self._model_router.refresh()
+        self.apply_prompt()
+
+    def apply_prompt(self) -> None:
+        """Push the active prompt template into both routed providers."""
+        self._model_router.set_system_prompt(self._prompt_store.get_active())
 
     def clear_cache(self) -> None:
         """Drop every cached moderation result and the fingerprint memo."""
@@ -563,9 +584,9 @@ class ModerationEngine:
             stage3_trace = Stage3Trace(
                 invoked=True,
                 trigger=self._describe_trigger(trigger_info),
-                model_available=self._llama.is_available(),
-                prompt=self._llama._last_prompt,
-                response=self._llama._last_reply,
+                model_available=self._model_router.is_available(),
+                prompt=self._model_router.last_prompt,
+                response=self._model_router.last_reply,
                 verdict=("BLOCK" if verdict is Verdict.BLOCK else "ALLOW"),
                 confidence=confidence,
                 latency_ms=float(trigger_info.get("latency_ms", 0.0)),
@@ -604,7 +625,7 @@ class ModerationEngine:
                     "model_available": (
                         trace.stage_3.model_available
                         if trace.stage_3
-                        else self._llama.is_available()
+                        else self._model_router.is_available()
                     ),
                     "prompt": trace.stage_3.prompt if trace.stage_3 else None,
                     "response": trace.stage_3.response if trace.stage_3 else None,
@@ -1027,22 +1048,31 @@ class ModerationEngine:
             final_verdict: Verdict = verdict if verdict is Verdict.BLOCK else Verdict.PASS
             return False, 1, final_verdict, chain, reasons, confidence, trigger_info
 
-        if not self._llama.is_available():
+        provider_name: str | None = self._model_router.active_provider_name
+        if not self._model_router.is_available():
             trigger_info["latency_ms"] = 0.0
             self._metrics["model_unavailable_total"] += 1.0
-            # Preserve a hard BLOCK from Stage 2; only ambiguous content is
-            # left as REVIEW when the model cannot settle it.
+            # Failure policy: fail closed (BLOCK) when configured, otherwise
+            # keep the rule-based verdict and leave ambiguous content as
+            # REVIEW for human moderation.
+            if str(self._settings_service.get("LLM_FAILURE_POLICY", "rule_based")) == "block":
+                chain.append(provider_name or "llm_unavailable")
+                reasons.append("No healthy LLM provider; fail-closed policy applied")
+                return True, 2, Verdict.BLOCK, chain, reasons, confidence, trigger_info
             final_verdict = verdict if verdict is Verdict.BLOCK else Verdict.REVIEW
             return False, 2, final_verdict, chain, reasons, confidence, trigger_info
 
-        chain.append(self._llama.name)
+        chain.append(provider_name or "llm")
         self._metrics["ai_requests_total"] += 1.0
         llm_start: int = time.perf_counter_ns()
-        llm_result: DetectionResult = self._llama.detect(text)
+        result = self._model_router.classify(text)
         trigger_info["latency_ms"] = (time.perf_counter_ns() - llm_start) / 1_000_000.0
-        if llm_result.matched:
-            reasons.append(llm_result.reason or self._llama.name)
-            confidence = llm_result.confidence_score or confidence
+        if result is None:
+            self._metrics["model_unavailable_total"] += 1.0
+            return False, 2, Verdict.REVIEW, chain, reasons, confidence, trigger_info
+        confidence = self._calibrator.calibrate(result, suspicion_score)
+        if result.blocked:
+            reasons.append("LLM classified the text as BLOCK")
             return True, 2, Verdict.BLOCK, chain, reasons, confidence, trigger_info
         return True, 2, Verdict.PASS, chain, reasons, confidence, trigger_info
 
@@ -1121,7 +1151,7 @@ class ModerationEngine:
 
     def shutdown(self) -> None:
         """Release models, storage, and logger resources."""
-        self._llama.shutdown()
+        self._model_router.shutdown()
         for detector in getattr(self, "_detectors", []):
             shutdown = getattr(detector, "shutdown", None)
             if callable(shutdown):
@@ -1226,7 +1256,7 @@ class ModerationEngine:
         """
         combined: dict[str, float] = self.metrics()
         gauges: dict[str, float] = {
-            "model_available": 1.0 if self._llama.is_available() else 0.0,
+            "model_available": 1.0 if self._model_router.is_available() else 0.0,
             "semantic_available": 1.0 if self._semantic.is_available() else 0.0,
             "semantic_ready": 1.0 if self._semantic.is_ready() else 0.0,
             "cache_size": float(len(self._cache)),
