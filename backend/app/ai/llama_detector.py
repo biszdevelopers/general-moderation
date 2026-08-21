@@ -367,6 +367,16 @@ class LlamaCppDetector(DetectorInterface):
         return "llama_cpp"
 
     @property
+    def last_prompt(self) -> str | None:
+        """Return the most recent prompt sent to the model."""
+        return self._last_prompt
+
+    @property
+    def last_reply(self) -> str | None:
+        """Return the most recent raw model reply."""
+        return self._last_reply
+
+    @property
     def priority(self) -> int:
         """Return the pipeline position."""
         return 8
