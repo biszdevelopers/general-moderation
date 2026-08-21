@@ -152,6 +152,32 @@ class Settings(BaseSettings):
     force_llm_on_user_ratio_high: bool = True
     llm_response_timeout_seconds: int = 30
 
+    # Stage 3: provider selection and remote endpoints. The active provider is
+    # switched at runtime through the admin API; these values seed settings.db.
+    llm_provider: str = "local_llama_cpp"
+    backup_llm_provider: str = ""
+    llm_failure_policy: str = "rule_based"
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_model: str = "qwen3.5:9b"
+    openai_base_url: str = "https://api.openai.com/v1"
+    openai_model: str = "gpt-4o-mini"
+    openai_api_key: str = ""
+    anthropic_base_url: str = "https://api.anthropic.com"
+    anthropic_model: str = "claude-3-5-haiku-latest"
+    anthropic_api_key: str = ""
+    external_llamacpp_base_url: str = "http://127.0.0.1:8080"
+    external_llamacpp_model: str = ""
+
+    # Stage 3: model health monitoring and verdict confidence calibration.
+    model_health_interval_seconds: int = 30
+    model_health_failure_threshold: int = 3
+    calibration_enabled: bool = True
+    calibration_block_confidence: float = 0.90
+    calibration_allow_confidence: float = 0.35
+
+    # Model registry (GGUF versions managed through the admin UI)
+    model_registry_db_path: str = "./data/models.db"
+
     # Feedback and auto-tuning
     feedback_db_path: str = "./data/feedback.db"
     auto_tuning_enabled: bool = True
