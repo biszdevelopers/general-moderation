@@ -177,6 +177,9 @@ class Settings(BaseSettings):
 
     # Model registry (GGUF versions managed through the admin UI)
     model_registry_db_path: str = "./data/models.db"
+    # Absolute path of the GGUF selected in the admin UI; empty falls back to
+    # the auto-download behavior above.
+    active_gguf_path: str = ""
 
     # Feedback and auto-tuning
     feedback_db_path: str = "./data/feedback.db"
