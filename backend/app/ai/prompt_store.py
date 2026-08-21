@@ -93,17 +93,21 @@ class PromptStore:
         return str(row[0]) if row is not None else None
 
     def activate(self, version_id: int) -> None:
-        """Make one stored version active.
+        """Make one stored version the single active version.
 
         :param version_id: the version to activate
         :raises ValueError: when the id is unknown
         """
+        exists = self._connection.execute(
+            "SELECT id FROM prompt_versions WHERE id = ?", (version_id,)
+        ).fetchone()
+        if exists is None:
+            raise ValueError(f"Unknown prompt version: {version_id}")
         with self._connection:
-            cursor = self._connection.execute(
+            self._connection.execute("UPDATE prompt_versions SET is_active = 0")
+            self._connection.execute(
                 "UPDATE prompt_versions SET is_active = 1 WHERE id = ?", (version_id,)
             )
-        if cursor.rowcount == 0:
-            raise ValueError(f"Unknown prompt version: {version_id}")
 
     def close(self) -> None:
         """Close the underlying database connection."""
