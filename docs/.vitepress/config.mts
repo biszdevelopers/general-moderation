@@ -55,6 +55,7 @@ export default defineConfig(
                             { text: "Configuration", link: "/guide/configuration" },
                             { text: "Word Banks", link: "/guide/wordbanks" },
                             { text: "Admin Settings", link: "/guide/admin-settings" },
+                            { text: "Model Management", link: "/guide/model-management" },
                             { text: "Admin Console", link: "/guide/admin-console" },
                             { text: "Test Workbench", link: "/guide/test-workbench" },
                             { text: "Data Export", link: "/guide/data-export" },
