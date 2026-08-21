@@ -67,6 +67,16 @@ class LLMProvider(ABC):
     def shutdown(self) -> None:
         """Release every resource held by the provider."""
 
+    def set_system_prompt(self, template: str) -> None:
+        """Replace the system prompt used for classification.
+
+        The default implementation is a no-op; providers that render the
+        prompt themselves override this.
+
+        :param template: the new system prompt text
+        """
+        return None
+
     def describe_status(self) -> dict[str, Any]:
         """Return a JSON-serializable health summary for the admin API.
 
