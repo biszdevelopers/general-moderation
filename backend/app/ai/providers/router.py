@@ -155,6 +155,18 @@ class ModelRouter:
         self._failure_count = 0
         return result
 
+    def set_system_prompt(self, template: str) -> None:
+        """Push an edited system prompt to the active and backup providers.
+
+        :param template: the new system prompt text
+        """
+        with self._lock:
+            providers: list[LLMProvider] = [
+                p for p in (self._active, self._backup) if p is not None
+            ]
+        for provider in providers:
+            provider.set_system_prompt(template)
+
     def _record_failure(self) -> None:
         """Count one failure and fail over when the threshold is reached."""
         threshold: int = int(self._settings_service.get("MODEL_HEALTH_FAILURE_THRESHOLD", 3))
