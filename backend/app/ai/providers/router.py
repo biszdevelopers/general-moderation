@@ -242,6 +242,13 @@ class ModelRouter:
             provider: LLMProvider | None = self._active
         return provider is not None and provider.health_check()
 
+    @property
+    def active_provider_name(self) -> str | None:
+        """Return the identifier of the active provider, if any."""
+        with self._lock:
+            provider: LLMProvider | None = self._active
+        return provider.name if provider is not None else None
+
     def status(self) -> dict[str, Any]:
         """Return a JSON-serializable summary for the admin API.
 
