@@ -51,6 +51,23 @@ class RemoteProvider(LLMProvider):
         self._session: requests.Session = requests.Session()
         self._last_prompt_value: str | None = None
         self._last_reply_value: str | None = None
+        self._system_prompt_override: str = ""
+
+    def _system_prompt(self) -> str:
+        """Return the active system prompt (override or built-in default)."""
+        if self._system_prompt_override:
+            return self._system_prompt_override
+        from app.ai.prompt import SYSTEM_PROMPT
+
+        return SYSTEM_PROMPT
+
+    def set_system_prompt(self, template: str) -> None:
+        """Replace the system prompt used for classification.
+
+        :param template: the new system prompt text
+        """
+        if template.strip():
+            self._system_prompt_override = template
 
     def _timeout(self) -> float:
         """Return the configured request timeout in seconds."""
@@ -98,10 +115,9 @@ class RemoteProvider(LLMProvider):
         :return: the classification result
         :raises RuntimeError: when the endpoint fails or returns garbage
         """
-        from app.ai.prompt import SYSTEM_PROMPT
 
         sanitized: str = LlamaCppDetector.sanitize(text)
-        self._last_prompt_value = SYSTEM_PROMPT
+        self._last_prompt_value = self._system_prompt()
         start: float = time.monotonic()
         reply: str = self._classify_remote(sanitized)
         latency_ms: float = round((time.monotonic() - start) * 1000, 2)
