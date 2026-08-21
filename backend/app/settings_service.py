@@ -227,6 +227,8 @@ _RANGES: dict[str, tuple[int, int]] = {
     "REVIEW_ESCALATION_THRESHOLD": (1, 100),
     "MODEL_HEALTH_INTERVAL_SECONDS": (5, 600),
     "MODEL_HEALTH_FAILURE_THRESHOLD": (1, 20),
+    "CALIBRATION_BLOCK_CONFIDENCE": (0, 1),
+    "CALIBRATION_ALLOW_CONFIDENCE": (0, 1),
 }
 
 _BOOL_KEYS: frozenset[str] = frozenset(
