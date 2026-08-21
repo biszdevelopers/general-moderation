@@ -38,9 +38,14 @@ htmlcov/
 /models/
 *.gguf
 /logs/
+/exports/
+/semantic/
+/eval/generated/
 
 # Local databases
 *.db
 *.sqlite
 *.sqlite3
 *.db-journal
+*.db-wal
+*.db-shm

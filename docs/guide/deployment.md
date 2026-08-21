@@ -208,3 +208,55 @@ but requires a pre-built toxic-signature database and is not enabled.
 Run a hot standby on a second private server with identical configuration.
 Monitor `GET /admin/health` externally; on failure, start the FRP client on
 the standby server so traffic flows to it.
+
+## Multi-Worker Scaling
+
+`start:prod` runs **3 preloaded Gunicorn workers** on Linux (override with
+`WORKERS`). Each worker holds its own in-memory result cache, semantic
+indexes, and LLM handle, so the model load is amortized once per worker.
+
+### Worker count guidance
+
+The dominant memory cost is the LLM: roughly 6-8 GB RSS per worker with
+`MODEL_MLOCK=true` and a Q8_0 KV cache, plus the SentenceTransformer model
+(~470 MB) and its Faiss indexes. A rule of thumb:
+
+```
+workers = floor((RAM_GB - 4) / 8)     # conservative, model per worker
+```
+
+For 64 GB RAM that is 7 workers; for 32 GB, 3. Each worker also spawns one
+detector thread pool (`DETECTOR_THREAD_POOL_SIZE`, default 4) plus the
+semantic preload thread.
+
+### Cross-worker consistency (Redis)
+
+Without Redis each worker's result cache is independent: an admin edit clears
+the cache only in the worker that received the request, so the other workers
+keep serving cached verdicts until their TTL expires (the config fingerprint
+heals them on the next miss). To make invalidation immediate across all
+workers, set `REDIS_URI`:
+
+```
+REDIS_URI=redis://localhost:6379/0
+```
+
+This does two things:
+
+- **Rate limiting** — slowapi stores rate-limit counters in Redis, so the
+  per-IP budget is enforced across workers instead of per process.
+- **Cache invalidation** — every worker subscribes to a `moderation:cache`
+  channel; when any worker clears its cache (settings, app-config, or phrase
+  edits) it publishes a clear and every worker drops its cache at once.
+
+The bus is fail-open: if the `redis` package is missing or the server is
+unreachable the service starts normally with per-worker semantics.
+
+### Graceful shutdown
+
+Gunicorn is configured with `graceful_timeout = 30`, so `SIGTERM` lets the
+in-flight requests drain before the worker exits. The FastAPI lifespan runs
+`ENGINE.shutdown()`, which releases the model, closes the detectors, word
+bank, profiler, settings, app-config, and feedback connections, and stops the
+cache-invalidation listener. On Windows the single uvicorn worker handles the
+same shutdown through the same lifespan.

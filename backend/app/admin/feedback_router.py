@@ -17,12 +17,14 @@ class FeedbackRequest(BaseModel):
     :param verdict: the verdict the service returned
     :param is_correct: whether that verdict was correct
     :param actual_action: the action the administrator took
+    :param severity: severity of the underlying match (0-10), when known
     """
 
     request_id: str = Field(min_length=1)
     verdict: str = Field(pattern="^(BLOCK|PASS|REVIEW)$")
     is_correct: bool
     actual_action: str = Field(pattern="^(BLOCK|PASS)$")
+    severity: int = Field(default=0, ge=0, le=10)
 
 
 def create_feedback_router(feedback_service: FeedbackService, auth_dependency: Any) -> APIRouter:
@@ -46,6 +48,7 @@ def create_feedback_router(feedback_service: FeedbackService, auth_dependency: A
             verdict=payload.verdict,
             is_correct=payload.is_correct,
             actual_action=payload.actual_action,
+            severity=payload.severity,
         )
         return {"status": "ok"}
 

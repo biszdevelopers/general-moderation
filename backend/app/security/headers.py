@@ -31,6 +31,7 @@ _SECURITY_HEADERS: dict[str, str] = {
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-XSS-Protection": "1; mode=block",
     "Referrer-Policy": "no-referrer",
+    "Cross-Origin-Opener-Policy": "same-origin",
 }
 
 

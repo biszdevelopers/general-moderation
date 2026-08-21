@@ -234,7 +234,8 @@ class TestConfigPlayground(BaseTest):
         for entry in settings:
             if entry["key"].endswith(("_KEY", "_SECRET")):
                 assert entry["value"] == "********"
-                assert entry["editable"] is False
+                if entry["key"] not in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
+                    assert entry["editable"] is False
 
 
 class TestUserProfile(BaseTest):

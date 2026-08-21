@@ -269,6 +269,10 @@ npm run test:e2e    # E2E only (tests/e2e)
 npm run test:phase2 # generated golden-master tests only (tests -k phase2)
 npm run test:serial # full suite serial (deterministic CI debugging)
 npm run eval        # labeled-corpus accuracy/precision/recall/F1 gate
+npm run demo        # one-command demo: build, eval, boot, pre-warm, open
+npm run bootstrap:eval  # turn production audit decisions into eval cases
+npm run load-test   # headless throughput/latency load test
+npm run sbom        # export a JSON SBOM of backend dependencies
 ```
 
 A single test file can also be run directly, e.g.

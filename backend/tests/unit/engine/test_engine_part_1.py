@@ -165,7 +165,7 @@ class TestEngineStage3(BaseTest):
 
     def test_trigger_with_llm_available_not_run(self, engine: ModerationEngine) -> None:
         """The model never loads in tests, so it stays unavailable."""
-        assert engine._llama.is_available() is False
+        assert engine._model_router.is_available() is False
 
     def test_and_logic_requires_all(self, engine: ModerationEngine, word_bank: Any) -> None:
         """AND logic does not trigger when only the score fires."""

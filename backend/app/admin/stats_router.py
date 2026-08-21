@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import orjson
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from app.feedback.feedback_service import FeedbackService
 from app.wordbank.manager import WordBankManager
@@ -47,7 +47,9 @@ def create_stats_router(
         }
 
     @router.get("/spot-check")
-    def spot_check(count: int = 50) -> dict[str, Any]:
+    def spot_check(
+        count: int = Query(default=50, ge=1, le=1000),
+    ) -> dict[str, Any]:
         """Sample recent audit entries for administrative review.
 
         :param count: how many recent entries to sample from

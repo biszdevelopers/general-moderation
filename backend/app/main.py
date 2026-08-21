@@ -14,6 +14,7 @@ import os
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Request, status
@@ -62,6 +63,7 @@ ENGINE: ModerationEngine = ModerationEngine(SETTINGS, WORD_BANK, LOGGER)
 RATE_LIMITER: RateLimiter = RateLimiter(
     requests=SETTINGS.rate_limit_requests,
     period_seconds=SETTINGS.rate_limit_period,
+    redis_uri=SETTINGS.redis_uri,
 )
 
 ADMIN_AUTH = Depends(RequireAdminApiKey(SETTINGS.admin_api_key))
@@ -167,6 +169,20 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.state.limiter = RATE_LIMITER.limiter
 app.add_middleware(SlowAPIMiddleware)
 
+
+@app.middleware("http")
+async def track_errors(request: Request, call_next: Any) -> Response:
+    """Count 5xx responses so the error-rate alert has a signal.
+
+    :param request: the incoming request
+    :param call_next: the downstream ASGI callable
+    :return: the response, counted when its status is 500 or higher
+    """
+    response: Response = await call_next(request)
+    if response.status_code >= 500:
+        ENGINE.record_error()
+    return response
+
 app.include_router(create_admin_router(ENGINE, WORD_BANK, SETTINGS.log_file_path, ADMIN_AUTH))
 app.include_router(create_test_router(ENGINE, SETTINGS.log_file_path, ADMIN_AUTH))
 
@@ -212,11 +228,9 @@ def metrics_public() -> Response:
     """
     from fastapi.responses import PlainTextResponse
 
-    lines: list[str] = []
-    for name, value in ENGINE.metrics().items():
-        lines.append(f"# TYPE {name} counter")
-        lines.append(f"{name} {value}")
-    return PlainTextResponse("\n".join(lines) + "\n", media_type="text/plain; version=0.0.4")
+    return PlainTextResponse(
+        ENGINE.metrics_text(), media_type="text/plain; version=0.0.4"
+    )
 
 
 @app.options("/{full_path:path}")

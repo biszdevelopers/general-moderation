@@ -68,7 +68,7 @@
 
 .detector-item {
     padding: 7px 13px;
-    background: #f8fafc;
+    background: var(--color-code-bg);
     border: 1px solid var(--color-border-soft);
     border-radius: 999px;
     font-size: 13px;
@@ -79,7 +79,7 @@
 
 .detector-item:hover {
     border-color: #cbd5e1;
-    background: #ffffff;
+    background: var(--color-surface);
 }
 
 .wordbank-toolbar {
@@ -103,6 +103,11 @@
     margin: 0 0 8px !important;
 }
 
+.ant-form-inline {
+    flex-wrap: wrap;
+    row-gap: 12px;
+}
+
 .audit-toolbar {
     margin-bottom: 16px;
 }
@@ -123,7 +128,7 @@
     line-height: 1.6;
     white-space: pre-wrap;
     word-break: break-all;
-    background: #f8fafc;
+    background: var(--color-code-bg);
     border-radius: 8px;
     padding: 14px;
 }
@@ -193,7 +198,7 @@
     line-height: 1.6;
     white-space: pre-wrap;
     word-break: break-all;
-    background: #f8fafc;
+    background: var(--color-code-bg);
     border-radius: 8px;
     padding: 12px;
     margin: 0;
@@ -212,7 +217,7 @@
     border: 1px solid var(--color-border-soft);
     border-radius: 8px;
     padding: 10px 12px;
-    background: #f8fafc;
+    background: var(--color-code-bg);
 }
 
 .live-stream__frame .workbench-pre {

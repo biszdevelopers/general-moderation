@@ -62,6 +62,8 @@ def _build_settings(root: Path) -> Settings:
         feedback_db_path=str(data / "feedback.db"),
         settings_db_path=str(data / "settings.db"),
         app_config_db_path=str(data / "config.db"),
+        model_registry_db_path=str(data / "models.db"),
+        active_gguf_path="",
         custom_words_path=str(data / "custom_words.db"),
         critical_phrases_db_path=str(data / "critical_phrases.db"),
         log_file_path=str(root / "logs" / "moderation.log"),

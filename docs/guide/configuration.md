@@ -163,6 +163,39 @@ low scores cannot mask severe content.
 | `FORCE_LLM_ON_USER_RATIO_HIGH` | `true` | Force the LLM when the user ratio is high. |
 | `LLM_RESPONSE_TIMEOUT_SECONDS` | `30` | Timeout for a single LLM response. |
 
+## LLM Providers
+
+Stage 3 can be served by any of five interchangeable providers, switched at
+runtime from the admin console (see [Model Management](/guide/model-management)):
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `LLM_PROVIDER` | `local_llama_cpp` | Active provider: `local_llama_cpp`, `external_llama_cpp`, `ollama`, `openai_compatible`, or `anthropic_compatible`. |
+| `BACKUP_LLM_PROVIDER` | *(empty)* | Provider used automatically when the active one fails health checks. |
+| `LLM_FAILURE_POLICY` | `rule_based` | Stage 3 behavior when no provider is healthy: keep rule verdicts (`rule_based`) or fail closed (`block`). |
+| `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Ollama HTTP API base URL. |
+| `OLLAMA_MODEL` | `qwen3.5:9b` | Ollama model tag. |
+| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | OpenAI-compatible chat completions base URL. |
+| `OPENAI_MODEL` | `gpt-4o-mini` | OpenAI-compatible model name. |
+| `OPENAI_API_KEY` | *(empty)* | Bearer token; encrypted at rest when set through the admin UI. |
+| `ANTHROPIC_BASE_URL` | `https://api.anthropic.com` | Anthropic-compatible messages API base URL. |
+| `ANTHROPIC_MODEL` | `claude-3-5-haiku-latest` | Anthropic-compatible model name. |
+| `ANTHROPIC_API_KEY` | *(empty)* | API key; encrypted at rest when set through the admin UI. |
+| `EXTERNAL_LLAMACPP_BASE_URL` | `http://127.0.0.1:8080` | Base URL of an external `llama-server`. |
+| `EXTERNAL_LLAMACPP_MODEL` | *(empty)* | Optional model name for multi-model servers. |
+
+## Model Health and Calibration
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `MODEL_HEALTH_INTERVAL_SECONDS` | `30` | Seconds between provider health probes (5–600). |
+| `MODEL_HEALTH_FAILURE_THRESHOLD` | `3` | Consecutive failures before failing over to the backup (1–20). |
+| `CALIBRATION_ENABLED` | `true` | Blend the suspicion score into reported LLM confidence. |
+| `CALIBRATION_BLOCK_CONFIDENCE` | `0.90` | Confidence bound for BLOCK verdicts (0–1). |
+| `CALIBRATION_ALLOW_CONFIDENCE` | `0.35` | Confidence bound for ALLOW verdicts (0–1). |
+| `ACTIVE_GGUF_PATH` | *(empty)* | GGUF selected in the model registry; empty keeps auto-download. |
+| `MODEL_REGISTRY_DB_PATH` | `./data/models.db` | Model registry database. |
+
 ## Feedback and Auto-Tuning
 
 | Variable | Default | Description |
@@ -309,6 +342,7 @@ service stays fully operational.
 | `ENCRYPTION_KEY` | auto-generated | 32-byte hex key for encryption at rest. Generated on first run. |
 | `RATE_LIMIT_REQUESTS` | `100` | Allowed requests per period. |
 | `RATE_LIMIT_PERIOD` | `60` | Rate limit window in seconds. |
+| `REDIS_URI` | empty | Optional `redis://` URI. Enables cross-worker rate limiting (slowapi storage) and cross-worker result-cache invalidation (pub/sub). Empty disables both. |
 | `ALLOWED_ORIGINS` | empty | Comma-separated CORS origins. No wildcard is permitted. |
 
 ## Logging
@@ -355,4 +389,9 @@ service stays fully operational.
 Metrics include `requests_total`, `ai_requests_total`, `rate_limit_hits_total`,
 `stage1_fast_path_total`, `semantic_queries_total`, and
 `model_unavailable_total` (counts the fail-open path where a trigger fired but
-the LLM was unavailable and a Stage-2 hard block was preserved).
+the LLM was unavailable and a Stage-2 hard block was preserved). Latency
+histograms (`request_latency_seconds`, `stage1_latency_seconds`,
+`stage2_latency_seconds`, and per-detector) expose p50/p95/p99, and gauges
+report `model_available`, `semantic_ready`, and `cache_hit_rate`. See
+[Observability](/guide/observability) for the full payload, alert rules, and
+the Grafana dashboard.

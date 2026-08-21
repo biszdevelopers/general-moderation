@@ -23,9 +23,6 @@ _VALID_UPDATE_CASES: tuple[tuple[str, int, int], ...] = (
     ('APP_CONFIG_DB_PATH', 'sample-value', 5907,),
     ('APP_CONFIG_DB_PATH', 'config-value', 5908,),
     ('APP_CONFIG_DB_PATH', '192.168.0.1', 5909,),
-    ('APP_HOST', 'sample-value', 5910,),
-    ('APP_HOST', 'config-value', 5911,),
-    ('APP_HOST', '192.168.0.1', 5912,),
     ('AUTO_TUNING_ENABLED', True, 5913,),
     ('AUTO_TUNING_ENABLED', False, 5914,),
     ('BLOOM_FILTER_CAPACITY', 'sample-value', 5915,),
@@ -105,12 +102,20 @@ _VALID_UPDATE_CASES: tuple[tuple[str, int, int], ...] = (
     ('FORCE_LLM_ON_SEMANTIC_HIGH', False, 5989,),
     ('FORCE_LLM_ON_USER_RATIO_HIGH', True, 5990,),
     ('FORCE_LLM_ON_USER_RATIO_HIGH', False, 5991,),
-    ('FRONTEND_DIST_PATH', 'sample-value', 5992,),
-    ('FRONTEND_DIST_PATH', 'config-value', 5993,),
-    ('FRONTEND_DIST_PATH', '192.168.0.1', 5994,),
     ('FUZZY_MAX_DISTANCE', 'sample-value', 5995,),
     ('FUZZY_MAX_DISTANCE', 'config-value', 5996,),
     ('FUZZY_MAX_DISTANCE', '192.168.0.1', 5997,),
+)
+
+# Infrastructure fields that now require a service restart; every update
+# attempt must be rejected as read-only.
+_READONLY_UPDATE_CASES: tuple[tuple[str, object, int], ...] = (
+    ('APP_HOST', 'sample-value', 5910,),
+    ('APP_HOST', 'config-value', 5911,),
+    ('APP_HOST', '192.168.0.1', 5912,),
+    ('FRONTEND_DIST_PATH', 'sample-value', 5992,),
+    ('FRONTEND_DIST_PATH', 'config-value', 5993,),
+    ('FRONTEND_DIST_PATH', '192.168.0.1', 5994,),
     ('HF_ENDPOINT', 'sample-value', 5998,),
     ('HF_ENDPOINT', 'config-value', 5999,),
     ('HF_ENDPOINT', '192.168.0.1', 6000,),
@@ -126,3 +131,14 @@ class TestValidUpdate(BaseTest):
         service.get(key)
         updated = service.update({key: value})
         assert key in updated
+
+
+class TestReadOnlyUpdate(BaseTest):
+    """Infrastructure fields reject every update attempt."""
+
+    @pytest.mark.parametrize(('key', 'value', 'uid',), _READONLY_UPDATE_CASES)
+    def test_readonly_update(self, engine: Any, key: str, value: object, uid: int) -> None:
+        """Restart-required fields raise ValueError on any update."""
+        service: SettingsService = engine._settings_service
+        with pytest.raises(ValueError, match="read-only"):
+            service.update({key: value})

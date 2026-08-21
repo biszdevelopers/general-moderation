@@ -26,6 +26,7 @@ _FEEDBACK_SCHEMA = """
         verdict TEXT NOT NULL,
         is_correct INTEGER NOT NULL,
         actual_action TEXT NOT NULL,
+        severity INTEGER NOT NULL DEFAULT 0,
         timestamp TEXT NOT NULL
     )
 """
@@ -34,6 +35,7 @@ _DECISION_SCHEMA = """
         id INTEGER PRIMARY KEY,
         verdict TEXT NOT NULL,
         ai_used INTEGER NOT NULL,
+        severity INTEGER NOT NULL DEFAULT 0,
         timestamp TEXT NOT NULL
     )
 """
@@ -43,6 +45,10 @@ _META_SCHEMA = """
         value TEXT NOT NULL
     )
 """
+
+_ADDITIONAL_COLUMNS: tuple[tuple[str, str], ...] = (
+    ("severity", "INTEGER NOT NULL DEFAULT 0"),
+)
 
 _WEIGHT_KEYS: tuple[str, ...] = (
     "WEIGHT_DETECTOR_BADWORDS",
@@ -108,7 +114,19 @@ class FeedbackService:
         self._connection.executescript(_FEEDBACK_SCHEMA)
         self._connection.executescript(_DECISION_SCHEMA)
         self._connection.executescript(_META_SCHEMA)
+        self._migrate()
         self._connection.commit()
+
+    def _migrate(self) -> None:
+        """Add any columns missing from an older feedback/decisions schema."""
+        for table in ("feedback", "decisions"):
+            existing: set[str] = {
+                row[1]
+                for row in self._connection.execute(f"PRAGMA table_info({table})").fetchall()
+            }
+            for name, definition in _ADDITIONAL_COLUMNS:
+                if name not in existing:
+                    self._connection.execute(f"ALTER TABLE {table} ADD COLUMN {name} {definition}")
 
     @staticmethod
     def _now() -> str:
@@ -116,7 +134,12 @@ class FeedbackService:
         return datetime.now(UTC).isoformat()
 
     def record_feedback(
-        self, request_id: str, verdict: str, is_correct: bool, actual_action: str
+        self,
+        request_id: str,
+        verdict: str,
+        is_correct: bool,
+        actual_action: str,
+        severity: int = 0,
     ) -> None:
         """Store one administrator correction.
 
@@ -124,27 +147,31 @@ class FeedbackService:
         :param verdict: the original service verdict
         :param is_correct: whether the verdict was correct
         :param actual_action: the action the administrator took
+        :param severity: severity of the underlying match (0-10), when known
         """
         with self._lock:
             self._connection.execute(
-                "INSERT INTO feedback (request_id, verdict, is_correct, actual_action, timestamp) "
-                "VALUES (?, ?, ?, ?, ?)",
-                (request_id, verdict, int(is_correct), actual_action, self._now()),
+                "INSERT INTO feedback "
+                "(request_id, verdict, is_correct, actual_action, severity, timestamp) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (request_id, verdict, int(is_correct), actual_action, severity, self._now()),
             )
             self._connection.commit()
 
-    def record_decision(self, verdict: str, ai_used: bool) -> None:
+    def record_decision(self, verdict: str, ai_used: bool, severity: int = 0) -> None:
         """Record one moderation decision for threshold tuning.
 
         :param verdict: the final verdict (PASS, BLOCK, or REVIEW)
         :param ai_used: whether the LLM participated
+        :param severity: severity of the strongest match (0-10), when known
         """
         if not self._settings.auto_tuning_enabled:
             return
         with self._lock:
             self._connection.execute(
-                "INSERT INTO decisions (verdict, ai_used, timestamp) VALUES (?, ?, ?)",
-                (verdict, int(ai_used), self._now()),
+                "INSERT INTO decisions (verdict, ai_used, severity, timestamp) "
+                "VALUES (?, ?, ?, ?)",
+                (verdict, int(ai_used), severity, self._now()),
             )
             self._connection.commit()
 
@@ -180,7 +207,7 @@ class FeedbackService:
         since: str = (now - timedelta(hours=24)).isoformat()
         with self._lock:
             feedback_rows = self._connection.execute(
-                "SELECT is_correct FROM feedback WHERE timestamp >= ?", (since,)
+                "SELECT is_correct, severity FROM feedback WHERE timestamp >= ?", (since,)
             ).fetchall()
             decision_rows = self._connection.execute(
                 "SELECT verdict, ai_used FROM decisions WHERE timestamp >= ?", (since,)
@@ -209,6 +236,17 @@ class FeedbackService:
         precision: float = correct / total if total else 0.5
         report["precision"] = round(precision, 4)
 
+        # Severity-weighted precision: a missed high-severity case counts more
+        # than a missed low-severity one, so the weights move to protect the
+        # hard-block boundary first.
+        severity_total: float = sum(1.0 + max(0, int(row[1])) for row in feedback_rows)
+        severity_correct: float = sum(
+            1.0 + max(0, int(row[1])) for row in feedback_rows if row[0]
+        )
+        severity_precision: float = severity_correct / severity_total if severity_total else 0.5
+        report["severity_precision"] = round(severity_precision, 4)
+        tuned_signal: float = severity_precision
+
         weights: dict[str, int] = {}
         for key in _WEIGHT_KEYS:
             current: int = int(
@@ -216,7 +254,7 @@ class FeedbackService:
             )
             delta: int = 0
             if total >= 10:
-                delta = 1 if precision > 0.6 else (-1 if precision < 0.4 else 0)
+                delta = 1 if tuned_signal > 0.6 else (-1 if tuned_signal < 0.4 else 0)
             default: int = _DEFAULT_WEIGHTS[key]
             next_weight: int = round(default + (current - default) * decay)
             tuned: int = max(5, min(50, next_weight + delta))

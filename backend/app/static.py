@@ -28,8 +28,8 @@ def serve_frontend(dist_dir: Path, full_path: str) -> Response:
     if full_path.startswith(_API_PREFIXES):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     if full_path:
-        candidate: Path = dist_dir / full_path
-        if candidate.is_file():
+        candidate: Path = (dist_dir / full_path).resolve()
+        if candidate.is_file() and candidate.is_relative_to(dist_dir.resolve()):
             return FileResponse(candidate)
     index_file: Path = dist_dir / "index.html"
     if index_file.is_file():

@@ -10,12 +10,29 @@
     --color-border-soft: #e8edf3;
     --color-bg: #f1f5f9;
     --color-surface: #ffffff;
+    --color-header-bg: rgba(255, 255, 255, 0.86);
     --color-success: #16a34a;
     --color-warning: #d97706;
     --color-error: #dc2626;
+    --color-code-bg: #f8fafc;
     --radius-card: 12px;
     --radius-control: 8px;
     --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme="dark"] {
+    --color-primary: #3b82f6;
+    --color-primary-hover: #60a5fa;
+    --color-primary-light: #1e293b;
+    --color-text: #e2e8f0;
+    --color-text-secondary: #94a3b8;
+    --color-border: #334155;
+    --color-border-soft: #1e293b;
+    --color-bg: #0f172a;
+    --color-surface: #0f172a;
+    --color-header-bg: rgba(15, 23, 42, 0.86);
+    --color-code-bg: #1e293b;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 *,

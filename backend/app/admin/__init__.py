@@ -11,7 +11,9 @@ from app.admin.appconfig_router import create_appconfig_router
 from app.admin.export_router import create_export_router
 from app.admin.feedback_router import create_feedback_router
 from app.admin.logs import create_logs_router
+from app.admin.models_router import create_models_router
 from app.admin.phrases_router import create_phrases_router
+from app.admin.prompt_router import create_prompt_router
 from app.admin.semantic_router import create_semantic_router
 from app.admin.settings_router import create_settings_router
 from app.admin.stats_router import create_stats_router
@@ -57,5 +59,20 @@ def create_admin_router(
     )
     router.include_router(
         create_stats_router(engine, word_bank, engine._feedback, log_file_path, auth_dependency)
+    )
+    router.include_router(
+        create_models_router(
+            engine._model_registry,
+            engine._model_router,
+            engine._settings.model_dir,
+            auth_dependency,
+        )
+    )
+    router.include_router(
+        create_prompt_router(
+            engine._prompt_store,
+            engine.apply_prompt,
+            auth_dependency,
+        )
     )
     return router

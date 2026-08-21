@@ -1,0 +1,263 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": null,
+    "links": [],
+    "panels": [
+        {
+            "id": 1,
+            "title": "Request rate",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "reqps",
+                    "custom": { "drawStyle": "line", "fillOpacity": 20, "stacking": { "mode": "normal" } }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "sum by (verdict) (rate(requests_total[1m]))",
+                    "legendFormat": "{{verdict}}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 2,
+            "title": "Request latency (p50 / p95 / p99)",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "custom": { "drawStyle": "line", "fillOpacity": 0, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.50, sum(rate(request_latency_seconds_bucket[1m])) by (le))",
+                    "legendFormat": "p50",
+                    "refId": "A"
+                },
+                {
+                    "expr": "histogram_quantile(0.95, sum(rate(request_latency_seconds_bucket[1m])) by (le))",
+                    "legendFormat": "p95",
+                    "refId": "B"
+                },
+                {
+                    "expr": "histogram_quantile(0.99, sum(rate(request_latency_seconds_bucket[1m])) by (le))",
+                    "legendFormat": "p99",
+                    "refId": "C"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 3,
+            "title": "Stage latency (p95)",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "custom": { "drawStyle": "line", "fillOpacity": 0, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.95, sum(rate(stage1_latency_seconds_bucket[1m])) by (le))",
+                    "legendFormat": "stage1",
+                    "refId": "A"
+                },
+                {
+                    "expr": "histogram_quantile(0.95, sum(rate(stage2_latency_seconds_bucket[1m])) by (le))",
+                    "legendFormat": "stage2",
+                    "refId": "B"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 4,
+            "title": "Detector latency (p95) by detector",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "custom": { "drawStyle": "line", "fillOpacity": 0, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "sum(rate(detector_latency_seconds_bucket[1m])) by (le) > 0",
+                    "legendFormat": "total",
+                    "refId": "A",
+                    "hide": true
+                },
+                {
+                    "expr": "histogram_quantile(0.95, sum by (le) (rate({__name__=~\"detector_.*_latency_seconds_bucket\"}[1m])))",
+                    "legendFormat": "aggregate",
+                    "refId": "B"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 5,
+            "title": "Cache hit rate",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 6, "x": 0, "y": 16 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "max": 1,
+                    "min": 0,
+                    "custom": { "drawStyle": "line", "fillOpacity": 20, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "cache_hit_rate",
+                    "legendFormat": "hit rate",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 6,
+            "title": "Model & semantic availability",
+            "type": "stat",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 6, "x": 6, "y": 16 },
+            "fieldConfig": {
+                "defaults": {
+                    "mappings": [
+                        { "options": { "1": { "text": "up", "color": "green" }, "0": { "text": "down", "color": "red" } }, "type": "value" }
+                    ],
+                    "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 1 } ] }
+                },
+                "overrides": []
+            },
+            "targets": [
+                { "expr": "model_available", "legendFormat": "model", "refId": "A" },
+                { "expr": "semantic_ready", "legendFormat": "semantic", "refId": "B" }
+            ],
+            "options": { "colorMode": "background", "graphMode": "none", "textMode": "value_and_name" }
+        },
+        {
+            "id": 7,
+            "title": "Error rate",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 6, "x": 12, "y": 16 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "custom": { "drawStyle": "line", "fillOpacity": 0, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                {
+                    "expr": "rate(requests_errors_total[1m]) / clamp_min(rate(requests_total[1m]), 0.0001)",
+                    "legendFormat": "5xx rate",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        },
+        {
+            "id": 8,
+            "title": "Semantic queries & REVIEW escalations",
+            "type": "timeseries",
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 16 },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "reqps",
+                    "custom": { "drawStyle": "line", "fillOpacity": 0, "lineWidth": 2 }
+                },
+                "overrides": []
+            },
+            "targets": [
+                { "expr": "rate(semantic_queries_total[1m])", "legendFormat": "semantic queries", "refId": "A" },
+                { "expr": "rate(review_escalations_total[1m])", "legendFormat": "review escalations", "refId": "B" },
+                { "expr": "rate(ai_requests_total[1m])", "legendFormat": "LLM calls", "refId": "C" }
+            ],
+            "options": {
+                "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            }
+        }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 39,
+    "tags": ["moderation"],
+    "templating": {
+        "list": [
+            {
+                "current": {},
+                "hide": 0,
+                "label": "Prometheus",
+                "name": "DS_PROMETHEUS",
+                "options": [],
+                "query": "prometheus",
+                "refresh": 1,
+                "type": "datasource"
+            }
+        ]
+    },
+    "time": { "from": "now-15m", "to": "now" },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "General Moderation",
+    "uid": "moderation-service",
+    "version": 1,
+    "weekStart": ""
+}

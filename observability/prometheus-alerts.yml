@@ -1,0 +1,51 @@
+groups:
+  - name: moderation-service
+    rules:
+      - alert: Moderation5xxHigh
+        expr: |
+          rate(requests_errors_total[5m])
+          /
+          clamp_min(rate(requests_total[5m]), 0.0001)
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "5xx error rate above 5%"
+          description: "The moderation service is returning errors on {{ $value | humanizePercentage }} of requests."
+
+      - alert: ModelUnavailable
+        expr: model_available == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "LLM model unavailable"
+          description: "The local llama.cpp model is not loaded; Stage 3 is running fail-open (rules only)."
+
+      - alert: ReviewEscalationSpike
+        expr: rate(review_escalations_total[5m]) > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "REVIEW escalation spike"
+          description: "More than 10 REVIEW escalations per second over 5 minutes; suspicious content or threshold drift."
+
+      - alert: RateLimitHitsHigh
+        expr: rate(rate_limit_hits_total[5m]) > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Rate limit violations elevated"
+          description: "Clients are being rate limited frequently; possible abuse or misconfigured client."
+
+      - alert: SemanticStageDown
+        expr: semantic_available == 1 and semantic_ready == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Semantic stage not ready"
+          description: "Semantic similarity deps are installed but the model has not finished loading."
