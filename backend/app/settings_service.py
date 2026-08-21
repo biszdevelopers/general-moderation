@@ -135,6 +135,7 @@ _DESCRIPTIONS: dict[str, str] = {
     "CALIBRATION_ENABLED": "Blend the suspicion score into the LLM confidence value",
     "CALIBRATION_BLOCK_CONFIDENCE": "Confidence reported when the LLM replies BLOCK",
     "CALIBRATION_ALLOW_CONFIDENCE": "Confidence reported when the LLM replies ALLOW",
+    "ACTIVE_GGUF_PATH": "Absolute path of the GGUF file selected in the model registry",
 }
 
 _READ_ONLY_KEYS: frozenset[str] = frozenset(
