@@ -40,14 +40,12 @@ class AnthropicCompatibleProvider(RemoteProvider):
         :param sanitized: sanitized user text
         :return: the raw reply text
         """
-        from app.ai.prompt import SYSTEM_PROMPT
-
         body: dict[str, Any] = self._post(
             self._messages_url(),
             {
                 "model": self._config("ANTHROPIC_MODEL"),
                 "max_tokens": 10,
-                "system": SYSTEM_PROMPT,
+                "system": self._system_prompt(),
                 "messages": [{"role": "user", "content": sanitized}],
                 "temperature": 0,
             },
