@@ -27,7 +27,7 @@ def create_provider(
         return None
     provider: LLMProvider
     if name == "local_llama_cpp":
-        provider = LocalLlamaCppProvider(settings, logger)
+        provider = LocalLlamaCppProvider(settings, settings_service, logger)
     elif name == "external_llama_cpp":
         provider = ExternalLlamaCppProvider(settings_service)
     elif name == "ollama":
