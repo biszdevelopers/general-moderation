@@ -73,6 +73,15 @@ class LlamaCppDetector(DetectorInterface):
         self._shutdown: bool = False
         self._last_prompt: str | None = None
         self._last_reply: str | None = None
+        self._system_prompt: str = SYSTEM_PROMPT
+
+    def set_system_prompt(self, template: str) -> None:
+        """Replace the system prompt used in classification prompts.
+
+        :param template: the new system prompt text
+        """
+        if template.strip():
+            self._system_prompt = template
 
     def start_preload(self) -> None:
         """Kick off a background download-and-load of the model.
@@ -197,6 +206,16 @@ class LlamaCppDetector(DetectorInterface):
         """
         model_dir: Path = Path(self._settings.model_dir)
         model_dir.mkdir(parents=True, exist_ok=True)
+
+        # Model registry selection: when a runtime view exposes an explicit
+        # active GGUF path it wins over both the static MODEL_PATH and the
+        # auto-download flow.
+        active_path: str = str(getattr(self._settings, "active_gguf_path", "") or "")
+        if active_path:
+            selected: Path = Path(active_path)
+            if selected.is_file():
+                return str(selected)
+            raise FileNotFoundError(f"Active model not found at {selected}")
 
         if self._settings.model_path != "auto":
             explicit: Path = Path(self._settings.model_path)
@@ -432,13 +451,13 @@ class LlamaCppDetector(DetectorInterface):
         if self._chat_template is not None:
             return self._chat_template.render(
                 messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "system", "content": self._system_prompt},
                     {"role": "user", "content": payload},
                 ],
                 add_generation_prompt=True,
                 enable_thinking=False,
             )
-        return build_classification_prompt(payload)
+        return build_classification_prompt(payload, system_prompt=self._system_prompt)
 
     def _check_idle_unload(self) -> None:
         """Unload the model after the idle timeout to free memory."""
